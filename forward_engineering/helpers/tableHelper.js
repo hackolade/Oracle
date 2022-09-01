@@ -242,6 +242,11 @@ module.exports = ({ _, getColumnsList, checkAllKeysDeactivated, commentIfDeactiv
         };
     };
 
+    const customPropertiesForForeignKey = relationship => {
+		const foreignOnDelete = _.get(relationship, 'relationshipOnDelete', '');
+		return { foreignOnDelete };
+	};
+
     return {
         getTableOptions,
         getTableType,
@@ -249,5 +254,6 @@ module.exports = ({ _, getColumnsList, checkAllKeysDeactivated, commentIfDeactiv
         foreignKeysToString,
         foreignActiveKeysToString,
         createKeyConstraint,
+        customPropertiesForForeignKey,
     };
 };

@@ -49,6 +49,7 @@ module.exports = (baseProvider, options, app) => {
             foreignKeysToString,
             foreignActiveKeysToString,
             createKeyConstraint,
+            customPropertiesForForeignKey
         } = require('./helpers/tableHelper')({
         _,
         checkAllKeysDeactivated,
@@ -196,6 +197,7 @@ module.exports = (baseProvider, options, app) => {
                 foreignTableActivated,
                 foreignSchemaName,
                 primarySchemaName,
+                customProperties,
             },
             dbData,
             schemaData
@@ -211,11 +213,14 @@ module.exports = (baseProvider, options, app) => {
             const foreignKeys = toArray(foreignKey);
             const primaryKeys = toArray(primaryKey);
 
+            const { foreignOnDelete } = customPropertiesForForeignKey(customProperties);
+
             const foreignKeyStatement = assignTemplates(templates.createForeignKeyConstraint, {
                 primaryTable: getNamePrefixedWithSchemaName(primaryTable, primarySchemaName || schemaData.schemaName),
                 name: name ? `CONSTRAINT ${wrapInQuotes(name)}` : '',
                 foreignKey: isActivated ? foreignKeysToString(foreignKeys) : foreignActiveKeysToString(foreignKeys),
                 primaryKey: isActivated ? foreignKeysToString(primaryKeys) : foreignActiveKeysToString(primaryKeys),
+                onDelete: foreignOnDelete ? ` ON DELETE ${foreignOnDelete}` : '',
             });
 
             return {
@@ -235,6 +240,7 @@ module.exports = (baseProvider, options, app) => {
                 foreignTableActivated,
                 foreignSchemaName,
                 primarySchemaName,
+                customProperties,
             },
             dbData,
             schemaData
@@ -250,16 +256,19 @@ module.exports = (baseProvider, options, app) => {
             const foreignKeys = toArray(foreignKey);
             const primaryKeys = toArray(primaryKey);
 
+            const { foreignOnDelete } = customPropertiesForForeignKey(customProperties);
+
             const foreignKeyStatement = assignTemplates(templates.createForeignKey, {
                 primaryTable: getNamePrefixedWithSchemaName(primaryTable, primarySchemaName || schemaData.schemaName),
                 foreignTable: getNamePrefixedWithSchemaName(foreignTable, foreignSchemaName || schemaData.schemaName),
                 name: name ? wrapInQuotes(name) : '',
                 foreignKey: isActivated ? foreignKeysToString(foreignKeys) : foreignActiveKeysToString(foreignKeys),
                 primaryKey: isActivated ? foreignKeysToString(primaryKeys) : foreignActiveKeysToString(primaryKeys),
+                onDelete: foreignOnDelete ? ` ON DELETE ${foreignOnDelete}` : '',
             });
 
             return {
-                statement: _.trim(foreignKeyStatement),
+                statement: _.trim(foreignKeyStatement) + '\n',
                 isActivated,
             };
         },

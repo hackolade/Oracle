@@ -165,5 +165,20 @@ making sure that you maintain a proper JSON format.
 				"template": "textarea"
 			}
 		]
+	},
+	{
+		"lowerTab": "Relationships",
+		"structure": [
+			{
+				"propertyName": "On Delete",
+				"propertyKeyword": "relationshipOnDelete",
+				"propertyType": "select",
+				"options": [
+					"",
+					"CASCADE",
+					"SET NULL"
+				]
+			}
+		]
 	}
 ]

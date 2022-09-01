@@ -14,12 +14,12 @@ module.exports = {
 
     createKeyConstraint: '${constraintName}${keyType}${columns}',
 
-    createForeignKeyConstraint: '${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})',
+    createForeignKeyConstraint: '${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${onDelete}',
 
     checkConstraint: '${name}CHECK (${expression})',
 
     createForeignKey:
-        'ALTER TABLE ${foreignTable} ADD CONSTRAINT ${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable}(${primaryKey});\n',
+        'ALTER TABLE ${foreignTable} ADD CONSTRAINT ${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${onDelete};',
 
     createIndex: 'CREATE${indexType} INDEX ${name} ON ${tableName}${keys}${options};\n',
 
