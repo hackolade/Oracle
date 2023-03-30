@@ -844,6 +844,15 @@ making sure that you maintain a proper JSON format.
 				]
 			},
 			{
+				"propertyName": "Table properties",
+				"propertyKeyword": "tableProperties",
+				"shouldValidate": false,
+				"propertyTooltip": "Table properties",
+				"propertyType": "details",
+				"template": "textarea",
+				"markdown": false
+			},
+			{
 				"propertyName": "As Select statement",
 				"propertyKeyword": "selectStatement",
 				"propertyType": "details",

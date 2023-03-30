@@ -30,11 +30,12 @@ module.exports = ({ _, getColumnsList, checkAllKeysDeactivated, commentIfDeactiv
         const wrap = value => (value ? `${value}\n` : '');
 
         const statements = [
-            { key: 'blockchain_table_clauses', getValue: getBlockChainClause },
-            { key: 'storage', getValue: getStorage },
+            { key: 'blockchain_table_clauses', getValue: getBlockChainClause(tableData?.tableProperties) },
+            { key: 'storage', getValue: getStorage(tableData?.tableProperties) },
             { key: 'external_table_clause', getValue: getExternalTableClause },
             { key: 'partitioning', getValue: getPartitioning },
             { key: 'selectStatement', getValue: getBasicValue('AS') },
+            { key: 'tableProperties', getValue: value => value }
         ]
             .map(config => tableData[config.key] ? wrap(config.getValue(tableData[config.key], tableData)) : '')
             .filter(Boolean)
@@ -43,21 +44,33 @@ module.exports = ({ _, getColumnsList, checkAllKeysDeactivated, commentIfDeactiv
         return _.trim(statements) ? ` ${_.trim(statements)}` : '';
     };
 
-    const getBlockChainClause = ({
+    const getBlockChainClause = (textTableProperties) => ({
         blockchain_table_retention_clause,
         blockchain_row_retention_clause,
         blockchain_hash_and_data_format_clause,
     }) => {
-        return _.trim(` ${blockchain_table_retention_clause || ''}` + 
+        const hasBlockchainPropertiesInTextProperties = _.includes(textTableProperties, blockchain_table_retention_clause)
+            || _.includes(textTableProperties, blockchain_row_retention_clause)
+            || _.includes(textTableProperties, blockchain_hash_and_data_format_clause)
+
+        if (hasBlockchainPropertiesInTextProperties) {
+            return '';
+        }
+
+        return _.trim(` ${blockchain_table_retention_clause || ''}` +
             ` ${blockchain_row_retention_clause || ''}` + 
             ` ${blockchain_hash_and_data_format_clause || ''}`);
     };
 
-    const getStorage = ({
+    const getStorage = (textTableProperties) => ({
         organization,
         tablespace,
         logging,
     }) => {
+        if (_.includes(textTableProperties, 'TABLESPACE')) {
+            return '';
+        }
+
         if (organization === 'external') {
             return 'ORGANIZATION EXTERNAL';
         }
