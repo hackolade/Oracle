@@ -295,7 +295,8 @@ module.exports = (baseProvider, options, app) => {
                     'temporary',
                     'temporaryType',
                     'description',
-                    'ifNotExist'
+                    'ifNotExist',
+                    'tableProperties'
                 )
             };
         },
@@ -322,6 +323,7 @@ module.exports = (baseProvider, options, app) => {
                 temporaryType,
                 description,
                 ifNotExist,
+                tableProperties,
             },
             isActivated
         ) {
@@ -372,6 +374,7 @@ module.exports = (baseProvider, options, app) => {
                             storage,
                             partitioning,
                             selectStatement,
+                            tableProperties,
                         })
                     }),
                     ifNotExist,
