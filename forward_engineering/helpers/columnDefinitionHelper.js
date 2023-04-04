@@ -36,12 +36,22 @@ module.exports = ({
             constraintString: `${constraintName ? ` CONSTRAINT ${wrapInQuotes(_.trim(constraintName))}` : ''}`, 
             statement: `${deferClause ? ` ${deferClause}` : ''}${rely ? ` ${rely}` : ''}${indexClause ? ` ${indexClause}` : ''}${validate ? ` ${validate}` : ''}${exceptionClause ? ` ${exceptionClause}` : ''}`
         });
-        const {constraintString, statement} = getOptionsString(primaryKeyOptions || uniqueKeyOptions || {}); 
+        const {constraintString, statement} = getOptionsString(getOptions({ primaryKey, unique, primaryKeyOptions, uniqueKeyOptions })); 
         const primaryKeyString = primaryKey ? ` PRIMARY KEY` : '';
         const uniqueKeyString = unique ? ` UNIQUE` : '';
         const nullableString = nullable ? '' : ' NOT NULL';
         return `${nullableString}${constraintString}${primaryKeyString}${uniqueKeyString}${statement}`;
     };
+
+    const getOptions = ({ primaryKey, unique, primaryKeyOptions, uniqueKeyOptions }) => {
+        if (primaryKey) {
+            return primaryKeyOptions;
+        } else if (unique) {
+            return uniqueKeyOptions;
+        } else {
+            return {};
+        }
+    }
 
     const replaceTypeByVersion = (type, version) => {
         if (type === 'JSON' && version !== '21c') {
