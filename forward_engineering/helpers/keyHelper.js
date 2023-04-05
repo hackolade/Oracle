@@ -14,7 +14,7 @@ module.exports = (_, clean) => {
     };
 
     const isInlineUnique = column => {
-        return isUniqueKey(column);
+        return isUniqueKey(column) && !column.uniqueKeyOptions?.constraintName;
     };
 
     const isPrimaryKey = column => {
@@ -30,10 +30,10 @@ module.exports = (_, clean) => {
     };
 
     const isInlinePrimaryKey = column => {
-        return isPrimaryKey(column);
+        return isPrimaryKey(column) && !column.primaryKeyOptions?.constraintName;
     };
 
-    const hydrateUniqueOptions = (options, columnName, isActivated, jsonSchema) =>
+    const hydrateUniqueOptions = (options, columnName, isActivated) =>
         clean({
             keyType: 'UNIQUE',
             columns: [
@@ -45,7 +45,7 @@ module.exports = (_, clean) => {
             ...options,
         });
 
-    const hydratePrimaryKeyOptions = (options, columnName, isActivated, jsonSchema) =>
+    const hydratePrimaryKeyOptions = (options, columnName, isActivated) =>
         clean({
             keyType: 'PRIMARY KEY',
             columns: [
@@ -109,8 +109,26 @@ module.exports = (_, clean) => {
             return [];
         }
 
+		const uniqueConstraints = mapProperties(jsonSchema, ([name, columnSchema]) => {
+				if (!isUniqueKey(columnSchema) || isInlineUnique(columnSchema)) {
+					return ;
+				} else {
+					return hydrateUniqueOptions(columnSchema.uniqueKeyOptions, name, columnSchema.isActivated);
+				}
+        }).filter(Boolean)
+
+		const primaryKeyConstraints = mapProperties(jsonSchema, ([name, columnSchema]) => {
+			if (!isPrimaryKey(columnSchema) || isInlinePrimaryKey(columnSchema)) {
+				return;
+			} else {
+				return hydratePrimaryKeyOptions(columnSchema.primaryKeyOptions, name, columnSchema.isActivated);
+			}
+		}).filter(Boolean);
+
         return [
+            ...primaryKeyConstraints,
             ...getCompositePrimaryKeys(jsonSchema),
+            ...uniqueConstraints,
             ...getCompositeUniqueKeys(jsonSchema),
         ];
     };
