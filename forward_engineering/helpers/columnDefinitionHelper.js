@@ -45,9 +45,9 @@ module.exports = ({
 
     const getOptions = ({ primaryKey, unique, primaryKeyOptions, uniqueKeyOptions }) => {
         if (primaryKey) {
-            return primaryKeyOptions;
+            return primaryKeyOptions || {};
         } else if (unique) {
-            return uniqueKeyOptions;
+            return uniqueKeyOptions || {};
         } else {
             return {};
         }
