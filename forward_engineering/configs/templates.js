@@ -12,7 +12,7 @@ module.exports = {
 
     columnDefinition: '${name}${type}${default}${encrypt}${constraints}',
 
-    createKeyConstraint: '${constraintName}${keyType}${columns}',
+    createKeyConstraint: '${constraintName}${keyType}${columns}${options}',
 
     createForeignKeyConstraint: '${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${onDelete}',
 

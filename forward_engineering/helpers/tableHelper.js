@@ -1,4 +1,6 @@
 module.exports = ({ _, getColumnsList, checkAllKeysDeactivated, commentIfDeactivated, wrapInQuotes, assignTemplates }) => {
+    const { getOptionsString } = require('./constraintHelper')({ _, wrapInQuotes });
+
     const getTableType = (
         {
             duplicated,
@@ -244,12 +246,14 @@ module.exports = ({ _, getColumnsList, checkAllKeysDeactivated, commentIfDeactiv
     const createKeyConstraint = (templates, isParentActivated) => keyData => {
         const isAllColumnsDeactivated = checkAllKeysDeactivated(keyData.columns);
         const columns = getColumnsList(keyData.columns, isAllColumnsDeactivated, isParentActivated);
+        const options = getOptionsString(keyData).statement;
         
         return {
             statement: assignTemplates(templates.createKeyConstraint, {
                 constraintName: keyData.constraintName ? `CONSTRAINT ${wrapInQuotes(keyData.constraintName)} ` : '',
                 keyType: keyData.keyType,
                 columns,
+                options,
             }),
             isActivated: !isAllColumnsDeactivated,
         };

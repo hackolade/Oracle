@@ -7,6 +7,7 @@ module.exports = ({
     wrapComment,
     wrapInQuotes
 }) => {
+    const { getOptionsString } = require('./constraintHelper')({ _, wrapInQuotes });
 
     const getColumnComments = (tableName, columnDefinitions) => {
         return _.chain(columnDefinitions)
@@ -25,17 +26,6 @@ module.exports = ({
     };
 
     const getColumnConstraints = ({nullable, unique, primaryKey, primaryKeyOptions, uniqueKeyOptions}) => {
-        const getOptionsString = ({
-            constraintName,
-            deferClause,
-			rely,
-			validate,
-			indexClause,
-			exceptionClause,
-        }) => ({
-            constraintString: `${constraintName ? ` CONSTRAINT ${wrapInQuotes(_.trim(constraintName))}` : ''}`, 
-            statement: `${deferClause ? ` ${deferClause}` : ''}${rely ? ` ${rely}` : ''}${indexClause ? ` ${indexClause}` : ''}${validate ? ` ${validate}` : ''}${exceptionClause ? ` ${exceptionClause}` : ''}`
-        });
         const {constraintString, statement} = getOptionsString(getOptions({ primaryKey, unique, primaryKeyOptions, uniqueKeyOptions })); 
         const primaryKeyString = primaryKey ? ` PRIMARY KEY` : '';
         const uniqueKeyString = unique ? ` UNIQUE` : '';
