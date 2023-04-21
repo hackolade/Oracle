@@ -571,6 +571,10 @@ const getDDL = async (tableName, schema, logger) => {
 			};
 		}
 	} catch (err) {
+		if(err?.errorNum === 31603 && !(await checkUserHaveRequiredRole(logger))) {
+			throw err;
+		}
+
 		logger.log('error', {
 			message: 'Cannot get DDL for table: ' + tableName,
 			error: { message: err.message, stack: err.stack, err: _.omit(err, ['message', 'stack']) }
@@ -706,6 +710,10 @@ const getViewDDL = async (viewName, logger) => {
 		const viewDDL = await _.first(_.first(queryResult)).getData();
 		return viewDDL;
 	} catch (err) {
+		if(err?.errorNum === 31603 && !(await checkUserHaveRequiredRole(logger))) {
+			throw err;
+		}
+
 		logger.log('error', {
 			message: 'Cannot get DDL for view: ' + viewName,
 			error: { message: err.message, stack: err.stack, err: _.omit(err, ['message', 'stack']) }
@@ -713,6 +721,29 @@ const getViewDDL = async (viewName, logger) => {
 		return '';
 	}
 };
+
+const checkUserHaveRequiredRole = async (logger) => {
+	try {
+		const userResult = await execute("SELECT sys_context('USERENV', 'CURRENT_USER') FROM dual");
+		const username = _.first(_.first(userResult));
+		const roles = (await execute(`SELECT GRANTED_ROLE FROM USER_ROLE_PRIVS WHERE USERNAME = '${username}'`))?.map(
+			([role]) => role,
+		);
+
+		return roles.includes('SELECT_CATALOG_ROLE');
+	} catch (error) {
+		logger.log(
+			'error',
+			{
+				message: 'Checking user privileges error',
+				error: { message: error.message, stack: error.stack, err: _.omit(error, ['message', 'stack']) },
+			},
+			'Getting DDL',
+		);
+
+		return false;
+	}
+}
 
 const logEnvironment = (logger) => {
 	logger.log('info', {

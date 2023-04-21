@@ -169,6 +169,22 @@ module.exports = {
 
 			callback(null, packages.filter(Boolean), { version: dbVersion });
 		} catch (error) {
+			if (error?.errorNum === 31603) {
+				logger.log(
+					'error',
+					{
+						message: 'Missing required role “SELECT_CATALOG_ROLE” to perform this operation',
+						stack: error.stack,
+						error,
+					},
+					'Reverse-engineering process failed',
+				);
+				return callback({
+					message: 'Missing required role “SELECT_CATALOG_ROLE” to perform this operation',
+					type: 'simpleError',
+				});
+			}	
+
 			logger.log('error', { message: error.message, stack: error.stack, error }, 'Reverse-engineering process failed');
 			callback({ message: error.message, stack: error.stack });
 		}
