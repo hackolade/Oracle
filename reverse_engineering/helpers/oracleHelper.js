@@ -574,7 +574,6 @@ const getDDL = async (tableName, schema, logger) => {
 		if(err?.errorNum === 31603 && !(await checkUserHaveRequiredRole(logger))) {
 			throw err;
 		}
-		console.log(err);
 
 		logger.log('error', {
 			message: 'Cannot get DDL for table: ' + tableName,
