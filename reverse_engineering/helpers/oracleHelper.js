@@ -670,6 +670,10 @@ const getJsonType = (records, columnName) => {
 	}, '');
 };
 
+const getJsonTypeName = (type) => {
+	return `json${type.charAt(0).toUpperCase()}${type.slice(1)}`
+}
+
 const getJsonSchema = async (jsonColumns, records) => {
 	const types = {
 		CLOB: { type: 'lobs', mode: 'clob' },
@@ -692,7 +696,7 @@ const getJsonSchema = async (jsonColumns, records) => {
 			return properties;
 		}
 
-		const type = `${schema.type}${subtype.charAt(0).toUpperCase()}${subtype.slice(1)}`
+		const type = getJsonTypeName(subtype)
 		return {
 			...properties,
 			[columnName]: {
