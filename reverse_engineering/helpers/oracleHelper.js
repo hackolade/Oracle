@@ -693,11 +693,13 @@ const getJsonSchema = async (jsonColumns, records) => {
 			return properties;
 		}
 
+		const type = `${schema.type}${subtype.charAt(0).toUpperCase()}${subtype.slice(1)}`
 		return {
 			...properties,
 			[columnName]: {
 				...schema,
 				subtype,
+				type
 			}
 		};
 	}, {});
