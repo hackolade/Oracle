@@ -1886,8 +1886,14 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "subtype",
 				"propertyTooltip": "needs for configuration of json types",
 				"propertyType": "select",
-				"options": ["json"],
-				"hidden": true
+				"options": [
+					{ "name": "object", "value": "object" },
+					{ "name": "array", "value": "array" },
+					{ "name": "string", "value": "string" },
+					{ "name": "number", "value": "number" },
+					{ "name": "boolean", "value": "boolean" },
+					{ "name": "null", "value": "null" }
+				]
 			},
 			{
 				"propertyName": "JSON Type",

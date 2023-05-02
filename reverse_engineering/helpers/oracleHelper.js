@@ -506,7 +506,7 @@ const getDDL = async (tableName, schema, logger) => {
 		const queryResult = await execute(`
 			SELECT JSON_OBJECT(
 			'tableDDL' VALUE DBMS_METADATA.GET_DDL('TABLE', T.TABLE_NAME, T.OWNER),
-			'countOfRecords' VALUE NVL(T.NUM_ROWS, 0),
+			'countOfRecords' VALUE (SELECT COUNT(*) FROM ALL_TABLES WHERE TABLE_NAME='${tableName}'),
 			'indexDDLs' VALUE (
 				SELECT JSON_ARRAYAGG(DBMS_METADATA.GET_DDL('INDEX', INDEX_NAME, OWNER) RETURNING CLOB)
 				FROM ALL_INDEXES
@@ -646,28 +646,33 @@ const selectRecords = async ({ tableName, limit, jsonColumns, schema }) => {
 };
 
 const getJsonType = (records, columnName) => {
+	const jsonPrimitives = {
+		number: 'number',
+		boolean: 'boolean',
+		string: 'string',
+	}
 	return records.reduce((type, record) => {
 		if (type) {
 			return type;
 		}
-		
-		try {
-			const result = JSON.parse(record[columnName]);
 
-			if (Array.isArray(result)) {
-				return 'array';
-			}
+		const result = record[columnName];
 
-			if (result && typeof result === 'object') {
-				return 'object';
-			}
-
-			return type;
-		} catch {
-			return type;
+		if (Array.isArray(result)) {
+			return 'array';
 		}
+
+		if (typeof result === 'object') {
+			return result ? 'object' : 'null';
+		}
+
+		return jsonPrimitives[typeof result] ?? type;
 	}, '');
 };
+
+const getJsonTypeName = (type) => {
+	return `json${type.charAt(0).toUpperCase()}${type.slice(1)}`
+}
 
 const getJsonSchema = async (jsonColumns, records) => {
 	const types = {
@@ -691,11 +696,13 @@ const getJsonSchema = async (jsonColumns, records) => {
 			return properties;
 		}
 
+		const type = getJsonTypeName(subtype)
 		return {
 			...properties,
 			[columnName]: {
 				...schema,
 				subtype,
+				type
 			}
 		};
 	}, {});
