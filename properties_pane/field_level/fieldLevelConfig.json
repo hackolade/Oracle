@@ -1868,20 +1868,6 @@ making sure that you maintain a proper JSON format.
 			"refPath",
 			"type",
 			{
-				"propertyName": "Comments",
-				"propertyKeyword": "description",
-				"propertyTooltip": "comments",
-				"addTimestampButton": false,
-				"propertyType": "details",
-				"template": "textarea"
-			},
-			{
-				"propertyName": "Not null",
-				"propertyKeyword": "required",
-				"enableForReference": true,
-				"propertyType": "checkbox"
-			},
-			{
 				"propertyName": "JSON Types",
 				"propertyKeyword": "subtype",
 				"propertyTooltip": "needs for configuration of json types",
@@ -1900,6 +1886,20 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "physicalType",
 				"propertyType": "select",
 				"hidden": true
+			},
+			{
+				"propertyName": "Not null",
+				"propertyKeyword": "required",
+				"enableForReference": true,
+				"propertyType": "checkbox"
+			},
+			{
+				"propertyName": "Comments",
+				"propertyKeyword": "description",
+				"propertyTooltip": "comments",
+				"addTimestampButton": false,
+				"propertyType": "details",
+				"template": "textarea"
 			},
 			"required",
 			"sample",
