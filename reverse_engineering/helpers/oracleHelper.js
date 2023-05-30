@@ -395,11 +395,26 @@ const viewNamesByUser = ({includeSystemCollection, schemaName }) => selectEntiti
 const materializedViewNamesByUser = ({includeSystemCollection, schemaName }) => selectEntities(`SELECT T.OWNER, T.MVIEW_NAME || \' (v)\' FROM ALL_MVIEWS T`, includeSystemCollection, schemaName);
 
 const getEntitiesNames = async (connectionInfo,logger) => {
-	const tables = await tableNamesByUser(connectionInfo).catch(e => {
-		logger.info({ message: 'Cannot retrieve tables' });
+	const materializedViews = await materializedViewNamesByUser(connectionInfo).catch(e => {
+		logger.info({ message: 'Cannot retrieve materialized views' });
 		logger.error(e);
+
 		return [];
 	});
+
+	logger.info({ materializedViews });
+
+	const materializedViewsNames = materializedViews.map(nameArray => _.join(nameArray, '.').slice(0, -' (v)'.length))
+
+	const tables = await tableNamesByUser(connectionInfo)
+		.then(tables => {
+			return _.reject(tables, tableNameArray => materializedViewsNames.includes(_.join(tableNameArray, '.')));
+		})
+		.catch(e => {
+			logger.info({ message: 'Cannot retrieve tables' });
+			logger.error(e);
+			return [];
+		});
 
 	logger.info({ tables });
 
@@ -420,15 +435,6 @@ const getEntitiesNames = async (connectionInfo,logger) => {
 	});
 
 	logger.info({ views });
-
-	const materializedViews = await materializedViewNamesByUser(connectionInfo).catch(e => {
-		logger.info({ message: 'Cannot retrieve materialized views' });
-		logger.error(e);
-
-		return [];
-	});
-
-	logger.info({ materializedViews });
 
 	const entities = pairToObj([...tables, ...externalTables, ...views, ...materializedViews]);
 
@@ -712,8 +718,16 @@ const getJsonSchema = async (jsonColumns, records) => {
 
 const getViewDDL = async (viewName, logger) => {
 	try {
+		const isMaterializedView = await checkEntityMaterializedView(viewName);
+		
 		await setSQLTerminator();
-		const queryResult = await execute(`SELECT DBMS_METADATA.GET_DDL('VIEW', VIEW_NAME, OWNER) FROM ALL_VIEWS WHERE VIEW_NAME='${viewName}'`);
+		let queryResult = null;
+		if(isMaterializedView) {
+			queryResult = await execute(`SELECT DBMS_METADATA.GET_DDL('MATERIALIZED_VIEW', MVIEW_NAME, OWNER) FROM ALL_MVIEWS WHERE MVIEW_NAME = '${viewName}'`)
+		} else {
+			queryResult = await execute(`SELECT DBMS_METADATA.GET_DDL('VIEW', VIEW_NAME, OWNER) FROM ALL_VIEWS WHERE VIEW_NAME='${viewName}'`);
+		}
+
 		const viewDDL = await _.first(_.first(queryResult)).getData();
 		return viewDDL;
 	} catch (err) {
@@ -728,6 +742,13 @@ const getViewDDL = async (viewName, logger) => {
 		return '';
 	}
 };
+
+const checkEntityMaterializedView = async (name) => {
+	await setSQLTerminator();
+	const queryResult = await execute(`SELECT * FROM ALL_MVIEWS WHERE MVIEW_NAME = '${name}'`);
+
+	return !_.isEmpty(queryResult);
+}
 
 const checkUserHaveRequiredRole = async (logger) => {
 	try {
