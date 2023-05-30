@@ -432,6 +432,7 @@ module.exports = (baseProvider, options, app) => {
                 schemaName: viewData.schemaData.schemaName,
                 description: detailsTab.description,
                 ifNotExist: detailsTab.ifNotExist,
+                materialized: detailsTab.materialized,
             };
         },
 
@@ -458,9 +459,10 @@ module.exports = (baseProvider, options, app) => {
                 wrapIfNotExists(
                     assignTemplates(templates.createView, {
                         name: viewName,
-                        orReplace: viewData.orReplace ? ' OR REPLACE' : '',
-                        force: viewData.force ? ' FORCE' : '',
-                        viewType: getViewType(viewData),
+                        orReplace: viewData.orReplace && !viewData.materialized ? ' OR REPLACE' : '',
+                        force: viewData.force && !viewData.materialized ? ' FORCE' : '',
+                        materialized: viewData.materialized ? ' MATERIALIZED' : '',
+                        viewType: !viewData.materialized ? getViewType(viewData) : '',
                         selectStatement,
                     }), viewData.ifNotExist
                 ) + comment,
