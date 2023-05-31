@@ -11,7 +11,7 @@ module.exports = {
 		logInfo('Connect to instance', connectionInfo, logger);
 		oracleHelper.logEnvironment(logger);
 		try {
-			await oracleHelper.connect(connectionInfo, (message) => {
+			await oracleHelper.connect(connectionInfo, message => {
 				logger.log('info', message, 'Connection');
 			});
 			callback();
@@ -32,7 +32,7 @@ module.exports = {
 
 	async testConnection(connectionInfo, logger, callback, app) {
 		try {
-			await this.connect(connectionInfo, logger, () => { }, app);
+			await this.connect(connectionInfo, logger, () => {}, app);
 			callback(null);
 		} catch (error) {
 			logger.log('error', { message: error.message, stack: error.stack, error }, 'Test connection');
@@ -43,7 +43,7 @@ module.exports = {
 	async getSchemaNames(connectionInfo, logger, callback, app) {
 		try {
 			logInfo('Get schemas', connectionInfo, logger);
-			await this.connect(connectionInfo, logger, () => { }, app);
+			await this.connect(connectionInfo, logger, () => {}, app);
 			const schemas = await oracleHelper.getSchemaNames();
 			logger.log('info', schemas, 'All schemas list', connectionInfo.hiddenKeys);
 			return callback(null, schemas);
@@ -55,19 +55,27 @@ module.exports = {
 
 	async getDbCollectionsNames(connectionInfo, logger, callback, app) {
 		try {
-			await this.connect(connectionInfo, logger, () => { }, app);
+			await this.connect(connectionInfo, logger, () => {}, app);
 			const objects = await oracleHelper.getEntitiesNames(connectionInfo, {
-				info: (data) => {
+				info: data => {
 					logger.log('info', data, 'Retrieving table and view names');
 				},
-				error: (e) => {
-					logger.log('error', { message: e.message, stack: e.stack, error: e }, 'Retrieving databases and tables information');
+				error: e => {
+					logger.log(
+						'error',
+						{ message: e.message, stack: e.stack, error: e },
+						'Retrieving databases and tables information',
+					);
 				},
 			});
 
 			callback(null, objects);
 		} catch (error) {
-			logger.log('error', { message: error.message, stack: error.stack, error }, 'Retrieving databases and tables information');
+			logger.log(
+				'error',
+				{ message: error.message, stack: error.stack, error },
+				'Retrieving databases and tables information',
+			);
 			callback({ message: error.message, stack: error.stack });
 		}
 	},
@@ -93,19 +101,28 @@ module.exports = {
 					const result = await next;
 
 					progress({ message: `Start getting data from table`, containerName: schema, entityName: table });
-					const {ddl, countOfRecords, jsonColumns} = await oracleHelper.getDDL(table, schema, logger);
+					const { ddl, countOfRecords, jsonColumns } = await oracleHelper.getDDL(table, schema, logger);
 					let documents = [];
 					let jsonSchema = {};
 
 					if (!_.isEmpty(jsonColumns)) {
-						const quantity = getCount(countOfRecords, collectionsInfo.recordSamplingSettings)
-	
-						progress({ message: `Fetching columns for JSON schema inference: ${JSON.stringify(jsonColumns)}`, containerName: schema, entityName: table });
+						const quantity = getCount(countOfRecords, collectionsInfo.recordSamplingSettings);
 
-						documents = await oracleHelper.selectRecords({ tableName: table, limit: quantity, jsonColumns, schema });
+						progress({
+							message: `Fetching columns for JSON schema inference: ${JSON.stringify(jsonColumns)}`,
+							containerName: schema,
+							entityName: table,
+						});
+
+						documents = await oracleHelper.selectRecords({
+							tableName: table,
+							limit: quantity,
+							jsonColumns,
+							schema,
+						});
 						jsonSchema = await oracleHelper.getJsonSchema(jsonColumns, documents);
 					}
-					
+
 					progress({ message: `Data retrieved successfully`, containerName: schema, entityName: table });
 
 					return result.concat({
@@ -125,7 +142,7 @@ module.exports = {
 						},
 						bucketInfo: {
 							database: schema,
-						}
+						},
 					});
 				}, Promise.resolve([]));
 
@@ -133,7 +150,7 @@ module.exports = {
 					const result = await next;
 
 					progress({ message: `Start getting data from view`, containerName: schema, entityName: view });
-					const ddl = await oracleHelper.getViewDDL(view, logger);
+					const ddl = await oracleHelper.getViewDDL(view, schema, logger);
 
 					progress({ message: `Data retrieved successfully`, containerName: schema, entityName: view });
 
@@ -142,8 +159,9 @@ module.exports = {
 						data: {},
 						ddl: {
 							script: ddl,
-							type: 'oracle'
-						}
+							type: 'oracle',
+							takeAllDdlProperties: true,
+						},
 					});
 				}, Promise.resolve([]));
 
@@ -159,9 +177,9 @@ module.exports = {
 					bucketInfo: {
 						indexes: [],
 						database: schema,
-					}
+					},
 				};
-				return [ ...packages, ...tablesPackages, viewPackage ];
+				return [...packages, ...tablesPackages, viewPackage];
 			}, Promise.resolve([]));
 
 			progress({ message: 'Start processing the retrieved data in the application ...' });
@@ -182,16 +200,20 @@ module.exports = {
 					message: 'Missing required role “SELECT_CATALOG_ROLE” to perform this operation',
 					type: 'simpleError',
 				});
-			}	
+			}
 
-			logger.log('error', { message: error.message, stack: error.stack, error }, 'Reverse-engineering process failed');
+			logger.log(
+				'error',
+				{ message: error.message, stack: error.stack, error },
+				'Reverse-engineering process failed',
+			);
 			callback({ message: error.message, stack: error.stack });
 		}
-	}
+	},
 };
 
 const handleError = (logger, error, cb) => {
-	const message = _.isString(error) ? error : _.get(error, 'message', 'Reverse Engineering error')
+	const message = _.isString(error) ? error : _.get(error, 'message', 'Reverse Engineering error');
 	logger.log('error', { error }, 'Reverse Engineering error');
 
 	cb(message);
@@ -199,9 +221,10 @@ const handleError = (logger, error, cb) => {
 
 const getCount = (count, recordSamplingSettings) => {
 	const per = recordSamplingSettings.relative.value;
-	const size = (recordSamplingSettings.active === 'absolute')
-		? Math.min(recordSamplingSettings.absolute.value, count)
-		: Math.round(count / 100 * per);
+	const size =
+		recordSamplingSettings.active === 'absolute'
+			? Math.min(recordSamplingSettings.absolute.value, count)
+			: Math.round((count / 100) * per);
 
 	return Math.min(size, 50000);
 };

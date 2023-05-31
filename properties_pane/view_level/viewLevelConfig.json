@@ -131,5 +131,108 @@
 				"hidden": true
 			}
 		]
+	},
+	{
+		"lowerTab": "Indexes",
+		"structure": [
+			{
+				"propertyName": "Index",
+				"propertyType": "group",
+				"propertyKeyword": "Indxs",
+				"propertyTooltip": "",
+				"dependency": {
+					"key": "materialized",
+					"value": true
+				},
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "indxName",
+						"propertyTooltip": "",
+						"propertyType": "text"
+					},
+					{
+						"propertyName": "Activated",
+						"propertyKeyword": "isActivated",
+						"propertyTooltip": "Deactivated item will be not included in FE script",
+						"propertyType": "checkbox",
+						"defaultValue": true
+					},
+					{
+						"propertyName": "Type",
+						"propertyKeyword": "indxType",
+						"propertyType": "select",
+						"options": ["", "multivalue", "unique", "bitmap"]
+					},
+					{
+						"propertyName": "Keys",
+						"propertyKeyword": "indxKey",
+						"propertyType": "fieldList",
+						"template": "orderedList",
+						"attributeList": ["asc", "desc"]
+					},
+					{
+						"propertyName": "Description",
+						"propertyKeyword": "indxDescription",
+						"propertyTooltip": "description",
+						"propertyType": "details",
+						"template": "textarea"
+					},
+					{
+						"propertyName": "Tablespace",
+						"propertyKeyword": "tablespace",
+						"propertyTooltip": "Specify the tablespace in which Oracle Database creates the table.  If you omit TABLESPACE, then the database creates that item in the default tablespace of the owner of the schema containing the table.",
+						"propertyType": "text"
+					},
+					{
+						"propertyName": "Expression",
+						"propertyKeyword": "column_expression",
+						"propertyTooltip": "For function-based index.  Specify an expression built from columns of table, constants, SQL functions, and user-defined functions. ",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					},
+					{
+						"propertyName": "Properties",
+						"propertyKeyword": "index_properties",
+						"propertyTooltip": "Specify the optional index attributes.",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					},
+					{
+						"propertyName": "Attributes",
+						"propertyKeyword": "index_attributes",
+						"propertyTooltip": "Specify the optional index attributes.",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					},
+					{
+						"propertyName": "Compression",
+						"propertyKeyword": "index_compression",
+						"propertyTooltip": "If you want to use compression for a partitioned index, then you must create the index with compression enabled at the index level. You can subsequently enable and disable the compression setting for individual partitions of such a partitioned index. ",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					},
+					{
+						"propertyName": "Logging",
+						"propertyKeyword": "logging_clause",
+						"propertyType": "select",
+						"defaultValue": "logging",
+						"options": ["", "logging", "nologging", "filesystem_like_logging"]
+					},
+					{
+						"propertyName": "Comments",
+						"propertyKeyword": "indxComments",
+						"propertyTooltip": "comments",
+						"addTimestampButton": false,
+						"propertyType": "details",
+						"template": "textarea"
+					}
+				]
+			}
+		]
 	}
 ]

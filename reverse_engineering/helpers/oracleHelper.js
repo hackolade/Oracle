@@ -716,29 +716,61 @@ const getJsonSchema = async (jsonColumns, records) => {
 	return { properties };
 };
 
-const getViewDDL = async (viewName, logger) => {
+const getViewDDL = async (viewName, schema, logger) => {
 	try {
 		const isMaterializedView = await checkEntityMaterializedView(viewName);
-		
+
 		await setSQLTerminator();
-		let queryResult = null;
-		if(isMaterializedView) {
-			queryResult = await execute(`SELECT DBMS_METADATA.GET_DDL('MATERIALIZED_VIEW', MVIEW_NAME, OWNER) FROM ALL_MVIEWS WHERE MVIEW_NAME = '${viewName}'`)
-		} else {
-			queryResult = await execute(`SELECT DBMS_METADATA.GET_DDL('VIEW', VIEW_NAME, OWNER) FROM ALL_VIEWS WHERE VIEW_NAME='${viewName}'`);
+		if (isMaterializedView) {
+			logger.log('info', { viewName, schema }, `Is materialized view"`);
+
+			const queryResult = await execute(
+				`SELECT JSON_OBJECT(
+					'viewDDL' VALUE DBMS_METADATA.GET_DDL('MATERIALIZED_VIEW', MV.MVIEW_NAME, MV.OWNER),
+					'indexDDLs' VALUE (
+						SELECT JSON_ARRAYAGG(DBMS_METADATA.GET_DDL('INDEX', INDEX_NAME, OWNER) RETURNING CLOB)
+						FROM ALL_INDEXES
+						WHERE TABLE_OWNER=MV.OWNER 
+							AND TABLE_NAME=MV.MVIEW_NAME
+							AND INDEX_NAME NOT IN (
+								SELECT CONSTRAINT_NAME 
+								FROM ALL_CONSTRAINTS 
+								WHERE CONSTRAINT_TYPE='P' 
+								AND OWNER=MV.OWNER 
+								AND TABLE_NAME=MV.MVIEW_NAME
+							)
+						)
+					)
+					FROM ALL_MVIEWS MV
+					WHERE MV.OWNER='${schema}' AND MV.MVIEW_NAME='${viewName}'`,
+			);
+			const row = _.first(_.first(queryResult))
+			const queryObj = JSON.parse(row);
+			logger.log('info', { viewName, schema }, `Getting DDL from "${schema}"."${viewName}"`);
+
+			return `${queryObj.viewDDL}\n${_.join(queryObj.indexDDLs, '\n')}`;
 		}
 
+		const queryResult = await execute(
+			`SELECT DBMS_METADATA.GET_DDL('VIEW', VIEW_NAME, OWNER) FROM ALL_VIEWS WHERE VIEW_NAME='${viewName}'`,
+		);
+
 		const viewDDL = await _.first(_.first(queryResult)).getData();
+
 		return viewDDL;
 	} catch (err) {
-		if(err?.errorNum === 31603 && !(await checkUserHaveRequiredRole(logger))) {
+		if (err?.errorNum === 31603 && !(await checkUserHaveRequiredRole(logger))) {
 			throw err;
 		}
 
-		logger.log('error', {
-			message: 'Cannot get DDL for view: ' + viewName,
-			error: { message: err.message, stack: err.stack, err: _.omit(err, ['message', 'stack']) }
-		}, 'Getting DDL');
+		logger.log(
+			'error',
+			{
+				message: 'Cannot get DDL for view: ' + viewName,
+				error: { message: err.message, stack: err.stack, err: _.omit(err, ['message', 'stack']) },
+			},
+			'Getting DDL',
+		);
 		return '';
 	}
 };
