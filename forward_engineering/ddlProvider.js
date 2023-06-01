@@ -447,6 +447,8 @@ module.exports = (baseProvider, options, app) => {
 				description: detailsTab.description,
 				ifNotExist: detailsTab.ifNotExist,
 				materialized: detailsTab.materialized,
+				sharing: detailsTab.sharing,
+				viewProperties: detailsTab.materialized ? detailsTab.mviewProperties : detailsTab.viewProperties,
 			};
 		},
 
@@ -509,6 +511,8 @@ module.exports = (baseProvider, options, app) => {
 						force: viewData.force && !viewData.materialized ? ' FORCE' : '',
 						materialized: viewData.materialized ? ' MATERIALIZED' : '',
 						viewType: !viewData.materialized ? getViewType(viewData) : '',
+						viewProperties: viewData.viewProperties ? ' \n' + tab(viewData.viewProperties) : '',
+						sharing: viewData.sharing && !viewData.materialized ? ` SHARING=${viewData.sharing}` : '',
 						selectStatement,
 					}),
 					viewData.ifNotExist,

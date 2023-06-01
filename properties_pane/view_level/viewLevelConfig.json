@@ -107,6 +107,61 @@
 				}
 			},
 			{
+				"propertyName": "Sharing",
+				"propertyKeyword": "sharing",
+				"propertyTooltip": "To determine how the view data is shared, specify one of the following sharing attributes",
+				"propertyType": "select",
+				"options": ["", "METADATA", "DATA", "EXTENDED DATA", "NONE"],
+				"dependency": {
+					"type": "or",
+					"values": [
+						{
+							"key": "materialized",
+							"value": false
+						},
+						{
+							"key": "materialized",
+							"exist": false
+						}
+					]
+				}
+			},
+			{
+				"propertyName": "View properties",
+				"propertyKeyword": "viewProperties",
+				"shouldValidate": false,
+				"propertyTooltip": "View properties",
+				"propertyType": "details",
+				"template": "textarea",
+				"markdown": false,
+				"dependency": {
+					"type": "or",
+					"values": [
+						{
+							"key": "materialized",
+							"value": false
+						},
+						{
+							"key": "materialized",
+							"exist": false
+						}
+					]
+				}
+			},
+			{
+				"propertyName": "Materialized view properties",
+				"propertyKeyword": "mviewProperties",
+				"shouldValidate": false,
+				"propertyTooltip": "Materialized view properties",
+				"propertyType": "details",
+				"template": "textarea",
+				"markdown": false,
+				"dependency": {
+					"key": "materialized",
+					"value": true
+				}
+			},
+			{
 				"propertyName": "Select Statement",
 				"propertyKeyword": "selectStatement",
 				"propertyType": "details",
