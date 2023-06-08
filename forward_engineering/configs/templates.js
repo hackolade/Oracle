@@ -21,7 +21,7 @@ module.exports = {
     createForeignKey:
         'ALTER TABLE ${foreignTable} ADD CONSTRAINT ${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${onDelete};',
 
-    createIndex: 'CREATE${indexType} INDEX ${name} ON ${tableName}${keys}${options};\n',
+    createIndex: 'CREATE${indexType} INDEX${name} ON ${tableName}${keys}${options};\n',
 
     createView: 'CREATE${orReplace}${force}${viewType}${materialized} VIEW ${name} ${sharing}${viewProperties}\n\tAS ${selectStatement}',
 

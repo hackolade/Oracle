@@ -75,7 +75,7 @@ module.exports = (baseProvider, options, app) => {
 		wrapInQuotes,
 	});
 
-	const { getIndexType, getIndexKeys, getIndexOptions } = require('./helpers/indexHelper')({
+	const { getIndexType, getIndexKeys, getIndexOptions, getIndexName } = require('./helpers/indexHelper')({
 		_,
 		wrapInQuotes,
 	});
@@ -404,10 +404,10 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		createIndex(tableName, index, dbData, isParentActivated = true) {
-			const name = wrapInQuotes(index.indxName);
+			const name = getIndexName(index.indxName);
 			const indexType = getIndexType(index.indxType);
 			const keys = getIndexKeys(index);
-			const options = _.trim(getIndexOptions(index, isParentActivated));
+			const options = getIndexOptions(index, isParentActivated);
 
 			return commentIfDeactivated(
 				assignTemplates(templates.createIndex, {
@@ -457,10 +457,10 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		createViewIndex(viewName, index, dbData, isParentActivated) {
-			const name = wrapInQuotes(index.indxName);
+			const name = getIndexName(index.indxName);
 			const indexType = getIndexType(index.indxType);
 			const keys = getIndexKeys(index);
-			const options = _.trim(getIndexOptions(index, isParentActivated));
+			const options = getIndexOptions(index, isParentActivated);
 
 			if (!index.materialized) {
 				return;
