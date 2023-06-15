@@ -821,7 +821,7 @@ const getDbSynonyms = async logger => {
 		);
 
 		if (_.isEmpty(queryResult)) {
-			return {};
+			return [];
 		}
 		const synonyms = queryResult.map(([owner, synonymName, synonymSchemaName, synonymEntityId]) => {
 			return {
@@ -834,8 +834,8 @@ const getDbSynonyms = async logger => {
 		logger.log('info', synonyms, 'Getting synonyms');
 		const synonymsDDL = await getSynonymsDDL();
 		const synonymsWithEditionable = synonyms.map(synonym => {
-			const synonymDDL = synonymsDDL.find(ddl => ddl.includes(`"${synonym.synonymName}" FOR`));
-			const isEditionable = !synonymDDL.includes('NONEDITIONABLE');
+			const synonymDDL = synonymsDDL.find(({ name }) => name === synonym.synonymName);
+			const isEditionable = !synonymDDL.ddl.includes('NONEDITIONABLE');
 
 			return { ...synonym, synonymEditionable: isEditionable ? 'EDITIONABLE' : 'NONEDITIONABLE' };
 		});
@@ -856,10 +856,14 @@ const getDbSynonyms = async logger => {
 
 const getSynonymsDDL = async () => {
 	const queryResult = await execute(
-		"SELECT DBMS_METADATA.GET_DDL('SYNONYM', SYNONYM_NAME, OWNER) FROM ALL_SYNONYMS WHERE ORIGIN_CON_ID > 1",
+		"SELECT SYNONYM_NAME, DBMS_METADATA.GET_DDL('SYNONYM', SYNONYM_NAME, OWNER) FROM ALL_SYNONYMS WHERE ORIGIN_CON_ID > 1",
 	);
-
-	const synonymsDDL = await Promise.all(queryResult.map(async ([synonymDDL]) => synonymDDL.getData()));
+	const synonymsDDL = await Promise.all(
+		queryResult.map(async ([synonymName, synonymDDL]) => {
+			const synonymDDLString = await synonymDDL.getData();
+			return new Promise(resolve => resolve({ name: synonymName, ddl: synonymDDLString }));
+		}),
+	);
 
 	return synonymsDDL;
 };
