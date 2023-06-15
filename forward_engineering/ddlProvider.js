@@ -90,6 +90,7 @@ module.exports = (baseProvider, options, app) => {
 		wrapInQuotes,
 		templates,
 		assignTemplates,
+		getNamePrefixedWithSchemaName,
 	});
 
 	return {
@@ -366,7 +367,7 @@ module.exports = (baseProvider, options, app) => {
 				checkConstraints: !_.isEmpty(checkConstraints) ? ',\n\t' + _.join(checkConstraints, ',\n\t') : '',
 			});
 
-			const synonymsStatements = generateSynonymStatements(synonyms, tableName);
+			const synonymsStatements = generateSynonymStatements(synonyms, tableName, schemaData.schemaName);
 
 			const commentStatements = comment || columnDescriptions ? '\n' + comment + columnDescriptions : '';
 
@@ -510,7 +511,7 @@ module.exports = (baseProvider, options, app) => {
 						keys: columnsAsString,
 				  });
 
-			const synonymsStatements = generateSynonymStatements(viewData.synonyms, viewName);
+			const synonymsStatements = generateSynonymStatements(viewData.synonyms, viewName, viewData.schemaName);
 
 			return commentIfDeactivated(
 				wrapIfNotExists(
@@ -536,6 +537,7 @@ module.exports = (baseProvider, options, app) => {
 			const synonymsStatements = generateSynonymStatements(
 				udt.synonyms,
 				getNamePrefixedWithSchemaName(udt.name, udt.schemaName),
+				udt.schemaName,
 			);
 
 			return commentIfDeactivated(getUserDefinedType(udt, this.convertColumnDefinition) + synonymsStatements, {

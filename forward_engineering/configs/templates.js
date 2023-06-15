@@ -35,5 +35,5 @@ module.exports = {
 
     ifNotExists: 'DECLARE\nBEGIN\n\tEXECUTE IMMEDIATE \'${statement}\';\n\tEXCEPTION WHEN OTHERS THEN\n\t\tIF SQLCODE = -${errorCode} THEN NULL; ELSE RAISE; END IF;\nEND;\n/\n',
 
-		createSynonym: 'CREATE${orReplace}${editionable}${public} SYNONYM ${name} FOR ${objectName};\n',
+	createSynonym: 'CREATE${orReplace}${editionable}${public} SYNONYM ${name}\n\tFOR ${objectName};\n',
 };

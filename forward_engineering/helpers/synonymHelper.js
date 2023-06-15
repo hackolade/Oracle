@@ -1,15 +1,16 @@
-module.exports = ({ wrapInQuotes, templates, assignTemplates }) => {
+module.exports = ({ wrapInQuotes, templates, assignTemplates, getNamePrefixedWithSchemaName }) => {
 	const generateSynonymCreateStatement = synonym => {
+		const namePrefixedWithSchemaName = getNamePrefixedWithSchemaName(synonym.synonymName, synonym.schemaName);
 		return assignTemplates(templates.createSynonym, {
-			name: wrapInQuotes(synonym.synonymName),
+			name: synonym.synonymPublic ? wrapInQuotes(synonym.synonymName) : namePrefixedWithSchemaName,
 			orReplace: synonym.synonymOrReplace ? ' OR REPLACE' : '',
-			editionable: synonym.synonymEditionable ? ' EDITIONABLE' : '',
+			editionable: synonym.synonymEditionable ? ' ' + synonym.synonymEditionable : '',
 			public: synonym.synonymPublic ? ' PUBLIC' : '',
 			objectName: synonym.synonymEntityName,
 		});
 	};
 
-	const generateSynonymStatements = (synonyms, synonymEntityName) => {
+	const generateSynonymStatements = (synonyms, synonymEntityName, schemaName) => {
 		if (!synonyms?.length) {
 			return '';
 		}
@@ -21,6 +22,7 @@ module.exports = ({ wrapInQuotes, templates, assignTemplates }) => {
 					return generateSynonymCreateStatement({
 						...synonym,
 						synonymEntityName,
+						schemaName,
 					});
 				})
 				.join('\n')
