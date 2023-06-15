@@ -93,6 +93,7 @@ module.exports = {
 			const collections = data.collections;
 			const dataBaseNames = data.dataBaseNames;
 			const dbVersion = await oracleHelper.getDbVersion(logger);
+			const synonyms = await oracleHelper.getDbSynonyms(logger);
 			const packages = await dataBaseNames.reduce(async (packagesPromise, schema) => {
 				const packages = await packagesPromise;
 				const entities = oracleHelper.splitEntityNames(collections[schema]);
@@ -142,6 +143,7 @@ module.exports = {
 						},
 						bucketInfo: {
 							database: schema,
+							synonyms: synonyms?.[schema] || [],
 						},
 					});
 				}, Promise.resolve([]));
@@ -177,6 +179,7 @@ module.exports = {
 					bucketInfo: {
 						indexes: [],
 						database: schema,
+						synonyms: synonyms?.[schema] || [],
 					},
 				};
 				return [...packages, ...tablesPackages, viewPackage];
@@ -202,11 +205,7 @@ module.exports = {
 				});
 			}
 
-			logger.log(
-				'error',
-				{ message: error.message, stack: error.stack, error },
-				'Reverse-engineering process failed',
-			);
+			logger.log('error', { message: error.message, stack: error.stack, error }, 'Reverse-engineering process failed');
 			callback({ message: error.message, stack: error.stack });
 		}
 	},

@@ -814,6 +814,56 @@ const logEnvironment = (logger) => {
 	}, 'Environment variables');
 };
 
+const getDbSynonyms = async logger => {
+	try {
+		const queryResult = await execute(
+			'SELECT OWNER, SYNONYM_NAME, TABLE_OWNER, TABLE_NAME, DB_LINK FROM ALL_SYNONYMS WHERE ORIGIN_CON_ID > 1',
+		);
+
+		if (_.isEmpty(queryResult)) {
+			return {};
+		}
+		const synonyms = queryResult.map(([owner, synonymName, synonymSchemaName, synonymEntityId]) => {
+			return {
+				synonymSchemaName,
+				synonymPublic: owner === 'PUBLIC',
+				synonymName,
+				synonymEntityId,
+			};
+		});
+		logger.log('info', synonyms, 'Getting synonyms');
+		const synonymsDDL = await getSynonymsDDL();
+		const synonymsWithEditionable = synonyms.map(synonym => {
+			const synonymDDL = synonymsDDL.find(ddl => ddl.includes(`"${synonym.synonymName}" FOR`));
+			const isEditionable = !synonymDDL.includes('NONEDITIONABLE');
+
+			return { ...synonym, synonymEditionable: isEditionable ? 'EDITIONABLE' : 'NONEDITIONABLE' };
+		});
+		const groupedSynonyms = _.groupBy(synonymsWithEditionable, 'synonymSchemaName');
+
+		return groupedSynonyms;
+	} catch (err) {
+		logger.log(
+			'error',
+			{
+				message: 'Cannot get synonyms',
+				error: { message: err.message, stack: err.stack, err: _.omit(err, ['message', 'stack']) },
+			},
+			'Getting synonyms',
+		);
+	}
+};
+
+const getSynonymsDDL = async () => {
+	const queryResult = await execute(
+		"SELECT DBMS_METADATA.GET_DDL('SYNONYM', SYNONYM_NAME, OWNER) FROM ALL_SYNONYMS WHERE ORIGIN_CON_ID > 1",
+	);
+
+	const synonymsDDL = await Promise.all(queryResult.map(async ([synonymDDL]) => synonymDDL.getData()));
+
+	return synonymsDDL;
+};
+
 module.exports = {
 	connect,
 	disconnect,
@@ -828,4 +878,5 @@ module.exports = {
 	selectRecords,
 	logEnvironment,
 	execute,
+	getDbSynonyms,
 };
