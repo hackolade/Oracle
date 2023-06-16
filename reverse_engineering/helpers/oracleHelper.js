@@ -882,7 +882,7 @@ const getDbSynonyms = async logger => {
 		const synonymsDDL = await getSynonymsDDL();
 		const synonymsWithEditionable = synonyms.map(synonym => {
 			const synonymDDL = synonymsDDL.find(({ name }) => name === synonym.synonymName);
-			const isEditionable = !synonymDDL.ddl.includes('NONEDITIONABLE');
+			const isEditionable = !synonymDDL?.ddl?.toUpperCase().includes('NONEDITIONABLE');
 
 			return { ...synonym, synonymEditionable: isEditionable ? 'EDITIONABLE' : 'NONEDITIONABLE' };
 		});
