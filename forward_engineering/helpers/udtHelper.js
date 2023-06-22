@@ -1,10 +1,8 @@
 module.exports = ({
     _,
-    commentIfDeactivated,
     assignTemplates,
     templates,
     getNamePrefixedWithSchemaName,
-    wrapInQuotes,
 }) => {
     const notPlainTypes = ['OBJECT_UDT', 'VARRAY', 'TABLE', 'COLLECTION_UDT'];
     const getPlainUdt = (udt, getColumnDefinition) => {
@@ -31,9 +29,7 @@ module.exports = ({
     };
 
     const getUserDefinedType = (udt, columns) => {
-        return commentIfDeactivated(getPlainUdt(udt, columns), {
-            isActivated: udt.isActivated,
-        });
+        return getPlainUdt(udt, columns);
     };
 
 	const isNotPlainType = (definitionJsonSchema) => {

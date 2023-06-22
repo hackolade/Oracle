@@ -113,7 +113,6 @@ making sure that you maintain a proper JSON format.
 			}
 
 */
-
 [
 	{
 		"lowerTab": "Details",
@@ -146,5 +145,66 @@ making sure that you maintain a proper JSON format.
 			}
 		],
 		"containerLevelKeys": []
+	},
+	{
+		"lowerTab": "Synonyms",
+		"structure": [
+			{
+				"propertyName": "Synonyms",
+				"propertyType": "group",
+				"propertyKeyword": "synonyms",
+				"shouldValidate": false,
+				"propertyTooltip": "",
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "synonymName",
+						"propertyType": "text",
+						"requiredProperty": true
+					},
+					{
+						"propertyName": "Public",
+						"propertyKeyword": "synonymPublic",
+						"propertyTooltip": "Make the synonym PUBLIC so that it can be accessed by users from PUBLIC group.",
+						"propertyType": "checkbox",
+						"defaultValue": false
+					},
+					{
+						"propertyName": "Or replace",
+						"propertyKeyword": "synonymOrReplace",
+						"propertyTooltip": "Replace the synonym if it already exists.",
+						"propertyType": "checkbox",
+						"defaultValue": false
+					},
+					{
+						"propertyName": "Editionable",
+						"propertyKeyword": "synonymEditionable",
+						"propertyTooltip": "",
+						"propertyType": "select",
+						"defaultValue": "",
+						"options": [
+							"",
+							"EDITIONABLE",
+							"NONEDITIONABLE"
+						]
+					},
+					{
+						"propertyName": "Entity",
+						"propertyKeyword": "synonymEntityId",
+						"propertyTooltip": "Chose entity to create synonym for",
+						"propertyType": "selecthashed",
+						"fieldParentCategory": "collection",
+						"template": [
+							"entities",
+							"views",
+							"definitions"
+						],
+						"withEmptyOption": true,
+						"selectedBucketEntitiesOnly": true,
+						"requiredProperty": true
+					}
+				]
+			}
+		]
 	}
 ]
