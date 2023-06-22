@@ -124,7 +124,10 @@ module.exports = (baseProvider, options, app) => {
 				ifNotExist,
 				1920,
 			);
-			return schemaStatement;
+			const useSchemaStatement = assignTemplates(templates.useSchema, {
+				schemaName: wrapInQuotes(schemaName),
+			});
+			return schemaStatement + '\n' + useSchemaStatement;
 		},
 
 		hydrateColumn({ columnDefinition, jsonSchema, schemaData, definitionJsonSchema = {} }) {

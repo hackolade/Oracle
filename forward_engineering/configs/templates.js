@@ -1,7 +1,9 @@
 module.exports = {
 	createSchema: 'CREATE USER ${schemaName} NO AUTHENTICATION',
 
-	comment: '\nCOMMENT ON ${object} ${objectName} IS ${comment};\n',
+    useSchema: 'ALTER SESSION SET CURRENT_SCHEMA=${schemaName};',
+
+    comment: '\nCOMMENT ON ${object} ${objectName} IS ${comment};\n',
 
 	createTable:
 		'CREATE${tableType} TABLE ${name}\
