@@ -1,39 +1,45 @@
 module.exports = {
-    createSchema: 'CREATE USER ${schemaName} NO AUTHENTICATION',
+	createSchema: 'CREATE USER ${schemaName} NO AUTHENTICATION',
 
     useSchema: 'ALTER SESSION SET CURRENT_SCHEMA=${schemaName};',
 
     comment: '\nCOMMENT ON ${object} ${objectName} IS ${comment};\n',
 
-    createTable:
-        'CREATE${tableType} TABLE ${name}\
+	createTable:
+		'CREATE${tableType} TABLE ${name}\
         ${tableProps}\
         \n${options}',
 
-    createTableProps: '${columnDefinitions}${keyConstraints}${checkConstraints}${foreignKeyConstraints}',
+	createTableProps: '${columnDefinitions}${keyConstraints}${checkConstraints}${foreignKeyConstraints}',
 
-    columnDefinition: '${name}${type}${default}${encrypt}${constraints}',
+	columnDefinition: '${name}${type}${default}${encrypt}${constraints}',
 
-    createKeyConstraint: '${constraintName}${keyType}${columns}${options}',
+	createKeyConstraint: '${constraintName}${keyType}${columns}${options}',
 
-    createForeignKeyConstraint: '${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${onDelete}',
+	createForeignKeyConstraint:
+		'${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${onDelete}',
 
-    checkConstraint: '${name}CHECK (${expression})',
+	checkConstraint: '${name}CHECK (${expression})',
 
-    createForeignKey:
-        'ALTER TABLE ${foreignTable} ADD CONSTRAINT ${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${onDelete};',
+	createForeignKey:
+		'ALTER TABLE ${foreignTable} ADD CONSTRAINT ${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${onDelete};',
 
-    createIndex: 'CREATE${indexType} INDEX${name} ON ${tableName}${keys}${options};\n',
+	createIndex: 'CREATE${indexType} INDEX${name} ON ${tableName}${keys}${options};\n',
 
-    createView: 'CREATE${orReplace}${force}${viewType}${materialized} VIEW ${name} ${sharing}${viewProperties}\n\tAS ${selectStatement}',
+	createView:
+		'CREATE${orReplace}${force}${viewType}${materialized} VIEW ${name} ${sharing}${viewProperties}\n\tAS ${selectStatement}',
 
-    viewSelectStatement: 'SELECT ${keys}\n\tFROM ${tableName}',
+	viewSelectStatement: 'SELECT ${keys}\n\tFROM ${tableName}',
 
-    createObjectType: 'CREATE OR REPLACE TYPE ${name} AS OBJECT \n(\n\t${properties}\n);\n',
+	createObjectType: 'CREATE OR REPLACE TYPE ${name} AS OBJECT \n(\n\t${properties}\n);\n',
 
-    objectTypeColumnDefinition: '${name} ${type}',
+	objectTypeColumnDefinition: '${name} ${type}',
 
-    createCollectionType: 'CREATE OR REPLACE TYPE ${name} IS ${collectionType}${size} OF (${datatype})${notPersistable};\n',
+	createCollectionType:
+		'CREATE OR REPLACE TYPE ${name} IS ${collectionType}${size} OF (${datatype})${notPersistable};\n',
 
-    ifNotExists: 'DECLARE\nBEGIN\n\tEXECUTE IMMEDIATE \'${statement}\';\n\tEXCEPTION WHEN OTHERS THEN\n\t\tIF SQLCODE = -${errorCode} THEN NULL; ELSE RAISE; END IF;\nEND;\n/\n',
+	ifNotExists:
+		"DECLARE\nBEGIN\n\tEXECUTE IMMEDIATE '${statement}';\n\tEXCEPTION WHEN OTHERS THEN\n\t\tIF SQLCODE = -${errorCode} THEN NULL; ELSE RAISE; END IF;\nEND;\n/\n",
+
+	createSynonym: 'CREATE${orReplace}${editionable}${public} SYNONYM ${name}\n\tFOR ${objectName};\n',
 };

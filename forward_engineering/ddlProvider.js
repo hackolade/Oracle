@@ -86,6 +86,13 @@ module.exports = (baseProvider, options, app) => {
 			: statement + ';';
 	};
 
+	const { generateSynonymStatements } = require('./helpers/synonymHelper')({
+		wrapInQuotes,
+		templates,
+		assignTemplates,
+		getNamePrefixedWithSchemaName,
+	});
+
 	return {
 		getDefaultType(type) {
 			return defaultTypes[type];
@@ -105,6 +112,7 @@ module.exports = (baseProvider, options, app) => {
 				schemaName: containerData.name,
 				ifNotExist: containerData.ifNotExist,
 				dbVersion,
+				synonyms: data.synonyms,
 			};
 		},
 
@@ -153,6 +161,7 @@ module.exports = (baseProvider, options, app) => {
 				lengthSemantics: jsonSchema.lengthSemantics,
 				encryption: jsonSchema.encryption,
 				identity: jsonSchema.identity,
+				synonyms: schemaData?.synonyms?.filter(synonym => synonym.synonymEntityId === jsonSchema.GUID) || [],
 			};
 		},
 
@@ -216,10 +225,7 @@ module.exports = (baseProvider, options, app) => {
 			const isAllPrimaryKeysDeactivated = checkAllKeysDeactivated(primaryKey);
 			const isAllForeignKeysDeactivated = checkAllKeysDeactivated(foreignKey);
 			const isActivated =
-				!isAllPrimaryKeysDeactivated &&
-				!isAllForeignKeysDeactivated &&
-				primaryTableActivated &&
-				foreignTableActivated;
+				!isAllPrimaryKeysDeactivated && !isAllForeignKeysDeactivated && primaryTableActivated && foreignTableActivated;
 
 			const foreignKeys = toArray(foreignKey);
 			const primaryKeys = toArray(primaryKey);
@@ -259,10 +265,7 @@ module.exports = (baseProvider, options, app) => {
 			const isAllPrimaryKeysDeactivated = checkAllKeysDeactivated(primaryKey);
 			const isAllForeignKeysDeactivated = checkAllKeysDeactivated(foreignKey);
 			const isActivated =
-				!isAllPrimaryKeysDeactivated &&
-				!isAllForeignKeysDeactivated &&
-				primaryTableActivated &&
-				foreignTableActivated;
+				!isAllPrimaryKeysDeactivated && !isAllForeignKeysDeactivated && primaryTableActivated && foreignTableActivated;
 
 			const foreignKeys = toArray(foreignKey);
 			const primaryKeys = toArray(primaryKey);
@@ -309,6 +312,7 @@ module.exports = (baseProvider, options, app) => {
 					'ifNotExist',
 					'tableProperties',
 				),
+				synonyms: tableData?.schemaData?.synonyms?.filter(synonym => synonym.synonymEntityId === jsonSchema.GUID) || [],
 			};
 		},
 
@@ -335,6 +339,7 @@ module.exports = (baseProvider, options, app) => {
 				description,
 				ifNotExist,
 				tableProperties,
+				synonyms,
 			},
 			isActivated,
 		) {
@@ -365,6 +370,8 @@ module.exports = (baseProvider, options, app) => {
 				checkConstraints: !_.isEmpty(checkConstraints) ? ',\n\t' + _.join(checkConstraints, ',\n\t') : '',
 			});
 
+			const synonymsStatements = generateSynonymStatements(synonyms, tableName, schemaData.schemaName);
+
 			const commentStatements = comment || columnDescriptions ? '\n' + comment + columnDescriptions : '';
 
 			const tableStatement = commentIfDeactivated(
@@ -392,8 +399,8 @@ module.exports = (baseProvider, options, app) => {
 					}),
 					ifNotExist,
 				) +
-					commentStatements +
-					'\n',
+					`${commentStatements}\n` +
+					synonymsStatements,
 				{
 					isActivated,
 				},
@@ -435,7 +442,7 @@ module.exports = (baseProvider, options, app) => {
 			};
 		},
 
-		hydrateView({ viewData, entityData }) {
+		hydrateView({ viewData, entityData, jsonSchema }) {
 			const detailsTab = entityData[0];
 
 			return {
@@ -452,6 +459,7 @@ module.exports = (baseProvider, options, app) => {
 				materialized: detailsTab.materialized,
 				sharing: detailsTab.sharing,
 				viewProperties: detailsTab.materialized ? detailsTab.mviewProperties : detailsTab.viewProperties,
+				synonyms: viewData.schemaData?.synonyms?.filter(synonym => synonym.synonymEntityId === jsonSchema.GUID) || [],
 			};
 		},
 
@@ -506,6 +514,8 @@ module.exports = (baseProvider, options, app) => {
 						keys: columnsAsString,
 				  });
 
+			const synonymsStatements = generateSynonymStatements(viewData.synonyms, viewName, viewData.schemaName);
+
 			return commentIfDeactivated(
 				wrapIfNotExists(
 					assignTemplates(templates.createView, {
@@ -519,13 +529,23 @@ module.exports = (baseProvider, options, app) => {
 						selectStatement,
 					}),
 					viewData.ifNotExist,
-				) + comment,
+				) +
+					comment +
+					synonymsStatements,
 				{ isActivated },
 			);
 		},
 
 		createUdt(udt) {
-			return getUserDefinedType(udt, this.convertColumnDefinition);
+			const synonymsStatements = generateSynonymStatements(
+				udt.synonyms,
+				getNamePrefixedWithSchemaName(udt.name, udt.schemaName),
+				udt.schemaName,
+			);
+
+			return commentIfDeactivated(getUserDefinedType(udt, this.convertColumnDefinition) + synonymsStatements, {
+				isActivated: udt.isActivated,
+			});
 		},
 
 		commentIfDeactivated(statement, data, isPartOfLine) {
