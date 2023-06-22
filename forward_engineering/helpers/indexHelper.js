@@ -21,18 +21,30 @@ module.exports = ({ _, wrapInQuotes }) => {
         index_attributes,
         index_compression,
         logging_clause,
+        indxKey,
+        column_expression,
     }) => {
+        let options = `${logging_clause ? ` ${_.toUpper(logging_clause)}` : ''}` +
+        `${tablespace ? ` TABLESPACE ${tablespace}` : ''}` + 
+        `${index_compression ? ` ${index_compression}` : ''}`
+
         if (index_properties) {
-            return ` ${index_properties}`;
+            options =  ` ${index_properties}`;
         } else if (index_attributes) {
-            return ` ${index_attributes}`;
+            options =  ` ${index_attributes}`;
         }
-        return `${logging_clause ? ` ${_.toUpper(logging_clause)}` : ''}` +
-            `${tablespace ? ` TABLESPACE ${tablespace}` : ''}` + 
-            `${index_compression ? ` ${index_compression}` : ''}`;
+        const isKeysEmpty = _.isEmpty(indxKey) && _.isEmpty(column_expression);
+
+        if (!isKeysEmpty) {
+            return _.trim(options);
+        }
+
+        return options;
     };
 
+    const getIndexName = name => name ? ` ${wrapInQuotes(name)}` : '';
+
     return {
-        getIndexType, getIndexKeys, getIndexOptions
+        getIndexType, getIndexKeys, getIndexOptions, getIndexName
     };
 };
