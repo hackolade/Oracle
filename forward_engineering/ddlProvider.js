@@ -132,7 +132,8 @@ module.exports = (baseProvider, options, app) => {
 
 		hydrateColumn({ columnDefinition, jsonSchema, schemaData, definitionJsonSchema = {} }) {
 			const dbVersion = schemaData.dbVersion;
-			const type = jsonSchema.$ref ? columnDefinition.type : _.toUpper(jsonSchema.mode || jsonSchema.type);
+			const isUDTRef = !!jsonSchema.$ref;
+			const type = isUDTRef ? columnDefinition.type : _.toUpper(jsonSchema.mode || jsonSchema.type);
 			return {
 				name: columnDefinition.name,
 				type,
@@ -162,6 +163,7 @@ module.exports = (baseProvider, options, app) => {
 				encryption: jsonSchema.encryption,
 				identity: jsonSchema.identity,
 				synonyms: schemaData?.synonyms?.filter(synonym => synonym.synonymEntityId === jsonSchema.GUID) || [],
+				isUDTRef,
 			};
 		},
 
