@@ -147,6 +147,8 @@ module.exports = ({
                 return intervalYear(columnDefinition.yearPrecision);
             case (isIntervalDay(type)):
                 return intervalDay(columnDefinition.dayPrecision, columnDefinition.fractSecPrecision);
+            case (!!(columnDefinition.isUDTRef && columnDefinition.schemaName)):
+                return ` "${columnDefinition.schemaName}".${type}`;
             default:
                 return ` ${type}`;
         }
