@@ -31,6 +31,8 @@
 	"user": {},
 	"view": {
 		"viewOn": "",
-		"pipeline": ""
+		"pipeline": "",
+		"materialized": false,
+		"duality": false
 	}
 }

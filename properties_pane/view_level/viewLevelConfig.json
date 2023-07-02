@@ -23,7 +23,26 @@
 				"propertyName": "Materialized",
 				"propertyKeyword": "materialized",
 				"propertyTooltip": "Specify whether to create materialized view.",
-				"propertyType": "checkbox"
+				"propertyType": "checkbox",
+				"defaultValue": false,
+				"dependency": {
+					"type": "or",
+					"values": [
+						{
+							"key": "duality",
+							"value": false
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"key": "duality",
+									"exist": true
+								}
+							]
+						}
+					]
+				}
 			},
 			{
 				"propertyName": "Or replace",
@@ -31,77 +50,89 @@
 				"propertyTooltip": "To re-create the view if it already exists. You can use this clause to change the definition of an existing view without dropping, re-creating, and regranting object privileges previously granted on it.",
 				"propertyType": "checkbox",
 				"dependency": {
-					"type": "or",
+					"key": "materialized",
+					"value": false
+				}
+			},
+		    {
+			    "propertyName": "Duality",
+			    "propertyKeyword": "duality",
+			    "propertyType": "checkbox",
+				"defaultValue": false,
+				"dependency": {
+					"type": "and",
 					"values": [
 						{
-							"key": "materialized",
-							"value": false
+							"level": "model"
+							"key": "dbVersion",
+							"value": "23c"
 						},
 						{
 							"key": "materialized",
-							"exist": false
+							"value": false
 						}
 					]
 				}
-			},
+		    },
 			{
 				"propertyName": "If not exist",
 				"propertyKeyword": "ifNotExist",
-				"propertyType": "checkbox"
+				"propertyType": "checkbox",
+				"dependency": {
+					"key": "duality",
+					"value": false
+				}
 			},
 			{
 				"propertyName": "Force",
 				"propertyKeyword": "force",
-				"propertyTooltip": "To create the view regardless of whether the base tables of the view or the referenced object types exist or the owner of the schema containing the view has privileges on them.",
-				"propertyType": "checkbox",
+				"propertyTooltip": "Select from list of options",
+				"propertyType": "select",
+				"options": [
+					"",
+					"force",
+					"no force"
+				],
 				"dependency": {
-					"type": "or",
-					"values": [
-						{
-							"key": "materialized",
-							"value": false
-						},
-						{
-							"key": "materialized",
-							"exist": false
-						}
-					]
+					"key": "materialized",
+					"value": false
 				}
 			},
 			{
 				"propertyName": "Editionable",
 				"propertyKeyword": "editionable",
 				"propertyTooltip": "To specify whether the view becomes an editioned or noneditioned object if editioning is enabled for the schema object type VIEW in schema.",
-				"propertyType": "checkbox",
+				"propertyType": "select",
+				"options": [
+					"",
+					"editionable",
+					"noneditionable"
+				],
 				"dependency": {
-					"type": "or",
-					"values": [
-						{
-							"key": "materialized",
-							"value": false
-						},
-						{
-							"key": "materialized",
-							"exist": false
-						}
-					]
+					"key": "materialized",
+					"value": false
 				}
 			},
 			{
 				"propertyName": "Editioning",
 				"propertyKeyword": "editioning",
 				"propertyTooltip": "A single-table view that selects all rows from the base table and displays a subset of the base table columns. ",
-				"propertyType": "checkbox",
+				"propertyType": "select",
+				"options": [
+					"",
+					"editioning",
+					"noneditioning"
+				],
 				"dependency": {
-					"type": "or",
+					"type": "and",
 					"values": [
 						{
 							"key": "materialized",
 							"value": false
 						},
 						{
-							"key": "materialized",
-							"exist": false
+							"key": "duality",
+							"value": false
 						}
 					]
 				}
@@ -113,15 +144,15 @@
 				"propertyType": "select",
 				"options": ["", "METADATA", "DATA", "EXTENDED DATA", "NONE"],
 				"dependency": {
-					"type": "or",
+					"type": "and",
 					"values": [
 						{
 							"key": "materialized",
 							"value": false
 						},
 						{
-							"key": "materialized",
-							"exist": false
+							"key": "duality",
+							"value": false
 						}
 					]
 				}
@@ -135,15 +166,15 @@
 				"template": "textarea",
 				"markdown": false,
 				"dependency": {
-					"type": "or",
+					"type": "and",
 					"values": [
 						{
 							"key": "materialized",
 							"value": false
 						},
 						{
-							"key": "materialized",
-							"exist": false
+							"key": "duality",
+							"value": false
 						}
 					]
 				}
@@ -162,12 +193,244 @@
 				}
 			},
 			{
+				"propertyName": "From root table",
+				"propertyKeyword": "viewOn",
+				"hidden": false,
+				"dependency": {
+					"key": "duality",
+					"value": true
+				}
+			},
+			{
+				"propertyName": "Root table alias",
+				"propertyKeyword": "rootTableAlias",
+				"propertyType": "text",
+				"dependency": {
+					"key": "duality",
+					"value": true
+				}
+			},
+			{
+				"propertyName": "Table tags clause",
+				"propertyKeyword": "rootTableTagsClause",
+				"propertyType": "block",
+				"propertyTooltip": "",
+				"structure": [
+					{
+						"propertyName": "Check",
+						"propertyKeyword": "checkTag",
+						"propertyType": "checkbox",
+						"dependency": {
+							"type": "or",
+							"values": [
+								{
+									"key": "noCheckTag",
+									"value": false
+								},
+								{
+									"type": "not",
+									"values": [
+										{
+											"key": "noCheckTag",
+											"exist": true
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"propertyName": "No check",
+						"propertyKeyword": "noCheckTag",
+						"propertyType": "checkbox",
+						"dependency": {
+							"type": "or",
+							"values": [
+								{
+									"key": "checkTag",
+									"value": false
+								},
+								{
+									"type": "not",
+									"values": [
+										{
+											"key": "checkTag",
+											"exist": true
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"propertyName": "Etag",
+						"propertyKeyword": "etag",
+						"propertyType": "checkbox"
+					},
+					{
+						"propertyName": "Insert",
+						"propertyKeyword": "insertTag",
+						"propertyType": "checkbox",
+						"dependency": {
+							"type": "or",
+							"values": [
+								{
+									"key": "noInsertTag",
+									"value": false
+								},
+								{
+									"type": "not",
+									"values": [
+										{
+											"key": "noInsertTag",
+											"exist": true
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"propertyName": "No insert",
+						"propertyKeyword": "noInsertTag",
+						"propertyType": "checkbox",
+						"dependency": {
+							"type": "or",
+							"values": [
+								{
+									"key": "insertTag",
+									"value": false
+								},
+								{
+									"type": "not",
+									"values": [
+										{
+											"key": "insertTag",
+											"exist": true
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"propertyName": "Update",
+						"propertyKeyword": "updateTag",
+						"propertyType": "checkbox",
+						"dependency": {
+							"type": "or",
+							"values": [
+								{
+									"key": "noUpdateTag",
+									"value": false
+								},
+								{
+									"type": "not",
+									"values": [
+										{
+											"key": "noUpdateTag",
+											"exist": true
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"propertyName": "No update",
+						"propertyKeyword": "noUpdateTag",
+						"propertyType": "checkbox",
+						"dependency": {
+							"type": "or",
+							"values": [
+								{
+									"key": "updateTag",
+									"value": false
+								},
+								{
+									"type": "not",
+									"values": [
+										{
+											"key": "updateTag",
+											"exist": true
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"propertyName": "Delete",
+						"propertyKeyword": "deleteTag",
+						"propertyType": "checkbox",
+						"dependency": {
+							"type": "or",
+							"values": [
+								{
+									"key": "noDeleteTag",
+									"value": false
+								},
+								{
+									"type": "not",
+									"values": [
+										{
+											"key": "noDeleteTag",
+											"exist": true
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"propertyName": "No delete",
+						"propertyKeyword": "noDeleteTag",
+						"propertyType": "checkbox",
+						"dependency": {
+							"type": "or",
+							"values": [
+								{
+									"key": "deleteTag",
+									"value": false
+								},
+								{
+									"type": "not",
+									"values": [
+										{
+											"key": "deleteTag",
+											"exist": true
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"dependency": {
+					"key": "duality",
+					"value": true
+				}
+			},
+			{
 				"propertyName": "Select Statement",
 				"propertyKeyword": "selectStatement",
 				"propertyType": "details",
-				"propertyTooltip": "select statement. To reference on partitioned table you should use ${tableName} template",
+				"propertyTooltip": "Select statement. To reference on partitioned table you should use ${tableName} template",
 				"template": "textarea",
-				"markdown": false
+				"markdown": false,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "materialized",
+							"value": false
+						},
+						{
+							"key": "duality",
+							"value": false
+						}
+					]
+				}
 			},
 			{
 				"propertyName": "Remarks",
@@ -179,10 +442,6 @@
 			},
 			{
 				"propertyKeyword": "pipeline",
-				"hidden": true
-			},
-			{
-				"propertyKeyword": "viewOn",
 				"hidden": true
 			}
 		]
