@@ -42,21 +42,30 @@
 {
     "modify": {
         "field": [
-            ["renameBlockItemProperties", {
-                "identity": {
-                    "self": "autoincrement", "subProps": {
-                        "identityStart": "start_num",
-                        "identityIncrement": "step_num"
+            [
+                "removeSubProperties", [
+                    {
+                        "keyPath": "identity",
+                        "subPropertiesNames": ["generated", "numberToCache"]
+                    }
+                ]
+            ],
+            [
+                "renameBlockItemProperties", {
+                    "identity": {
+                        "self": "autoincrement", "subProps": {
+                            "identityStart": "start_num",
+                            "identityIncrement": "step_num"
+                        }
                     }
                 }
-            }
-        ]
+            ]
         ]
     },
     "add": {
         "field": 
             {
-                "numeric" : [
+                "number" : [
                     {
                         "name": "defaultOption",
                         "value": "Autoincrement",
