@@ -63,7 +63,7 @@
 					"type": "and",
 					"values": [
 						{
-							"level": "model"
+							"level": "model",
 							"key": "dbVersion",
 							"value": "23c"
 						},
