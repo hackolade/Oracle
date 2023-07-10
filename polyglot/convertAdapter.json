@@ -43,10 +43,10 @@
     "modify": {
         "field": [
             [
-                "removeSubProperties", [
+                "removePropertiesByKeyPath", [
                     {
                         "keyPath": "identity",
-                        "subPropertiesNames": ["generated", "numberToCache"]
+                        "propertiesNames": ["generated", "numberToCache"]
                     }
                 ]
             ],
