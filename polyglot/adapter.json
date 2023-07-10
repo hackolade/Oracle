@@ -51,7 +51,7 @@
 					}
 				}
 			],
-            ["addSubProperties", [
+            ["addPropertiesByPath", [
                 {
                     "keyPath": "identity",
                     "subProperties": {
