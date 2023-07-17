@@ -368,49 +368,13 @@
 				"structure": [
 					{
 						"propertyName": "Check",
-						"propertyKeyword": "checkTag",
-						"propertyType": "checkbox",
-						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"key": "noCheckTag",
-									"value": false
-								},
-								{
-									"type": "not",
-									"values": [
-										{
-											"key": "noCheckTag",
-											"exist": true
-										}
-									]
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "No check",
-						"propertyKeyword": "noCheckTag",
-						"propertyType": "checkbox",
-						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"key": "checkTag",
-									"value": false
-								},
-								{
-									"type": "not",
-									"values": [
-										{
-											"key": "checkTag",
-											"exist": true
-										}
-									]
-								}
-							]
-						}
+						"propertyKeyword": "check",
+						"propertyType": "select",
+						"options": [
+							"",
+							"check",
+							"nocheck"
+						]
 					},
 					{
 						"propertyName": "Etag",
@@ -419,141 +383,33 @@
 					},
 					{
 						"propertyName": "Insert",
-						"propertyKeyword": "insertTag",
-						"propertyType": "checkbox",
-						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"key": "noInsertTag",
-									"value": false
-								},
-								{
-									"type": "not",
-									"values": [
-										{
-											"key": "noInsertTag",
-											"exist": true
-										}
-									]
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "No insert",
-						"propertyKeyword": "noInsertTag",
-						"propertyType": "checkbox",
-						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"key": "insertTag",
-									"value": false
-								},
-								{
-									"type": "not",
-									"values": [
-										{
-											"key": "insertTag",
-											"exist": true
-										}
-									]
-								}
-							]
-						}
+						"propertyKeyword": "insert",
+						"propertyType": "select",
+						"options": [
+							"",
+							"insert",
+							"noinsert"
+						]
 					},
 					{
 						"propertyName": "Update",
-						"propertyKeyword": "updateTag",
-						"propertyType": "checkbox",
-						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"key": "noUpdateTag",
-									"value": false
-								},
-								{
-									"type": "not",
-									"values": [
-										{
-											"key": "noUpdateTag",
-											"exist": true
-										}
-									]
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "No update",
-						"propertyKeyword": "noUpdateTag",
-						"propertyType": "checkbox",
-						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"key": "updateTag",
-									"value": false
-								},
-								{
-									"type": "not",
-									"values": [
-										{
-											"key": "updateTag",
-											"exist": true
-										}
-									]
-								}
-							]
-						}
+						"propertyKeyword": "update",
+						"propertyType": "select",
+						"options": [
+							"",
+							"update",
+							"noupdate"
+						]
 					},
 					{
 						"propertyName": "Delete",
-						"propertyKeyword": "deleteTag",
-						"propertyType": "checkbox",
-						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"key": "noDeleteTag",
-									"value": false
-								},
-								{
-									"type": "not",
-									"values": [
-										{
-											"key": "noDeleteTag",
-											"exist": true
-										}
-									]
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "No delete",
-						"propertyKeyword": "noDeleteTag",
-						"propertyType": "checkbox",
-						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"key": "deleteTag",
-									"value": false
-								},
-								{
-									"type": "not",
-									"values": [
-										{
-											"key": "deleteTag",
-											"exist": true
-										}
-									]
-								}
-							]
-						}
+						"propertyKeyword": "delete",
+						"propertyType": "select",
+						"options": [
+							"",
+							"delete",
+							"nodelete"
+						]
 					}
 				],
 				"dependency": {
