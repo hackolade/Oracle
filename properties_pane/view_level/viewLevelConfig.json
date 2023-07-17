@@ -45,9 +45,65 @@
 				"propertyTooltip": "To re-create the view if it already exists. You can use this clause to change the definition of an existing view without dropping, re-creating, and regranting object privileges previously granted on it.",
 				"propertyType": "checkbox",
 				"dependency": {
-					"key": "materialized",
-					"value": false
+					"type": "and",
+					"values": [
+						{
+							"type": "or",
+							"values": [
+								{
+									"key": "materialized",
+									"value": false
+								},
+								{
+									"key": "materialized",
+									"exist": false
+								}
+							]
+						},
+						{
+							"type": "or",
+							"values": [
+								{
+									"key": "ifNotExist",
+									"value": false
+								},
+								{
+									"key": "ifNotExist",
+									"exist": false
+								}
+							]
+						}
+					]
 				}
+			},
+			{
+				"propertyName": "Or replace",
+				"propertyKeyword": "or_replace",
+				"propertyTooltip": "To re-create the view if it already exists. You can use this clause to change the definition of an existing view without dropping, re-creating, and regranting object privileges previously granted on it.",
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"type": "or",
+							"values": [
+								{
+									"key": "materialized",
+									"value": false
+								},
+								{
+									"key": "materialized",
+									"exist": false
+								}
+							]
+						},
+						{
+							"key": "ifNotExist",
+							"value": true
+						}
+					]
+				},
+				"disabled": true
 			},
 		    {
 			    "propertyName": "Duality",
@@ -95,6 +151,16 @@
 						}
 					]
 				}
+			},
+			{
+				"propertyName": "If not exist",
+				"propertyKeyword": "ifNotExist",
+				"propertyType": "checkbox",
+				"dependency": {
+					"key": "or_replace",
+					"value": true
+				},
+				"disabled": true
 			},
 			{
 				"propertyName": "Force",
