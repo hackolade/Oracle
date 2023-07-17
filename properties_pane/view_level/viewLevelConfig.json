@@ -33,13 +33,8 @@
 							"value": false
 						},
 						{
-							"type": "not",
-							"values": [
-								{
-									"key": "duality",
-									"exist": true
-								}
-							]
+							"key": "duality",
+							"exist": false
 						}
 					]
 				}
@@ -68,8 +63,17 @@
 							"value": "23c"
 						},
 						{
-							"key": "materialized",
-							"value": false
+							"type": "or",
+							"values": [
+								{
+									"key": "materialized",
+									"value": false
+								},
+								{
+									"key": "materialized",
+									"exist": false
+								}
+							]
 						}
 					]
 				}
@@ -79,8 +83,17 @@
 				"propertyKeyword": "ifNotExist",
 				"propertyType": "checkbox",
 				"dependency": {
-					"key": "duality",
-					"value": false
+					"type": "or",
+					"values": [
+						{
+							"key": "or_replace",
+							"value": false
+						},
+						{
+							"key": "or_replace",
+							"exist": false
+						}
+					]
 				}
 			},
 			{
@@ -94,8 +107,17 @@
 					"no force"
 				],
 				"dependency": {
-					"key": "materialized",
-					"value": false
+					"type": "or",
+					"values": [
+						{
+							"key": "materialized",
+							"value": false
+						},
+						{
+							"key": "materialized",
+							"exist": false
+						}
+					]
 				}
 			},
 			{
@@ -109,8 +131,17 @@
 					"noneditionable"
 				],
 				"dependency": {
-					"key": "materialized",
-					"value": false
+					"type": "or",
+					"values": [
+						{
+							"key": "materialized",
+							"value": false
+						},
+						{
+							"key": "materialized",
+							"exist": false
+						}
+					]
 				}
 			},
 			{
@@ -126,12 +157,30 @@
 					"type": "and",
 					"values": [
 						{
-							"key": "materialized",
-							"value": false
+							"type": "or",
+							"values": [
+								{
+									"key": "materialized",
+									"value": false
+								},
+								{
+									"key": "materialized",
+									"exist": false
+								}
+							]
 						},
 						{
-							"key": "duality",
-							"value": false
+							"type": "or",
+							"values": [
+								{
+									"key": "duality",
+									"value": false
+								},
+								{
+									"key": "duality",
+									"exist": false
+								}
+							]
 						}
 					]
 				}
@@ -146,12 +195,30 @@
 					"type": "and",
 					"values": [
 						{
-							"key": "materialized",
-							"value": false
+							"type": "or",
+							"values": [
+								{
+									"key": "materialized",
+									"value": false
+								},
+								{
+									"key": "materialized",
+									"exist": false
+								}
+							]
 						},
 						{
-							"key": "duality",
-							"value": false
+							"type": "or",
+							"values": [
+								{
+									"key": "duality",
+									"value": false
+								},
+								{
+									"key": "duality",
+									"exist": false
+								}
+							]
 						}
 					]
 				}
@@ -168,12 +235,30 @@
 					"type": "and",
 					"values": [
 						{
-							"key": "materialized",
-							"value": false
+							"type": "or",
+							"values": [
+								{
+									"key": "materialized",
+									"value": false
+								},
+								{
+									"key": "materialized",
+									"exist": false
+								}
+							]
 						},
 						{
-							"key": "duality",
-							"value": false
+							"type": "or",
+							"values": [
+								{
+									"key": "duality",
+									"value": false
+								},
+								{
+									"key": "duality",
+									"exist": false
+								}
+							]
 						}
 					]
 				}
@@ -421,12 +506,30 @@
 					"type": "and",
 					"values": [
 						{
-							"key": "materialized",
-							"value": false
+							"type": "or",
+							"values": [
+								{
+									"key": "materialized",
+									"value": false
+								},
+								{
+									"key": "materialized",
+									"exist": false
+								}
+							]
 						},
 						{
-							"key": "duality",
-							"value": false
+							"type": "or",
+							"values": [
+								{
+									"key": "duality",
+									"value": false
+								},
+								{
+									"key": "duality",
+									"exist": false
+								}
+							]
 						}
 					]
 				}
