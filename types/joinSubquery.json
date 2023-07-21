@@ -1,0 +1,31 @@
+{
+  "name": "joinSubquery",
+  "erdAbbreviation": "<join-sq>",
+  "dtdAbbreviation": "{...}",
+  "jsonType": {
+    "order": 1,
+    "jsonRoot": true,
+    "source": true
+  },
+  "hide": {
+    "dependencies": [
+      {
+        "value": true,
+        "type": "or",
+        "values": [
+          {
+            "key": "duality",
+            "value": false
+          },
+          {
+            "key": "duality",
+            "exist": false
+          }
+        ]
+      }
+    ],
+    "defaultValue": false
+  },
+  "defaultValues": {
+  }
+}

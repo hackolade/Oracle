@@ -131,12 +131,12 @@ making sure that you maintain a proper JSON format.
                     "type": "and",
                     "values": [
                       {
-                        "level": "parent",
+                        "level": "root",
                         "key": "viewOn",
                         "exist": true
                       },
                       {
-                        "level": "parent",
+                        "level": "root",
                         "key": "duality",
                         "value": true
                       }
@@ -3067,6 +3067,156 @@ making sure that you maintain a proper JSON format.
         "propertyKeyword": "description",
         "propertyTooltip": "comments",
         "addTimestampButton": false,
+        "propertyType": "details",
+        "template": "textarea"
+      }
+    ],
+    "joinSubquery": [
+      {
+        "fieldKeyword": "name",
+        "dependency": false
+      },
+      {
+        "propertyName": "JSON key",
+        "propertyKeyword": "jsonKey",
+        "propertyType": "text",
+        "propertyTooltip": "Specify how the JSON key will be named in duality view definition",
+        "dependency": [
+          {
+            "type": "or",
+            "values": [
+              {
+                "key": "unnestSubquery",
+                "value": false
+              },
+              {
+                "key": "unnestSubquery",
+                "exist": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "propertyName": "Subquery type",
+        "propertyKeyword": "subqueryType",
+        "propertyTooltip": "Specify if joined table will be aggregated into an object or JSON array",
+        "propertyType": "select",
+        "options": [
+          "object",
+          "array"
+        ],
+        "defaultValue": "object"
+      },
+      {
+        "propertyName": "SQL/JSON function",
+        "propertyKeyword": "sqlJsonFunction",
+        "propertyTooltip": "Specify SQL function that will wrap joined table",
+        "propertyType": "select",
+        "options": [
+          "",
+          "JSON_OBJECT",
+          "JSON_ARRAYAGG"
+        ],
+        "defaultValue": "",
+        "dependency": [
+          {
+            "type": "or",
+            "values": [
+              {
+                "key": "unnestSubquery",
+                "value": false
+              },
+              {
+                "key": "unnestSubquery",
+                "exist": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "propertyName": "Child table",
+        "propertyTooltip": "Specify joined table",
+        "propertyType": "relatedTableModal"
+      },
+      {
+        "propertyName": "Child table alias",
+        "propertyKeyword": "alias",
+        "propertyType": "text",
+        "propertyTooltip": "Specify joined table alias"
+      },
+      {
+        "propertyName": "Unnest subquery",
+        "propertyKeyword": "unnestSubquery",
+        "propertyType": "checkbox",
+        "defaultValue": false
+      },
+      {
+        "propertyName": "Table tags clause",
+        "propertyKeyword": "dualityViewSubqueryTableTagsClause",
+        "propertyType": "block",
+        "propertyTooltip": "",
+        "structure": [
+          {
+            "propertyName": "Check",
+            "propertyKeyword": "check",
+            "propertyType": "select",
+            "options": [
+              "",
+              "check",
+              "nocheck"
+            ]
+          },
+          {
+            "propertyName": "Etag",
+            "propertyKeyword": "etag",
+            "propertyType": "checkbox"
+          },
+          {
+            "propertyName": "Insert",
+            "propertyKeyword": "insert",
+            "propertyType": "select",
+            "options": [
+              "",
+              "insert",
+              "noinsert"
+            ]
+          },
+          {
+            "propertyName": "Update",
+            "propertyKeyword": "update",
+            "propertyType": "select",
+            "options": [
+              "",
+              "update",
+              "noupdate"
+            ]
+          },
+          {
+            "propertyName": "Delete",
+            "propertyKeyword": "delete",
+            "propertyType": "select",
+            "options": [
+              "",
+              "delete",
+              "nodelete"
+            ]
+          }
+        ]
+      },
+      {
+        "propertyName": "Where clause",
+        "propertyKeyword": "whereClause",
+        "propertyType": "text",
+        "propertyTooltip": "Specify condition for table join"
+      },
+      {
+        "propertyName": "Remarks",
+        "propertyKeyword": "comments",
+        "shouldValidate": false,
+        "propertyTooltip": "remarks",
+        "addTimestampButton": true,
         "propertyType": "details",
         "template": "textarea"
       }
