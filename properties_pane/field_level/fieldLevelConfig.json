@@ -1742,7 +1742,13 @@ making sure that you maintain a proper JSON format.
         "disabled": true
       },
       {
-        "fieldKeyword": "isActivated",
+        "propertyName": "Activated",
+        "propertyKeyword": "isActivated",
+        "fieldType": "checkbox",
+        "shouldValidate": false,
+        "propertyTooltip": "Deactivated item will be not included in FE script",
+        "changeAction": "changeFieldProperty",
+        "enableForReference": true,
         "dependency": [
           {
             "type": "and",
