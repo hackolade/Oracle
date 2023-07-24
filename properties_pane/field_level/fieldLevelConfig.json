@@ -282,6 +282,31 @@ making sure that you maintain a proper JSON format.
         ]
       },
       {
+        "fieldKeyword": "isActivated",
+        "dependency": [
+          {
+            "type": "not",
+            "values": [
+              {
+                "type": "and",
+                "values": [
+                  {
+                    "level": "root",
+                    "key": "viewOn",
+                    "exist": true
+                  },
+                  {
+                    "level": "root",
+                    "key": "duality",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "fieldKeyword": "type",
         "dependency": [
           {
@@ -1672,6 +1697,123 @@ making sure that you maintain a proper JSON format.
             }
           ]
         }
+      },
+
+      {
+        "propertyName": "JSON key",
+        "propertyKeyword": "jsonKey",
+        "propertyType": "text",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "level": "root",
+              "key": "viewOn",
+              "exist": true
+            },
+            {
+              "level": "root",
+              "key": "duality",
+              "value": true
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "Column name",
+        "propertyKeyword": "name",
+        "propertyType": "text",
+        "customElement": true,
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "level": "root",
+              "key": "viewOn",
+              "exist": true
+            },
+            {
+              "level": "root",
+              "key": "duality",
+              "value": true
+            }
+          ]
+        },
+        "disabled": true
+      },
+      {
+        "fieldKeyword": "isActivated",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "propertyName": "Key",
+        "propertyKeyword": "key",
+        "propertyType": "checkbox",
+        "defaultValue": false,
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "level": "root",
+              "key": "viewOn",
+              "exist": true
+            },
+            {
+              "level": "root",
+              "key": "duality",
+              "value": true
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "Table tags clause",
+        "propertyKeyword": "dualityViewColumnTagsClause",
+        "propertyType": "block",
+        "propertyTooltip": "",
+        "structure": [
+          {
+            "propertyName": "Check",
+            "propertyKeyword": "check",
+            "propertyType": "select",
+            "options": [
+              "",
+              "check",
+              "nocheck"
+            ]
+          },
+          {
+            "propertyName": "Etag",
+            "propertyKeyword": "etag",
+            "propertyType": "checkbox"
+          },
+          {
+            "propertyName": "Update",
+            "propertyKeyword": "update",
+            "propertyType": "select",
+            "options": [
+              "",
+              "update",
+              "noupdate"
+            ]
+          }
+        ]
       },
       {
         "propertyName": "Remarks",
