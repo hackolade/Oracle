@@ -1783,7 +1783,7 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
-        "propertyName": "Table tags clause",
+        "propertyName": "Column tags clause",
         "propertyKeyword": "dualityViewColumnTagsClause",
         "propertyType": "block",
         "propertyTooltip": "",
