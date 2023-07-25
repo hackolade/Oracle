@@ -139,6 +139,28 @@
 						}
 					]
 				}
+			},
+			{
+				"inputLabel": "Mode",
+				"inputKeyword": "mode",
+				"description": "Specify connection mode",
+				"inputType": "select",
+				"defaultValue": "thin",
+				"options": [
+					{
+						"value": "thin",
+						"label": "Thin mode"
+					},
+					{
+						"value": "thick",
+						"label": "Thick mode",
+						"dependency": {
+							"dependantOnOS": true,
+							"platform": "macOS",
+							"architecture": "arm"
+						}
+					}
+				]
 			}
 		]
 	},
