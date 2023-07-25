@@ -4229,7 +4229,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
+        "propertyKeyword": "name",
         "propertyType": "text",
         "propertyTooltip": "Specify how the JSON key will be named in duality view definition",
         "dependency": [
