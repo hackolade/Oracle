@@ -269,7 +269,6 @@ const connect = async (
 		proxy = parseProxyOptions(options?.proxy);
 	}
 
-	// debugger
 	if (mode === MODES.thick) {
 		oracleDB.initOracleClient({ libDir, configDir });
 	}
@@ -504,7 +503,7 @@ const execute = (command, options = {}, binds = []) => {
 const getDbVersion = async logger => {
 	try {
 		const version = await execute(
-			'SELECT VERSION FROM PRODUCT_COMPONENT_VERSION WHERE product LIKE \'Oracle Database%\'',
+			"SELECT VERSION FROM PRODUCT_COMPONENT_VERSION WHERE product LIKE 'Oracle Database%'",
 		);
 
 		logger.log('info', version, 'DB Version');
@@ -677,7 +676,7 @@ const escapeName = name => {
 };
 
 const escapeComment = name => {
-	return `'${name.replaceAll('\'', '\'\'')}'`;
+	return `'${name.replaceAll("'", "''")}'`;
 };
 
 const replaceNames = (names, records) => {
@@ -836,7 +835,7 @@ const checkEntityMaterializedView = async name => {
 
 const checkUserHaveRequiredRole = async logger => {
 	try {
-		const userResult = await execute('SELECT sys_context(\'USERENV\', \'CURRENT_USER\') FROM dual');
+		const userResult = await execute("SELECT sys_context('USERENV', 'CURRENT_USER') FROM dual");
 		const username = _.first(_.first(userResult));
 		const roles = (await execute(`SELECT GRANTED_ROLE FROM USER_ROLE_PRIVS WHERE USERNAME = '${username}'`))?.map(
 			([role]) => role,
@@ -912,7 +911,7 @@ const getDbSynonyms = async logger => {
 
 const getSynonymsDDL = async () => {
 	const queryResult = await execute(
-		'SELECT SYNONYM_NAME, DBMS_METADATA.GET_DDL(\'SYNONYM\', SYNONYM_NAME, OWNER) FROM ALL_SYNONYMS WHERE ORIGIN_CON_ID > 1',
+		"SELECT SYNONYM_NAME, DBMS_METADATA.GET_DDL('SYNONYM', SYNONYM_NAME, OWNER) FROM ALL_SYNONYMS WHERE ORIGIN_CON_ID > 1",
 	);
 	const synonymsDDL = await Promise.all(
 		queryResult.map(async ([synonymName, synonymDDL]) => {
