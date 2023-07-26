@@ -36,8 +36,18 @@
 				"inputType": "select",
 				"defaultValue": "Host / Port",
 				"options": [
-					{ "value": "OracleHome", "label": "Oracle Home" },
-					{ "value": "InstantClient", "label": "Instant Client" }
+					{
+						"value": "OracleHome",
+						"label": "Oracle Home"
+					},
+					{
+						"value": "InstantClient",
+						"label": "Instant Client",
+						"dependency": {
+							"key": "mode",
+							"value": "thick"
+						}
+					}
 				]
 			},
 			{
