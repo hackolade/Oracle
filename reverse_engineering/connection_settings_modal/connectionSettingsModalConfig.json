@@ -9,13 +9,45 @@
 				"inputPlaceholder": "Name"
 			},
 			{
+				"inputLabel": "Mode",
+				"inputKeyword": "mode",
+				"description": "Specify connection mode",
+				"inputType": "select",
+				"defaultValue": "thin",
+				"options": [
+					{
+						"value": "thin",
+						"label": "Thin mode"
+					},
+					{
+						"value": "thick",
+						"label": "Thick mode",
+						"dependency": {
+							"dependantOnOS": true,
+							"platform": "macOS",
+							"architecture": "arm"
+						}
+					}
+				]
+			},
+			{
 				"inputLabel": "Client type",
 				"inputKeyword": "clientType",
 				"inputType": "select",
 				"defaultValue": "Host / Port",
+				"dependency": {
+					"key": "mode",
+					"value": "thick"
+				},
 				"options": [
-					{ "value": "OracleHome", "label": "Oracle Home" },
-					{ "value": "InstantClient", "label": "Instant Client" }
+					{
+						"value": "OracleHome",
+						"label": "Oracle Home"
+					},
+					{
+						"value": "InstantClient",
+						"label": "Instant Client"
+					}
 				]
 			},
 			{
