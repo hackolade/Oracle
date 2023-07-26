@@ -269,7 +269,7 @@ const connect = async (
 		proxy = parseProxyOptions(options?.proxy);
 	}
 
-	if (mode === MODES.thick) {
+	if (mode !== MODES.thin) {
 		oracleDB.initOracleClient({ libDir, configDir });
 	}
 
