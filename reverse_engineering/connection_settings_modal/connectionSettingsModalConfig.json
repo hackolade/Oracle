@@ -35,6 +35,10 @@
 				"inputKeyword": "clientType",
 				"inputType": "select",
 				"defaultValue": "Host / Port",
+				"dependency": {
+					"key": "mode",
+					"value": "thick"
+				},
 				"options": [
 					{
 						"value": "OracleHome",
@@ -42,11 +46,7 @@
 					},
 					{
 						"value": "InstantClient",
-						"label": "Instant Client",
-						"dependency": {
-							"key": "mode",
-							"value": "thick"
-						}
+						"label": "Instant Client"
 					}
 				]
 			},
