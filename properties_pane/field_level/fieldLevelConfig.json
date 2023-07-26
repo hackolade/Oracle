@@ -4289,11 +4289,12 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "Child table",
         "propertyTooltip": "Specify joined table",
-        "propertyType": "relatedTableSelect"
+        "propertyType": "relatedTableSelect",
+        "changeAction": "setJoinSubqueryChildTable"
       },
       {
         "propertyName": "Child table alias",
-        "propertyKeyword": "alias",
+        "propertyKeyword": "childTableAlias",
         "propertyType": "text",
         "propertyTooltip": "Specify joined table alias"
       },
