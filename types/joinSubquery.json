@@ -26,6 +26,21 @@
     ],
     "defaultValue": false
   },
+  "dependency": {
+    "type": "and",
+    "values": [
+      {
+        "level": "model",
+        "key": "dbVersion",
+        "value": "23c"
+      },
+      {
+        "level": "root",
+        "key": "duality",
+        "value": true
+      }
+    ]
+  },
   "defaultValues": {
   }
 }

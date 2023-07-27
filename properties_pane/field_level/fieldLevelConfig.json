@@ -4288,9 +4288,9 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Child table",
-        "propertyTooltip": "Specify joined table",
+        "propertyTooltip": "Joined table",
         "propertyType": "relatedTableSelect",
-        "changeAction": "setJoinSubqueryChildTable"
+        "changeAction": "setDualityViewJoinSubqueryChildTable"
       },
       {
         "propertyName": "Child table alias",

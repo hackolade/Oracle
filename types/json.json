@@ -26,10 +26,12 @@
 						"value": "23c"
 					},
 					{
+						"level": "root",
 						"key": "duality",
 						"value": false
 					},
 					{
+						"level": "root",
 						"key": "duality",
 						"exist": false
 					}
