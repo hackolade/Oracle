@@ -1,7 +1,7 @@
 {
     "name": "Oracle",
-    "version": "0.1.23",
-    "versionDate": "2023-07-20",
+    "version": "0.1.24",
+    "versionDate": "2023-07-27",
     "author": "hackolade",
     "engines": {
         "hackolade": "6.1.2",
