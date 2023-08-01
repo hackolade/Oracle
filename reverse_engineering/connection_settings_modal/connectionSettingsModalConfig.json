@@ -23,9 +23,14 @@
 						"value": "thick",
 						"label": "Thick mode",
 						"dependency": {
-							"dependantOnOS": true,
-							"platform": "macOS",
-							"architecture": "arm"
+							"type": "not",
+							"values": [
+								{
+									"dependantOnOS": true,
+									"platform": "macOS",
+									"architecture": "arm"
+								}
+							]
 						}
 					}
 				]
