@@ -62,8 +62,18 @@
 				"inputPlaceholder": "Client path",
 				"openType": "openDirectory",
 				"dependency": {
-					"key": "clientType",
-					"value": "InstantClient"
+					"type": "and",
+					"values": [
+						{
+							"key": "clientType",
+							"value": "InstantClient"
+						},
+						{
+							"key": "mode",
+							"value": "thick"
+						}
+
+					]
 				}
 			},
 			{
