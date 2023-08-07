@@ -308,28 +308,26 @@ making sure that you maintain a proper JSON format.
       },
       {
         "fieldKeyword": "type",
-        "dependency": [
-          {
-            "type": "not",
-            "values": [
-              {
-                "type": "and",
-                "values": [
-                  {
-                    "level": "root",
-                    "key": "viewOn",
-                    "exist": true
-                  },
-                  {
-                    "level": "root",
-                    "key": "duality",
-                    "value": true
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         "propertyName": "Subtype",
@@ -1698,7 +1696,6 @@ making sure that you maintain a proper JSON format.
           ]
         }
       },
-
       {
         "propertyName": "JSON key",
         "propertyKeyword": "jsonKey",
@@ -2022,28 +2019,26 @@ making sure that you maintain a proper JSON format.
       },
       {
         "fieldKeyword": "type",
-        "dependency": [
-          {
-            "type": "not",
-            "values": [
-              {
-                "type": "and",
-                "values": [
-                  {
-                    "level": "root",
-                    "key": "viewOn",
-                    "exist": true
-                  },
-                  {
-                    "level": "root",
-                    "key": "duality",
-                    "value": true
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         "propertyName": "Subtype",
@@ -3421,7 +3416,6 @@ making sure that you maintain a proper JSON format.
           ]
         }
       },
-
       {
         "propertyName": "JSON key",
         "propertyKeyword": "jsonKey",
@@ -3823,28 +3817,26 @@ making sure that you maintain a proper JSON format.
       },
       {
         "fieldKeyword": "type",
-        "dependency": [
-          {
-            "type": "not",
-            "values": [
-              {
-                "type": "and",
-                "values": [
-                  {
-                    "level": "root",
-                    "key": "viewOn",
-                    "exist": true
-                  },
-                  {
-                    "level": "root",
-                    "key": "duality",
-                    "value": true
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         "propertyName": "Subtype",
@@ -4843,7 +4835,6 @@ making sure that you maintain a proper JSON format.
           ]
         }
       },
-
       {
         "propertyName": "JSON key",
         "propertyKeyword": "jsonKey",
@@ -5245,28 +5236,26 @@ making sure that you maintain a proper JSON format.
       },
       {
         "fieldKeyword": "type",
-        "dependency": [
-          {
-            "type": "not",
-            "values": [
-              {
-                "type": "and",
-                "values": [
-                  {
-                    "level": "root",
-                    "key": "viewOn",
-                    "exist": true
-                  },
-                  {
-                    "level": "root",
-                    "key": "duality",
-                    "value": true
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         "propertyName": "Subtype",
@@ -5440,7 +5429,6 @@ making sure that you maintain a proper JSON format.
           ]
         }
       },
-
       {
         "propertyName": "JSON key",
         "propertyKeyword": "jsonKey",
@@ -5760,28 +5748,26 @@ making sure that you maintain a proper JSON format.
       },
       {
         "fieldKeyword": "type",
-        "dependency": [
-          {
-            "type": "not",
-            "values": [
-              {
-                "type": "and",
-                "values": [
-                  {
-                    "level": "root",
-                    "key": "viewOn",
-                    "exist": true
-                  },
-                  {
-                    "level": "root",
-                    "key": "duality",
-                    "value": true
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         "propertyName": "JSON Types",
@@ -6019,7 +6005,6 @@ making sure that you maintain a proper JSON format.
           ]
         }
       },
-
       {
         "propertyName": "JSON key",
         "propertyKeyword": "jsonKey",
@@ -6154,12 +6139,295 @@ making sure that you maintain a proper JSON format.
     ],
     "___0": [],
     "binary": [
-      "name",
-      "code",
-      "sampleName",
-      "schemaId",
-      "refPath",
-      "type",
+      {
+        "fieldKeyword": "name",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "type": "not",
+                "values": [
+                  {
+                    "type": "and",
+                    "values": [
+                      {
+                        "level": "root",
+                        "key": "viewOn",
+                        "exist": true
+                      },
+                      {
+                        "level": "root",
+                        "key": "duality",
+                        "value": true
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "type": "not",
+                "values": [
+                  {
+                    "type": "and",
+                    "values": [
+                      {
+                        "level": "root",
+                        "key": "viewOn",
+                        "exist": true
+                      },
+                      {
+                        "level": "root",
+                        "key": "duality",
+                        "value": true
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "fieldKeyword": "sampleName",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "key": "isPatternField",
+              "value": true
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "fieldKeyword": "schemaId",
+        "dependency": [
+          {
+            "type": "not",
+            "values": [
+              {
+                "type": "and",
+                "values": [
+                  {
+                    "level": "root",
+                    "key": "viewOn",
+                    "exist": true
+                  },
+                  {
+                    "level": "root",
+                    "key": "duality",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "fieldKeyword": "isActivated",
+        "dependency": [
+          {
+            "type": "not",
+            "values": [
+              {
+                "type": "and",
+                "values": [
+                  {
+                    "level": "root",
+                    "key": "viewOn",
+                    "exist": true
+                  },
+                  {
+                    "level": "root",
+                    "key": "duality",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "fieldKeyword": "refPath",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "key": "refPath",
+              "exist": true,
+              "value": ""
+            },
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "refType",
+                  "value": "external"
+                },
+                {
+                  "key": "refType",
+                  "value": "polyglot"
+                }
+              ]
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "fieldKeyword": "type",
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
+      },
       {
         "propertyName": "Subtype",
         "propertyKeyword": "mode",
@@ -6171,7 +6439,27 @@ making sure that you maintain a proper JSON format.
           "raw"
         ],
         "data": "options",
-        "valueType": "string"
+        "valueType": "string",
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         "propertyName": "Synonym",
@@ -6183,8 +6471,33 @@ making sure that you maintain a proper JSON format.
           "long varchar"
         ],
         "dependency": {
-          "key": "mode",
-          "value": "long"
+          "type": "and",
+          "values": [
+            {
+              "key": "mode",
+              "value": "long"
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       },
       {
@@ -6198,8 +6511,33 @@ making sure that you maintain a proper JSON format.
         "step": 1,
         "typeDecorator": true,
         "dependency": {
-          "key": "mode",
-          "value": "raw"
+          "type": "and",
+          "values": [
+            {
+              "key": "mode",
+              "value": "raw"
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       },
       {
@@ -6208,13 +6546,53 @@ making sure that you maintain a proper JSON format.
         "propertyTooltip": "comments",
         "addTimestampButton": false,
         "propertyType": "details",
-        "template": "textarea"
+        "template": "textarea",
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         "propertyName": "Not null",
         "propertyKeyword": "required",
         "enableForReference": true,
-        "propertyType": "checkbox"
+        "propertyType": "checkbox",
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         "propertyName": "Masked with function",
@@ -6222,7 +6600,27 @@ making sure that you maintain a proper JSON format.
         "propertyTooltip": "Limit exposure of sensitive data with this function",
         "propertyType": "details",
         "template": "textarea",
-        "markdown": false
+        "markdown": false,
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         "propertyName": "Primary key",
@@ -6256,41 +6654,66 @@ making sure that you maintain a proper JSON format.
           ]
         },
         "dependency": {
-          "type": "or",
+          "type": "and",
           "values": [
             {
-              "key": "compositePrimaryKey",
-              "value": true
-            },
-            {
-              "level": "siblings",
-              "key": "compositePrimaryKey",
-              "value": true
-            },
-            {
-              "level": "siblings",
-              "value": {
-                "type": "and",
-                "values": [
-                  {
-                    "key": "primaryKey",
-                    "value": true
-                  },
-                  {
-                    "type": "or",
+              "type": "or",
+              "values": [
+                {
+                  "key": "compositePrimaryKey",
+                  "value": true
+                },
+                {
+                  "level": "siblings",
+                  "key": "compositePrimaryKey",
+                  "value": true
+                },
+                {
+                  "level": "siblings",
+                  "value": {
+                    "type": "and",
                     "values": [
                       {
-                        "key": "compositeUniqueKey",
-                        "value": false
+                        "key": "primaryKey",
+                        "value": true
                       },
                       {
-                        "key": "compositeUniqueKey",
-                        "exist": false
+                        "type": "or",
+                        "values": [
+                          {
+                            "key": "compositeUniqueKey",
+                            "value": false
+                          },
+                          {
+                            "key": "compositeUniqueKey",
+                            "exist": false
+                          }
+                        ]
                       }
                     ]
                   }
-                ]
-              }
+                }
+              ]
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -6372,6 +6795,26 @@ making sure that you maintain a proper JSON format.
                   ]
                 }
               ]
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
@@ -6412,6 +6855,26 @@ making sure that you maintain a proper JSON format.
                 {
                   "key": "compositeUniqueKey",
                   "exist": false
+                }
+              ]
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
                 }
               ]
             }
@@ -6471,8 +6934,33 @@ making sure that you maintain a proper JSON format.
         "propertyKeyword": "compositeUniqueKey",
         "propertyType": "checkbox",
         "dependency": {
-          "key": "compositeUniqueKey",
-          "value": true
+          "type": "and",
+          "values": [
+            {
+              "key": "compositeUniqueKey",
+              "value": true
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         "disabled": true
       },
@@ -6507,6 +6995,26 @@ making sure that you maintain a proper JSON format.
                 {
                   "key": "compositeUniqueKey",
                   "exist": false
+                }
+              ]
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
                 }
               ]
             }
@@ -6549,6 +7057,26 @@ making sure that you maintain a proper JSON format.
                 {
                   "key": "compositeUniqueKey",
                   "exist": false
+                }
+              ]
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
                 }
               ]
             }
@@ -6600,6 +7128,128 @@ making sure that you maintain a proper JSON format.
             "propertyType": "details",
             "template": "textarea",
             "markdown": false
+          }
+        ]
+      },
+      {
+        "propertyName": "JSON key",
+        "propertyKeyword": "jsonKey",
+        "propertyType": "text",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "level": "root",
+              "key": "viewOn",
+              "exist": true
+            },
+            {
+              "level": "root",
+              "key": "duality",
+              "value": true
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "Column name",
+        "propertyKeyword": "name",
+        "propertyType": "text",
+        "customElement": true,
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "level": "root",
+              "key": "viewOn",
+              "exist": true
+            },
+            {
+              "level": "root",
+              "key": "duality",
+              "value": true
+            }
+          ]
+        },
+        "disabled": true
+      },
+      {
+        "propertyName": "Activated",
+        "propertyKeyword": "isActivated",
+        "fieldType": "checkbox",
+        "shouldValidate": false,
+        "propertyTooltip": "Deactivated item will be not included in FE script",
+        "changeAction": "changeFieldProperty",
+        "enableForReference": true,
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "propertyName": "Key",
+        "propertyKeyword": "key",
+        "propertyType": "checkbox",
+        "defaultValue": false,
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "level": "root",
+              "key": "viewOn",
+              "exist": true
+            },
+            {
+              "level": "root",
+              "key": "duality",
+              "value": true
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "Column tags clause",
+        "propertyKeyword": "dualityViewColumnTagsClause",
+        "propertyType": "block",
+        "propertyTooltip": "",
+        "structure": [
+          {
+            "propertyName": "Check",
+            "propertyKeyword": "check",
+            "propertyType": "select",
+            "options": [
+              "",
+              "check",
+              "nocheck"
+            ]
+          },
+          {
+            "propertyName": "Etag",
+            "propertyKeyword": "etag",
+            "propertyType": "checkbox"
+          },
+          {
+            "propertyName": "Update",
+            "propertyKeyword": "update",
+            "propertyType": "select",
+            "options": [
+              "",
+              "update",
+              "noupdate"
+            ]
           }
         ]
       },
