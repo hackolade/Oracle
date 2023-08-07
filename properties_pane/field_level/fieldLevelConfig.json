@@ -2178,8 +2178,14 @@ making sure that you maintain a proper JSON format.
             {
               "type": "or",
               "values": [
-                "number",
-                "float"
+                {
+                  "key": "mode",
+                  "values": "number"
+                },
+                {
+                  "key": "mode",
+                  "values": "float"
+                },
               ]
             },
             {
