@@ -9088,10 +9088,217 @@ making sure that you maintain a proper JSON format.
       }
     ],
     "collection_udt": [
-      "name",
-      "code",
-      "schemaId",
-      "type",
+      {
+        "fieldKeyword": "name",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "type": "not",
+                "values": [
+                  {
+                    "type": "and",
+                    "values": [
+                      {
+                        "level": "root",
+                        "key": "viewOn",
+                        "exist": true
+                      },
+                      {
+                        "level": "root",
+                        "key": "duality",
+                        "value": true
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "type": "not",
+                "values": [
+                  {
+                    "type": "and",
+                    "values": [
+                      {
+                        "level": "root",
+                        "key": "viewOn",
+                        "exist": true
+                      },
+                      {
+                        "level": "root",
+                        "key": "duality",
+                        "value": true
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "fieldKeyword": "schemaId",
+        "dependency": [
+          {
+            "type": "not",
+            "values": [
+              {
+                "type": "and",
+                "values": [
+                  {
+                    "level": "root",
+                    "key": "viewOn",
+                    "exist": true
+                  },
+                  {
+                    "level": "root",
+                    "key": "duality",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "fieldKeyword": "isActivated",
+        "dependency": [
+          {
+            "type": "not",
+            "values": [
+              {
+                "type": "and",
+                "values": [
+                  {
+                    "level": "root",
+                    "key": "viewOn",
+                    "exist": true
+                  },
+                  {
+                    "level": "root",
+                    "key": "duality",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "fieldKeyword": "type",
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
+      },
       {
         "propertyName": "Subtype",
         "propertyKeyword": "mode",
@@ -9102,7 +9309,27 @@ making sure that you maintain a proper JSON format.
         ],
         "data": "options",
         "valueType": "string",
-        "cleanDependency": true
+        "cleanDependency": true,
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         "propertyName": "Size",
@@ -9115,34 +9342,285 @@ making sure that you maintain a proper JSON format.
         "step": 1,
         "typeDecorator": true,
         "dependency": {
-          "key": "mode",
-          "value": [
-            "varray"
+          "type": "and",
+          "values": [
+            {
+              "key": "mode",
+              "value": [
+                "varray"
+              ]
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
           ]
         }
       },
       {
         "propertyName": "Of type",
         "propertyKeyword": "ofType",
-        "propertyType": "text"
+        "propertyType": "text",
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         "propertyName": "Not null",
         "propertyKeyword": "required",
         "enableForReference": true,
-        "propertyType": "checkbox"
+        "propertyType": "checkbox",
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         "propertyName": "Not persistable",
         "propertyKeyword": "notPersistable",
         "enableForReference": true,
-        "propertyType": "checkbox"
+        "propertyType": "checkbox",
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         "propertyName": "Comments",
         "propertyKeyword": "description",
         "propertyTooltip": "comments",
         "addTimestampButton": false,
+        "propertyType": "details",
+        "template": "textarea",
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "JSON key",
+        "propertyKeyword": "jsonKey",
+        "propertyType": "text",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "level": "root",
+              "key": "viewOn",
+              "exist": true
+            },
+            {
+              "level": "root",
+              "key": "duality",
+              "value": true
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "Column name",
+        "propertyKeyword": "name",
+        "propertyType": "text",
+        "customElement": true,
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "level": "root",
+              "key": "viewOn",
+              "exist": true
+            },
+            {
+              "level": "root",
+              "key": "duality",
+              "value": true
+            }
+          ]
+        },
+        "disabled": true
+      },
+      {
+        "propertyName": "Activated",
+        "propertyKeyword": "isActivated",
+        "fieldType": "checkbox",
+        "shouldValidate": false,
+        "propertyTooltip": "Deactivated item will be not included in FE script",
+        "changeAction": "changeFieldProperty",
+        "enableForReference": true,
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "propertyName": "Key",
+        "propertyKeyword": "key",
+        "propertyType": "checkbox",
+        "defaultValue": false,
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "level": "root",
+              "key": "viewOn",
+              "exist": true
+            },
+            {
+              "level": "root",
+              "key": "duality",
+              "value": true
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "Column tags clause",
+        "propertyKeyword": "dualityViewColumnTagsClause",
+        "propertyType": "block",
+        "propertyTooltip": "",
+        "structure": [
+          {
+            "propertyName": "Check",
+            "propertyKeyword": "check",
+            "propertyType": "select",
+            "options": [
+              "",
+              "check",
+              "nocheck"
+            ]
+          },
+          {
+            "propertyName": "Etag",
+            "propertyKeyword": "etag",
+            "propertyType": "checkbox"
+          },
+          {
+            "propertyName": "Update",
+            "propertyKeyword": "update",
+            "propertyType": "select",
+            "options": [
+              "",
+              "update",
+              "noupdate"
+            ]
+          }
+        ],
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "level": "root",
+              "key": "viewOn",
+              "exist": true
+            },
+            {
+              "level": "root",
+              "key": "duality",
+              "value": true
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "Remarks",
+        "propertyKeyword": "comments",
+        "shouldValidate": false,
+        "propertyTooltip": "remarks",
+        "addTimestampButton": true,
         "propertyType": "details",
         "template": "textarea"
       }
