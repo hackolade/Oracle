@@ -107,7 +107,7 @@ module.exports = {
 					let jsonSchema = {};
 
 					if (!_.isEmpty(jsonColumns)) {
-						const quantity = getCount(countOfRecords, collectionsInfo.recordSamplingSettings);
+						const quantity = getSampleDocSize(countOfRecords, collectionsInfo.recordSamplingSettings);
 
 						progress({
 							message: `Fetching columns for JSON schema inference: ${JSON.stringify(jsonColumns)}`,
@@ -218,14 +218,14 @@ const handleError = (logger, error, cb) => {
 	cb(message);
 };
 
-const getCount = (count, recordSamplingSettings) => {
-	const per = recordSamplingSettings.relative.value;
-	const size =
-		recordSamplingSettings.active === 'absolute'
-			? Math.min(recordSamplingSettings.absolute.value, count)
-			: Math.round((count / 100) * per);
+const getSampleDocSize = (count, recordSamplingSettings) => {
+	if (recordSamplingSettings.active === 'absolute') {
+		return Number(recordSamplingSettings.absolute.value);
+	}
 
-	return Math.min(size, 50000);
+	const limit = Math.ceil((count * recordSamplingSettings.relative.value) / 100);
+
+	return Math.min(limit, recordSamplingSettings.maxValue);
 };
 
 const initDependencies = app => {

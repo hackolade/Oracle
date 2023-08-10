@@ -2479,20 +2479,29 @@ making sure that you maintain a proper JSON format.
           }
         ],
         "dependency": {
-          "type": "not",
+          "type": "and",
           "values": [
             {
-              "type": "and",
+              "key": "mode",
+              "value": "number"
+            },
+            {
+              "type": "not",
               "values": [
                 {
-                  "level": "root",
-                  "key": "viewOn",
-                  "exist": true
-                },
-                {
-                  "level": "root",
-                  "key": "duality",
-                  "value": true
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
                 }
               ]
             }

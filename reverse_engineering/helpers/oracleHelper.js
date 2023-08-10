@@ -236,12 +236,18 @@ const connect = async (
 		ssh_key_passphrase,
 		ssh_password,
 		authRole,
+		mode
 	},
 	logger,
 ) => {
 	if (connection) {
 		return connection;
 	}
+
+	const MODES = {
+		thin: 'thin',
+		thick: 'thick'
+	};
 	let configDir;
 	let libDir;
 	let credentials = {};
@@ -263,7 +269,9 @@ const connect = async (
 		proxy = parseProxyOptions(options?.proxy);
 	}
 
-	oracleDB.initOracleClient({ libDir, configDir });
+	if (mode !== MODES.thin) {
+		oracleDB.initOracleClient({ libDir, configDir });
+	}
 
 	let connectString = '';
 
