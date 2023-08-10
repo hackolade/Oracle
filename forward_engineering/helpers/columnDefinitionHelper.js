@@ -152,7 +152,17 @@ module.exports = ({
             default:
                 return ` ${type}`;
         }
-    }; 
+    };
+
+    /**
+	 * 
+	 * @param {string} type 
+	 * @returns {boolean}
+	 */
+	const canHaveIdentity = (type) => {
+		const typesAllowedToHaveAutoIncrement = ["number"]
+		return typesAllowedToHaveAutoIncrement.includes(type)
+	}
 
     return {
         getColumnComments,
@@ -161,5 +171,6 @@ module.exports = ({
         getColumnDefault,
         getColumnEncrypt,
         decorateType,
+        canHaveIdentity,
     };
 };
