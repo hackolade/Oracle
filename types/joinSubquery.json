@@ -8,23 +8,26 @@
     "source": true
   },
   "hide": {
-    "dependencies": [
-      {
-        "value": true,
-        "type": "or",
-        "values": [
-          {
-            "key": "duality",
-            "value": false
-          },
-          {
-            "key": "duality",
-            "exist": false
-          }
-        ]
-      }
-    ],
-    "defaultValue": false
+    "dependencies": {
+      "type": "not",
+      "values": [
+        {
+          "type": "and",
+          "values": [
+            {
+              "key": "duality",
+              "level": "root",
+              "value": true
+            },
+            {
+              "key": "viewOn",
+              "level": "root",
+              "exist": true
+            }
+          ]
+        }
+      ]
+    }
   },
   "dependency": {
     "type": "and",
