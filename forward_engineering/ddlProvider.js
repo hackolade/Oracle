@@ -34,6 +34,7 @@ module.exports = (baseProvider, options, app) => {
 		getColumnDefault,
 		getColumnEncrypt,
 		decorateType,
+		canHaveIdentity,
 	} = require('./helpers/columnDefinitionHelper.js')({
 		_,
 		wrap,
@@ -158,9 +159,9 @@ module.exports = (baseProvider, options, app) => {
 				dayPrecision: jsonSchema.dayPrecision,
 				lengthSemantics: jsonSchema.lengthSemantics,
 				encryption: jsonSchema.encryption,
-				identity: jsonSchema.identity,
 				synonyms: schemaData?.synonyms?.filter(synonym => synonym.synonymEntityId === jsonSchema.GUID) || [],
 				isUDTRef,
+				...(canHaveIdentity(jsonSchema.mode) && {identity: jsonSchema.identity}),
 			};
 		},
 

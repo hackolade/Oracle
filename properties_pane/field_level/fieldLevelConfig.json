@@ -810,6 +810,15 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "block",
 				"propertyKeyword": "identity",
 				"propertyTooltip": "Creates an identity column in a table",
+				"dependency": {
+					"type": "or",
+					"values": [
+						{
+							"key": "mode",
+							"value": "number"
+						}
+					]
+				},
 				"structure": [
 					{
 						"propertyName": "Generated",
