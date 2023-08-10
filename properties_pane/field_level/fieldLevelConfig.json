@@ -307,6 +307,43 @@ making sure that you maintain a proper JSON format.
         ]
       },
       {
+        "propertyName": "reference",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "key": "refPath",
+              "exist": true,
+              "value": ""
+            },
+            {
+              "key": "refType",
+              "value": "collectionReference"
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
         "fieldKeyword": "type",
         "dependency": {
           "type": "not",
@@ -2033,6 +2070,43 @@ making sure that you maintain a proper JSON format.
         ]
       },
       {
+        "propertyName": "reference",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "key": "refPath",
+              "exist": true,
+              "value": ""
+            },
+            {
+              "key": "refType",
+              "value": "collectionReference"
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
         "fieldKeyword": "type",
         "dependency": {
           "type": "not",
@@ -3752,6 +3826,43 @@ making sure that you maintain a proper JSON format.
         ]
       },
       {
+        "propertyName": "reference",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "key": "refPath",
+              "exist": true,
+              "value": ""
+            },
+            {
+              "key": "refType",
+              "value": "collectionReference"
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
         "fieldKeyword": "sampleName",
         "dependency": {
           "type": "and",
@@ -5186,6 +5297,43 @@ making sure that you maintain a proper JSON format.
         ]
       },
       {
+        "propertyName": "reference",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "key": "refPath",
+              "exist": true,
+              "value": ""
+            },
+            {
+              "key": "refType",
+              "value": "collectionReference"
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
         "fieldKeyword": "sampleName",
         "dependency": {
           "type": "and",
@@ -5711,6 +5859,43 @@ making sure that you maintain a proper JSON format.
             ]
           }
         ]
+      },
+      {
+        "propertyName": "reference",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "key": "refPath",
+              "exist": true,
+              "value": ""
+            },
+            {
+              "key": "refType",
+              "value": "collectionReference"
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         "fieldKeyword": "sampleName",
@@ -6442,6 +6627,43 @@ making sure that you maintain a proper JSON format.
             ]
           }
         ]
+      },
+      {
+        "propertyName": "reference",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "key": "refPath",
+              "exist": true,
+              "value": ""
+            },
+            {
+              "key": "refType",
+              "value": "collectionReference"
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         "fieldKeyword": "refPath",
@@ -7605,6 +7827,43 @@ making sure that you maintain a proper JSON format.
                   "value": "polyglot"
                 }
               ]
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "reference",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "key": "refPath",
+              "exist": true,
+              "value": ""
+            },
+            {
+              "key": "refType",
+              "value": "collectionReference"
             },
             {
               "type": "not",
@@ -8899,6 +9158,43 @@ making sure that you maintain a proper JSON format.
         ]
       },
       {
+        "propertyName": "reference",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "key": "refPath",
+              "exist": true,
+              "value": ""
+            },
+            {
+              "key": "refType",
+              "value": "collectionReference"
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
         "fieldKeyword": "type",
         "dependency": {
           "type": "not",
@@ -9284,6 +9580,43 @@ making sure that you maintain a proper JSON format.
             ]
           }
         ]
+      },
+      {
+        "propertyName": "reference",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "key": "refPath",
+              "exist": true,
+              "value": ""
+            },
+            {
+              "key": "refType",
+              "value": "collectionReference"
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         "fieldKeyword": "type",
