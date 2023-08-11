@@ -2,7 +2,7 @@
   "name": "joinSubquery",
   "erdAbbreviation": "<join-sq>",
   "dtdAbbreviation": "{...}",
-  "hiddenOnEntity": ["collection", "definitions", "modeldefinitions", "view"],
+  "hiddenOnEntity": ["collection", "definitions", "modeldefinitions"],
   "jsonType": {
     "order": 1,
     "jsonRoot": true,
