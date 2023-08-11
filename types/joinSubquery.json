@@ -2,32 +2,11 @@
   "name": "joinSubquery",
   "erdAbbreviation": "<join-sq>",
   "dtdAbbreviation": "{...}",
+  "hiddenOnEntity": ["collection", "definitions", "modeldefinitions", "view"],
   "jsonType": {
     "order": 1,
     "jsonRoot": true,
     "source": true
-  },
-  "hide": {
-    "dependencies": {
-      "type": "not",
-      "values": [
-        {
-          "type": "and",
-          "values": [
-            {
-              "key": "duality",
-              "level": "root",
-              "value": true
-            },
-            {
-              "key": "viewOn",
-              "level": "root",
-              "exist": true
-            }
-          ]
-        }
-      ]
-    }
   },
   "dependency": {
     "type": "and",
