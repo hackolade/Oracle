@@ -28,15 +28,30 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
+     * @param s {string}
+     * @return {string}
+     * */
+    padInFront(s) {
+        return ` ${s}`;
+    }
+
+    /**
+     * @param s {string}
+     * @return {string}
+     * */
+    padInFrontAndUppercaseIfExists(s) {
+        if (!s) {
+            return ''
+        }
+        return this.padInFront(s).toUpperCase();
+    }
+
+    /**
      * @param entity {Object}
      * @return {string}
      * */
-    _getForceSytatement(entity) {
-        if (!entity.force) {
-            return '';
-        }
-        const uppercaseForceClause = String(entity.force).toUpperCase();
-        return ` ${uppercaseForceClause}`;
+    _getForceStatement(entity) {
+        return this.padInFrontAndUppercaseIfExists(entity.force);
     }
 
     /**
@@ -52,11 +67,7 @@ class AbstractDualityViewFeDdlCreator {
      * @return {string}
      * */
     _getEditionableStatement(entity) {
-        if (!entity.editionable) {
-            return '';
-        }
-        const uppercaseForceClause = String(entity.editionable).toUpperCase();
-        return ` ${uppercaseForceClause}`;
+        return this.padInFrontAndUppercaseIfExists(entity.editionable);
     }
 
     /**
@@ -69,7 +80,7 @@ class AbstractDualityViewFeDdlCreator {
         const template = this._ddlTemplates?.dualityView?.createJsonRelationalDualityViewHeading || '';
 
         const orReplaceStatement = this._getOrReplaceStatement(view);
-        const forceStatement = this._getForceSytatement(jsonSchema);
+        const forceStatement = this._getForceStatement(jsonSchema);
         const editionableStatement = this._getEditionableStatement(jsonSchema);
         const viewName = getViewName(view);
         const ddlViewName = getNamePrefixedWithSchemaName(viewName, view.schemaName);
