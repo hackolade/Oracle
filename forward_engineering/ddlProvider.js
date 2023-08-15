@@ -460,6 +460,9 @@ module.exports = (baseProvider, options, app) => {
                 ifNotExist: detailsTab.ifNotExist,
                 materialized: detailsTab.materialized,
                 sharing: detailsTab.sharing,
+                duality: detailsTab.duality,
+                rootTableAlias: detailsTab.rootTableAlias,
+                rootTableTagsClause: detailsTab.rootTableTagsClause,
                 viewProperties: detailsTab.materialized ? detailsTab.mviewProperties : detailsTab.viewProperties,
                 synonyms: viewData.schemaData?.synonyms?.filter(synonym => synonym.synonymEntityId === jsonSchema.GUID) || [],
             };
@@ -540,9 +543,20 @@ module.exports = (baseProvider, options, app) => {
 
         createDualityView({
                               jsonSchema,
+                              view,
                           }) {
-            const ddlCreator = DualityViewDdlCreatorFactory.getCreatorInstance(DualityViewSyntaxType.SQL);
-            return ddlCreator.convertDualityViewToDdl(jsonSchema);
+            const ddlCreator = DualityViewDdlCreatorFactory.getCreatorInstance(
+                DualityViewSyntaxType.SQL,
+                {
+                    ddlTemplates: templates,
+                    assignTemplates,
+                    lodash: _,
+                }
+            );
+            return ddlCreator.convertDualityViewToDdl({
+                view,
+                jsonSchema
+            });
         },
 
         createUdt(udt) {

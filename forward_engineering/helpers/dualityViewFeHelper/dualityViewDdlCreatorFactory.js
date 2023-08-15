@@ -6,6 +6,7 @@ class DualityViewDdlCreatorFactory {
     /**
      * @param syntax {string}
      * @param ddlTemplates {Object}
+     * @param lodash {any}
      * @param assignTemplates {(template: string, values: Object) => string}
      * @throws {Error}
      * @return {AbstractDualityViewFeDdlCreator}
@@ -13,12 +14,14 @@ class DualityViewDdlCreatorFactory {
     static getCreatorInstance(syntax, {
         ddlTemplates,
         assignTemplates,
+        lodash
     }) {
         switch (syntax?.toUpperCase()) {
             case DualityViewSyntaxType.SQL:
                 return new SqlDualityViewDdlCreator(
                     ddlTemplates,
                     assignTemplates,
+                    lodash
                 );
             default:
                 throw new Error(`Unknown syntax config: ${syntax}`);
