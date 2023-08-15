@@ -10158,7 +10158,11 @@ making sure that you maintain a proper JSON format.
         "propertyName": "Unnest subquery",
         "propertyKeyword": "unnestSubquery",
         "propertyType": "checkbox",
-        "defaultValue": false
+        "defaultValue": false,
+        "dependency": {
+          "key": "subqueryType",
+          "value": "object"
+        }
       },
       {
         "propertyName": "Table tags clause",
