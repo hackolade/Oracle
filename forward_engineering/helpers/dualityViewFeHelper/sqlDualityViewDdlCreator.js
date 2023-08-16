@@ -183,17 +183,26 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     /**
      * @param parentEntity {Object}
      * @param propertyName {string}
+     * @param relatedSchemas {Object}
      * @return {string}
      * */
-    _getNameOfReferencedColumnForDdl(parentEntity, propertyName) {
-        const {getNamePrefixedWithSchemaName} = require('../../utils/general')(this._lodash);
+    _getNameOfReferencedColumnForDdl(parentEntity, propertyName, relatedSchemas) {
+        const {getEntityName, getNamePrefixedWithSchemaName} = require('../../utils/general')(this._lodash);
         if (AbstractDualityViewFeDdlCreator.isDualityView(parentEntity)) {
             const parentName = parentEntity.rootTableAlias || parentEntity.tableName;
             return getNamePrefixedWithSchemaName(propertyName, parentName);
         }
         if (AbstractDualityViewFeDdlCreator.isJoinSubquery(parentEntity)) {
-            const parentName = parentEntity.childTableAlias || '';
-            return getNamePrefixedWithSchemaName(propertyName, parentName);
+            if (parentEntity.childTableAlias) {
+                const parentName = parentEntity.childTableAlias;
+                return getNamePrefixedWithSchemaName(propertyName, parentName);
+            }
+            const collectionId = this._lodash.first(parentEntity.joinedCollectionRefIdPath);
+            if (collectionId) {
+                const collection = relatedSchemas[collectionId];
+                const collectionName = getEntityName(collection);
+                return getNamePrefixedWithSchemaName(propertyName, collectionName);
+            }
         }
         return '';
     }
@@ -229,7 +238,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
         const ddlKeyName = wrapInQuotes(keyName);
 
         const fieldName = AbstractDualityViewFeDdlCreator.getRegularFieldNameFromCollection(propertyJsonSchema.refIdPath, relatedSchemas);
-        const ddlFieldName = this._getNameOfReferencedColumnForDdl(parent, fieldName);
+        const ddlFieldName = this._getNameOfReferencedColumnForDdl(parent, fieldName, relatedSchemas);
 
         const columnTagsStatement = this._getColumnTagsStatement(propertyJsonSchema);
 
