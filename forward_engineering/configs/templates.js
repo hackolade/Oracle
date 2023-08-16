@@ -48,6 +48,8 @@ module.exports = {
 			tableTagsStatement: 'WITH${checkStatement}${etagStatement}${insertStatement}${updateStatement}${deleteStatement}',
 
 			fromRootTableStatement: 'FROM ${tableName}${tableAlias}${tableTagsStatement}',
+
+			objectGenStatement: 'JSON {${keyValueStatement}}',
 		}
 	}
 };

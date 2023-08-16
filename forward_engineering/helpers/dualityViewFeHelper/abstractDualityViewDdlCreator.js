@@ -1,3 +1,5 @@
+const JOIN_SUBQUERY_TYPE = 'joinSubquery';
+const COLLECTION_REFERENCE = 'collectionReference';
 
 /**
  * @typedef {{
@@ -31,7 +33,7 @@ class AbstractDualityViewFeDdlCreator {
      * @param s {string}
      * @return {string}
      * */
-    padInFront(s) {
+    static padInFront(s) {
         return ` ${s}`;
     }
 
@@ -39,11 +41,36 @@ class AbstractDualityViewFeDdlCreator {
      * @param s {string}
      * @return {string}
      * */
-    padInFrontAndUppercaseIfExists(s) {
+    static padInFrontAndUppercaseIfExists(s) {
         if (!s) {
             return ''
         }
-        return this.padInFront(s).toUpperCase();
+        return AbstractDualityViewFeDdlCreator.padInFront(s).toUpperCase();
+    }
+
+    /**
+     * @param view {Object}
+     * @return {boolean}
+     * */
+    static isDualityView(view = {}) {
+        return view.viewOn && view.duality;
+    }
+
+    /**
+     * @param element {Object}
+     * @return {boolean}
+     * */
+    static isJoinSubquery(element = {}) {
+        return element?.type === JOIN_SUBQUERY_TYPE;
+    }
+
+    /**
+     * @param element {Object}
+     * @return {boolean}
+     * */
+    static isRegularDualityViewField(element = {}) {
+        const { ref, refIdPath, refType } = element;
+        return ref && (refIdPath || []).length !== 0 && refType === COLLECTION_REFERENCE;
     }
 
     /**
@@ -51,7 +78,7 @@ class AbstractDualityViewFeDdlCreator {
      * @return {string}
      * */
     _getForceStatement(entity) {
-        return this.padInFrontAndUppercaseIfExists(entity.force);
+        return AbstractDualityViewFeDdlCreator.padInFrontAndUppercaseIfExists(entity.force);
     }
 
     /**
@@ -67,7 +94,7 @@ class AbstractDualityViewFeDdlCreator {
      * @return {string}
      * */
     _getEditionableStatement(entity) {
-        return this.padInFrontAndUppercaseIfExists(entity.editionable);
+        return AbstractDualityViewFeDdlCreator.padInFrontAndUppercaseIfExists(entity.editionable);
     }
 
     /**
