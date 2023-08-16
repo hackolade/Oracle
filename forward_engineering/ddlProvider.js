@@ -545,6 +545,7 @@ module.exports = (baseProvider, options, app) => {
         createDualityView({
                               jsonSchema,
                               view,
+                              relatedSchemas
                           }) {
             const ddlCreator = DualityViewDdlCreatorFactory.getCreatorInstance(
                 DualityViewSyntaxType.SQL,
@@ -556,7 +557,8 @@ module.exports = (baseProvider, options, app) => {
             );
             return ddlCreator.convertDualityViewToDdl({
                 view,
-                jsonSchema
+                jsonSchema,
+                relatedSchemas
             });
         },
 

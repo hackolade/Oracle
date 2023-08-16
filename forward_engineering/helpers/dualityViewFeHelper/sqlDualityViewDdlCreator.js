@@ -18,7 +18,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @return {string}
      * */
     _getFromRootTableAliasStatement(createViewDto) {
-        const { view } = createViewDto;
+        const {view} = createViewDto;
         if (view.rootTableAlias) {
             return AbstractDualityViewFeDdlCreator.padInFront(view.rootTableAlias);
         }
@@ -71,7 +71,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @return {string}
      * */
     _getTableTagsStatement(createViewDto) {
-        const { view } = createViewDto;
+        const {view} = createViewDto;
         const tagsClause = view.rootTableTagsClause || {};
         const checkStatement = this._getCheckStatement(tagsClause);
         let etagStatement = '';
@@ -145,38 +145,54 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @param propertyJsonSchema {Object}
      * @param parent {Object}
      * @param recursionDepth {number}
+     * @param relatedSchemas {Object}
      * @return {string}
      * */
-    _buildRegularFieldKeyValueStatement(propertyName, propertyJsonSchema, parent, recursionDepth) {
+    _buildRegularFieldKeyValueStatement({
+                                            propertyName,
+                                            propertyJsonSchema,
+                                            parent,
+                                            recursionDepth,
+                                            relatedSchemas
+                                        }) {
         const {wrapInQuotes} = require('../../utils/general')(this._lodash);
 
         const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(recursionDepth);
-        const fieldName = this._getRegularFieldName(propertyName, propertyJsonSchema);
-        const ddlFieldName = wrapInQuotes(fieldName);
+        const keyName = this._getRegularFieldName(propertyName, propertyJsonSchema);
+        const ddlKeyName = wrapInQuotes(keyName);
 
-        return `${padding}${ddlFieldName}: `;
+        const fieldName = AbstractDualityViewFeDdlCreator.getRegularFieldNameFromCollection(propertyJsonSchema.refIdPath, relatedSchemas);
+        const ddlFieldName = this._getNameOfReferencedColumnForDdl(parent, fieldName);
+
+        return `${padding}${ddlKeyName}: ${ddlFieldName}`;
     }
 
     /**
      * @param propertyName {string}
      * @param propertyJsonSchema {Object}
      * @param recursionDepth {number}
+     * @param relatedSchemas {Object}
      * @return {string}
      * */
-    _buildJoinSubqueryKeyValueStatement(propertyName, propertyJsonSchema, recursionDepth) {
+    _buildJoinSubqueryKeyValueStatement({
+                                            propertyName,
+                                            propertyJsonSchema,
+                                            recursionDepth,
+                                            relatedSchemas
+                                        }) {
         const {wrapInQuotes} = require('../../utils/general')(this._lodash);
 
-        const subqueryStatement = '';
+        const valueStatement = '';
         const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(recursionDepth);
         if (propertyJsonSchema.unnestSubquery) {
-            return `${padding}UNNEST (\n${subqueryStatement}\n${padding})`
+            return `${padding}UNNEST (\n${valueStatement}\n${padding})`
         }
         const subqueryName = this._getJoinSubqueryName(propertyName, propertyJsonSchema);
         const subqueryDdlName = wrapInQuotes(subqueryName);
         if (this._lodash.toLower(propertyJsonSchema.subqueryType) === 'array') {
-            return `${padding}${subqueryDdlName} : [\n${subqueryStatement}\n${padding}]`;
+            return `${padding}${subqueryDdlName} : [\n${valueStatement}\n${padding}]`;
         }
-        return `${padding}${subqueryDdlName} : {\n${subqueryStatement}\n${padding}}`;
+        return `${padding}${subqueryDdlName} : {\n${valueStatement}\n${padding}}`;
     }
 
     /**
@@ -193,14 +209,26 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @param propertyJsonSchema {Object}
      * @param parent {Object}
      * @param recursionDepth {number}
+     * @param relatedSchemas {Object}
      * @return {string}
      * */
-    _recursivelyBuildKeyValueStatement(propertyName, propertyJsonSchema, parent, recursionDepth) {
+    _recursivelyBuildKeyValueStatement({propertyName, propertyJsonSchema, parent, recursionDepth, relatedSchemas}) {
         if (AbstractDualityViewFeDdlCreator.isRegularDualityViewField(propertyJsonSchema)) {
-            return this._buildRegularFieldKeyValueStatement(propertyName, propertyJsonSchema, parent, recursionDepth);
+            return this._buildRegularFieldKeyValueStatement({
+                propertyName,
+                propertyJsonSchema,
+                parent,
+                recursionDepth,
+                relatedSchemas
+            });
         }
         if (AbstractDualityViewFeDdlCreator.isJoinSubquery(propertyJsonSchema)) {
-            return this._buildJoinSubqueryKeyValueStatement(propertyName, propertyJsonSchema, recursionDepth);
+            return this._buildJoinSubqueryKeyValueStatement({
+                propertyName,
+                propertyJsonSchema,
+                recursionDepth,
+                relatedSchemas
+            });
         }
         return '';
     }
@@ -211,10 +239,16 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * */
     _getKeyValueStatement(createViewDto) {
         const statements = [];
-        const {view, jsonSchema} = createViewDto;
+        const {jsonSchema, relatedSchemas} = createViewDto;
         const propertyNameToJsonSchemaPairs = this._lodash.toPairs(jsonSchema.properties || {});
         for (const [propertyName, propertyJsonSchema] of propertyNameToJsonSchemaPairs) {
-            const statement = this._recursivelyBuildKeyValueStatement(propertyName, propertyJsonSchema, view, 1);
+            const statement = this._recursivelyBuildKeyValueStatement({
+                propertyName,
+                propertyJsonSchema,
+                parent: jsonSchema,
+                recursionDepth: 1,
+                relatedSchemas
+            });
             statements.push(statement);
         }
         const result = statements.join(',\n');

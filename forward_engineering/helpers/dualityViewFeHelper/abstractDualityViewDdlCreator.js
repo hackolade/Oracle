@@ -4,7 +4,8 @@ const COLLECTION_REFERENCE = 'collectionReference';
 /**
  * @typedef {{
  *     view: Object,
- *     jsonSchema: Object
+ *     jsonSchema: Object,
+ *     relatedSchemas: Object
  * }} CreateViewDto
  * */
 
@@ -70,7 +71,26 @@ class AbstractDualityViewFeDdlCreator {
      * */
     static isRegularDualityViewField(element = {}) {
         const { ref, refIdPath, refType } = element;
-        return ref && (refIdPath || []).length !== 0 && refType === COLLECTION_REFERENCE;
+        return ref && (refIdPath || []).length === 2 && refType === COLLECTION_REFERENCE;
+    }
+
+    /**
+     * @param refIdPath {Array<string>}
+     * @param relatedSchemas {Object}
+     * @return {string}
+     * */
+    static getRegularFieldNameFromCollection(refIdPath, relatedSchemas) {
+        const collectionId = refIdPath[0];
+        const fieldId = refIdPath[1];
+        const collection = relatedSchemas[collectionId];
+        const properties = collection?.properties || [];
+        for (const name of Object.keys(properties)) {
+            const jsonSchema = properties[name];
+            if (jsonSchema.GUID === fieldId) {
+                return name;
+            }
+        }
+        return '';
     }
 
     /**
