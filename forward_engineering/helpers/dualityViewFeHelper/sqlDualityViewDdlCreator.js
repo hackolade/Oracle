@@ -99,13 +99,15 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @return {string}
      * */
     _getFromRootTableStatement(createViewDto) {
-        const tableName = ''
+        const {view} = createViewDto;
+        const {getNamePrefixedWithSchemaName} = require('../../utils/general')(this._lodash);
+        const ddlTableName = getNamePrefixedWithSchemaName(view.tableName, view.schemaName);
         const aliasStatement = this._getFromRootTableAliasStatement(createViewDto);
         const tagsClauseStatement = this._getTableTagsStatement(createViewDto);
 
         const template = this._ddlTemplates.dualityView.sql.fromRootTableStatement;
         return this._assignTemplates(template, {
-            tableName,
+            tableName: ddlTableName,
             tableAlias: aliasStatement,
             tableTagsStatement: tagsClauseStatement,
         })

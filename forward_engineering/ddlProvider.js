@@ -455,6 +455,7 @@ module.exports = (baseProvider, options, app) => {
                 editioning: detailsTab.editioning,
                 force: detailsTab.force,
                 selectStatement: detailsTab.selectStatement,
+                tableName: viewData.tableName,
                 schemaName: viewData.schemaData.schemaName,
                 description: detailsTab.description,
                 ifNotExist: detailsTab.ifNotExist,
