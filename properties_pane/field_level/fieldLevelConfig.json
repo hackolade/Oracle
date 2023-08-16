@@ -1803,7 +1803,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Key",
-        "propertyKeyword": "useKey",
+        "propertyKeyword": "primaryKey",
         "propertyType": "checkbox",
         "defaultValue": false,
         "dependency": {
@@ -3584,7 +3584,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Key",
-        "propertyKeyword": "useKey",
+        "propertyKeyword": "primaryKey",
         "propertyType": "checkbox",
         "defaultValue": false,
         "dependency": {
@@ -5055,7 +5055,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Key",
-        "propertyKeyword": "useKey",
+        "propertyKeyword": "primaryKey",
         "propertyType": "checkbox",
         "defaultValue": false,
         "dependency": {
@@ -5701,7 +5701,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Key",
-        "propertyKeyword": "useKey",
+        "propertyKeyword": "primaryKey",
         "propertyType": "checkbox",
         "defaultValue": false,
         "dependency": {
@@ -6329,7 +6329,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Key",
-        "propertyKeyword": "useKey",
+        "propertyKeyword": "primaryKey",
         "propertyType": "checkbox",
         "defaultValue": false,
         "dependency": {
@@ -7507,7 +7507,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Key",
-        "propertyKeyword": "useKey",
+        "propertyKeyword": "primaryKey",
         "propertyType": "checkbox",
         "defaultValue": false,
         "dependency": {
@@ -8891,7 +8891,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Key",
-        "propertyKeyword": "useKey",
+        "propertyKeyword": "primaryKey",
         "propertyType": "checkbox",
         "defaultValue": false,
         "dependency": {
@@ -9315,7 +9315,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Key",
-        "propertyKeyword": "useKey",
+        "propertyKeyword": "primaryKey",
         "propertyType": "checkbox",
         "defaultValue": false,
         "dependency": {
@@ -9890,7 +9890,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Key",
-        "propertyKeyword": "useKey",
+        "propertyKeyword": "primaryKey",
         "propertyType": "checkbox",
         "defaultValue": false,
         "dependency": {
