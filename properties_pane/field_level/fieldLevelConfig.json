@@ -10038,6 +10038,16 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "propertyName": "Activated",
+        "propertyKeyword": "isActivated",
+        "propertyType": "checkbox",
+        "defaultValue": true,
+        "shouldValidate": false,
+        "propertyTooltip": "Deactivated item will be not included in FE script",
+        "changeAction": "changeFieldProperty",
+        "enableForReference": true
+      },
+      {
         "fieldKeyword": "type",
         "dependency": {
           "type": "not",
