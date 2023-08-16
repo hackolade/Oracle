@@ -154,7 +154,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     _getFromChildTableStatement({ joinSubqueryJsonSchema, relatedSchemas }) {
         const collectionId = this._lodash.first(joinSubqueryJsonSchema.joinedCollectionRefIdPath);
         if (!collectionId) {
-            return '';
+            throw new Error('Specify child table for all join subqueries');
         }
         const child = relatedSchemas[collectionId];
 
@@ -167,11 +167,17 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
         const tagsClauseStatement = this._getTableTagsStatement(joinSubqueryJsonSchema);
 
         const template = this._ddlTemplates.dualityView.sql.fromTableStatement;
-        return this._assignTemplates(template, {
+        const fromTableStatement = this._assignTemplates(template, {
             tableName: ddlTableName,
             tableAlias: aliasStatement,
             tableTagsStatement: tagsClauseStatement,
-        })
+        });
+        const statements = [fromTableStatement];
+        if (joinSubqueryJsonSchema.whereClause) {
+            statements.push('WHERE');
+            statements.push(joinSubqueryJsonSchema.whereClause);
+        }
+        return statements.join(' ');
     }
 
     /**
