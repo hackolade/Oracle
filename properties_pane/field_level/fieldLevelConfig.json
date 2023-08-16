@@ -10183,7 +10183,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Insert",
