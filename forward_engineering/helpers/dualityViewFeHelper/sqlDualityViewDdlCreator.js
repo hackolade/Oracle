@@ -144,7 +144,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @param propertyName {string}
      * @param propertyJsonSchema {Object}
      * @param parent {Object}
-     * @param recursionDepth {number}
+     * @param paddingFactor {number}
      * @param relatedSchemas {Object}
      * @return {string}
      * */
@@ -152,12 +152,12 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
                                             propertyName,
                                             propertyJsonSchema,
                                             parent,
-                                            recursionDepth,
+                                            paddingFactor,
                                             relatedSchemas
                                         }) {
         const {wrapInQuotes} = require('../../utils/general')(this._lodash);
 
-        const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(recursionDepth);
+        const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(paddingFactor);
         const keyName = this._getRegularFieldName(propertyName, propertyJsonSchema);
         const ddlKeyName = wrapInQuotes(keyName);
 
@@ -168,22 +168,52 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
+     * @param propertyJsonSchema {Object}
+     * @param paddingFactor {number}
+     * @param relatedSchemas {Object}
+     * @return {string}
+     * */
+    _buildJoinSubqueryValueStatement({
+                                         propertyJsonSchema,
+                                         paddingFactor,
+                                         relatedSchemas
+                                     }) {
+        const bodyPaddingFactor = paddingFactor + 1;
+        const childrenPaddingFactor = paddingFactor + 2;
+
+        const objectGenStatement = this._getObjectGenStatement({
+            paddingFactor: childrenPaddingFactor,
+            relatedSchemas: relatedSchemas,
+            jsonSchema: propertyJsonSchema
+        });
+        const bodyPadding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(bodyPaddingFactor);
+        const bodyWithGenStatement = `${bodyPadding}SELECT${objectGenStatement}`;
+        const body = [bodyWithGenStatement];
+
+        return body.join('\n');
+    }
+
+    /**
      * @param propertyName {string}
      * @param propertyJsonSchema {Object}
-     * @param recursionDepth {number}
+     * @param paddingFactor {number}
      * @param relatedSchemas {Object}
      * @return {string}
      * */
     _buildJoinSubqueryKeyValueStatement({
                                             propertyName,
                                             propertyJsonSchema,
-                                            recursionDepth,
+                                            paddingFactor,
                                             relatedSchemas
                                         }) {
         const {wrapInQuotes} = require('../../utils/general')(this._lodash);
 
-        const valueStatement = '';
-        const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(recursionDepth);
+        const valueStatement = this._buildJoinSubqueryValueStatement({
+            relatedSchemas,
+            paddingFactor,
+            propertyJsonSchema,
+        });
+        const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(paddingFactor);
         if (propertyJsonSchema.unnestSubquery) {
             return `${padding}UNNEST (\n${valueStatement}\n${padding})`
         }
@@ -208,17 +238,17 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @param propertyName {string}
      * @param propertyJsonSchema {Object}
      * @param parent {Object}
-     * @param recursionDepth {number}
+     * @param paddingFactor {number}
      * @param relatedSchemas {Object}
      * @return {string}
      * */
-    _recursivelyBuildKeyValueStatement({propertyName, propertyJsonSchema, parent, recursionDepth, relatedSchemas}) {
+    _buildKeyValueStatement({propertyName, propertyJsonSchema, parent, paddingFactor, relatedSchemas}) {
         if (AbstractDualityViewFeDdlCreator.isRegularDualityViewField(propertyJsonSchema)) {
             return this._buildRegularFieldKeyValueStatement({
                 propertyName,
                 propertyJsonSchema,
                 parent,
-                recursionDepth,
+                paddingFactor,
                 relatedSchemas
             });
         }
@@ -226,7 +256,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
             return this._buildJoinSubqueryKeyValueStatement({
                 propertyName,
                 propertyJsonSchema,
-                recursionDepth,
+                paddingFactor,
                 relatedSchemas
             });
         }
@@ -234,19 +264,20 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param createViewDto {CreateViewDto}
+     * @param jsonSchema {Object}
+     * @param relatedSchemas {Object}
+     * @param paddingFactor {number}
      * @return {string}
      * */
-    _getKeyValueStatement(createViewDto) {
+    _getKeyValueStatement({jsonSchema, relatedSchemas, paddingFactor}) {
         const statements = [];
-        const {jsonSchema, relatedSchemas} = createViewDto;
         const propertyNameToJsonSchemaPairs = this._lodash.toPairs(jsonSchema.properties || {});
         for (const [propertyName, propertyJsonSchema] of propertyNameToJsonSchemaPairs) {
-            const statement = this._recursivelyBuildKeyValueStatement({
+            const statement = this._buildKeyValueStatement({
                 propertyName,
                 propertyJsonSchema,
                 parent: jsonSchema,
-                recursionDepth: 1,
+                paddingFactor,
                 relatedSchemas
             });
             statements.push(statement);
@@ -256,12 +287,23 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param createViewDto {CreateViewDto}
+     * @param jsonSchema {Object}
+     * @param relatedSchemas {Object}
+     * @param paddingFactor {number}
      * @return {string}
      * */
-    _getObjectGenStatement(createViewDto) {
-        const keyValueStatement = this._getKeyValueStatement(createViewDto);
-        const template = this._ddlTemplates.dualityView.sql.objectGenStatement;
+    _getObjectGenStatement({
+                               relatedSchemas,
+                               paddingFactor,
+                               jsonSchema
+                           }) {
+        const keyValueStatement = this._getKeyValueStatement({
+            relatedSchemas,
+            paddingFactor,
+            jsonSchema
+        });
+        const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(paddingFactor - 1);
+        const template = `JSON {\${keyValueStatement}${padding}}`;
         const objectGenClause = this._assignTemplates(template, {
             keyValueStatement
         });
@@ -269,7 +311,12 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     getDualityViewBodyDdl(createViewDto) {
-        const objectGenStatement = this._getObjectGenStatement(createViewDto);
+        const { jsonSchema, relatedSchemas } = createViewDto;
+        const objectGenStatement = this._getObjectGenStatement({
+            jsonSchema,
+            paddingFactor: 1,
+            relatedSchemas
+        });
         const bodyWithGenStatement = `SELECT${objectGenStatement}`;
         const body = [bodyWithGenStatement];
         const fromRootTableStatement = this._getFromRootTableStatement(createViewDto);

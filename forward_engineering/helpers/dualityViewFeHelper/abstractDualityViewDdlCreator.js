@@ -94,11 +94,11 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param recursionDepth {number}
+     * @param paddingFactor {number}
      * @return {string}
      * */
-    static getKeyValueFrontPadding(recursionDepth) {
-        return '\t'.repeat(recursionDepth);
+    static getKeyValueFrontPadding(paddingFactor) {
+        return '\t'.repeat(paddingFactor);
     }
 
     /**

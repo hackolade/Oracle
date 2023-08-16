@@ -49,7 +49,6 @@ module.exports = {
 
 			fromRootTableStatement: 'FROM ${tableName}${tableAlias}${tableTagsStatement}',
 
-			objectGenStatement: 'JSON {${keyValueStatement}}',
 		}
 	}
 };
