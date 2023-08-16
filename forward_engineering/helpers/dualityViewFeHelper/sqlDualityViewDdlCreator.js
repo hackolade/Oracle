@@ -118,7 +118,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @param propertyName {string}
      * @return {string}
      * */
-    _getDdlTableNameForRegularField(parentEntity, propertyName) {
+    _getNameOfReferencedColumnForDdl(parentEntity, propertyName) {
         const {getNamePrefixedWithSchemaName} = require('../../utils/general')(this._lodash);
         if (AbstractDualityViewFeDdlCreator.isDualityView(parentEntity)) {
             const parentName = parentEntity.rootTableAlias || parentEntity.tableName;
@@ -136,17 +136,47 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @param propertyJsonSchema {Object}
      * @return {string}
      * */
-    _buildRegularFieldKeyValueStatement(propertyName, propertyJsonSchema) {
-        return '';
+    _getRegularFieldName(propertyName, propertyJsonSchema) {
+        return propertyJsonSchema.jsonKey || propertyName;
     }
 
     /**
      * @param propertyName {string}
      * @param propertyJsonSchema {Object}
+     * @param parent {Object}
+     * @param recursionDepth {number}
      * @return {string}
      * */
-    _buildJoinSubqueryKeyValueStatement(propertyName, propertyJsonSchema) {
-        return '';
+    _buildRegularFieldKeyValueStatement(propertyName, propertyJsonSchema, parent, recursionDepth) {
+        const {wrapInQuotes} = require('../../utils/general')(this._lodash);
+
+        const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(recursionDepth);
+        const fieldName = this._getRegularFieldName(propertyName, propertyJsonSchema);
+        const ddlFieldName = wrapInQuotes(fieldName);
+
+        return `${padding}${ddlFieldName}: `;
+    }
+
+    /**
+     * @param propertyName {string}
+     * @param propertyJsonSchema {Object}
+     * @param recursionDepth {number}
+     * @return {string}
+     * */
+    _buildJoinSubqueryKeyValueStatement(propertyName, propertyJsonSchema, recursionDepth) {
+        const {wrapInQuotes} = require('../../utils/general')(this._lodash);
+
+        const subqueryStatement = '';
+        const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(recursionDepth);
+        if (propertyJsonSchema.unnestSubquery) {
+            return `${padding}UNNEST (\n${subqueryStatement}\n${padding})`
+        }
+        const subqueryName = this._getJoinSubqueryName(propertyName, propertyJsonSchema);
+        const subqueryDdlName = wrapInQuotes(subqueryName);
+        if (this._lodash.toLower(propertyJsonSchema.subqueryType) === 'array') {
+            return `${padding}${subqueryDdlName} : [\n${subqueryStatement}\n${padding}]`;
+        }
+        return `${padding}${subqueryDdlName} : {\n${subqueryStatement}\n${padding}}`;
     }
 
     /**
@@ -162,25 +192,15 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @param propertyName {string}
      * @param propertyJsonSchema {Object}
      * @param parent {Object}
+     * @param recursionDepth {number}
      * @return {string}
      * */
-    _recursivelyBuildKeyValueStatement(propertyName, propertyJsonSchema, parent) {
-        const {wrapInQuotes} = require('../../utils/general')(this._lodash);
-
+    _recursivelyBuildKeyValueStatement(propertyName, propertyJsonSchema, parent, recursionDepth) {
         if (AbstractDualityViewFeDdlCreator.isRegularDualityViewField(propertyJsonSchema)) {
-            return '';
+            return this._buildRegularFieldKeyValueStatement(propertyName, propertyJsonSchema, parent, recursionDepth);
         }
         if (AbstractDualityViewFeDdlCreator.isJoinSubquery(propertyJsonSchema)) {
-            const subqueryStatement = this._buildJoinSubqueryKeyValueStatement(propertyName, propertyJsonSchema);
-            if (propertyJsonSchema.unnestSubquery) {
-                return `UNNEST (\n${subqueryStatement}\n)`
-            }
-            const subqueryName = this._getJoinSubqueryName(propertyName, propertyJsonSchema);
-            const subqueryDdlName = wrapInQuotes(subqueryName);
-            if (this._lodash.toLower(propertyJsonSchema.subqueryType) === 'array') {
-                return `${subqueryDdlName} : [\n${subqueryStatement}\n]`;
-            }
-            return `${subqueryDdlName} : {\n${subqueryStatement}\n}`;
+            return this._buildJoinSubqueryKeyValueStatement(propertyName, propertyJsonSchema, recursionDepth);
         }
         return '';
     }
@@ -194,7 +214,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
         const {view, jsonSchema} = createViewDto;
         const propertyNameToJsonSchemaPairs = this._lodash.toPairs(jsonSchema.properties || {});
         for (const [propertyName, propertyJsonSchema] of propertyNameToJsonSchemaPairs) {
-            const statement = this._recursivelyBuildKeyValueStatement(propertyName, propertyJsonSchema, view);
+            const statement = this._recursivelyBuildKeyValueStatement(propertyName, propertyJsonSchema, view, 1);
             statements.push(statement);
         }
         const result = statements.join(',\n');
