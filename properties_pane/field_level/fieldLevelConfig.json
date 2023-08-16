@@ -10162,7 +10162,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Table tags clause",
-        "propertyKeyword": "dualityViewSubqueryTableTagsClause",
+        "propertyKeyword": "tableTagsClause",
         "propertyType": "block",
         "propertyTooltip": "",
         "structure": [

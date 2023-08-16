@@ -49,8 +49,7 @@ module.exports = {
 
 			columnTagsStatement: 'WITH${checkStatement}${etagStatement}${updateStatement}',
 
-			fromRootTableStatement: 'FROM ${tableName}${tableAlias}${tableTagsStatement}',
-
+			fromTableStatement: 'FROM ${tableName}${tableAlias}${tableTagsStatement}'
 		}
 	}
 };
