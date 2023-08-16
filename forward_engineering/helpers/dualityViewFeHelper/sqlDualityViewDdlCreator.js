@@ -67,12 +67,11 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param createViewDto {CreateViewDto}
+     * @param entity {Object}
      * @return {string}
      * */
-    _getTableTagsStatement(createViewDto) {
-        const {view} = createViewDto;
-        const tagsClause = view.rootTableTagsClause || {};
+    _getTableTagsStatement(entity) {
+        const tagsClause = entity.tableTagsClause || {};
         const checkStatement = this._getCheckStatement(tagsClause);
         let etagStatement = '';
         if (checkStatement) {
@@ -95,6 +94,31 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
+     * @param entity {Object}
+     * @return {string}
+     * */
+    _getColumnTagsStatement(entity) {
+        const tagsClause = entity.columnTagsClause || {};
+        const checkStatement = this._getCheckStatement(tagsClause);
+        let etagStatement = '';
+        if (checkStatement) {
+            etagStatement = this._getEtagStatement(tagsClause);
+        }
+        const updateStatement = this._getUpdateStatement(tagsClause);
+
+        const ddlConfig = {
+            checkStatement, etagStatement, updateStatement
+        }
+        const statements = Object.values(ddlConfig);
+        if (statements.some(s => s?.length)) {
+            const template = this._ddlTemplates.dualityView.sql.columnTagsStatement;
+            const statement = this._assignTemplates(template, ddlConfig)
+            return AbstractDualityViewFeDdlCreator.padInFront(statement);
+        }
+        return '';
+    }
+
+    /**
      * @param createViewDto {CreateViewDto}
      * @return {string}
      * */
@@ -103,7 +127,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
         const {getNamePrefixedWithSchemaName} = require('../../utils/general')(this._lodash);
         const ddlTableName = getNamePrefixedWithSchemaName(view.tableName, view.schemaName);
         const aliasStatement = this._getFromRootTableAliasStatement(createViewDto);
-        const tagsClauseStatement = this._getTableTagsStatement(createViewDto);
+        const tagsClauseStatement = this._getTableTagsStatement(view);
 
         const template = this._ddlTemplates.dualityView.sql.fromRootTableStatement;
         return this._assignTemplates(template, {
@@ -164,7 +188,9 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
         const fieldName = AbstractDualityViewFeDdlCreator.getRegularFieldNameFromCollection(propertyJsonSchema.refIdPath, relatedSchemas);
         const ddlFieldName = this._getNameOfReferencedColumnForDdl(parent, fieldName);
 
-        return `${padding}${ddlKeyName}: ${ddlFieldName}`;
+        const columnTagsStatement = this._getColumnTagsStatement(propertyJsonSchema);
+
+        return `${padding}${ddlKeyName}: ${ddlFieldName}${columnTagsStatement}`;
     }
 
     /**

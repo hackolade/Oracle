@@ -1824,7 +1824,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Column tags clause",
-        "propertyKeyword": "dualityViewColumnTagsClause",
+        "propertyKeyword": "columnTagsClause",
         "propertyType": "block",
         "propertyTooltip": "",
         "structure": [
@@ -3605,7 +3605,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Column tags clause",
-        "propertyKeyword": "dualityViewColumnTagsClause",
+        "propertyKeyword": "columnTagsClause",
         "propertyType": "block",
         "propertyTooltip": "",
         "structure": [
@@ -5076,7 +5076,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Column tags clause",
-        "propertyKeyword": "dualityViewColumnTagsClause",
+        "propertyKeyword": "columnTagsClause",
         "propertyType": "block",
         "propertyTooltip": "",
         "structure": [
@@ -5722,7 +5722,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Column tags clause",
-        "propertyKeyword": "dualityViewColumnTagsClause",
+        "propertyKeyword": "columnTagsClause",
         "propertyType": "block",
         "propertyTooltip": "",
         "structure": [
@@ -6350,7 +6350,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Column tags clause",
-        "propertyKeyword": "dualityViewColumnTagsClause",
+        "propertyKeyword": "columnTagsClause",
         "propertyType": "block",
         "propertyTooltip": "",
         "structure": [
@@ -7528,7 +7528,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Column tags clause",
-        "propertyKeyword": "dualityViewColumnTagsClause",
+        "propertyKeyword": "columnTagsClause",
         "propertyType": "block",
         "propertyTooltip": "",
         "structure": [
@@ -8912,7 +8912,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Column tags clause",
-        "propertyKeyword": "dualityViewColumnTagsClause",
+        "propertyKeyword": "columnTagsClause",
         "propertyType": "block",
         "propertyTooltip": "",
         "structure": [
@@ -9336,7 +9336,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Column tags clause",
-        "propertyKeyword": "dualityViewColumnTagsClause",
+        "propertyKeyword": "columnTagsClause",
         "propertyType": "block",
         "propertyTooltip": "",
         "structure": [
@@ -9911,7 +9911,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Column tags clause",
-        "propertyKeyword": "dualityViewColumnTagsClause",
+        "propertyKeyword": "columnTagsClause",
         "propertyType": "block",
         "propertyTooltip": "",
         "structure": [

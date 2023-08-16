@@ -463,7 +463,7 @@ module.exports = (baseProvider, options, app) => {
                 sharing: detailsTab.sharing,
                 duality: detailsTab.duality,
                 rootTableAlias: detailsTab.rootTableAlias,
-                rootTableTagsClause: detailsTab.rootTableTagsClause,
+                tableTagsClause: detailsTab.tableTagsClause,
                 viewProperties: detailsTab.materialized ? detailsTab.mviewProperties : detailsTab.viewProperties,
                 synonyms: viewData.schemaData?.synonyms?.filter(synonym => synonym.synonymEntityId === jsonSchema.GUID) || [],
             };

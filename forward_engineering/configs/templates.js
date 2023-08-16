@@ -47,6 +47,8 @@ module.exports = {
 		sql: {
 			tableTagsStatement: 'WITH${checkStatement}${etagStatement}${insertStatement}${updateStatement}${deleteStatement}',
 
+			columnTagsStatement: 'WITH${checkStatement}${etagStatement}${updateStatement}',
+
 			fromRootTableStatement: 'FROM ${tableName}${tableAlias}${tableTagsStatement}',
 
 		}

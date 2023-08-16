@@ -362,7 +362,7 @@
 			},
 			{
 				"propertyName": "Table tags clause",
-				"propertyKeyword": "rootTableTagsClause",
+				"propertyKeyword": "tableTagsClause",
 				"propertyType": "block",
 				"propertyTooltip": "",
 				"structure": [
