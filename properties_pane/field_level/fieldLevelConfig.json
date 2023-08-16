@@ -10110,10 +10110,46 @@ making sure that you maintain a proper JSON format.
         "propertyTooltip": "Specify if joined table will be aggregated into an object or JSON array",
         "propertyType": "select",
         "options": [
-          "object",
-          "array"
+          {
+            "value": "object",
+            "name": "Object"
+          },
+          {
+            "value": "array",
+            "name": "Array"
+          }
         ],
-        "defaultValue": "object"
+        "defaultValue": "object",
+        "dependency": {
+            "type": "or",
+            "values": [
+              {
+                "key": "unnestSubquery",
+                "value": false
+              },
+              {
+                "key": "unnestSubquery",
+                "exist": false
+              }
+            ]
+        }
+      },
+      {
+        "propertyName": "Subquery type",
+        "propertyKeyword": "subqueryType",
+        "propertyTooltip": "Specify if joined table will be aggregated into an object or JSON array",
+        "propertyType": "select",
+        "options": [
+          {
+            "value": "object",
+            "name": "Object"
+          }
+        ],
+        "defaultValue": "object",
+        "dependency": {
+          "key": "unnestSubquery",
+          "value": true
+        }
       },
       {
         "propertyName": "SQL/JSON function",
