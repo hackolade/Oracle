@@ -297,15 +297,17 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
             propertyJsonSchema,
         });
         const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(paddingFactor);
+        const jsonKeywordConfig = this._getObjectGenStatementJsonKeywordConfig(propertyJsonSchema);
+        const openingBracket = jsonKeywordConfig.surroundingBrackets[0];
+        const closingBracket = jsonKeywordConfig.surroundingBrackets[1];
+
         if (propertyJsonSchema.unnestSubquery) {
-            return `${padding}UNNEST (\n${valueStatement}\n${padding})`
+            return `${padding}UNNEST ${openingBracket}\n${valueStatement}\n${padding}${closingBracket}`
         }
         const subqueryName = this._getJoinSubqueryName(propertyName, propertyJsonSchema);
         const subqueryDdlName = wrapInQuotes(subqueryName);
-        if (this._lodash.toLower(propertyJsonSchema.subqueryType) === 'array') {
-            return `${padding}${subqueryDdlName} : [\n${valueStatement}\n${padding}]`;
-        }
-        return `${padding}${subqueryDdlName} : {\n${valueStatement}\n${padding}}`;
+
+        return `${padding}${subqueryDdlName} : ${openingBracket}\n${valueStatement}\n${padding}${closingBracket}`;
     }
 
     /**
@@ -371,6 +373,53 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
 
     /**
      * @param jsonSchema {Object}
+     * @return {{
+     *     jsonKeyword: string,
+     *     surroundingBrackets: [string, string],
+     *     jsonKeywordBrackets: [string, string],
+     * }}
+     * */
+    _getObjectGenStatementJsonKeywordConfig(jsonSchema) {
+        if (!AbstractDualityViewFeDdlCreator.isJoinSubquery(jsonSchema)) {
+            return {
+                jsonKeyword: 'JSON',
+                surroundingBrackets: ['', ''],
+                jsonKeywordBrackets: ['{', '}']
+            };
+        }
+        const sqlJsonFunction = this._lodash.toUpper(jsonSchema.sqlJsonFunction);
+        if (sqlJsonFunction === 'JSON_OBJECT') {
+            return {
+                jsonKeyword: sqlJsonFunction,
+                surroundingBrackets: ['(', ')'],
+                jsonKeywordBrackets: ['(', ')']
+            };
+        }
+        if (sqlJsonFunction === 'JSON_ARRAYAGG') {
+            return {
+                jsonKeyword: sqlJsonFunction,
+                surroundingBrackets: ['(', ')'],
+                jsonKeywordBrackets: ['( JSON {', '})']
+            };
+        }
+        const subqueryType = this._lodash.toLower(jsonSchema.subqueryType);
+        if (subqueryType === 'array') {
+            return {
+                jsonKeyword: 'JSON',
+                surroundingBrackets: ['[', ']'],
+                jsonKeywordBrackets: ['{', '}']
+            };
+        }
+        const isUnnested = Boolean(jsonSchema.unnestSubquery);
+        return {
+            jsonKeyword: 'JSON',
+            surroundingBrackets: isUnnested ? ['(', ')'] : ['{', '}'],
+            jsonKeywordBrackets: ['{', '}']
+        };
+    }
+
+    /**
+     * @param jsonSchema {Object}
      * @param relatedSchemas {Object}
      * @param paddingFactor {number}
      * @return {string}
@@ -386,7 +435,11 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
             jsonSchema
         });
         const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(paddingFactor - 1);
-        const template = `JSON {\${keyValueStatement}${padding}}`;
+        const jsonKeywordConfig = this._getObjectGenStatementJsonKeywordConfig(jsonSchema);
+        const openingBracket = jsonKeywordConfig.jsonKeywordBrackets[0];
+        const closingBracket = jsonKeywordConfig.jsonKeywordBrackets[1];
+
+        const template = `${jsonKeywordConfig.jsonKeyword} ${openingBracket}\${keyValueStatement}${padding}${closingBracket}`;
         const objectGenClause = this._assignTemplates(template, {
             keyValueStatement
         });

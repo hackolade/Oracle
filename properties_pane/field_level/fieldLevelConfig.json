@@ -10206,8 +10206,22 @@ making sure that you maintain a proper JSON format.
         "propertyType": "checkbox",
         "defaultValue": false,
         "dependency": {
-          "key": "subqueryType",
-          "value": "object"
+          "type": "and",
+          "values": [
+            {
+              "key": "subqueryType",
+              "value": "object"
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "key": "sqlJsonFunction",
+                  "value": "JSON_ARRAYAGG"
+                }
+              ]
+            }
+          ]
         }
       },
       {
