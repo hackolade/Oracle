@@ -187,21 +187,21 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @return {string}
      * */
     _getNameOfReferencedColumnForDdl(parentEntity, propertyName, relatedSchemas) {
-        const {getEntityName, getNamePrefixedWithSchemaName} = require('../../utils/general')(this._lodash);
+        const {getEntityName} = require('../../utils/general')(this._lodash);
         if (AbstractDualityViewFeDdlCreator.isDualityView(parentEntity)) {
             const parentName = parentEntity.rootTableAlias || parentEntity.tableName;
-            return getNamePrefixedWithSchemaName(propertyName, parentName);
+            return `${parentName}.${propertyName}`;
         }
         if (AbstractDualityViewFeDdlCreator.isJoinSubquery(parentEntity)) {
             if (parentEntity.childTableAlias) {
                 const parentName = parentEntity.childTableAlias;
-                return getNamePrefixedWithSchemaName(propertyName, parentName);
+                return `${parentName}.${propertyName}`;
             }
             const collectionId = this._lodash.first(parentEntity.joinedCollectionRefIdPath);
             if (collectionId) {
                 const collection = relatedSchemas[collectionId];
-                const collectionName = getEntityName(collection);
-                return getNamePrefixedWithSchemaName(propertyName, collectionName);
+                const parentName = getEntityName(collection);
+                return `${parentName}.${propertyName}`;
             }
         }
         return '';
@@ -231,11 +231,11 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
                                             paddingFactor,
                                             relatedSchemas
                                         }) {
-        const {wrapInQuotes} = require('../../utils/general')(this._lodash);
+        const {wrap} = require('../../utils/general')(this._lodash);
 
         const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(paddingFactor);
         const keyName = this._getRegularFieldName(propertyName, propertyJsonSchema);
-        const ddlKeyName = wrapInQuotes(keyName);
+        const ddlKeyName = wrap(keyName, "'", "'");
 
         const fieldName = AbstractDualityViewFeDdlCreator.getRegularFieldNameFromCollection(propertyJsonSchema.refIdPath, relatedSchemas);
         const ddlFieldName = this._getNameOfReferencedColumnForDdl(parent, fieldName, relatedSchemas);
@@ -289,7 +289,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
                                             paddingFactor,
                                             relatedSchemas
                                         }) {
-        const {wrapInQuotes} = require('../../utils/general')(this._lodash);
+        const {wrap} = require('../../utils/general')(this._lodash);
 
         const valueStatement = this._getJoinSubqueryValueStatement({
             relatedSchemas,
@@ -305,7 +305,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
             return `${padding}UNNEST ${openingBracket}\n${valueStatement}\n${padding}${closingBracket}`
         }
         const subqueryName = this._getJoinSubqueryName(propertyName, propertyJsonSchema);
-        const subqueryDdlName = wrapInQuotes(subqueryName);
+        const subqueryDdlName = wrap(subqueryName, "'", "'");
 
         return `${padding}${subqueryDdlName} : ${openingBracket}\n${valueStatement}\n${padding}${closingBracket}`;
     }
