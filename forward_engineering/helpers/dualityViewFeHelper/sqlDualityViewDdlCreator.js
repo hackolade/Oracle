@@ -410,10 +410,9 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
                 jsonKeywordBrackets: ['{', '}']
             };
         }
-        const isUnnested = Boolean(jsonSchema.unnestSubquery);
         return {
             jsonKeyword: 'JSON',
-            surroundingBrackets: isUnnested ? ['(', ')'] : ['{', '}'],
+            surroundingBrackets: ['(', ')'],
             jsonKeywordBrackets: ['{', '}']
         };
     }
