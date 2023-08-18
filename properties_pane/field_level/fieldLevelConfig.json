@@ -2264,11 +2264,11 @@ making sure that you maintain a proper JSON format.
               "values": [
                 {
                   "key": "mode",
-                  "values": "number"
+                  "value": "number"
                 },
                 {
                   "key": "mode",
-                  "values": "float"
+                  "value": "float"
                 }
               ]
             },
