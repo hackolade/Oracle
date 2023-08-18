@@ -1841,7 +1841,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -2264,11 +2268,11 @@ making sure that you maintain a proper JSON format.
               "values": [
                 {
                   "key": "mode",
-                  "values": "number"
+                  "value": "number"
                 },
                 {
                   "key": "mode",
-                  "values": "float"
+                  "value": "float"
                 }
               ]
             },
@@ -3622,7 +3626,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -5093,7 +5101,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -5739,7 +5751,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -6367,7 +6383,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -7545,7 +7565,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -8929,7 +8953,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -9353,7 +9381,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -9928,7 +9960,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",

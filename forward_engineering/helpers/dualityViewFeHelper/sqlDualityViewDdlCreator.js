@@ -19,6 +19,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * */
     _getFromRootTableAliasStatement(view) {
         const {wrapInQuotes} = require('../../utils/general')(this._lodash);
+
         if (view.rootTableAlias) {
             const ddlAlias = wrapInQuotes(view.rootTableAlias);
             return AbstractDualityViewFeDdlCreator.padInFront(ddlAlias);
@@ -32,6 +33,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * */
     _getFromChildTableAliasStatement(joinSubqueryJsonSchema) {
         const {wrapInQuotes} = require('../../utils/general')(this._lodash);
+
         if (joinSubqueryJsonSchema.childTableAlias) {
             const ddlAlias = wrapInQuotes(joinSubqueryJsonSchema.childTableAlias);
             return AbstractDualityViewFeDdlCreator.padInFront(ddlAlias);
@@ -281,6 +283,19 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
+     * @param jsonSchema {Object}
+     * @return {boolean}
+     * */
+    _shouldUnnestJoinSubquery(jsonSchema) {
+        const sqlJsonFunction = this._lodash.toUpper(jsonSchema.sqlJsonFunction);
+        const subqueryType = this._lodash.toLower(jsonSchema.subqueryType);
+        if (sqlJsonFunction === 'JSON_OBJECT' || subqueryType === 'object') {
+            return Boolean(jsonSchema.unnestSubquery);
+        }
+        return false;
+    }
+
+    /**
      * @param propertyName {string}
      * @param propertyJsonSchema {Object}
      * @param paddingFactor {number}
@@ -305,7 +320,9 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
         const openingBracket = jsonKeywordConfig.surroundingBrackets[0];
         const closingBracket = jsonKeywordConfig.surroundingBrackets[1];
 
-        if (propertyJsonSchema.unnestSubquery) {
+        const shouldUnnest = this._shouldUnnestJoinSubquery(propertyJsonSchema);
+
+        if (shouldUnnest) {
             return `${padding}UNNEST ${openingBracket}\n${valueStatement}\n${padding}${closingBracket}`
         }
         const subqueryName = this._getJoinSubqueryName(propertyName, propertyJsonSchema);
