@@ -18,8 +18,10 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @return {string}
      * */
     _getFromRootTableAliasStatement(view) {
+        const {wrapInQuotes} = require('../../utils/general')(this._lodash);
+
         if (view.rootTableAlias) {
-            const ddlAlias = view.rootTableAlias;
+            const ddlAlias = wrapInQuotes(view.rootTableAlias);
             return AbstractDualityViewFeDdlCreator.padInFront(ddlAlias);
         }
         return '';
@@ -30,8 +32,10 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @return {string}
      * */
     _getFromChildTableAliasStatement(joinSubqueryJsonSchema) {
+        const {wrapInQuotes} = require('../../utils/general')(this._lodash);
+
         if (joinSubqueryJsonSchema.childTableAlias) {
-            const ddlAlias = joinSubqueryJsonSchema.childTableAlias;
+            const ddlAlias = wrapInQuotes(joinSubqueryJsonSchema.childTableAlias);
             return AbstractDualityViewFeDdlCreator.padInFront(ddlAlias);
         }
         return '';
@@ -192,21 +196,18 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
         const {getEntityName, getNamePrefixedWithSchemaName} = require('../../utils/general')(this._lodash);
         if (AbstractDualityViewFeDdlCreator.isDualityView(parentEntity)) {
             const parentName = parentEntity.rootTableAlias || parentEntity.tableName;
-            // return getNamePrefixedWithSchemaName(propertyName, parentName);
-            return `${parentName}."${propertyName}"`;
+            return getNamePrefixedWithSchemaName(propertyName, parentName);
         }
         if (AbstractDualityViewFeDdlCreator.isJoinSubquery(parentEntity)) {
             if (parentEntity.childTableAlias) {
                 const parentName = parentEntity.childTableAlias;
-                // return getNamePrefixedWithSchemaName(propertyName, parentName);
-                return `${parentName}."${propertyName}"`;
+                return getNamePrefixedWithSchemaName(propertyName, parentName);
             }
             const collectionId = this._lodash.first(parentEntity.joinedCollectionRefIdPath);
             if (collectionId) {
                 const collection = relatedSchemas[collectionId];
                 const parentName = getEntityName(collection);
-                // return getNamePrefixedWithSchemaName(propertyName, parentName);
-                return `${parentName}."${propertyName}"`;
+                return getNamePrefixedWithSchemaName(propertyName, parentName);
             }
         }
         return '';

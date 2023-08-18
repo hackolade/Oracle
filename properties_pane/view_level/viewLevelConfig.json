@@ -379,7 +379,11 @@
 					{
 						"propertyName": "Etag",
 						"propertyKeyword": "etag",
-						"propertyType": "checkbox"
+						"propertyType": "checkbox",
+						"dependency": {
+							"key": "check",
+							"value": ["check", "nocheck"]
+						}
 					},
 					{
 						"propertyName": "Insert",
