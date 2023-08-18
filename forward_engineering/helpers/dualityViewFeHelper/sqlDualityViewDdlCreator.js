@@ -18,8 +18,10 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @return {string}
      * */
     _getFromRootTableAliasStatement(view) {
+        const {wrapInQuotes} = require('../../utils/general')(this._lodash);
         if (view.rootTableAlias) {
-            return AbstractDualityViewFeDdlCreator.padInFront(view.rootTableAlias);
+            const ddlAlias = wrapInQuotes(view.rootTableAlias);
+            return AbstractDualityViewFeDdlCreator.padInFront(ddlAlias);
         }
         return '';
     }
@@ -29,8 +31,10 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @return {string}
      * */
     _getFromChildTableAliasStatement(joinSubqueryJsonSchema) {
+        const {wrapInQuotes} = require('../../utils/general')(this._lodash);
         if (joinSubqueryJsonSchema.childTableAlias) {
-            return AbstractDualityViewFeDdlCreator.padInFront(joinSubqueryJsonSchema.childTableAlias);
+            const ddlAlias = wrapInQuotes(joinSubqueryJsonSchema.childTableAlias);
+            return AbstractDualityViewFeDdlCreator.padInFront(ddlAlias);
         }
         return '';
     }
@@ -200,8 +204,8 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
             const collectionId = this._lodash.first(parentEntity.joinedCollectionRefIdPath);
             if (collectionId) {
                 const collection = relatedSchemas[collectionId];
-                const collectionName = getEntityName(collection);
-                return getNamePrefixedWithSchemaName(propertyName, collectionName);
+                const parentName = getEntityName(collection);
+                return getNamePrefixedWithSchemaName(propertyName, parentName);
             }
         }
         return '';
@@ -231,11 +235,11 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
                                             paddingFactor,
                                             relatedSchemas
                                         }) {
-        const {wrapInQuotes} = require('../../utils/general')(this._lodash);
+        const {wrap} = require('../../utils/general')(this._lodash);
 
         const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(paddingFactor);
         const keyName = this._getRegularFieldName(propertyName, propertyJsonSchema);
-        const ddlKeyName = wrapInQuotes(keyName);
+        const ddlKeyName = wrap(keyName, "'", "'");
 
         const fieldName = AbstractDualityViewFeDdlCreator.getRegularFieldNameFromCollection(propertyJsonSchema.refIdPath, relatedSchemas);
         const ddlFieldName = this._getNameOfReferencedColumnForDdl(parent, fieldName, relatedSchemas);
@@ -289,7 +293,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
                                             paddingFactor,
                                             relatedSchemas
                                         }) {
-        const {wrapInQuotes} = require('../../utils/general')(this._lodash);
+        const {wrap} = require('../../utils/general')(this._lodash);
 
         const valueStatement = this._getJoinSubqueryValueStatement({
             relatedSchemas,
@@ -305,7 +309,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
             return `${padding}UNNEST ${openingBracket}\n${valueStatement}\n${padding}${closingBracket}`
         }
         const subqueryName = this._getJoinSubqueryName(propertyName, propertyJsonSchema);
-        const subqueryDdlName = wrapInQuotes(subqueryName);
+        const subqueryDdlName = wrap(subqueryName, "'", "'");
 
         return `${padding}${subqueryDdlName} : ${openingBracket}\n${valueStatement}\n${padding}${closingBracket}`;
     }
@@ -410,10 +414,9 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
                 jsonKeywordBrackets: ['{', '}']
             };
         }
-        const isUnnested = Boolean(jsonSchema.unnestSubquery);
         return {
             jsonKeyword: 'JSON',
-            surroundingBrackets: isUnnested ? ['(', ')'] : ['{', '}'],
+            surroundingBrackets: ['(', ')'],
             jsonKeywordBrackets: ['{', '}']
         };
     }

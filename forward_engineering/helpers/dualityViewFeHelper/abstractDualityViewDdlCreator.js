@@ -164,7 +164,7 @@ class AbstractDualityViewFeDdlCreator {
     convertDualityViewToDdl(createViewDto) {
         const heading = this.getCreateJsonRelationalDualityViewHeadingDdl(createViewDto);
         const body = this.getDualityViewBodyDdl(createViewDto);
-        return heading + '\n' + body;
+        return heading + '\n' + body + '\n';
     }
 
 }
