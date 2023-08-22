@@ -1166,6 +1166,39 @@ making sure that you maintain a proper JSON format.
               ]
             }
           ]
+        },
+        "disabledOnCondition": {
+          "type": "and",
+          "values": [
+            {
+              "type": "not",
+              "values": {
+                "level": "parent",
+                "key": "type",
+                "value": "object"
+              }
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       },
       {
@@ -1818,6 +1851,48 @@ making sure that you maintain a proper JSON format.
               "level": "root",
               "key": "duality",
               "value": true
+            }
+          ]
+        },
+        "disabledOnCondition": {
+          "type": "or",
+          "values": [
+            {
+              "key": "isActivated",
+              "value": false
+            },
+            {
+              "type": "and",
+              "values": [
+                {
+                  "type": "not",
+                  "values": {
+                    "level": "parent",
+                    "key": "type",
+                    "value": "object"
+                  }
+                },
+                {
+                  "type": "not",
+                  "values": [
+                    {
+                      "type": "and",
+                      "values": [
+                        {
+                          "level": "root",
+                          "key": "viewOn",
+                          "exist": true
+                        },
+                        {
+                          "level": "root",
+                          "key": "duality",
+                          "value": true
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
@@ -2787,6 +2862,39 @@ making sure that you maintain a proper JSON format.
                   ]
                 }
               ]
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "disabledOnCondition": {
+          "type": "and",
+          "values": [
+            {
+              "type": "not",
+              "values": {
+                "level": "parent",
+                "key": "type",
+                "value": "object"
+              }
             },
             {
               "type": "not",
@@ -4515,6 +4623,39 @@ making sure that you maintain a proper JSON format.
                   ]
                 }
               ]
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "disabledOnCondition": {
+          "type": "and",
+          "values": [
+            {
+              "type": "not",
+              "values": {
+                "level": "parent",
+                "key": "type",
+                "value": "object"
+              }
             },
             {
               "type": "not",
@@ -7143,6 +7284,39 @@ making sure that you maintain a proper JSON format.
               ]
             }
           ]
+        },
+        "disabledOnCondition": {
+          "type": "and",
+          "values": [
+            {
+              "type": "not",
+              "values": {
+                "level": "parent",
+                "key": "type",
+                "value": "object"
+              }
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       },
       {
@@ -8255,6 +8429,39 @@ making sure that you maintain a proper JSON format.
                   ]
                 }
               ]
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "disabledOnCondition": {
+          "type": "and",
+          "values": [
+            {
+              "type": "not",
+              "values": {
+                "level": "parent",
+                "key": "type",
+                "value": "object"
+              }
             },
             {
               "type": "not",
