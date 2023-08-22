@@ -155,9 +155,10 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     /**
      * @param joinSubqueryJsonSchema {Object}
      * @param relatedSchemas {Object}
+     * @param bodyPadding {string}
      * @return {string}
      * */
-    _getFromChildTableStatement({ joinSubqueryJsonSchema, relatedSchemas }) {
+    _getFromChildTableStatement({ joinSubqueryJsonSchema, relatedSchemas, bodyPadding }) {
         const collectionId = this._lodash.first(joinSubqueryJsonSchema.joinedCollectionRefIdPath);
         if (!collectionId) {
             throw new Error('Specify child table for all join subqueries');
@@ -178,12 +179,14 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
             tableAlias: aliasStatement,
             tableTagsStatement: tagsClauseStatement,
         });
+
         const statements = [fromTableStatement];
         if (joinSubqueryJsonSchema.whereClause) {
-            statements.push('WHERE');
-            statements.push(joinSubqueryJsonSchema.whereClause);
+            statements.push(`WHERE ${joinSubqueryJsonSchema.whereClause}`);
         }
-        return statements.join(' ');
+        return statements
+            .map(statement => `${bodyPadding}${statement}`)
+            .join('\n');
     }
 
     /**
@@ -275,9 +278,10 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
         const body = [bodyWithGenStatement];
         const fromStatement = this._getFromChildTableStatement({
             joinSubqueryJsonSchema: propertyJsonSchema,
-            relatedSchemas
+            relatedSchemas,
+            bodyPadding
         });
-        body.push(bodyPadding + fromStatement);
+        body.push(fromStatement);
 
         return body.join('\n');
     }
