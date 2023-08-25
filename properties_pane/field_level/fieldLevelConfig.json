@@ -10374,34 +10374,17 @@ making sure that you maintain a proper JSON format.
         ],
         "defaultValue": "object",
         "dependency": {
-            "type": "or",
-            "values": [
-              {
-                "key": "unnestSubquery",
-                "value": false
-              },
-              {
-                "key": "unnestSubquery",
-                "exist": false
-              }
-            ]
-        }
-      },
-      {
-        "propertyName": "Subquery type",
-        "propertyKeyword": "subqueryType",
-        "propertyTooltip": "Specify if joined table will be aggregated into an object or JSON array",
-        "propertyType": "select",
-        "options": [
-          {
-            "value": "object",
-            "name": "Object"
-          }
-        ],
-        "defaultValue": "object",
-        "dependency": {
-          "key": "unnestSubquery",
-          "value": true
+          "type": "or",
+          "values": [
+            {
+              "key": "unnestSubquery",
+              "value": false
+            },
+            {
+              "key": "unnestSubquery",
+              "exist": false
+            }
+          ]
         }
       },
       {
@@ -10411,21 +10394,64 @@ making sure that you maintain a proper JSON format.
         "propertyType": "select",
         "options": [
           "",
-          "JSON_OBJECT",
+          "JSON_OBJECT"
+        ],
+        "defaultValue": "",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "unnestSubquery",
+                    "value": false
+                  },
+                  {
+                    "key": "unnestSubquery",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "key": "subqueryType",
+                "value": "object"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "propertyName": "SQL/JSON function",
+        "propertyKeyword": "sqlJsonFunction",
+        "propertyTooltip": "Specify SQL function that will wrap joined table",
+        "propertyType": "select",
+        "options": [
+          "",
           "JSON_ARRAYAGG"
         ],
         "defaultValue": "",
         "dependency": [
           {
-            "type": "or",
+            "type": "and",
             "values": [
               {
-                "key": "unnestSubquery",
-                "value": false
+                "type": "or",
+                "values": [
+                  {
+                    "key": "unnestSubquery",
+                    "value": false
+                  },
+                  {
+                    "key": "unnestSubquery",
+                    "exist": false
+                  }
+                ]
               },
               {
-                "key": "unnestSubquery",
-                "exist": false
+                "key": "subqueryType",
+                "value": "array"
               }
             ]
           }
