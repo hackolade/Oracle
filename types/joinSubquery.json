@@ -3,11 +3,6 @@
   "erdAbbreviation": "<join-sq>",
   "dtdAbbreviation": "{...}",
   "hiddenOnEntity": ["collection", "definitions", "modeldefinitions"],
-  "jsonType": {
-    "order": 1,
-    "jsonRoot": true,
-    "source": true
-  },
   "dependency": {
     "type": "and",
     "values": [
