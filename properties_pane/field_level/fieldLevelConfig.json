@@ -10116,7 +10116,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Subquery type",
-        "propertyKeyword": "subqueryType",
+        "propertyKeyword": "subtype",
         "propertyTooltip": "Specify if joined table will be aggregated into an object or JSON array",
         "propertyType": "select",
         "options": [
@@ -10129,7 +10129,10 @@ making sure that you maintain a proper JSON format.
             "name": "Array"
           }
         ],
-        "defaultValue": "object",
+        "defaultValue": {
+          "value": "object",
+          "name": "Object"
+        },
         "dependency": {
             "type": "or",
             "values": [
@@ -10146,13 +10149,17 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Subquery type",
-        "propertyKeyword": "subqueryType",
+        "propertyKeyword": "subtype",
         "propertyTooltip": "Specify if joined table will be aggregated into an object or JSON array",
         "propertyType": "select",
         "options": [
           {
             "value": "object",
             "name": "Object"
+          },
+          {
+            "value": "array",
+            "name": "Array"
           }
         ],
         "defaultValue": "object",
@@ -10206,7 +10213,7 @@ making sure that you maintain a proper JSON format.
         "propertyType": "checkbox",
         "defaultValue": false,
         "dependency": {
-          "key": "subqueryType",
+          "key": "subtype",
           "value": "object"
         }
       },
