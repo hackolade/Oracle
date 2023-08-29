@@ -1166,6 +1166,39 @@ making sure that you maintain a proper JSON format.
               ]
             }
           ]
+        },
+        "disabledOnCondition": {
+          "type": "and",
+          "values": [
+            {
+              "type": "not",
+              "values": {
+                "level": "parent",
+                "key": "type",
+                "value": "object"
+              }
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       },
       {
@@ -1820,6 +1853,48 @@ making sure that you maintain a proper JSON format.
               "value": true
             }
           ]
+        },
+        "disabledOnCondition": {
+          "type": "or",
+          "values": [
+            {
+              "key": "isActivated",
+              "value": false
+            },
+            {
+              "type": "and",
+              "values": [
+                {
+                  "type": "not",
+                  "values": {
+                    "level": "parent",
+                    "key": "type",
+                    "value": "object"
+                  }
+                },
+                {
+                  "type": "not",
+                  "values": [
+                    {
+                      "type": "and",
+                      "values": [
+                        {
+                          "level": "root",
+                          "key": "viewOn",
+                          "exist": true
+                        },
+                        {
+                          "level": "root",
+                          "key": "duality",
+                          "value": true
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       },
       {
@@ -1841,7 +1916,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -2264,11 +2343,11 @@ making sure that you maintain a proper JSON format.
               "values": [
                 {
                   "key": "mode",
-                  "values": "number"
+                  "value": "number"
                 },
                 {
                   "key": "mode",
-                  "values": "float"
+                  "value": "float"
                 }
               ]
             },
@@ -2783,6 +2862,39 @@ making sure that you maintain a proper JSON format.
                   ]
                 }
               ]
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "disabledOnCondition": {
+          "type": "and",
+          "values": [
+            {
+              "type": "not",
+              "values": {
+                "level": "parent",
+                "key": "type",
+                "value": "object"
+              }
             },
             {
               "type": "not",
@@ -3622,7 +3734,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -4529,6 +4645,39 @@ making sure that you maintain a proper JSON format.
               ]
             }
           ]
+        },
+        "disabledOnCondition": {
+          "type": "and",
+          "values": [
+            {
+              "type": "not",
+              "values": {
+                "level": "parent",
+                "key": "type",
+                "value": "object"
+              }
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       },
       {
@@ -5093,7 +5242,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -5739,7 +5892,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -6367,7 +6524,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -7123,6 +7284,39 @@ making sure that you maintain a proper JSON format.
               ]
             }
           ]
+        },
+        "disabledOnCondition": {
+          "type": "and",
+          "values": [
+            {
+              "type": "not",
+              "values": {
+                "level": "parent",
+                "key": "type",
+                "value": "object"
+              }
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       },
       {
@@ -7545,7 +7739,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -8253,6 +8451,39 @@ making sure that you maintain a proper JSON format.
               ]
             }
           ]
+        },
+        "disabledOnCondition": {
+          "type": "and",
+          "values": [
+            {
+              "type": "not",
+              "values": {
+                "level": "parent",
+                "key": "type",
+                "value": "object"
+              }
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       },
       {
@@ -8929,7 +9160,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -9353,7 +9588,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -9928,7 +10167,11 @@ making sure that you maintain a proper JSON format.
           {
             "propertyName": "Etag",
             "propertyKeyword": "etag",
-            "propertyType": "checkbox"
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
           },
           {
             "propertyName": "Update",
@@ -10164,8 +10407,17 @@ making sure that you maintain a proper JSON format.
         ],
         "defaultValue": "object",
         "dependency": {
-          "key": "unnestSubquery",
-          "value": true
+          "type": "or",
+          "values": [
+            {
+              "key": "unnestSubquery",
+              "value": false
+            },
+            {
+              "key": "unnestSubquery",
+              "exist": false
+            }
+          ]
         }
       },
       {
@@ -10175,21 +10427,64 @@ making sure that you maintain a proper JSON format.
         "propertyType": "select",
         "options": [
           "",
-          "JSON_OBJECT",
+          "JSON_OBJECT"
+        ],
+        "defaultValue": "",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "unnestSubquery",
+                    "value": false
+                  },
+                  {
+                    "key": "unnestSubquery",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "key": "subtype",
+                "value": "object"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "propertyName": "SQL/JSON function",
+        "propertyKeyword": "sqlJsonFunction",
+        "propertyTooltip": "Specify SQL function that will wrap joined table",
+        "propertyType": "select",
+        "options": [
+          "",
           "JSON_ARRAYAGG"
         ],
         "defaultValue": "",
         "dependency": [
           {
-            "type": "or",
+            "type": "and",
             "values": [
               {
-                "key": "unnestSubquery",
-                "value": false
+                "type": "or",
+                "values": [
+                  {
+                    "key": "unnestSubquery",
+                    "value": false
+                  },
+                  {
+                    "key": "unnestSubquery",
+                    "exist": false
+                  }
+                ]
               },
               {
-                "key": "unnestSubquery",
-                "exist": false
+                "key": "subtype",
+                "value": "array"
               }
             ]
           }
@@ -10213,8 +10508,22 @@ making sure that you maintain a proper JSON format.
         "propertyType": "checkbox",
         "defaultValue": false,
         "dependency": {
-          "key": "subtype",
-          "value": "object"
+          "type": "and",
+          "values": [
+            {
+              "key": "subtype",
+              "value": "object"
+            },
+            {
+              "type": "not",
+              "values": [
+                {
+                  "key": "sqlJsonFunction",
+                  "value": "JSON_ARRAYAGG"
+                }
+              ]
+            }
+          ]
         }
       },
       {

@@ -31,6 +31,7 @@
             "reverseSchemaIntoOneColumn": true,
             "disableDenormalization": true,
             "enableComplexTypesNormalization": true,
+            "restrictNestedFieldsAsPrimaryKey": false,
             "views": {
                 "enabled": true,
                 "viewLevel": "model",
