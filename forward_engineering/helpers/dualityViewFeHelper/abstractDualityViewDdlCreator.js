@@ -69,19 +69,58 @@ class AbstractDualityViewFeDdlCreator {
      * @param element {Object}
      * @return {boolean}
      * */
-    static isRegularDualityViewField(element = {}) {
+    static isRegularDualityViewFieldOnRootLevelOrInObjectSubquery(element = {}) {
         const { ref, refIdPath, refType } = element;
         return ref && (refIdPath || []).length === 2 && refType === COLLECTION_REFERENCE;
     }
 
     /**
-     * @param refIdPath {Array<string>}
+     * @param element {Object}
+     * @return {boolean}
+     * */
+    static isRegularDualityViewFieldInArraySubquery(element = {}) {
+        const { ref, refId } = element;
+        return ref && refId;
+    }
+
+    /**
+     * @param element {Object}
+     * @return {boolean}
+     * */
+    static isRegularDualityViewField(element = {}) {
+        return AbstractDualityViewFeDdlCreator.isRegularDualityViewFieldOnRootLevelOrInObjectSubquery(element)
+            || AbstractDualityViewFeDdlCreator.isRegularDualityViewFieldInArraySubquery(element);
+    }
+
+    /**
+     * @param propertyJsonSchema {Object}
+     * @param parent {Object}
+     * @return {string[]}
+     * */
+    static getPathToReferencedColumn(propertyJsonSchema, parent) {
+        let pathToReferencedColumn = [];
+        if (AbstractDualityViewFeDdlCreator.isRegularDualityViewFieldOnRootLevelOrInObjectSubquery(propertyJsonSchema)) {
+            pathToReferencedColumn = propertyJsonSchema.refIdPath;
+        } else if (AbstractDualityViewFeDdlCreator.isRegularDualityViewFieldInArraySubquery(propertyJsonSchema)) {
+            pathToReferencedColumn = [
+                ...(parent.joinedCollectionRefIdPath || []),
+                propertyJsonSchema.ref,
+            ];
+        }
+        return pathToReferencedColumn;
+    }
+
+    /**
+     * @param pathToReferencedColumn {Array<string>}
      * @param relatedSchemas {Object}
      * @return {string}
      * */
-    static getRegularFieldNameFromCollection(refIdPath, relatedSchemas) {
-        const collectionId = refIdPath[0];
-        const fieldId = refIdPath[1];
+    static getRegularFieldNameFromCollection(pathToReferencedColumn, relatedSchemas) {
+        if (pathToReferencedColumn.length < 2) {
+            throw new Error('Cannot extract referenced column name');
+        }
+        const collectionId = pathToReferencedColumn[0];
+        const fieldId = pathToReferencedColumn[1];
         const collection = relatedSchemas[collectionId];
         const properties = collection?.properties || [];
         for (const name of Object.keys(properties)) {

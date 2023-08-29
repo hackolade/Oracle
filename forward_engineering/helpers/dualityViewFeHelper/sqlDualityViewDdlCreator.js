@@ -246,7 +246,9 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
         const keyName = this._getRegularFieldName(propertyName, propertyJsonSchema);
         const ddlKeyName = wrap(keyName, "'", "'");
 
-        const fieldName = AbstractDualityViewFeDdlCreator.getRegularFieldNameFromCollection(propertyJsonSchema.refIdPath, relatedSchemas);
+        const pathToReferencedColumn = AbstractDualityViewFeDdlCreator.getPathToReferencedColumn(propertyJsonSchema, parent);
+
+        const fieldName = AbstractDualityViewFeDdlCreator.getRegularFieldNameFromCollection(pathToReferencedColumn, relatedSchemas);
         const ddlFieldName = this._getNameOfReferencedColumnForDdl(parent, fieldName, relatedSchemas);
 
         const columnTagsStatement = this._getColumnTagsStatement(propertyJsonSchema);
@@ -381,7 +383,8 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * */
     _getKeyValueStatement({jsonSchema, relatedSchemas, paddingFactor}) {
         const statements = [];
-        const propertyNameToJsonSchemaPairs = this._lodash.toPairs(jsonSchema.properties || {});
+        let propertiesToIterate = jsonSchema.properties || jsonSchema.items?.properties || {};
+        const propertyNameToJsonSchemaPairs = this._lodash.toPairs(propertiesToIterate);
         for (const [propertyName, propertyJsonSchema] of propertyNameToJsonSchemaPairs) {
             const statement = this._buildKeyValueStatement({
                 propertyName,
