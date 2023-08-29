@@ -1,8 +1,18 @@
 {
   "name": "joinSubquery",
+  "parentType": "document",
   "erdAbbreviation": "<join-sq>",
   "dtdAbbreviation": "{...}",
   "hiddenOnEntity": ["collection", "definitions", "modeldefinitions"],
+  "subtypes": {
+    "object": {
+      "parentType": "document"
+    },
+    "array": {
+      "parentType": "array",
+      "childValueType": ["object"]
+    }
+  },
   "dependency": {
     "type": "and",
     "values": [
@@ -19,5 +29,6 @@
     ]
   },
   "defaultValues": {
+    "subtypes": "object"
   }
 }

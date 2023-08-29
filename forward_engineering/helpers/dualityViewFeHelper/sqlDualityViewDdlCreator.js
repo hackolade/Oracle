@@ -292,8 +292,8 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * */
     _shouldUnnestJoinSubquery(jsonSchema) {
         const sqlJsonFunction = this._lodash.toUpper(jsonSchema.sqlJsonFunction);
-        const subqueryType = this._lodash.toLower(jsonSchema.subqueryType);
-        if (sqlJsonFunction === 'JSON_OBJECT' || subqueryType === 'object') {
+        const subtype = this._lodash.toLower(jsonSchema.subtype);
+        if (sqlJsonFunction === 'JSON_OBJECT' || subtype === 'object') {
             return Boolean(jsonSchema.unnestSubquery);
         }
         return false;
@@ -427,8 +427,8 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
                 jsonKeywordBrackets: ['( JSON {', '})']
             };
         }
-        const subqueryType = this._lodash.toLower(jsonSchema.subqueryType);
-        if (subqueryType === 'array') {
+        const subtype = this._lodash.toLower(jsonSchema.subtype);
+        if (subtype === 'array') {
             return {
                 jsonKeyword: 'JSON',
                 surroundingBrackets: ['[', ']'],

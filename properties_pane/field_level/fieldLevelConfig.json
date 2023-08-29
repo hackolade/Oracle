@@ -10359,7 +10359,40 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "Subquery type",
-        "propertyKeyword": "subqueryType",
+        "propertyKeyword": "subtype",
+        "propertyTooltip": "Specify if joined table will be aggregated into an object or JSON array",
+        "propertyType": "select",
+        "options": [
+          {
+            "value": "object",
+            "name": "Object"
+          },
+          {
+            "value": "array",
+            "name": "Array"
+          }
+        ],
+        "defaultValue": {
+          "value": "object",
+          "name": "Object"
+        },
+        "dependency": {
+            "type": "or",
+            "values": [
+              {
+                "key": "unnestSubquery",
+                "value": false
+              },
+              {
+                "key": "unnestSubquery",
+                "exist": false
+              }
+            ]
+        }
+      },
+      {
+        "propertyName": "Subquery type",
+        "propertyKeyword": "subtype",
         "propertyTooltip": "Specify if joined table will be aggregated into an object or JSON array",
         "propertyType": "select",
         "options": [
@@ -10415,7 +10448,7 @@ making sure that you maintain a proper JSON format.
                 ]
               },
               {
-                "key": "subqueryType",
+                "key": "subtype",
                 "value": "object"
               }
             ]
@@ -10450,7 +10483,7 @@ making sure that you maintain a proper JSON format.
                 ]
               },
               {
-                "key": "subqueryType",
+                "key": "subtype",
                 "value": "array"
               }
             ]
@@ -10478,7 +10511,7 @@ making sure that you maintain a proper JSON format.
           "type": "and",
           "values": [
             {
-              "key": "subqueryType",
+              "key": "subtype",
               "value": "object"
             },
             {
