@@ -10372,10 +10372,7 @@ making sure that you maintain a proper JSON format.
             "name": "Array"
           }
         ],
-        "defaultValue": {
-          "value": "object",
-          "name": "Object"
-        },
+        "defaultValue": "object",
         "dependency": {
             "type": "or",
             "values": [
