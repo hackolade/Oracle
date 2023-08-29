@@ -10391,36 +10391,6 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
-        "propertyName": "Subquery type",
-        "propertyKeyword": "subtype",
-        "propertyTooltip": "Specify if joined table will be aggregated into an object or JSON array",
-        "propertyType": "select",
-        "options": [
-          {
-            "value": "object",
-            "name": "Object"
-          },
-          {
-            "value": "array",
-            "name": "Array"
-          }
-        ],
-        "defaultValue": "object",
-        "dependency": {
-          "type": "or",
-          "values": [
-            {
-              "key": "unnestSubquery",
-              "value": false
-            },
-            {
-              "key": "unnestSubquery",
-              "exist": false
-            }
-          ]
-        }
-      },
-      {
         "propertyName": "SQL/JSON function",
         "propertyKeyword": "sqlJsonFunction",
         "propertyTooltip": "Specify SQL function that will wrap joined table",
