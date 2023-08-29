@@ -16,6 +16,10 @@ module.exports = _ => {
 		return (entityData && (entityData.code || entityData.collectionName)) || '';
 	};
 
+	const getViewName = view => {
+		return (view && (view.code || view.name)) || '';
+	};
+
 	const getDbData = containerData => {
 		return Object.assign({}, _.get(containerData, '[0]', {}), { name: getDbName(containerData) });
 	};
@@ -125,10 +129,23 @@ module.exports = _ => {
 		}
 	};
 
+	const wrapInQuotes = name => `"${name}"`;
+
+	const wrapComment = comment => `'${comment}'`;
+
+	const getNamePrefixedWithSchemaName = (name, schemaName) => {
+		if (schemaName) {
+			return `${wrapInQuotes(schemaName)}.${wrapInQuotes(name)}`;
+		}
+
+		return wrapInQuotes(name);
+	};
+
 	return {
 		getDbName,
 		getDbData,
 		getEntityName,
+		getViewName,
 		getViewOn,
 		rejectRecursiveRelationships,
 		filterRecursiveRelationships,
@@ -140,5 +157,8 @@ module.exports = _ => {
 		divideIntoActivatedAndDeactivated,
 		commentIfDeactivated,
 		wrap,
+		wrapComment,
+		wrapInQuotes,
+		getNamePrefixedWithSchemaName
 	};
 };

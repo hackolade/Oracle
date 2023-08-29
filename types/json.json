@@ -10,9 +10,34 @@
 		"source": true
 	},
 	"dependency": {
-		"level": "model",
-		"key": "dbVersion",
-		"value": "21c"
+		"type": "or",
+		"values": [
+			{
+				"level": "model",
+				"key": "dbVersion",
+				"value": "21c"
+			},
+			{
+				"type": "and",
+				"values": [
+					{
+						"level": "model",
+						"key": "dbVersion",
+						"value": "23c"
+					},
+					{
+						"level": "root",
+						"key": "duality",
+						"value": false
+					},
+					{
+						"level": "root",
+						"key": "duality",
+						"exist": false
+					}
+				]
+			}
+		]
 	},
 	"compatibleWith": {
 		"type": "lobs",

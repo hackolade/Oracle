@@ -40,4 +40,16 @@ module.exports = {
 		"DECLARE\nBEGIN\n\tEXECUTE IMMEDIATE '${statement}';\n\tEXCEPTION WHEN OTHERS THEN\n\t\tIF SQLCODE = -${errorCode} THEN NULL; ELSE RAISE; END IF;\nEND;\n/\n",
 
 	createSynonym: 'CREATE${orReplace}${editionable}${public} SYNONYM ${name}\n\tFOR ${objectName};\n',
+
+	dualityView: {
+		createJsonRelationalDualityViewHeading: 'CREATE${orReplaceStatement}${forceStatement}${editionableStatement} JSON RELATIONAL DUALITY VIEW ${viewName} AS',
+
+		sql: {
+			tableTagsStatement: 'WITH${checkStatement}${etagStatement}${insertStatement}${updateStatement}${deleteStatement}',
+
+			columnTagsStatement: 'WITH${checkStatement}${etagStatement}${updateStatement}',
+
+			fromTableStatement: 'FROM ${tableName}${tableAlias}${tableTagsStatement}'
+		}
+	}
 };

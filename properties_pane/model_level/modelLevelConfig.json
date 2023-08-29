@@ -139,7 +139,8 @@ making sure that you maintain a proper JSON format.
 					"12c",
 					"18c",
 					"19c",
-					"21c"
+					"21c",
+					"23c"
 				],
 				"disabledOption": false,
 				"adapters": [
