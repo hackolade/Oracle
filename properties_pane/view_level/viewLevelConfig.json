@@ -109,7 +109,6 @@
 			    "propertyName": "Duality",
 			    "propertyKeyword": "duality",
 			    "propertyType": "checkbox",
-				"defaultValue": false,
 				"dependency": {
 					"type": "and",
 					"values": [
