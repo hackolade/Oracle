@@ -10464,6 +10464,11 @@ making sure that you maintain a proper JSON format.
         "changeAction": "setDualityViewJoinSubqueryChildTable"
       },
       {
+        "propertyKeyword": "childTableName",
+        "propertyType": "text",
+        "hidden": true
+      },
+      {
         "propertyName": "Child table alias",
         "propertyKeyword": "childTableAlias",
         "propertyType": "text",
