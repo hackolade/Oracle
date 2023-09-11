@@ -5993,6 +5993,208 @@ making sure that you maintain a proper JSON format.
         ]
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "type": "not",
+                "values": [
+                  {
+                    "type": "and",
+                    "values": [
+                      {
+                        "level": "root",
+                        "key": "viewOn",
+                        "exist": true
+                      },
+                      {
+                        "level": "root",
+                        "key": "duality",
+                        "value": true
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "fieldKeyword": "additionalProperties",
+        "dependency": [
+          {
+            "type": "not",
+            "values": [
+              {
+                "type": "and",
+                "values": [
+                  {
+                    "level": "root",
+                    "key": "viewOn",
+                    "exist": true
+                  },
+                  {
+                    "level": "root",
+                    "key": "duality",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "fieldKeyword": "minProperties",
+        "dependency": [
+          {
+            "type": "not",
+            "values": [
+              {
+                "type": "and",
+                "values": [
+                  {
+                    "level": "root",
+                    "key": "viewOn",
+                    "exist": true
+                  },
+                  {
+                    "level": "root",
+                    "key": "duality",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "fieldKeyword": "maxProperties",
+        "dependency": [
+          {
+            "type": "not",
+            "values": [
+              {
+                "type": "and",
+                "values": [
+                  {
+                    "level": "root",
+                    "key": "viewOn",
+                    "exist": true
+                  },
+                  {
+                    "level": "root",
+                    "key": "duality",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "fieldKeyword": "dependencies",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "type": "not",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "level": "root",
+                      "key": "viewOn",
+                      "exist": true
+                    },
+                    {
+                      "level": "root",
+                      "key": "duality",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "jsonSchemaSpec",
+                  "value": "draft-04"
+                },
+                {
+                  "key": "jsonSchemaSpec",
+                  "value": "draft-06"
+                },
+                {
+                  "key": "jsonSchemaSpec",
+                  "value": "draft-07"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
         "fieldKeyword": "isActivated",
         "dependency": [
           {
