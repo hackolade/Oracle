@@ -513,7 +513,7 @@ const getDbVersion = async logger => {
 		}
 
 		const v = version[0][0].split('.').shift() + 'c';
-		const versions = ['12c', '18c', '19c', '21c'];
+		const versions = ['12c', '18c', '19c', '21c', '23c'];
 
 		if (!versions.includes(v)) {
 			return '21c';

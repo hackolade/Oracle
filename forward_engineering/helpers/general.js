@@ -1,7 +1,17 @@
 module.exports = ({ _, divideIntoActivatedAndDeactivated, commentIfDeactivated }) => {
+    /**
+     * @deprecated Use utils/general.js
+     * */
     const wrapInQuotes = name => `"${name}"`;
+    /**
+     * @deprecated Use utils/general.js
+     * */
     const wrapComment = comment => `'${comment}'`;
 
+
+    /**
+     * @deprecated Use utils/general.js
+     * */
     const getNamePrefixedWithSchemaName = (name, schemaName) => {
         if (schemaName) {
             return `${wrapInQuotes(schemaName)}.${wrapInQuotes(name)}`;

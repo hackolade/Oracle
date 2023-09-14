@@ -37,7 +37,7 @@ const applyToInstance = async (connectionInfo, logger, app) => {
 	});
 
 	if (error) {
-		throw new Error('Not all statements executed successfully.\nPlease, see HackoladeRE.log for more details.');
+		throw new Error('Not all statements executed successfully.\nPlease, see HackoladeFE.log for more details.');
 	}
 };
 

@@ -4,7 +4,7 @@
     "versionDate": "2023-09-10",
     "author": "hackolade",
     "engines": {
-        "hackolade": "6.1.2",
+        "hackolade": "7.0.0",
         "hackoladePlugin": "1.2.0"
     },
     "contributes": {
@@ -15,7 +15,8 @@
                 "12c",
                 "18c",
                 "19c",
-				"21c"
+                "21c",
+                "23c"
             ]
         },
         "features": {
@@ -30,6 +31,7 @@
             "reverseSchemaIntoOneColumn": true,
             "disableDenormalization": true,
             "enableComplexTypesNormalization": true,
+            "restrictNestedFieldsAsPrimaryKey": false,
             "views": {
                 "enabled": true,
                 "viewLevel": "model",
