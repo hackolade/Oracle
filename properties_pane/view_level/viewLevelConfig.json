@@ -24,7 +24,6 @@
 				"propertyKeyword": "materialized",
 				"propertyTooltip": "Specify whether to create materialized view.",
 				"propertyType": "checkbox",
-				"defaultValue": false,
 				"dependency": {
 					"type": "or",
 					"values": [
