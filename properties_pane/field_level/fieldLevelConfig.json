@@ -10680,6 +10680,7 @@ making sure that you maintain a proper JSON format.
         "propertyName": "Unnest subquery",
         "propertyKeyword": "unnestSubquery",
         "propertyType": "checkbox",
+        "changeAction": "changeUnnestSubquery",
         "defaultValue": false,
         "dependency": {
           "type": "and",
