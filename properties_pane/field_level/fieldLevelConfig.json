@@ -1768,7 +1768,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
+        "propertyKeyword": "name",
         "propertyType": "text",
         "dependency": {
           "type": "and",
@@ -1787,8 +1787,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -3628,7 +3700,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
+        "propertyKeyword": "name",
         "propertyType": "text",
         "dependency": {
           "type": "and",
@@ -3647,8 +3719,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -5136,7 +5280,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
+        "propertyKeyword": "name",
         "propertyType": "text",
         "dependency": {
           "type": "and",
@@ -5155,8 +5299,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -5786,7 +6002,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
+        "propertyKeyword": "name",
         "propertyType": "text",
         "dependency": {
           "type": "and",
@@ -5805,8 +6021,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -6620,7 +6908,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
+        "propertyKeyword": "name",
         "propertyType": "text",
         "dependency": {
           "type": "and",
@@ -6639,8 +6927,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -7835,7 +8195,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
+        "propertyKeyword": "name",
         "propertyType": "text",
         "dependency": {
           "type": "and",
@@ -7854,8 +8214,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -9256,7 +9688,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
+        "propertyKeyword": "name",
         "propertyType": "text",
         "dependency": {
           "type": "and",
@@ -9275,8 +9707,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -9684,7 +10188,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
+        "propertyKeyword": "name",
         "propertyType": "text",
         "dependency": {
           "type": "and",
@@ -9703,8 +10207,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -10263,7 +10839,7 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
+        "propertyKeyword": "name",
         "propertyType": "text",
         "dependency": {
           "type": "and",
@@ -10282,8 +10858,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -10558,6 +11206,24 @@ making sure that you maintain a proper JSON format.
             ]
           }
         ]
+      },
+      {
+        "fieldKeyword": "code",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "level": "root",
+              "key": "viewOn",
+              "exist": true
+            },
+            {
+              "level": "root",
+              "key": "duality",
+              "value": true
+            }
+          ]
+        }
       },
       {
         "propertyName": "Subquery type",

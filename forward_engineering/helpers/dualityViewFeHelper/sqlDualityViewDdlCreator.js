@@ -219,15 +219,6 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     /**
      * @param propertyName {string}
      * @param propertyJsonSchema {Object}
-     * @return {string}
-     * */
-    _getRegularFieldName(propertyName, propertyJsonSchema) {
-        return propertyJsonSchema.jsonKey || propertyName;
-    }
-
-    /**
-     * @param propertyName {string}
-     * @param propertyJsonSchema {Object}
      * @param parent {Object}
      * @param paddingFactor {number}
      * @param relatedSchemas {Object}
@@ -243,7 +234,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
         const {wrap} = require('../../utils/general')(this._lodash);
 
         const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(paddingFactor);
-        const keyName = this._getRegularFieldName(propertyName, propertyJsonSchema);
+        const keyName = AbstractDualityViewFeDdlCreator.getRegularFieldName(propertyName, propertyJsonSchema);
         const ddlKeyName = wrap(keyName, "'", "'");
 
         const pathToReferencedColumn = AbstractDualityViewFeDdlCreator.getPathToReferencedColumn(propertyJsonSchema, parent);
