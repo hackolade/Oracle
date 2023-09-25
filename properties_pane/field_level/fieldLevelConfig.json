@@ -1769,7 +1769,12 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "JSON key",
         "propertyKeyword": "name",
-        "propertyType": "text",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -3701,7 +3706,12 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "JSON key",
         "propertyKeyword": "name",
-        "propertyType": "text",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -5281,7 +5291,12 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "JSON key",
         "propertyKeyword": "name",
-        "propertyType": "text",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -6003,7 +6018,12 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "JSON key",
         "propertyKeyword": "name",
-        "propertyType": "text",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -6909,7 +6929,12 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "JSON key",
         "propertyKeyword": "name",
-        "propertyType": "text",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -8196,7 +8221,12 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "JSON key",
         "propertyKeyword": "name",
-        "propertyType": "text",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -9689,7 +9719,12 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "JSON key",
         "propertyKeyword": "name",
-        "propertyType": "text",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -10189,7 +10224,12 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "JSON key",
         "propertyKeyword": "name",
-        "propertyType": "text",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -10840,7 +10880,12 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "JSON key",
         "propertyKeyword": "name",
-        "propertyType": "text",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -11189,7 +11234,11 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "JSON key",
         "propertyKeyword": "name",
-        "propertyType": "text",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
         "propertyTooltip": "Specify how the JSON key will be named in duality view definition",
         "dependency": [
           {
