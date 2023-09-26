@@ -25,7 +25,7 @@ module.exports = {
 	createIndex: 'CREATE${indexType} INDEX${name} ON ${tableName}${keys}${options};\n',
 
 	createView:
-		'CREATE${orReplace}${force}${viewType}${materialized} VIEW ${name} ${sharing}${viewProperties}\n\tAS ${selectStatement}',
+		'CREATE${orReplace}${force}${viewType}${materialized} VIEW${ifNotExists} ${name} ${sharing}${viewProperties}\n\tAS ${selectStatement}',
 
 	viewSelectStatement: 'SELECT ${keys}\n\tFROM ${tableName}',
 

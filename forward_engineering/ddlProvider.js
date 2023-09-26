@@ -3,6 +3,19 @@ const types = require('./configs/types');
 const templates = require('./configs/templates');
 const {DualityViewDdlCreatorFactory} = require("./helpers/dualityViewFeHelper/dualityViewDdlCreatorFactory");
 const {DualityViewSyntaxType} = require("./enums/DualityViewSyntaxType");
+const {DbVersion} = require("./enums/DbVersion");
+
+/**
+ * @param dbVersion {string} DB version in "21c" format
+ * @return {boolean}
+ * */
+const shouldUseTryCatchIfNotExistsWrapper = (dbVersion) => {
+    if (!(/[0-9]{2}c/.test(dbVersion))) {
+        return true;
+    }
+    const dbVersionAsNumber = Number(dbVersion.substring(0, 2));
+    return dbVersionAsNumber < DbVersion.IF_NOT_EXISTS_SINCE;
+}
 
 module.exports = (baseProvider, options, app) => {
     const _ = app.require('lodash');
@@ -84,9 +97,11 @@ module.exports = (baseProvider, options, app) => {
     });
 
     const wrapIfNotExists = (statement, ifNotExist, errorCode = 955) => {
-        return ifNotExist
-            ? assignTemplates(templates.ifNotExists, {statement: _.trim(tab(tab(statement))), errorCode})
-            : statement + ';';
+        if (ifNotExist) {
+            const ddlToWrap = _.trim(tab(tab(statement)));
+            return assignTemplates(templates.ifNotExists, {statement: ddlToWrap, errorCode})
+        }
+        return statement + ';';
     };
 
     const {generateSynonymStatements} = require('./helpers/synonymHelper')({
@@ -466,6 +481,9 @@ module.exports = (baseProvider, options, app) => {
                 tableTagsClause: detailsTab.tableTagsClause,
                 viewProperties: detailsTab.materialized ? detailsTab.mviewProperties : detailsTab.viewProperties,
                 synonyms: viewData.schemaData?.synonyms?.filter(synonym => synonym.synonymEntityId === jsonSchema.GUID) || [],
+                modelInfo: {
+                    dbVersion: _.get(viewData, 'schemaData.dbVersion'),
+                }
             };
         },
 
@@ -522,20 +540,26 @@ module.exports = (baseProvider, options, app) => {
 
             const synonymsStatements = generateSynonymStatements(viewData.synonyms, viewName, viewData.schemaName);
 
+            const dbVersion = _.get(viewData, 'modelInfo.dbVersion', '');
+            const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
+
+            let createViewDdl = assignTemplates(templates.createView, {
+                name: viewName,
+                ifNotExists: !usingTryCatchWrapper && viewData.ifNotExist ? ' IF NOT EXISTS' : '',
+                orReplace: viewData.orReplace && !viewData.materialized ? ' OR REPLACE' : '',
+                force: viewData.force && !viewData.materialized ? ' FORCE' : '',
+                materialized: viewData.materialized ? ' MATERIALIZED' : '',
+                viewType: !viewData.materialized ? getViewType(viewData) : '',
+                viewProperties: viewData.viewProperties ? ' \n' + tab(viewData.viewProperties) : '',
+                sharing: viewData.sharing && !viewData.materialized ? ` SHARING=${viewData.sharing}` : '',
+                selectStatement,
+            });
+            if (usingTryCatchWrapper) {
+                createViewDdl = wrapIfNotExists(createViewDdl, viewData.ifNotExist)
+            }
+
             return commentIfDeactivated(
-                wrapIfNotExists(
-                    assignTemplates(templates.createView, {
-                        name: viewName,
-                        orReplace: viewData.orReplace && !viewData.materialized ? ' OR REPLACE' : '',
-                        force: viewData.force && !viewData.materialized ? ' FORCE' : '',
-                        materialized: viewData.materialized ? ' MATERIALIZED' : '',
-                        viewType: !viewData.materialized ? getViewType(viewData) : '',
-                        viewProperties: viewData.viewProperties ? ' \n' + tab(viewData.viewProperties) : '',
-                        sharing: viewData.sharing && !viewData.materialized ? ` SHARING=${viewData.sharing}` : '',
-                        selectStatement,
-                    }),
-                    viewData.ifNotExist,
-                ) +
+                createViewDdl +
                 comment +
                 synonymsStatements,
                 {isActivated},
