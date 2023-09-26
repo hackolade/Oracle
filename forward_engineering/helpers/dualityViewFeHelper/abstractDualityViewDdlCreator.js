@@ -165,6 +165,15 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
+     * @param propertyName {string}
+     * @param propertyJsonSchema {Object}
+     * @return {string}
+     * */
+    static getRegularFieldName(propertyName, propertyJsonSchema) {
+        return propertyJsonSchema.code || propertyName || propertyJsonSchema.referencedColumnName;
+    }
+
+    /**
      * @param createViewDto {CreateViewDto}
      * @return {string}
      * */

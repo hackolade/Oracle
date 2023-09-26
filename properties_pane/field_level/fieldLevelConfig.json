@@ -1768,8 +1768,13 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
-        "propertyType": "text",
+        "propertyKeyword": "name",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -1787,8 +1792,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -3628,8 +3705,13 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
-        "propertyType": "text",
+        "propertyKeyword": "name",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -3647,8 +3729,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -5136,8 +5290,13 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
-        "propertyType": "text",
+        "propertyKeyword": "name",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -5155,8 +5314,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -5786,8 +6017,13 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
-        "propertyType": "text",
+        "propertyKeyword": "name",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -5805,8 +6041,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -6620,8 +6928,13 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
-        "propertyType": "text",
+        "propertyKeyword": "name",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -6639,8 +6952,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -7835,8 +8220,13 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
-        "propertyType": "text",
+        "propertyKeyword": "name",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -7854,8 +8244,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -9256,8 +9718,13 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
-        "propertyType": "text",
+        "propertyKeyword": "name",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -9275,8 +9742,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -9684,8 +10223,13 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
-        "propertyType": "text",
+        "propertyKeyword": "name",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -9703,8 +10247,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -10263,8 +10879,13 @@ making sure that you maintain a proper JSON format.
       },
       {
         "propertyName": "JSON key",
-        "propertyKeyword": "jsonKey",
-        "propertyType": "text",
+        "propertyKeyword": "name",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
+        "enableForReference": true,
         "dependency": {
           "type": "and",
           "values": [
@@ -10282,8 +10903,80 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "fieldKeyword": "code",
+        "dependency": [
+          {
+            "type": "and",
+            "values": [
+              {
+                "level": "root",
+                "key": "viewOn",
+                "exist": true
+              },
+              {
+                "level": "root",
+                "key": "duality",
+                "value": true
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "arrayItem",
+                    "value": false
+                  },
+                  {
+                    "key": "arrayItem",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subschema",
+                    "value": false
+                  },
+                  {
+                    "key": "subschema",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "isPatternField",
+                    "value": false
+                  },
+                  {
+                    "key": "isPatternField",
+                    "exist": false
+                  }
+                ]
+              },
+              {
+                "type": "or",
+                "values": [
+                  {
+                    "key": "containerLevelKey",
+                    "value": false
+                  },
+                  {
+                    "key": "containerLevelKey",
+                    "exist": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "propertyName": "Column name",
-        "propertyKeyword": "name",
+        "propertyKeyword": "referencedColumnName",
         "propertyType": "text",
         "customElement": true,
         "dependency": {
@@ -10541,7 +11234,11 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "JSON key",
         "propertyKeyword": "name",
-        "propertyType": "text",
+        "shouldValidate": true,
+        "propertyType": "coupled",
+        "coupledBy": "namingConvention",
+        "changeAction": "changeFieldBusinessName",
+        "onCoupleAction": "onCoupleBusinessName",
         "propertyTooltip": "Specify how the JSON key will be named in duality view definition",
         "dependency": [
           {
@@ -10558,6 +11255,24 @@ making sure that you maintain a proper JSON format.
             ]
           }
         ]
+      },
+      {
+        "fieldKeyword": "code",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "level": "root",
+              "key": "viewOn",
+              "exist": true
+            },
+            {
+              "level": "root",
+              "key": "duality",
+              "value": true
+            }
+          ]
+        }
       },
       {
         "propertyName": "Subquery type",
