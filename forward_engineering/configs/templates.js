@@ -4,7 +4,7 @@ module.exports = {
     comment: '\nCOMMENT ON ${object} ${objectName} IS ${comment};\n',
 
 	createTable:
-		'CREATE${tableType} TABLE ${name}\
+		'CREATE${tableType} TABLE${ifNotExists} ${name}\
         ${tableProps}\
         \n${options}',
 

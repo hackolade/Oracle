@@ -391,31 +391,37 @@ module.exports = (baseProvider, options, app) => {
 
             const commentStatements = comment || columnDescriptions ? '\n' + comment + columnDescriptions : '';
 
+            const dbVersion = schemaData.dbVersion || '';
+            const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
+
+            let createTableDdl = assignTemplates(templates.createTable, {
+                name: tableName,
+                ifNotExists: !usingTryCatchWrapper && ifNotExist ? ' IF NOT EXISTS' : '',
+                tableProps: tableProps ? `\n(\n\t${tableProps}\n)` : '',
+                tableType: getTableType({
+                    duplicated,
+                    external,
+                    immutable,
+                    sharded,
+                    temporary,
+                    temporaryType,
+                    blockchain_table_clauses,
+                }),
+                options: getTableOptions({
+                    blockchain_table_clauses,
+                    external_table_clause,
+                    storage,
+                    partitioning,
+                    selectStatement,
+                    tableProperties,
+                }),
+            });
+            if (usingTryCatchWrapper) {
+                createTableDdl = wrapIfNotExists(createTableDdl, ifNotExist);
+            }
+
             const tableStatement = commentIfDeactivated(
-                wrapIfNotExists(
-                    assignTemplates(templates.createTable, {
-                        name: tableName,
-                        tableProps: tableProps ? `\n(\n\t${tableProps}\n)` : '',
-                        tableType: getTableType({
-                            duplicated,
-                            external,
-                            immutable,
-                            sharded,
-                            temporary,
-                            temporaryType,
-                            blockchain_table_clauses,
-                        }),
-                        options: getTableOptions({
-                            blockchain_table_clauses,
-                            external_table_clause,
-                            storage,
-                            partitioning,
-                            selectStatement,
-                            tableProperties,
-                        }),
-                    }),
-                    ifNotExist,
-                ) +
+                createTableDdl +
                 `${commentStatements}\n` +
                 synonymsStatements,
                 {
