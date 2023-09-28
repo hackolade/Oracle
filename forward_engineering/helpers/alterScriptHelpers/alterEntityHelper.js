@@ -6,7 +6,7 @@ const getAddCollectionScript =
 		const _ = app.require('lodash');
 		const { getEntityName } = require('../../utils/general')(_);
 		const { createColumnDefinitionBySchema } = require('./createColumnDefinition')(app);
-		const ddlProvider = require('../../ddlProvider')(null, null, app);
+		const ddlProvider = require('../../ddlProvider/ddlProvider')(null, null, app);
 		const { getDefinitionByReference } = app.require('@hackolade/ddl-fe-utils');
 
 		const schemaName = collection.compMod.keyspaceName;
@@ -65,7 +65,7 @@ const getAddColumnScript =
 		const { getEntityName } = require('../../utils/general')(_);
 		const { getNamePrefixedWithSchemaName } = require('../general')({ _ });
 		const { createColumnDefinitionBySchema } = require('./createColumnDefinition')(app);
-		const ddlProvider = require('../../ddlProvider')(null, null, app);
+		const ddlProvider = require('../../ddlProvider/ddlProvider')(null, null, app);
 		const { getDefinitionByReference } = app.require('@hackolade/ddl-fe-utils');
 
 		const collectionSchema = { ...collection, ...(_.omit(collection?.role, 'properties') || {}) };

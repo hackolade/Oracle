@@ -1,6 +1,6 @@
 const getAddViewScript = app => view => {
 	const _ = app.require('lodash');
-	const ddlProvider = require('../../ddlProvider')(null, null, app);
+	const ddlProvider = require('../../ddlProvider/ddlProvider')(null, null, app);
 
 	const viewData = {
 		name: view.code || view.name,

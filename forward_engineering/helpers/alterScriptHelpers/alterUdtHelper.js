@@ -1,12 +1,12 @@
 const { checkFieldPropertiesChanged } = require('./common');
-const templates = require('../../configs/templates');
+const templates = require('../../ddlProvider/templates');
 
 const getCreateUdtScript =
 	({ app, dbVersion, modelDefinitions, internalDefinitions, externalDefinitions }) =>
 	jsonSchema => {
 		const _ = app.require('lodash');
 		const { createColumnDefinitionBySchema } = require('./createColumnDefinition')(app);
-		const ddlProvider = require('../../ddlProvider')(null, null, app);
+		const ddlProvider = require('../../ddlProvider/ddlProvider')(null, null, app);
 		const { getDefinitionByReference } = app.require('@hackolade/ddl-fe-utils');
 
 		const schemaData = { dbVersion };
@@ -55,7 +55,7 @@ const getAddColumnToTypeScript =
 		const _ = app.require('lodash');
 		const { createColumnDefinitionBySchema } = require('./createColumnDefinition')(app);
 		const { wrapInQuotes } = require('../general')({ _ });
-		const ddlProvider = require('../../ddlProvider')(null, null, app);
+		const ddlProvider = require('../../ddlProvider/ddlProvider')(null, null, app);
 		const { getDefinitionByReference } = app.require('@hackolade/ddl-fe-utils');
 
 		const fullName = wrapInQuotes(udt.code || udt.name);
