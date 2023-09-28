@@ -418,6 +418,8 @@ module.exports = (baseProvider, options, app) => {
             });
             if (usingTryCatchWrapper) {
                 createTableDdl = wrapIfNotExists(createTableDdl, ifNotExist);
+            } else {
+                createTableDdl += ';';
             }
 
             const tableStatement = commentIfDeactivated(
@@ -562,6 +564,8 @@ module.exports = (baseProvider, options, app) => {
             });
             if (usingTryCatchWrapper) {
                 createViewDdl = wrapIfNotExists(createViewDdl, viewData.ifNotExist)
+            } else {
+                createViewDdl += ';';
             }
 
             return commentIfDeactivated(
