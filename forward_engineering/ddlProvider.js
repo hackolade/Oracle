@@ -134,15 +134,22 @@ module.exports = (baseProvider, options, app) => {
             };
         },
 
-        createSchema({schemaName, ifNotExist}) {
-            const schemaStatement = wrapIfNotExists(
-                assignTemplates(templates.createSchema, {
-                    schemaName: wrapInQuotes(schemaName),
-                }),
+        createSchema({schemaName, ifNotExist, dbVersion}) {
+            const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
+            const schemaStatement = assignTemplates(templates.createSchema, {
+                schemaName: wrapInQuotes(schemaName),
+                ifNotExists: !usingTryCatchWrapper && ifNotExist ? ' IF NOT EXISTS' : '',
+            });
+
+            if (!usingTryCatchWrapper) {
+                return schemaStatement + ';';
+            }
+
+            return wrapIfNotExists(
+                schemaStatement,
                 ifNotExist,
                 1920,
             );
-            return schemaStatement;
         },
 
         hydrateColumn({columnDefinition, jsonSchema, schemaData, definitionJsonSchema = {}}) {
