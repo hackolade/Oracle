@@ -1,7 +1,7 @@
 const defaultTypes = require('../configs/defaultTypes');
 const descriptors = require('../configs/descriptors');
 const templates = require('./templates');
-const {DualityViewDdlCreatorFactory} = require("../helpers/dualityViewFeHelper/dualityViewDdlCreatorFactory");
+const {DualityViewDdlCreatorFactory} = require("./ddlHelpers/dualityViewFeHelper/dualityViewDdlCreatorFactory");
 const {DualityViewSyntaxType} = require("../enums/DualityViewSyntaxType");
 const {DbVersion} = require("../enums/DbVersion");
 

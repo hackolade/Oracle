@@ -179,7 +179,7 @@ class AbstractDualityViewFeDdlCreator {
      * */
     getCreateJsonRelationalDualityViewHeadingDdl(createViewDto) {
         const { jsonSchema, view } = createViewDto;
-        const {getViewName, getNamePrefixedWithSchemaName} = require('../../utils/general')(this._lodash);
+        const {getViewName, getNamePrefixedWithSchemaName} = require('../../../utils/general')(this._lodash);
         const template = this._ddlTemplates?.dualityView?.createJsonRelationalDualityViewHeading || '';
 
         const orReplaceStatement = this._getOrReplaceStatement(view);
