@@ -30,15 +30,14 @@ module.exports = (baseProvider, options, app) => {
         hasType,
         wrap,
         clean,
+        wrapInQuotes,
+        getNamePrefixedWithSchemaName,
+        wrapComment,
+        getColumnsList
     } = require('../utils/general')(_);
 
     const {assignTemplates} = require('../utils/assignTemplates')({_});
 
-    const {wrapInQuotes, getNamePrefixedWithSchemaName, wrapComment, getColumnsList} = require('../helpers/general')({
-        _,
-        divideIntoActivatedAndDeactivated,
-        commentIfDeactivated,
-    });
 
     const keyHelper = require('../helpers/keyHelper')(_, clean);
 

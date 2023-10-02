@@ -44,7 +44,7 @@ const getCreateUdtScript =
 
 const getDeleteUdtScript = app => udt => {
 	const _ = app.require('lodash');
-	const { wrapInQuotes } = require('../general')({ _ });
+	const { wrapInQuotes } = require('../../utils/general')(_);
 
 	return `DROP TYPE ${wrapInQuotes(udt.code || udt.name)};`;
 };
@@ -54,7 +54,7 @@ const getAddColumnToTypeScript =
 	udt => {
 		const _ = app.require('lodash');
 		const { createColumnDefinitionBySchema } = require('./createColumnDefinition')(app);
-		const { wrapInQuotes } = require('../general')({ _ });
+		const { wrapInQuotes } = require('../../utils/general')(_);
 		const ddlProvider = require('../../ddlProvider/ddlProvider')(null, null, app);
 		const { getDefinitionByReference } = app.require('@hackolade/ddl-fe-utils');
 
@@ -86,7 +86,7 @@ const getAddColumnToTypeScript =
 
 const getDeleteColumnFromTypeScript = app => udt => {
 	const _ = app.require('lodash');
-	const { wrapInQuotes } = require('../general')({ _ });
+	const { wrapInQuotes } = require('../../utils/general')(_);
 
 	const fullName = wrapInQuotes(udt.code || udt.name);
 
@@ -97,7 +97,7 @@ const getDeleteColumnFromTypeScript = app => udt => {
 
 const getModifyColumnOfTypeScript = app => udt => {
 	const _ = app.require('lodash');
-	const { wrapInQuotes } = require('../general')({ _ });
+	const { wrapInQuotes } = require('../../utils/general')(_);
 
 	const fullName = wrapInQuotes(udt.code || udt.name);
 

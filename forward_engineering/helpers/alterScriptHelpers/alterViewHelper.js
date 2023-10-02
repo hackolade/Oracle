@@ -13,7 +13,7 @@ const getAddViewScript = app => view => {
 
 const getDeleteViewScript = app => view => {
 	const _ = app.require('lodash');
-	const { wrapInQuotes } = require('../general')({ _ });
+	const { wrapInQuotes } = require('../../utils/general')(_);
 	const viewName = wrapInQuotes(view.code || view.name);
 
 	return `DROP VIEW ${viewName};`;
