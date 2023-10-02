@@ -133,11 +133,19 @@ module.exports = (baseProvider, options, app) => {
             };
         },
 
-        createSchema({schemaName, ifNotExist}) {
+        createSchema({schemaName, ifNotExist, dbVersion}) {
+            const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
+            const schemaStatement = assignTemplates(templates.createSchema, {
+                schemaName: wrapInQuotes(schemaName),
+                ifNotExists: !usingTryCatchWrapper && ifNotExist ? ' IF NOT EXISTS' : '',
+            });
+
+            if (!usingTryCatchWrapper) {
+                return schemaStatement + ';';
+            }
+
             return wrapIfNotExists(
-                assignTemplates(templates.createSchema, {
-                    schemaName: wrapInQuotes(schemaName),
-                }),
+                schemaStatement,
                 ifNotExist,
                 1920,
             );
