@@ -1,6 +1,11 @@
-const { checkFieldPropertiesChanged } = require('../../utils/general')();
+const {AlterScriptDto} = require("../types/AlterScriptDto");
+const {getUpdateTypesScriptDtos} = require("./columnHelpers/alterTypeHelper");
+const {getRenameColumnScriptDtos} = require("./columnHelpers/renameColumnHelper");
 
-const getAddCollectionScript =
+/**
+ * @return {(collection: AlterCollectionDto) => AlterScriptDto | undefined}
+ * */
+const getAddCollectionScriptDto =
 	({ app, dbVersion, modelDefinitions, internalDefinitions, externalDefinitions }) =>
 	collection => {
 		const _ = app.require('lodash');
@@ -42,10 +47,14 @@ const getAddCollectionScript =
 		};
 		const hydratedTable = ddlProvider.hydrateTable({ tableData, entityData: [jsonSchema], jsonSchema });
 
-		return ddlProvider.createTable(hydratedTable, jsonSchema.isActivated);
+		const script = ddlProvider.createTable(hydratedTable, jsonSchema.isActivated);
+		return AlterScriptDto.getInstance([script], true, false);
 	};
 
-const getDeleteCollectionScript = app => collection => {
+/**
+ * @return {(collection: AlterCollectionDto) => AlterScriptDto | undefined}
+ * */
+const getDeleteCollectionScriptDto = app => collection => {
 	const _ = app.require('lodash');
 	const { getEntityName, getNamePrefixedWithSchemaName } = require('../../utils/general')(_);
 
@@ -54,10 +63,14 @@ const getDeleteCollectionScript = app => collection => {
 	const schemaName = collection.compMod.keyspaceName;
 	const fullName = getNamePrefixedWithSchemaName(tableName, schemaName);
 
-	return `DROP TABLE ${fullName};`;
+	const script = `DROP TABLE ${fullName};`;
+	return AlterScriptDto.getInstance([script], true, true);
 };
 
-const getAddColumnScript =
+/**
+ * @return {(collection: Object) => AlterScriptDto[]}
+ * */
+const getAddColumnScriptDtos =
 	({ app, dbVersion, modelDefinitions, internalDefinitions, externalDefinitions }) =>
 	collection => {
 		const _ = app.require('lodash');
@@ -92,10 +105,15 @@ const getAddColumnScript =
 				});
 			})
 			.map(data => ddlProvider.convertColumnDefinition(data))
-			.map(script => `ALTER TABLE ${fullName} ADD (${script});`);
+			.map(script => `ALTER TABLE ${fullName} ADD (${script});`)
+			.map(script => AlterScriptDto.getInstance([script], true, false))
+			.filter(Boolean);
 	};
 
-const getDeleteColumnScript = app => collection => {
+/**
+ * @return {(collection: Object) => AlterScriptDto[]}
+ * */
+const getDeleteColumnScriptDtos = app => collection => {
 	const _ = app.require('lodash');
 	const { getEntityName, getNamePrefixedWithSchemaName, wrapInQuotes } = require('../../utils/general')(_);
 	const collectionSchema = { ...collection, ...(_.omit(collection?.role, 'properties') || {}) };
@@ -105,43 +123,30 @@ const getDeleteColumnScript = app => collection => {
 
 	return _.toPairs(collection.properties)
 		.filter(([name, jsonSchema]) => !jsonSchema.compMod)
-		.map(([name]) => `ALTER TABLE ${fullName} DROP COLUMN ${wrapInQuotes(name)};`);
+		.map(([name]) => `ALTER TABLE ${fullName} DROP COLUMN ${wrapInQuotes(name)};`)
+		.map(script => AlterScriptDto.getInstance([script], true, true))
+		.filter(Boolean);
 };
 
-const getModifyColumnScript = app => collection => {
+/**
+ * @return {(collection: Object) => AlterScriptDto[]}
+ * */
+const getModifyColumnScriptDtos = app => collection => {
 	const _ = app.require('lodash');
-	const { getEntityName, getNamePrefixedWithSchemaName, wrapInQuotes } = require('../../utils/general')(_);
+	const ddlProvider = require('../../ddlProvider/ddlProvider')(null, null, app);
 
-	const collectionSchema = { ...collection, ...(_.omit(collection?.role, 'properties') || {}) };
-	const tableName = getEntityName(collectionSchema);
-	const schemaName = collectionSchema.compMod?.keyspaceName;
-	const fullName = getNamePrefixedWithSchemaName(tableName, schemaName);
+	const renameColumnScriptDtos = getRenameColumnScriptDtos(_, ddlProvider)(collection);
+	const updateTypeScriptDtos = getUpdateTypesScriptDtos(_, ddlProvider)(collection);
 
-	const renameColumnScripts = _.values(collection.properties)
-		.filter(jsonSchema => checkFieldPropertiesChanged(jsonSchema.compMod, ['name']))
-		.map(
-			jsonSchema =>
-				`ALTER TABLE ${fullName} RENAME COLUMN ${wrapInQuotes(
-					jsonSchema.compMod.oldField.name,
-				)} TO ${wrapInQuotes(jsonSchema.compMod.newField.name)};`,
-		);
-
-	const changeTypeScripts = _.toPairs(collection.properties)
-		.filter(([name, jsonSchema]) => checkFieldPropertiesChanged(jsonSchema.compMod, ['type', 'mode']))
-		.map(
-			([name, jsonSchema]) =>
-				`ALTER TABLE ${fullName} MODIFY (${wrapInQuotes(name)} ${_.toUpper(
-					jsonSchema.compMod.newField.mode || jsonSchema.compMod.newField.type,
-				)});`,
-		);
-
-	return [...renameColumnScripts, ...changeTypeScripts];
-};
+	return [
+		...renameColumnScriptDtos,
+		...updateTypeScriptDtos,
+	].filter(Boolean);};
 
 module.exports = {
-	getAddCollectionScript,
-	getDeleteCollectionScript,
-	getAddColumnScript,
-	getDeleteColumnScript,
-	getModifyColumnScript,
+	getAddCollectionScriptDto,
+	getDeleteCollectionScriptDto,
+	getAddColumnScriptDtos,
+	getDeleteColumnScriptDtos,
+	getModifyColumnScriptDtos,
 };

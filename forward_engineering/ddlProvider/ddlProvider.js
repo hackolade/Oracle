@@ -607,5 +607,19 @@ module.exports = (baseProvider, options, app) => {
         commentIfDeactivated(statement, data, isPartOfLine) {
             return statement;
         },
+
+        /**
+         * @param tableName {string}
+         * @param oldColumnName {string}
+         * @param newColumnName {string}
+         * @return string
+         * */
+        renameColumn(tableName, oldColumnName, newColumnName) {
+            return assignTemplates(templates.renameColumn, {
+                tableName,
+                oldColumnName,
+                newColumnName
+            });
+        },
     };
 };
