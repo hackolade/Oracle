@@ -26,7 +26,7 @@ module.exports = ({
     };
 
     const getColumnConstraints = ({nullable, unique, primaryKey, primaryKeyOptions, uniqueKeyOptions}) => {
-        const {constraintString, statement} = getOptionsString(getOptions({ primaryKey, unique, primaryKeyOptions, uniqueKeyOptions })); 
+        const {constraintString, statement} = getOptionsString(getOptions({ primaryKey, unique, primaryKeyOptions, uniqueKeyOptions }));
         const primaryKeyString = primaryKey ? ` PRIMARY KEY` : '';
         const uniqueKeyString = unique ? ` UNIQUE` : '';
         const nullableString = nullable ? '' : ' NOT NULL';
@@ -112,7 +112,7 @@ module.exports = ({
     };
 
     const timestamp = (fractSecPrecision, withTimeZone, localTimeZone) => {
-        return ` TIMESTAMP${_.isNumber(fractSecPrecision) ? `(${fractSecPrecision})` : ''}${withTimeZone ? ` WITH${localTimeZone ? ' LOCAL' : ''} TIME ZONE` : ''}`;;
+        return ` TIMESTAMP${_.isNumber(fractSecPrecision) ? `(${fractSecPrecision})` : ''}${withTimeZone ? ` WITH${localTimeZone ? ' LOCAL' : ''} TIME ZONE` : ''}`;
     };
 
     const intervalYear = (yearPrecision) => {
@@ -155,8 +155,8 @@ module.exports = ({
     };
 
     /**
-	 * 
-	 * @param {string} type 
+	 *
+	 * @param {string} type
 	 * @returns {boolean}
 	 */
 	const canHaveIdentity = (type) => {

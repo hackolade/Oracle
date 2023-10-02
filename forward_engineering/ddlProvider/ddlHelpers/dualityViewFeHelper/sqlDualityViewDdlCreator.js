@@ -18,7 +18,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @return {string}
      * */
     _getFromRootTableAliasStatement(view) {
-        const {wrapInQuotes} = require('../../utils/general')(this._lodash);
+        const {wrapInQuotes} = require('../../../utils/general')(this._lodash);
 
         if (view.rootTableAlias) {
             const ddlAlias = wrapInQuotes(view.rootTableAlias);
@@ -32,7 +32,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @return {string}
      * */
     _getFromChildTableAliasStatement(joinSubqueryJsonSchema) {
-        const {wrapInQuotes} = require('../../utils/general')(this._lodash);
+        const {wrapInQuotes} = require('../../../utils/general')(this._lodash);
 
         if (joinSubqueryJsonSchema.childTableAlias) {
             const ddlAlias = wrapInQuotes(joinSubqueryJsonSchema.childTableAlias);
@@ -139,7 +139,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @return {string}
      * */
     _getFromRootTableStatement(view) {
-        const {getNamePrefixedWithSchemaName} = require('../../utils/general')(this._lodash);
+        const {getNamePrefixedWithSchemaName} = require('../../../utils/general')(this._lodash);
         const ddlTableName = getNamePrefixedWithSchemaName(view.tableName, view.schemaName);
         const aliasStatement = this._getFromRootTableAliasStatement(view);
         const tagsClauseStatement = this._getTableTagsStatement(view);
@@ -165,7 +165,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
         }
         const child = relatedSchemas[collectionId];
 
-        const {getEntityName, getNamePrefixedWithSchemaName} = require('../../utils/general')(this._lodash);
+        const {getEntityName, getNamePrefixedWithSchemaName} = require('../../../utils/general')(this._lodash);
         const tableName = getEntityName(child);
         const schemaName = child.bucketName;
 
@@ -196,7 +196,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
      * @return {string}
      * */
     _getNameOfReferencedColumnForDdl(parentEntity, propertyName, relatedSchemas) {
-        const {getEntityName, getNamePrefixedWithSchemaName} = require('../../utils/general')(this._lodash);
+        const {getEntityName, getNamePrefixedWithSchemaName} = require('../../../utils/general')(this._lodash);
         if (AbstractDualityViewFeDdlCreator.isDualityView(parentEntity)) {
             const parentName = parentEntity.rootTableAlias || parentEntity.tableName;
             return getNamePrefixedWithSchemaName(propertyName, parentName);
@@ -231,7 +231,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
                                             paddingFactor,
                                             relatedSchemas
                                         }) {
-        const {wrap} = require('../../utils/general')(this._lodash);
+        const {wrap} = require('../../../utils/general')(this._lodash);
 
         const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(paddingFactor);
         const keyName = AbstractDualityViewFeDdlCreator.getRegularFieldName(propertyName, propertyJsonSchema);
@@ -305,7 +305,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
                                             paddingFactor,
                                             relatedSchemas
                                         }) {
-        const {wrap} = require('../../utils/general')(this._lodash);
+        const {wrap} = require('../../../utils/general')(this._lodash);
 
         const valueStatement = this._getJoinSubqueryValueStatement({
             relatedSchemas,

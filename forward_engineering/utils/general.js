@@ -141,6 +141,26 @@ module.exports = _ => {
 		return wrapInQuotes(name);
 	};
 
+	const checkFieldPropertiesChanged = (compMod, propertiesToCheck) => {
+		return propertiesToCheck.some(prop => compMod?.oldField[prop] !== compMod?.newField[prop]);
+	};
+
+	const columnMapToString = ({ name }) => wrapInQuotes(name);
+
+	const getColumnsList = (columns, isAllColumnsDeactivated, isParentActivated, mapColumn = columnMapToString) => {
+		const dividedColumns = divideIntoActivatedAndDeactivated(columns, mapColumn);
+		const deactivatedColumnsAsString = dividedColumns?.deactivatedItems?.length
+			? commentIfDeactivated(dividedColumns.deactivatedItems.join(', '), {
+				isActivated: false,
+				isPartOfLine: true,
+			})
+			: '';
+
+		return !isAllColumnsDeactivated && isParentActivated
+			? ' (' + dividedColumns.activatedItems.join(', ') + deactivatedColumnsAsString + ')'
+			: ' (' + columns.map(mapColumn).join(', ') + ')';
+	};
+
 	return {
 		getDbName,
 		getDbData,
@@ -159,6 +179,8 @@ module.exports = _ => {
 		wrap,
 		wrapComment,
 		wrapInQuotes,
-		getNamePrefixedWithSchemaName
+		getNamePrefixedWithSchemaName,
+		checkFieldPropertiesChanged,
+		getColumnsList,
 	};
 };

@@ -1,4 +1,4 @@
-const {DualityViewSyntaxType} = require("../../enums/DualityViewSyntaxType");
+const {DualityViewSyntaxType} = require("../../../enums/DualityViewSyntaxType");
 const {SqlDualityViewDdlCreator} = require("./sqlDualityViewDdlCreator");
 
 class DualityViewDdlCreatorFactory {
