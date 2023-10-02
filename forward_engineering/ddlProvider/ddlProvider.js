@@ -39,7 +39,7 @@ module.exports = (baseProvider, options, app) => {
     const {assignTemplates} = require('../utils/assignTemplates')({_});
 
 
-    const keyHelper = require('../helpers/keyHelper')(_, clean);
+    const keyHelper = require('./ddlHelpers/keyHelper')(_, clean);
 
     const {
         getColumnComments,
@@ -49,7 +49,7 @@ module.exports = (baseProvider, options, app) => {
         getColumnEncrypt,
         decorateType,
         canHaveIdentity,
-    } = require('../helpers/columnDefinitionHelper.js')({
+    } = require('./ddlHelpers/columnDefinitionHelper.js')({
         _,
         wrap,
         assignTemplates,
@@ -67,7 +67,7 @@ module.exports = (baseProvider, options, app) => {
         foreignActiveKeysToString,
         createKeyConstraint,
         customPropertiesForForeignKey,
-    } = require('../helpers/tableHelper')({
+    } = require('./ddlHelpers/tableHelper')({
         _,
         checkAllKeysDeactivated,
         getColumnsList,
@@ -76,7 +76,7 @@ module.exports = (baseProvider, options, app) => {
         assignTemplates,
     });
 
-    const {getUserDefinedType, isNotPlainType} = require('../helpers/udtHelper')({
+    const {getUserDefinedType, isNotPlainType} = require('./ddlHelpers/udtHelper')({
         _,
         commentIfDeactivated,
         assignTemplates,
@@ -85,12 +85,12 @@ module.exports = (baseProvider, options, app) => {
         wrapInQuotes,
     });
 
-    const {getViewType, getViewData} = require('../helpers/viewHelper')({
+    const {getViewType, getViewData} = require('./ddlHelpers/viewHelper')({
         _,
         wrapInQuotes,
     });
 
-    const {getIndexType, getIndexKeys, getIndexOptions, getIndexName} = require('../helpers/indexHelper')({
+    const {getIndexType, getIndexKeys, getIndexOptions, getIndexName} = require('./ddlHelpers/indexHelper')({
         _,
         wrapInQuotes,
     });
@@ -103,7 +103,7 @@ module.exports = (baseProvider, options, app) => {
         return statement + ';';
     };
 
-    const {generateSynonymStatements} = require('../helpers/synonymHelper')({
+    const {generateSynonymStatements} = require('./ddlHelpers/synonymHelper')({
         wrapInQuotes,
         templates,
         assignTemplates,
