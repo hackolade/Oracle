@@ -20,7 +20,6 @@ const {
 const {
     getAddViewScriptDto,
     getDeleteViewScriptDto,
-    getModifyViewScriptDtos
 } = require('./alterScriptHelpers/alterViewHelper');
 const {AlterScriptDto, ModificationScript} = require("./types/AlterScriptDto");
 const {App, CoreData} = require("../types/coreApplicationTypes");
@@ -140,17 +139,9 @@ const getAlterViewScriptDtos = (collection, app) => {
         .map(view => ({...view, ...(view.role || {})}))
         .map(getDeleteViewScriptDto(app));
 
-    const modifyViewsScriptDtos = []
-        .concat(collection.properties?.views?.properties?.modified?.items)
-        .filter(Boolean)
-        .map(viewWrapper => Object.values(viewWrapper.properties)[0])
-        .map(view => ({...view, ...(view.role || {})}))
-        .flatMap(view => getModifyViewScriptDtos(app)(view));
-
     return [
         ...deleteViewsScriptDtos,
         ...createViewsScriptDtos,
-        ...modifyViewsScriptDtos,
     ].filter(Boolean);
 };
 

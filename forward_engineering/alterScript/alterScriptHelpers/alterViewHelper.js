@@ -1,5 +1,9 @@
-const getAddViewScript = app => view => {
-	const _ = app.require('lodash');
+const {AlterScriptDto} = require("../types/AlterScriptDto");
+
+/**
+ * @return {(view: Object) => AlterScriptDto | undefined}
+ * */
+const getAddViewScriptDto = app => view => {
 	const ddlProvider = require('../../ddlProvider/ddlProvider')(null, null, app);
 
 	const viewData = {
@@ -8,18 +12,23 @@ const getAddViewScript = app => view => {
 		schemaData: { schemaName: '' },
 	};
 	const hydratedView = ddlProvider.hydrateView({ viewData, entityData: [view] });
-	return ddlProvider.createView(hydratedView, {}, view.isActivated);
+	const createViewStatement = ddlProvider.createView(hydratedView, {}, view.isActivated);
+	return AlterScriptDto.getInstance([createViewStatement], true, false);
 };
 
-const getDeleteViewScript = app => view => {
+/**
+ * @return {(view: Object) => AlterScriptDto | undefined}
+ * */
+const getDeleteViewScriptDto = app => view => {
 	const _ = app.require('lodash');
 	const { wrapInQuotes } = require('../../utils/general')(_);
-	const viewName = wrapInQuotes(view.code || view.name);
+	const ddlViewName = wrapInQuotes(view.code || view.name);
 
-	return `DROP VIEW ${viewName};`;
+	const dropViewScript = `DROP VIEW ${ddlViewName};`;
+	return AlterScriptDto.getInstance([dropViewScript], true, true);
 };
 
 module.exports = {
-	getAddViewScript,
-	getDeleteViewScript,
+	getAddViewScriptDto,
+	getDeleteViewScriptDto,
 };
