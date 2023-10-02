@@ -122,6 +122,9 @@ const getModifyColumnOfTypeScriptDtos = app => udt => {
 
     const fullName = wrapInQuotes(udt.code || udt.name);
 
+    /**
+     * @type {AlterScriptDto[]}
+     * */
     const renameColumnScripts = _.values(udt.properties)
         .filter(jsonSchema => checkFieldPropertiesChanged(jsonSchema.compMod, ['name']))
         .flatMap(
@@ -139,6 +142,9 @@ const getModifyColumnOfTypeScriptDtos = app => udt => {
             }
         );
 
+    /**
+     * @type {AlterScriptDto[]}
+     * */
     const changeTypeScripts = _.toPairs(udt.properties)
         .filter(([name, jsonSchema]) => checkFieldPropertiesChanged(jsonSchema.compMod, ['type', 'mode']))
         .map(

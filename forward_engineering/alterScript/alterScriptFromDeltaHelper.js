@@ -177,7 +177,7 @@ const getAlterModelDefinitionsScriptDtos = ({
         .map(item => Object.values(item.properties)[0])
         .filter(item => !item.compMod)
         .map(item => ({...item, ...(app.require('lodash').omit(item.role, 'properties') || {})}))
-        .filter(item => item.childType === 'composite')
+        .filter(item => item.childType === 'object_udt')
         .flatMap(
             getAddColumnToTypeScriptDtos({app, dbVersion, modelDefinitions, internalDefinitions, externalDefinitions}),
         );
@@ -187,7 +187,7 @@ const getAlterModelDefinitionsScriptDtos = ({
         .map(item => Object.values(item.properties)[0])
         .filter(item => !item.compMod)
         .map(item => ({...item, ...(app.require('lodash').omit(item.role, 'properties') || {})}))
-        .filter(item => item.childType === 'composite')
+        .filter(item => item.childType === 'object_udt')
         .flatMap(getDeleteColumnFromTypeScriptDtos(app));
 
     const modifyColumnScriptDtos = []
@@ -196,7 +196,7 @@ const getAlterModelDefinitionsScriptDtos = ({
         .map(item => Object.values(item.properties)[0])
         .filter(item => !item.compMod)
         .map(item => ({...item, ...(app.require('lodash').omit(item.role, 'properties') || {})}))
-        .filter(item => item.childType === 'composite')
+        .filter(item => item.childType === 'object_udt')
         .flatMap(getModifyColumnOfTypeScriptDtos(app));
 
     return [
