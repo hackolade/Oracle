@@ -1,7 +1,6 @@
 const {
     getAddContainerScriptDto,
     getDeleteContainerScriptDto,
-    getModifyContainerScriptDtos
 } = require('./alterScriptHelpers/alterContainerHelper');
 const {
     getAddCollectionScriptDto,
@@ -38,7 +37,6 @@ const {InternalDefinitions, ModelDefinitions, ExternalDefinitions} = require("..
 const getAlterContainersScriptDtos = ({collection, app}) => {
     const addedContainers = collection.properties?.containers?.properties?.added?.items;
     const deletedContainers = collection.properties?.containers?.properties?.deleted?.items;
-    const modifiedContainers = collection.properties?.containers?.properties?.modified?.items;
 
     const addContainersScriptDtos = []
         .concat(addedContainers)
@@ -48,16 +46,10 @@ const getAlterContainersScriptDtos = ({collection, app}) => {
         .concat(deletedContainers)
         .filter(Boolean)
         .map(container => getDeleteContainerScriptDto(app)(Object.keys(container.properties)[0]));
-    const modifyContainersScriptDtos = []
-        .concat(modifiedContainers)
-        .filter(Boolean)
-        .map(containerWrapper => Object.values(containerWrapper.properties)[0])
-        .flatMap(container => getModifyContainerScriptDtos(app)(container))
 
     return [
         ...addContainersScriptDtos,
         ...deleteContainersScriptDtos,
-        ...modifyContainersScriptDtos,
     ].filter(Boolean);
 };
 

@@ -1,12 +1,30 @@
-const getAddContainerScript = containerName => {
-	return `CREATE USER "${containerName}" NO AUTHENTICATION;`;
+const {AlterScriptDto} = require("../types/AlterScriptDto");
+
+/**
+ * @return {(containerName: string) => AlterScriptDto | undefined}
+ * */
+const getAddContainerScriptDto = (app) => (containerName) => {
+	const _ = app.require('lodash');
+	const {wrapInQuotes} = require('../../utils/general')(_);
+	const ddlContainerName = wrapInQuotes(containerName);
+
+	const createContainerStatement = `CREATE USER ${ddlContainerName} NO AUTHENTICATION;`;
+	return AlterScriptDto.getInstance([createContainerStatement], true, false);
 };
 
-const getDeleteContainerScript = containerName => {
-	return `DROP USER "${containerName}";`;
+/**
+ * @return {(containerName: string) => AlterScriptDto | undefined}
+ * */
+const getDeleteContainerScriptDto = (app) => (containerName) => {
+	const _ = app.require('lodash');
+	const {wrapInQuotes} = require('../../utils/general')(_);
+	const ddlContainerName = wrapInQuotes(containerName);
+
+	const dropContainerStatement = `DROP USER ${ddlContainerName};`;
+	return AlterScriptDto.getInstance([dropContainerStatement], true, true);
 };
 
 module.exports = {
-	getAddContainerScript,
-	getDeleteContainerScript,
+	getAddContainerScriptDto,
+	getDeleteContainerScriptDto,
 };
