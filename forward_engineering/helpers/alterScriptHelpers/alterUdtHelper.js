@@ -1,4 +1,4 @@
-const { checkFieldPropertiesChanged } = require('./common');
+const { checkFieldPropertiesChanged } = require('../../utils/general')();
 const templates = require('../../ddlProvider/templates');
 
 const getCreateUdtScript =

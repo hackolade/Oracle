@@ -1,4 +1,4 @@
-const { checkFieldPropertiesChanged } = require('./common');
+const { checkFieldPropertiesChanged } = require('../../utils/general')();
 
 const getAddCollectionScript =
 	({ app, dbVersion, modelDefinitions, internalDefinitions, externalDefinitions }) =>

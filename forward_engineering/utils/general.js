@@ -141,6 +141,10 @@ module.exports = _ => {
 		return wrapInQuotes(name);
 	};
 
+	const checkFieldPropertiesChanged = (compMod, propertiesToCheck) => {
+		return propertiesToCheck.some(prop => compMod?.oldField[prop] !== compMod?.newField[prop]);
+	};
+
 	return {
 		getDbName,
 		getDbData,
@@ -159,6 +163,7 @@ module.exports = _ => {
 		wrap,
 		wrapComment,
 		wrapInQuotes,
-		getNamePrefixedWithSchemaName
+		getNamePrefixedWithSchemaName,
+		checkFieldPropertiesChanged,
 	};
 };
