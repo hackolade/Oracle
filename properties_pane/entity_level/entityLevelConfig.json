@@ -441,6 +441,18 @@ making sure that you maintain a proper JSON format.
 						}
 					},
 					{
+						"propertyName": "Custom interval",
+						"propertyKeyword": "customInterval",
+						"propertyType": "text",
+						"template": "textarea",
+						"allowNegative": false,
+						"step": 1,
+						"dependency": {
+							"key": "partitionBy",
+							"value": ["range", "composite range"]
+						}
+					},
+					{
 						"propertyName": "Subpartition type",
 						"propertyKeyword": "subpartitionType",
 						"propertyTooltip": "Choose the desired subpartition type",
