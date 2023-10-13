@@ -107,14 +107,13 @@ module.exports = ({ _, getColumnsList, checkAllKeysDeactivated, commentIfDeactiv
     };
 
     const getPartitioning = (value, { isActivated }) => {
-        const partitionArgumentPrefixOnPartitionBy = value.partitionBy === 'range' && value.interval ? 'COLUMNS' : ''
-
         if (value?.partitionBy) {
             const expression = getPartitionKeys(value, isActivated);
             const partitionClause = getPartitionClause(value, isActivated);
 
-            return `PARTITION BY ${_.toUpper(_.startsWith(value.partitionBy, 'composite') ? _.last(value.partitionBy.split(' ')) : value.partitionBy)} ${partitionArgumentPrefixOnPartitionBy}${expression.trim()} ${partitionClause}`;
+            return `PARTITION BY ${_.toUpper(_.startsWith(value.partitionBy, 'composite') ? _.last(value.partitionBy.split(' ')) : value.partitionBy)} ${expression}${partitionClause}`;
         }
+
         return '';
     };
 
@@ -129,9 +128,10 @@ module.exports = ({ _, getColumnsList, checkAllKeysDeactivated, commentIfDeactiv
     const getPartitionClause = (value, isActivated) => {
         switch(value.partitionBy) {
             case 'range':
-                const interval = value.interval ? `\nINTERVAL (${value.interval})` : `\n${value.customInterval}`
+                const isIntervalSet = value.interval || value.customInterval
+                const interval = value.interval ? `\nINTERVAL (${value.interval})` : `\nINTERVAL (${value.customInterval})`
 
-                return `${interval ?? ''}` + 
+                return `${isIntervalSet ? interval : ''}` + 
                     getTablespaceList(value.store_in_tablespaces) +
                     partitionsToString(value.range_partitions, 'range_partition_clause');
 			case 'list':
