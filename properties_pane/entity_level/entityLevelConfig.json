@@ -431,22 +431,9 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Interval",
 						"propertyKeyword": "interval",
-						"propertyType": "numeric",
-						"valueType": "number",
-						"allowNegative": false,
-						"step": 1,
-						"dependency": {
-							"key": "partitionBy",
-							"value": ["range", "composite range"]
-						}
-					},
-					{
-						"propertyName": "Custom interval",
-						"propertyKeyword": "customInterval",
-						"propertyType": "text",
+						"propertyType": "details",
 						"template": "textarea",
-						"allowNegative": false,
-						"step": 1,
+						"markdown": false,
 						"dependency": {
 							"key": "partitionBy",
 							"value": ["range", "composite range"]

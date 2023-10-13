@@ -128,10 +128,9 @@ module.exports = ({ _, getColumnsList, checkAllKeysDeactivated, commentIfDeactiv
     const getPartitionClause = (value, isActivated) => {
         switch(value.partitionBy) {
             case 'range':
-                const isIntervalSet = value.interval || value.customInterval
-                const interval = value.interval ? `\nINTERVAL (${value.interval})` : `\nINTERVAL (${value.customInterval})`
+                const interval = value.interval ? `\nINTERVAL (${value.interval})` : ''
 
-                return `${isIntervalSet ? interval : ''}` + 
+                return `${interval}` + 
                     getTablespaceList(value.store_in_tablespaces) +
                     partitionsToString(value.range_partitions, 'range_partition_clause');
 			case 'list':
