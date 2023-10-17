@@ -431,10 +431,9 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Interval",
 						"propertyKeyword": "interval",
-						"propertyType": "numeric",
-						"valueType": "number",
-						"allowNegative": false,
-						"step": 1,
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false,
 						"dependency": {
 							"key": "partitionBy",
 							"value": ["range", "composite range"]
