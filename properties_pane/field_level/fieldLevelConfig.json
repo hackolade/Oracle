@@ -1071,7 +1071,6 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "Primary key",
         "propertyKeyword": "primaryKey",
-        "enableForReference": true,
         "propertyType": "checkbox",
         "dependency": {
           "type": "and",
@@ -2866,7 +2865,6 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "Primary key",
         "propertyKeyword": "primaryKey",
-        "enableForReference": true,
         "propertyType": "checkbox",
         "dependency": {
           "type": "and",
@@ -4704,7 +4702,6 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "Primary key",
         "propertyKeyword": "primaryKey",
-        "enableForReference": true,
         "propertyType": "checkbox",
         "dependency": {
           "type": "and",
@@ -7776,7 +7773,6 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "Primary key",
         "propertyKeyword": "primaryKey",
-        "enableForReference": true,
         "propertyType": "checkbox",
         "dependency": {
           "type": "and",
@@ -9020,7 +9016,6 @@ making sure that you maintain a proper JSON format.
       {
         "propertyName": "Primary key",
         "propertyKeyword": "primaryKey",
-        "enableForReference": true,
         "propertyType": "checkbox",
         "dependency": {
           "type": "and",
