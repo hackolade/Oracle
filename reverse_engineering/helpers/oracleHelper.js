@@ -759,6 +759,7 @@ const getJsonSchema = async (jsonColumns, records) => {
 			[columnName]: {
 				...schema,
 				subtype,
+				childType: 'json',
 				type,
 			},
 		};
