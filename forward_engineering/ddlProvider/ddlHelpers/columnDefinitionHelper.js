@@ -1,3 +1,16 @@
+const {DbVersion} = require("../../enums/DbVersion");
+/**
+ * @param dbVersion {string} DB version in "21c" format
+ * @return {boolean}
+ * */
+const shouldUseClobForJsonColumns = (dbVersion) => {
+    if (!(/[0-9]{2}c/.test(dbVersion))) {
+        return true;
+    }
+    const dbVersionAsNumber = Number(dbVersion.substring(0, 2));
+    return dbVersionAsNumber < DbVersion.JSON_TYPE_SINCE;
+}
+
 module.exports = ({
     _,
     wrap,
@@ -44,7 +57,7 @@ module.exports = ({
     }
 
     const replaceTypeByVersion = (type, version) => {
-        if (type === 'JSON' && version !== '21c') {
+        if (type === 'JSON' && shouldUseClobForJsonColumns(version)) {
             return 'CLOB';
         }
         return type;
