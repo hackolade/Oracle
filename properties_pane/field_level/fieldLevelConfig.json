@@ -6688,6 +6688,37 @@ making sure that you maintain a proper JSON format.
         }
       },
       {
+        "propertyName": "Subtype",
+        "propertyKeyword": "mode",
+        "propertyType": "select",
+        "options": [
+          "json"
+        ],
+        "data": "options",
+        "defaultValue": "json",
+        "dependency": {
+          "type": "not",
+          "values": [
+            {
+              "type": "and",
+              "values": [
+                {
+                  "level": "root",
+                  "key": "viewOn",
+                  "exist": true
+                },
+                {
+                  "level": "root",
+                  "key": "duality",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        },
+        "valueType": "string"
+      },
+      {
         "propertyName": "JSON Types",
         "propertyKeyword": "subtype",
         "propertyTooltip": "needs for configuration of json types",

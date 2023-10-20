@@ -59,6 +59,7 @@
 		"foreignCollection": "",
 		"foreignField": [],
 		"enabled": true,
+		"mode": "json",
 		"properties": [],
 		"dependencies": [],
 		"minProperties": "",
