@@ -6691,6 +6691,7 @@ making sure that you maintain a proper JSON format.
         "propertyName": "Subtype",
         "propertyKeyword": "mode",
         "propertyType": "select",
+        "hidden": true,
         "options": [
           "json"
         ],
