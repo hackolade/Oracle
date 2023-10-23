@@ -726,6 +726,16 @@ making sure that you maintain a proper JSON format.
 						}
 					},
 					{
+						"propertyName": "Subpartition description",
+						"propertyKeyword": "subpartitionDescription",
+						"propertyType": "text",
+						"propertyTooltip": "Specify subpartitions description. How many subpartitions you need and where you store them",
+						"dependency": {
+							"key": "partitionBy",
+							"value": ["composite range", "composite list", "composite hash"]
+						}
+					},
+					{
 						"propertyName": "Range subpart desc",
 						"propertyType": "group",
 						"propertyKeyword": "range_subpartition_descs",
@@ -749,7 +759,7 @@ making sure that you maintain a proper JSON format.
 								},
 								{
 									"key": "subpartitionType",
-									"value": ["range"]
+									"value": ["range", "hash", "list"]
 								}
 							]
 						}
@@ -771,7 +781,7 @@ making sure that you maintain a proper JSON format.
 						],
 						"dependency": {
 							"key": "subpartitionType",
-							"value": ["list"]
+							"value": ["list", "hash", "range"]
 						}
 					},
 					{
