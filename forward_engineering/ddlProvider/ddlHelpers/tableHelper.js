@@ -177,11 +177,14 @@ module.exports = ({ _, getColumnsList, checkAllKeysDeactivated, commentIfDeactiv
         return '';
     };
 
-    const getSubpartition = ({subpartitionType, partitionKey}, isParentActivated) => {
+    const getSubpartition = ({subpartitionType, subpartitionDescription, compositePartitionKey}, isParentActivated) => {
         if (subpartitionType) {
-            const isAllColumnsDeactivated = checkAllKeysDeactivated(partitionKey);
-            return ` SUBPARTITION BY ${_.toUpper(subpartitionType)} ${getColumnsList(partitionKey, isAllColumnsDeactivated, isParentActivated)}`;
+            const isAllColumnsDeactivated = checkAllKeysDeactivated(compositePartitionKey);
+            const subpartitionDescriptionToUse = subpartitionDescription ? `\n${subpartitionDescription}` : ''
+
+            return ` SUBPARTITION BY ${_.toUpper(subpartitionType)} ${getColumnsList(compositePartitionKey, isAllColumnsDeactivated, isParentActivated)} ${subpartitionDescriptionToUse}`;
         }
+
         return '';
     };
 
