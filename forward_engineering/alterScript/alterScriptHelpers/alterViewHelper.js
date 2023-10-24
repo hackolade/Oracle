@@ -3,7 +3,7 @@ const {AlterScriptDto} = require("../types/AlterScriptDto");
 /**
  * @return {(view: Object) => AlterScriptDto | undefined}
  * */
-const getAddViewScriptDto = app => view => {
+const getAddRegularViewScriptDto = app => view => {
 	const ddlProvider = require('../../ddlProvider/ddlProvider')(null, null, app);
 
 	const viewData = {
@@ -14,6 +14,16 @@ const getAddViewScriptDto = app => view => {
 	const hydratedView = ddlProvider.hydrateView({ viewData, entityData: [view] });
 	const createViewStatement = ddlProvider.createView(hydratedView, {}, view.isActivated);
 	return AlterScriptDto.getInstance([createViewStatement], true, false);
+}
+
+/**
+ * @return {(view: Object) => AlterScriptDto | undefined}
+ * */
+const getAddViewScriptDto = app => view => {
+	if (view.selectStatement) {
+		return getAddRegularViewScriptDto(app)(view);
+	}
+	return undefined;
 };
 
 /**
