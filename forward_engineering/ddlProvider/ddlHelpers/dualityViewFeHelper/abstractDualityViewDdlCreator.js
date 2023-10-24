@@ -2,15 +2,6 @@ const JOIN_SUBQUERY_TYPE = 'joinSubquery';
 const COLLECTION_REFERENCE = 'collectionReference';
 
 /**
- * @typedef {{
- *     view: Object,
- *     jsonSchema: Object,
- *     relatedSchemas: Object
- * }} CreateViewDto
- * */
-
-
-/**
  * @abstract
  * */
 class AbstractDualityViewFeDdlCreator {
@@ -50,7 +41,7 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param view {Object}
+     * @param view {DualityView}
      * @return {boolean}
      * */
     static isDualityView(view = {}) {
@@ -93,8 +84,8 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param propertyJsonSchema {Object}
-     * @param parent {Object}
+     * @param propertyJsonSchema {RegularDualityViewField}
+     * @param parent {DualityView | JoinSubquery}
      * @return {string[]}
      * */
     static getPathToReferencedColumn(propertyJsonSchema, parent) {
@@ -112,7 +103,7 @@ class AbstractDualityViewFeDdlCreator {
 
     /**
      * @param pathToReferencedColumn {Array<string>}
-     * @param relatedSchemas {Object}
+     * @param relatedSchemas {RelatedSchemas}
      * @return {string}
      * */
     static getRegularFieldNameFromCollection(pathToReferencedColumn, relatedSchemas) {
@@ -166,7 +157,7 @@ class AbstractDualityViewFeDdlCreator {
 
     /**
      * @param propertyName {string}
-     * @param propertyJsonSchema {Object}
+     * @param propertyJsonSchema {RegularDualityViewField}
      * @return {string}
      * */
     static getRegularFieldName(propertyName, propertyJsonSchema) {
@@ -174,7 +165,7 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param createViewDto {CreateViewDto}
+     * @param createViewDto {CreateDualityViewDto}
      * @return {string}
      * */
     getCreateJsonRelationalDualityViewHeadingDdl(createViewDto) {
@@ -198,7 +189,7 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param createViewDto {CreateViewDto}
+     * @param createViewDto {CreateDualityViewDto}
      * @return {string}
      * */
     getDualityViewBodyDdl(createViewDto) {
@@ -206,7 +197,7 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param createViewDto {CreateViewDto}
+     * @param createViewDto {CreateDualityViewDto}
      * @return {string}
      * */
     convertDualityViewToDdl(createViewDto) {
