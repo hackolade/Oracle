@@ -96,6 +96,7 @@
  * @property {"view"} roleType
  * @property {Object} patternProperties
  * @property {DeltaDualityViewProperties} properties
+ * @property {DeltaDualityViewCompMod} compMod
  * */
 
 /**

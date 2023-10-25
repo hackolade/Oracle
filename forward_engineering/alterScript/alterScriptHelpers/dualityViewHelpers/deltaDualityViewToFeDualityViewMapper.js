@@ -1,4 +1,4 @@
-import {DualityViewPropertiesType} from "../../../enums/DualityViewPropertiesType";
+const {DualityViewPropertiesType} = require("../../../enums/DualityViewPropertiesType");
 
 /**
  * @return {(view: DeltaDualityView) => DualityView}
@@ -154,26 +154,63 @@ const mapToFeJsonSchema = (_) => (view) => {
 }
 
 /**
- * @param view {DeltaDualityView}
- * @return {DualityViewRelatedSchemas}
+ * @return {(view: DeltaDualityView) => DualityViewRelatedSchemas}
  * */
-const mapToFeRelatedSchemas = (view) => {
-    return {
+const mapToFeRelatedSchemas = (_) => (view) => {
+    /**
+     * @type {DeltaDualityViewCompModCollectionRefsDefinitionsMap}
+     * */
+    const collectionRefsDefinitionsMap = _.get(view, 'role.compMod.collectionData.collectionRefsDefinitionsMap', {});
 
-    }
+    /**
+     * @type {Array<[ refId, DeltaDualityViewCompModCollectionRefsDefinitionsMapValue ]>}
+     * */
+    const arrayOfRefIdsAndCollections = _.toPairs(collectionRefsDefinitionsMap);
+
+    /**
+     * @type {Array<[ refId, RelatedSchema ]>}
+     * */
+    const arrayOfRefIdsAndFeCollections = arrayOfRefIdsAndCollections
+        .map(([ refId, collection ]) => {
+            const bucketName = _.get(collection, 'bucket[0].name', '');
+            const definition = collection.definition || {};
+
+            /**
+             * @type {RelatedSchemaProperty}
+             * */
+            const property = {
+                [definition.code || definition.name]: {
+                    GUID: collection.definitionId,
+                }
+            }
+            /**
+             * @type {RelatedSchema}
+             * */
+            const feCollection = {
+                properties: [property],
+                bucketName,
+            }
+            return [refId, feCollection];
+        });
+
+    return _.fromPairs(arrayOfRefIdsAndFeCollections);
 }
 
 /**
  * @return {(view: DeltaDualityView) => CreateDualityViewDto}
  * */
-export const mapDeltaDualityViewToFeDualityView = (_) => (view) => {
+const mapDeltaDualityViewToFeDualityView = (_) => (view) => {
     const feView = mapToFeView(_)(view);
     const feJsonSchema = mapToFeJsonSchema(_)(view);
-    const feRelatedSchemas = mapToFeRelatedSchemas(view);
+    const feRelatedSchemas = mapToFeRelatedSchemas(_)(view);
 
     return {
         view: feView,
         jsonSchema: feJsonSchema,
         relatedSchemas: feRelatedSchemas,
     }
+}
+
+module.exports = {
+    mapDeltaDualityViewToFeDualityView
 }

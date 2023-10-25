@@ -1,4 +1,5 @@
 const {AlterScriptDto} = require("../types/AlterScriptDto");
+const {mapDeltaDualityViewToFeDualityView} = require("./dualityViewHelpers/deltaDualityViewToFeDualityViewMapper");
 
 /**
  * @return {(view: Object) => AlterScriptDto | undefined}
@@ -23,6 +24,8 @@ const getAddViewScriptDto = app => view => {
 	if (view.selectStatement) {
 		return getAddRegularViewScriptDto(app)(view);
 	}
+	const _ = app.require('lodash');
+	const createDualityViewDto = mapDeltaDualityViewToFeDualityView(_)(view);
 	return undefined;
 };
 
