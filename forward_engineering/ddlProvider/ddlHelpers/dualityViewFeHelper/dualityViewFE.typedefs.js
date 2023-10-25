@@ -9,6 +9,8 @@
  * @typedef {Object} RelatedSchema
  * @property {Array<RelatedSchemaProperty>} properties
  * @property {string} bucketName
+ * @property {string | undefined} code
+ * @property {string | undefined} collectionName
  * */
 
 /**

@@ -61,7 +61,7 @@ class AbstractDualityViewFeDdlCreator {
      * */
     static isRegularDualityViewFieldOnRootLevelOrInObjectSubquery(element = {}) {
         const { ref, refIdPath, refType } = element;
-        return ref && (refIdPath || []).length === 2 && refType === DualityViewPropertiesType.JOIN_SUBQUERY_TYPE;
+        return ref && (refIdPath || []).length === 2 && refType === DualityViewPropertiesType.COLLECTION_REFERENCE;
     }
 
     /**

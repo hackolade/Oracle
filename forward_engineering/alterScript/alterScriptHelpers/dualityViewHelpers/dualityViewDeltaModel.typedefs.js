@@ -102,6 +102,7 @@
 /**
  * @typedef {Object} DeltaDualityViewCompModEntityData
  * @property {string} collectionName
+ * @property {string | undefined} code
  * @property {boolean} isActivated
  * @property {string} bucketId
  * @property {boolean} additionalProperties

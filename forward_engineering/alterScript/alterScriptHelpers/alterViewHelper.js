@@ -24,9 +24,11 @@ const getAddViewScriptDto = app => view => {
 	if (view.selectStatement) {
 		return getAddRegularViewScriptDto(app)(view);
 	}
+	const ddlProvider = require('../../ddlProvider/ddlProvider')(null, null, app);
 	const _ = app.require('lodash');
+
 	const createDualityViewDto = mapDeltaDualityViewToFeDualityView(_)(view);
-	return undefined;
+	return ddlProvider.createDualityView(createDualityViewDto);
 };
 
 /**

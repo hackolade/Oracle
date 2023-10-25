@@ -173,6 +173,10 @@ const mapToFeRelatedSchemas = (_) => (view) => {
     const arrayOfRefIdsAndFeCollections = arrayOfRefIdsAndCollections
         .map(([ refId, collection ]) => {
             const bucketName = _.get(collection, 'bucket[0].name', '');
+            /**
+             * @type {DeltaDualityViewCompModEntityData}
+             * */
+            const collectionData = _.get(collection, 'collection[0]', '');
             const definition = collection.definition || {};
 
             /**
@@ -189,6 +193,8 @@ const mapToFeRelatedSchemas = (_) => (view) => {
             const feCollection = {
                 properties: [property],
                 bucketName,
+                code: collectionData.code,
+                collectionName: collectionData.collectionName,
             }
             return [refId, feCollection];
         });
