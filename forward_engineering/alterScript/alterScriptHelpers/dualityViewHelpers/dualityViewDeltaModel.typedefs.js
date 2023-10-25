@@ -77,7 +77,7 @@
  * @property {string} code
  * @property {boolean} isActivated
  * @property {string} pipeline
- * @property {string | undefined} viewOn
+ * @property {string} viewOn
  * @property {string} bucketId
  * @property {{
  *  validationErrors: {

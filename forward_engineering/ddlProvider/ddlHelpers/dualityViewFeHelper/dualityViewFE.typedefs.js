@@ -78,10 +78,9 @@
  * @property {boolean} duality
  * @property {string | undefined} editionable
  * @property {string | undefined} force
- * @property {string | undefined} sqlJsonFunction
  * @property {string | undefined} rootTableAlias
  * @property {string} tableName
- * @property {DualityViewJsonSchemaProperties | undefined} properties
+ * @property {DualityViewJsonSchemaProperties} properties
  * */
 
 /**

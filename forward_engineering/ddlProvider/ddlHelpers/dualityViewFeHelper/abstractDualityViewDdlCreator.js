@@ -1,5 +1,4 @@
-const JOIN_SUBQUERY_TYPE = 'joinSubquery';
-const COLLECTION_REFERENCE = 'collectionReference';
+const {DualityViewPropertiesType} = require("../../../enums/DualityViewPropertiesType");
 
 /**
  * @abstract
@@ -53,7 +52,7 @@ class AbstractDualityViewFeDdlCreator {
      * @return {boolean}
      * */
     static isJoinSubquery(element = {}) {
-        return element?.type === JOIN_SUBQUERY_TYPE;
+        return element?.type === DualityViewPropertiesType.JOIN_SUBQUERY_TYPE;
     }
 
     /**
@@ -62,7 +61,7 @@ class AbstractDualityViewFeDdlCreator {
      * */
     static isRegularDualityViewFieldOnRootLevelOrInObjectSubquery(element = {}) {
         const { ref, refIdPath, refType } = element;
-        return ref && (refIdPath || []).length === 2 && refType === COLLECTION_REFERENCE;
+        return ref && (refIdPath || []).length === 2 && refType === DualityViewPropertiesType.JOIN_SUBQUERY_TYPE;
     }
 
     /**
