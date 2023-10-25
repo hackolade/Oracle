@@ -16,7 +16,6 @@
  * @property {string | undefined} sqlJsonFunction
  * @property {string[] | undefined} joinedCollectionRefIdPath
  * @property {string | undefined} childTableAlias
- * @property {boolean | undefined} unnestSubquery
  * @property {string | undefined} whereClause
  * @property {DeltaDualityViewTagsClause | undefined} tableTagsClause
  * @property {string} GUID
@@ -46,6 +45,7 @@
  * @typedef {DeltaDualityViewRoleJoinSubqueryCommonProps} DeltaDualityViewRoleObjectJoinSubquery
  * @property {"object"} subtype
  * @property {DeltaDualityViewProperties} properties
+ * @property {boolean | undefined} unnestSubquery
  * */
 
 /**

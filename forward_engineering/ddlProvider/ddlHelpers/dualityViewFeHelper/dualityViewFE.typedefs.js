@@ -46,8 +46,8 @@
  * @property {TagsClause | undefined} tableTagsClause
  * @property {DualityViewJsonSchemaProperties | undefined} properties
  * @property {{
- *     properties: DualityViewJsonSchemaProperties | undefined,
- * }} items
+ *     properties: DualityViewJsonSchemaProperties,
+ * } | undefined} items
  * @property {string | undefined} whereClause
  * @property {boolean | undefined} unnestSubquery
  * @property {string | undefined} sqlJsonFunction

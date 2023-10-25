@@ -55,22 +55,76 @@ const mapRegularField = (_) => (code, property, collectionRefsDefinitionsMap) =>
 }
 
 /**
- * @return {(view: DeltaDualityView) => DualityViewJsonSchemaProperties}
+ * @return {(
+ *     code: string,
+ *     subquery: DeltaDualityViewRoleJoinSubquery,
+ *     collectionRefsDefinitionsMap: DeltaDualityViewCompModCollectionRefsDefinitionsMap,
+ * ) => JoinSubquery}
  * */
-const parseProperties = (_) => (view) => {
-    const properties = _.get(view, 'role.properties', {});
-    const collectionRefsDefinitionsMap = _.get(view, 'role.compMod.collectionData.collectionRefsDefinitionsMap', {});
+const mapSubquery = (_) => (code, subquery, collectionRefsDefinitionsMap) => {
+    /**
+     * @type {JoinSubquery}
+     * */
+    const result = {
+        code,
+        type: subquery.type,
+        name: subquery.title,
+        subtype: subquery.subtype,
+        sqlJsonFunction: subquery.sqlJsonFunction,
+        whereClause: subquery.whereClause,
+        joinedCollectionRefIdPath: subquery.joinedCollectionRefIdPath,
+        childTableAlias: subquery.childTableAlias,
+        tableTagsClause: subquery.tableTagsClause,
+        // subtype-specific stuff
+        items: undefined,
+        properties: undefined,
+        unnestSubquery: undefined,
+    }
+    if (subquery.subtype === 'array') {
+        const childProperties = _.get(subquery, 'items.properties', {});
+        result.items = {
+            properties: recursivelyParseProperties(_)(childProperties, collectionRefsDefinitionsMap),
+        }
+    } else if (subquery.subtype === 'object') {
+        result.unnestSubquery = subquery.unnestSubquery;
+        const childProperties = _.get(subquery, 'properties', {});
+        result.properties = recursivelyParseProperties(_)(childProperties, collectionRefsDefinitionsMap);
+    }
+
+    return result;
+}
+
+/**
+ * @return {(
+ *  properties: DeltaDualityViewProperties,
+ *  collectionRefsDefinitionsMap: DeltaDualityViewCompModCollectionRefsDefinitionsMap
+ * ) => DualityViewJsonSchemaProperties}
+ * */
+const recursivelyParseProperties = (_) => (properties, collectionRefsDefinitionsMap) => {
     /**
      * @type {Array<[string, DeltaDualityViewRoleProperty]>}
      * */
     const arrayOfCodesAndJsonSchemas = _.toPairs(properties);
 
-    return arrayOfCodesAndJsonSchemas.map(([ code, jsonSchema ]) => {
-        if (property.type === DualityViewPropertiesType.JOIN_SUBQUERY_TYPE) {
-            return {};
+    const arrayOfCodesAndFeJsonSchemas = arrayOfCodesAndJsonSchemas.map(([ code, jsonSchema ]) => {
+        if (jsonSchema.type === DualityViewPropertiesType.JOIN_SUBQUERY_TYPE) {
+            const mappedJsonSchema = mapSubquery(_)(code, jsonSchema, collectionRefsDefinitionsMap);
+            return [code, mappedJsonSchema];
         }
-        return mapRegularField(_)(code, jsonSchema, collectionRefsDefinitionsMap);
-    })
+        const mappedJsonSchema = mapRegularField(_)(code, jsonSchema, collectionRefsDefinitionsMap);
+        return [code, mappedJsonSchema];
+    });
+
+    return _.fromPairs(arrayOfCodesAndFeJsonSchemas);
+}
+
+/**
+ * @return {(view: DeltaDualityView) => DualityViewJsonSchemaProperties}
+ * */
+const parseProperties = (_) => (view) => {
+    const properties = _.get(view, 'role.properties', {});
+    const collectionRefsDefinitionsMap = _.get(view, 'role.compMod.collectionData.collectionRefsDefinitionsMap', {});
+    return recursivelyParseProperties(_)(properties, collectionRefsDefinitionsMap);
 }
 
 /**
