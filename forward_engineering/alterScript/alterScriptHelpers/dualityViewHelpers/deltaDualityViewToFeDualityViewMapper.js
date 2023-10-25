@@ -1,18 +1,25 @@
 /**
- * @param view {DeltaDualityView}
- * @return {DualityView}
+ * @return {(view: DeltaDualityView) => DualityView}
  * */
-const mapToFeView = (view) => {
-    const { role } = view;
-    // return {
-    //     code: role.code,
-    //     tableName: ,
-    //     name: role.name,
-    //     tableTagsClause: role.tableTagsClause,
-    //     schemaName: ,
-    //     rootTableAlias: role.rootTableAlias,
-    //     orReplace: role.or_replace,
-    // }
+const mapToFeView = (_) => (view) => {
+    const { getEntityName, getBucketName } = require('../../../utils/general')(_);
+
+    const role = _.get(view, 'role', {});
+    const bucketProperties = _.get(role, 'compMod.bucketProperties', {});
+    const entityProperties = _.get(role, 'compMod.collectionData.entityData[0]', {});
+
+    const tableName = getEntityName(entityProperties);
+    const schemaName = getBucketName(bucketProperties);
+
+    return {
+        code: role.code,
+        tableName,
+        name: role.name,
+        tableTagsClause: role.tableTagsClause,
+        schemaName,
+        rootTableAlias: role.rootTableAlias,
+        orReplace: role.or_replace,
+    }
 }
 
 /**
@@ -36,13 +43,13 @@ const mapToFeRelatedSchemas = (view) => {
 }
 
 /**
- * @param {DeltaDualityView} view
- * @return {CreateDualityViewDto}
+ * @return {(view: DeltaDualityView) => CreateDualityViewDto}
  * */
-export const mapDeltaDualityViewToFeDualityView = (view) => {
-    const feView = mapToFeView(view);
+export const mapDeltaDualityViewToFeDualityView = (_) => (view) => {
+    const feView = mapToFeView(_)(view);
     const feJsonSchema = mapToFeJsonSchema(view);
     const feRelatedSchemas = mapToFeRelatedSchemas(view);
+
     return {
         view: feView,
         jsonSchema: feJsonSchema,

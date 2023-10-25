@@ -20,6 +20,10 @@ module.exports = _ => {
 		return (view && (view.code || view.name)) || '';
 	};
 
+	const getBucketName = bucket => {
+		return (bucket && (bucket.code || bucket.name)) || '';
+	};
+
 	const getDbData = containerData => {
 		return Object.assign({}, _.get(containerData, '[0]', {}), { name: getDbName(containerData) });
 	};
@@ -163,6 +167,7 @@ module.exports = _ => {
 
 	return {
 		getDbName,
+		getBucketName,
 		getDbData,
 		getEntityName,
 		getViewName,
