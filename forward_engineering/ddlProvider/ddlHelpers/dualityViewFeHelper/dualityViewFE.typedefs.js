@@ -8,10 +8,20 @@
 /**
  * @typedef {Object} RelatedSchema
  * @property {Array<RelatedSchemaProperty>} properties
+ * @property {string} bucketName
  * */
 
 /**
- * @typedef {Record<string, RelatedSchema>} RelatedSchemas
+ * @typedef {Record<string, RelatedSchema>} DualityViewRelatedSchemas
+ * */
+
+/**
+ * @typedef {Object} TagsClause
+ * @property {string | undefined} check
+ * @property {boolean | undefined} etag
+ * @property {string | undefined} delete
+ * @property {string | undefined} update
+ * @property {string | undefined} insert
  * */
 
 /**
@@ -22,31 +32,62 @@
  * @property {'collectionReference' | undefined} refType
  * @property {string | undefined} code
  * @property {string | undefined} referencedColumnName
+ * @property {TagsClause | undefined} columnTagsClause
  * */
 
 /**
  * @typedef {Object} JoinSubquery
+ * @property {string} name
+ * @property {string | undefined} code
  * @property {'joinSubquery'} type
  * @property {Array<string>} joinedCollectionRefIdPath
- *
+ * @property {'object' | 'array'} subtype
+ * @property {string | undefined} childTableAlias
+ * @property {TagsClause | undefined} tableTagsClause
+ * @property {DualityViewJsonSchemaProperties | undefined} properties
+ * @property {{
+ *     properties: DualityViewJsonSchemaProperties | undefined,
+ * }} items
+ * @property {string | undefined} whereClause
+ * @property {boolean | undefined} unnestSubquery
+ * @property {string | undefined} sqlJsonFunction
  * */
 
 /**
  * @typedef {Object} DualityView
- * @property {string} viewOn
- * @property {boolean} duality
  * @property {string | undefined} code
  * @property {string} name
  * @property {string} schemaName
- * @property {string | undefined} force
+ * @property {string} tableName
+ * @property {string | undefined} rootTableAlias
  * @property {string | undefined} orReplace
+ * @property {TagsClause | undefined} tableTagsClause
+ * */
+
+/**
+ * @typedef {RegularDualityViewField | JoinSubquery} DualityViewPropertyJsonSchema
+ * */
+
+/**
+ * @typedef {Record<string, DualityViewPropertyJsonSchema>} DualityViewJsonSchemaProperties
+ * */
+
+/**
+ * @typedef {Object} DualityViewJsonSchema
+ * @property {string} viewOn
+ * @property {boolean} duality
  * @property {string | undefined} editionable
+ * @property {string | undefined} force
+ * @property {string | undefined} sqlJsonFunction
+ * @property {string | undefined} rootTableAlias
+ * @property {string} tableName
+ * @property {DualityViewJsonSchemaProperties | undefined} properties
  * */
 
 /**
  * @typedef {{
  *     view: DualityView,
- *     jsonSchema: Object,
- *     relatedSchemas: RelatedSchemas
+ *     jsonSchema: DualityViewJsonSchema,
+ *     relatedSchemas: DualityViewRelatedSchemas
  * }} CreateDualityViewDto
  * */

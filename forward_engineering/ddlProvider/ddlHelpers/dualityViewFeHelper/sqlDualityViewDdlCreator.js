@@ -14,7 +14,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param view {Object}
+     * @param view {DualityView}
      * @return {string}
      * */
     _getFromRootTableAliasStatement(view) {
@@ -28,7 +28,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param joinSubqueryJsonSchema {Object}
+     * @param joinSubqueryJsonSchema {JoinSubquery}
      * @return {string}
      * */
     _getFromChildTableAliasStatement(joinSubqueryJsonSchema) {
@@ -42,7 +42,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param tagsClause {Object}
+     * @param tagsClause {TagsClause}
      * @return {string}
      * */
     _getCheckStatement(tagsClause) {
@@ -50,7 +50,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param tagsClause {Object}
+     * @param tagsClause {TagsClause}
      * @return {string}
      * */
     _getEtagStatement(tagsClause) {
@@ -59,7 +59,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param tagsClause {Object}
+     * @param tagsClause {TagsClause}
      * @return {string}
      * */
     _getDeleteStatement(tagsClause) {
@@ -75,7 +75,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param tagsClause {Object}
+     * @param tagsClause {TagsClause}
      * @return {string}
      * */
     _getUpdateStatement(tagsClause) {
@@ -83,7 +83,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param entity {Object}
+     * @param entity {DualityView | JoinSubquery}
      * @return {string}
      * */
     _getTableTagsStatement(entity) {
@@ -110,7 +110,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param entity {Object}
+     * @param entity {RegularDualityViewField}
      * @return {string}
      * */
     _getColumnTagsStatement(entity) {
@@ -135,7 +135,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param view {Object}
+     * @param view {DualityView}
      * @return {string}
      * */
     _getFromRootTableStatement(view) {
@@ -153,8 +153,8 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param joinSubqueryJsonSchema {Object}
-     * @param relatedSchemas {Object}
+     * @param joinSubqueryJsonSchema {JoinSubquery}
+     * @param relatedSchemas {DualityViewRelatedSchemas}
      * @param bodyPadding {string}
      * @return {string}
      * */
@@ -190,9 +190,9 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param parentEntity {Object}
+     * @param parentEntity {DualityViewJsonSchema | JoinSubquery}
      * @param propertyName {string}
-     * @param relatedSchemas {Object}
+     * @param relatedSchemas {DualityViewRelatedSchemas}
      * @return {string}
      * */
     _getNameOfReferencedColumnForDdl(parentEntity, propertyName, relatedSchemas) {
@@ -218,10 +218,10 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
 
     /**
      * @param propertyName {string}
-     * @param propertyJsonSchema {Object}
-     * @param parent {Object}
+     * @param propertyJsonSchema {RegularDualityViewField}
+     * @param parent {DualityViewJsonSchema | JoinSubquery}
      * @param paddingFactor {number}
-     * @param relatedSchemas {Object}
+     * @param relatedSchemas {DualityViewRelatedSchemas}
      * @return {string}
      * */
     _getRegularFieldKeyValueStatement({
@@ -248,9 +248,9 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param propertyJsonSchema {Object}
+     * @param propertyJsonSchema {JoinSubquery}
      * @param paddingFactor {number}
-     * @param relatedSchemas {Object}
+     * @param relatedSchemas {DualityViewRelatedSchemas}
      * @return {string}
      * */
     _getJoinSubqueryValueStatement({
@@ -280,7 +280,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param jsonSchema {Object}
+     * @param jsonSchema {JoinSubquery}
      * @return {boolean}
      * */
     _shouldUnnestJoinSubquery(jsonSchema) {
@@ -294,9 +294,9 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
 
     /**
      * @param propertyName {string}
-     * @param propertyJsonSchema {Object}
+     * @param propertyJsonSchema {JoinSubquery}
      * @param paddingFactor {number}
-     * @param relatedSchemas {Object}
+     * @param relatedSchemas {DualityViewRelatedSchemas}
      * @return {string}
      * */
     _getJoinSubqueryKeyValueStatement({
@@ -330,7 +330,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
 
     /**
      * @param propertyName {string}
-     * @param propertyJsonSchema {Object}
+     * @param propertyJsonSchema {JoinSubquery}
      * @return {string}
      * */
     _getJoinSubqueryName(propertyName, propertyJsonSchema) {
@@ -339,10 +339,10 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
 
     /**
      * @param propertyName {string}
-     * @param propertyJsonSchema {Object}
-     * @param parent {Object}
+     * @param propertyJsonSchema {DualityViewPropertyJsonSchema | JoinSubquery}
+     * @param parent {DualityViewJsonSchema | JoinSubquery}
      * @param paddingFactor {number}
-     * @param relatedSchemas {Object}
+     * @param relatedSchemas {DualityViewRelatedSchemas}
      * @return {string}
      * */
     _buildKeyValueStatement({propertyName, propertyJsonSchema, parent, paddingFactor, relatedSchemas}) {
@@ -367,8 +367,8 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param jsonSchema {Object}
-     * @param relatedSchemas {Object}
+     * @param jsonSchema {DualityViewJsonSchema | JoinSubquery}
+     * @param relatedSchemas {DualityViewRelatedSchemas}
      * @param paddingFactor {number}
      * @return {string}
      * */
@@ -391,7 +391,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param jsonSchema {Object}
+     * @param jsonSchema {DualityViewJsonSchema | JoinSubquery}
      * @return {{
      *     jsonKeyword: string,
      *     surroundingBrackets: [string, string],
@@ -437,8 +437,8 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param jsonSchema {Object}
-     * @param relatedSchemas {Object}
+     * @param jsonSchema {DualityViewJsonSchema | JoinSubquery}
+     * @param relatedSchemas {DualityViewRelatedSchemas}
      * @param paddingFactor {number}
      * @return {string}
      * */

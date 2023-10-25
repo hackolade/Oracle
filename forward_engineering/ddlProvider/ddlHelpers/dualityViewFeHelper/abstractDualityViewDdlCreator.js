@@ -41,7 +41,7 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param view {DualityView}
+     * @param view {DualityViewJsonSchema | Object}
      * @return {boolean}
      * */
     static isDualityView(view = {}) {
@@ -103,7 +103,7 @@ class AbstractDualityViewFeDdlCreator {
 
     /**
      * @param pathToReferencedColumn {Array<string>}
-     * @param relatedSchemas {RelatedSchemas}
+     * @param relatedSchemas {DualityViewRelatedSchemas}
      * @return {string}
      * */
     static getRegularFieldNameFromCollection(pathToReferencedColumn, relatedSchemas) {
@@ -132,7 +132,7 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param entity {Object}
+     * @param entity {DualityViewJsonSchema}
      * @return {string}
      * */
     _getForceStatement(entity) {
@@ -140,7 +140,7 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param entity {Object}
+     * @param entity {DualityView}
      * @return {string}
      * */
     _getOrReplaceStatement(entity) {
@@ -148,7 +148,7 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param entity {Object}
+     * @param entity {DualityViewJsonSchema}
      * @return {string}
      * */
     _getEditionableStatement(entity) {
