@@ -28,7 +28,8 @@ const getAddViewScriptDto = app => view => {
 	const _ = app.require('lodash');
 
 	const createDualityViewDto = mapDeltaDualityViewToFeDualityView(_)(view);
-	return ddlProvider.createDualityView(createDualityViewDto);
+	const script = ddlProvider.createDualityView(createDualityViewDto);
+	return AlterScriptDto.getInstance([script], true, false);
 };
 
 /**
