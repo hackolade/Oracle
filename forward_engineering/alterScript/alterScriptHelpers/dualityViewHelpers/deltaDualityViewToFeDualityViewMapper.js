@@ -72,7 +72,7 @@ const mapSubquery = (_) => (code, subquery, collectionRefsDefinitionsMap) => {
         subtype: subquery.subtype,
         sqlJsonFunction: subquery.sqlJsonFunction,
         whereClause: subquery.whereClause,
-        joinedCollectionRefIdPath: subquery.joinedCollectionRefIdPath,
+        joinedCollectionRefIdPath: [subquery.GUID],
         childTableAlias: subquery.childTableAlias,
         tableTagsClause: subquery.tableTagsClause,
         // subtype-specific stuff
