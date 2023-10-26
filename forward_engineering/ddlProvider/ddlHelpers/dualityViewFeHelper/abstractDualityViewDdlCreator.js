@@ -112,7 +112,7 @@ class AbstractDualityViewFeDdlCreator {
         const collectionId = pathToReferencedColumn[0];
         const fieldId = pathToReferencedColumn[1];
         const collection = relatedSchemas[collectionId];
-        const properties = collection?.properties || [];
+        const properties = collection?.properties || {};
         for (const name of Object.keys(properties)) {
             const jsonSchema = properties[name];
             if (jsonSchema.GUID === fieldId) {

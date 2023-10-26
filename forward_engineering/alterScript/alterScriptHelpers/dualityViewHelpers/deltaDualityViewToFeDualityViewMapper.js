@@ -180,9 +180,9 @@ const mapToFeRelatedSchemas = (_) => (view) => {
             const definition = collection.definition || {};
 
             /**
-             * @type {RelatedSchemaProperty}
+             * @type {RelatedSchemaProperties}
              * */
-            const property = {
+            const properties = {
                 [definition.code || definition.name]: {
                     GUID: collection.definitionId,
                 }
@@ -191,7 +191,7 @@ const mapToFeRelatedSchemas = (_) => (view) => {
              * @type {RelatedSchema}
              * */
             const feCollection = {
-                properties: [property],
+                properties,
                 bucketName,
                 code: collectionData.code,
                 collectionName: collectionData.collectionName,

@@ -2,12 +2,12 @@
 /**
  * @typedef {Record<string, {
  *     GUID: string,
- * }>} RelatedSchemaProperty
+ * }>} RelatedSchemaProperties
  * */
 
 /**
  * @typedef {Object} RelatedSchema
- * @property {Array<RelatedSchemaProperty>} properties
+ * @property {RelatedSchemaProperties} properties
  * @property {string} bucketName
  * @property {string | undefined} code
  * @property {string | undefined} collectionName
