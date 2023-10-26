@@ -48,8 +48,7 @@ const mapRegularField = (_) => (code, property, collectionRefsDefinitionsMap) =>
         refId: property.refId,
         refIdPath: [property.refId, property.ref],
         refType: DualityViewPropertiesType.COLLECTION_REFERENCE,
-        // TODO: this must not be undefined
-        columnTagsClause: undefined,
+        columnTagsClause: property.columnTagsClause,
         referencedColumnName: columnName,
     }
 }

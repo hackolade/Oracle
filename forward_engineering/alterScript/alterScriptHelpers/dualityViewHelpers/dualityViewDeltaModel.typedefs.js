@@ -57,6 +57,7 @@
  * @property {string} refId
  * @property {string} ref
  * @property {boolean} isActivated
+ * @property {TagsClause} columnTagsClause
  * */
 
 /**
