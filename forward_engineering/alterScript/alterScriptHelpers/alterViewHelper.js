@@ -3,8 +3,8 @@ const {AlterScriptDto} = require("../types/AlterScriptDto");
 /**
  * @return {(view: Object) => AlterScriptDto | undefined}
  * */
-const getAddViewScriptDto = app => view => {
-	const ddlProvider = require('../../ddlProvider/ddlProvider')(null, null, app);
+const getAddViewScriptDto = (app, dbVersion) => view => {
+	const ddlProvider = require('../../ddlProvider/ddlProvider')(null, { dbVersion }, app);
 
 	const viewData = {
 		name: view.code || view.name,
