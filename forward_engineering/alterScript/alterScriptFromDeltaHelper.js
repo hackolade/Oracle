@@ -100,7 +100,7 @@ const getAlterCollectionsScriptDtos = ({
         .filter(Boolean)
         .map(item => Object.values(item.properties)[0])
         .filter(collection => !collection.compMod)
-        .flatMap(getModifyColumnScriptDtos(app));
+        .flatMap(getModifyColumnScriptDtos(app, dbVersion));
 
     return [
         ...createCollectionsScriptDtos,
@@ -114,9 +114,10 @@ const getAlterCollectionsScriptDtos = ({
 /**
  * @param collection {Object}
  * @param app {App}
+ * @param dbVersion {string}
  * @return {AlterScriptDto[]}
  * */
-const getAlterViewScriptDtos = (collection, app) => {
+const getAlterViewScriptDtos = (collection, app, dbVersion) => {
     const createViewsScriptDtos = []
         .concat(collection.properties?.views?.properties?.added?.items)
         .filter(Boolean)
@@ -260,7 +261,7 @@ const getAlterScriptDtos = (data, app) => {
         internalDefinitions,
         externalDefinitions,
     });
-    const viewScriptDtos = getAlterViewScriptDtos(collection, app);
+    const viewScriptDtos = getAlterViewScriptDtos(collection, app, dbVersion);
     const modelDefinitionsScriptDtos = getAlterModelDefinitionsScriptDtos({
         collection,
         app,

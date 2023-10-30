@@ -446,17 +446,28 @@ module.exports = (baseProvider, options, app) => {
             const name = getIndexName(index.indxName);
             const indexType = getIndexType(index.indxType);
             const keys = getIndexKeys(index);
-            const options = getIndexOptions(index, isParentActivated);
-
-            return commentIfDeactivated(
-                assignTemplates(templates.createIndex, {
+            const indexOptions = getIndexOptions(index, isParentActivated);
+            const dbVersion = options.dbVersion || '';
+            const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
+            const statement = assignTemplates(templates.createIndex, {
                     indexType,
+                    ifNotExists: !usingTryCatchWrapper ? ' IF NOT EXISTS' : '',
                     name,
                     keys,
-                    options,
+                    options: indexOptions,
                     tableName: getNamePrefixedWithSchemaName(tableName, index.schemaName),
-                }),
-                {
+                });
+
+            if (usingTryCatchWrapper) {
+                return commentIfDeactivated(
+                    wrapIfNotExists(statement, true),
+                    {
+                        isActivated: index.isActivated,
+                    }
+                );
+            }
+
+            return commentIfDeactivated(statement, {
                     isActivated: index.isActivated,
                 },
             );

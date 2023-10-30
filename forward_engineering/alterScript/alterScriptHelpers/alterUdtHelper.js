@@ -10,7 +10,7 @@ const getCreateUdtScriptDto =
         jsonSchema => {
             const _ = app.require('lodash');
             const {createColumnDefinitionBySchema} = require('./createColumnDefinition')(app);
-            const ddlProvider = require('../../ddlProvider/ddlProvider')(null, null, app);
+            const ddlProvider = require('../../ddlProvider/ddlProvider')(null, { dbVersion }, app);
             const {getDefinitionByReference} = app.require('@hackolade/ddl-fe-utils');
 
             const schemaData = {dbVersion};
@@ -68,7 +68,7 @@ const getAddColumnToTypeScriptDtos =
             const _ = app.require('lodash');
             const {createColumnDefinitionBySchema} = require('./createColumnDefinition')(app);
             const {wrapInQuotes} = require('../../utils/general')(_);
-            const ddlProvider = require('../../ddlProvider/ddlProvider')(null, null, app);
+            const ddlProvider = require('../../ddlProvider/ddlProvider')(null, { dbVersion }, app);
             const {getDefinitionByReference} = app.require('@hackolade/ddl-fe-utils');
 
             const fullName = wrapInQuotes(udt.code || udt.name);
