@@ -6,7 +6,6 @@ const {mapDeltaDualityViewToFeDualityView} = require("./dualityViewHelpers/delta
  * */
 const getAddRegularViewScriptDto = app => view => {
 	const ddlProvider = require('../../ddlProvider/ddlProvider')(null, null, app);
-
 	const viewData = {
 		name: view.code || view.name,
 		keys: [],
