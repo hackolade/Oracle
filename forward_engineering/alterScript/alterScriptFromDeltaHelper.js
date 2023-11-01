@@ -123,7 +123,7 @@ const getAlterViewScriptDtos = (collection, app, dbVersion) => {
         .filter(Boolean)
         .map(item => Object.values(item.properties)[0])
         .map(view => ({...view, ...(view.role || {})}))
-        .filter(view => view.compMod?.created && view.selectStatement)
+        .filter(view => view.compMod?.created)
         .map(getAddViewScriptDto(app));
 
     const deleteViewsScriptDtos = []

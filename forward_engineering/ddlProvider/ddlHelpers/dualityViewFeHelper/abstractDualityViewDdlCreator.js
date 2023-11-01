@@ -1,14 +1,4 @@
-const JOIN_SUBQUERY_TYPE = 'joinSubquery';
-const COLLECTION_REFERENCE = 'collectionReference';
-
-/**
- * @typedef {{
- *     view: Object,
- *     jsonSchema: Object,
- *     relatedSchemas: Object
- * }} CreateViewDto
- * */
-
+const {DualityViewPropertiesType} = require("../../../enums/DualityViewPropertiesType");
 
 /**
  * @abstract
@@ -50,7 +40,7 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param view {Object}
+     * @param view {DualityViewJsonSchema | Object}
      * @return {boolean}
      * */
     static isDualityView(view = {}) {
@@ -62,7 +52,7 @@ class AbstractDualityViewFeDdlCreator {
      * @return {boolean}
      * */
     static isJoinSubquery(element = {}) {
-        return element?.type === JOIN_SUBQUERY_TYPE;
+        return element?.type === DualityViewPropertiesType.JOIN_SUBQUERY_TYPE;
     }
 
     /**
@@ -71,7 +61,7 @@ class AbstractDualityViewFeDdlCreator {
      * */
     static isRegularDualityViewFieldOnRootLevelOrInObjectSubquery(element = {}) {
         const { ref, refIdPath, refType } = element;
-        return ref && (refIdPath || []).length === 2 && refType === COLLECTION_REFERENCE;
+        return ref && (refIdPath || []).length === 2 && refType === DualityViewPropertiesType.COLLECTION_REFERENCE;
     }
 
     /**
@@ -93,8 +83,8 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param propertyJsonSchema {Object}
-     * @param parent {Object}
+     * @param propertyJsonSchema {RegularDualityViewField}
+     * @param parent {DualityView | JoinSubquery}
      * @return {string[]}
      * */
     static getPathToReferencedColumn(propertyJsonSchema, parent) {
@@ -112,7 +102,7 @@ class AbstractDualityViewFeDdlCreator {
 
     /**
      * @param pathToReferencedColumn {Array<string>}
-     * @param relatedSchemas {Object}
+     * @param relatedSchemas {DualityViewRelatedSchemas}
      * @return {string}
      * */
     static getRegularFieldNameFromCollection(pathToReferencedColumn, relatedSchemas) {
@@ -122,7 +112,7 @@ class AbstractDualityViewFeDdlCreator {
         const collectionId = pathToReferencedColumn[0];
         const fieldId = pathToReferencedColumn[1];
         const collection = relatedSchemas[collectionId];
-        const properties = collection?.properties || [];
+        const properties = collection?.properties || {};
         for (const name of Object.keys(properties)) {
             const jsonSchema = properties[name];
             if (jsonSchema.GUID === fieldId) {
@@ -141,7 +131,7 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param entity {Object}
+     * @param entity {DualityViewJsonSchema}
      * @return {string}
      * */
     _getForceStatement(entity) {
@@ -149,7 +139,7 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param entity {Object}
+     * @param entity {DualityView}
      * @return {string}
      * */
     _getOrReplaceStatement(entity) {
@@ -157,7 +147,7 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param entity {Object}
+     * @param entity {DualityViewJsonSchema}
      * @return {string}
      * */
     _getEditionableStatement(entity) {
@@ -166,7 +156,7 @@ class AbstractDualityViewFeDdlCreator {
 
     /**
      * @param propertyName {string}
-     * @param propertyJsonSchema {Object}
+     * @param propertyJsonSchema {RegularDualityViewField}
      * @return {string}
      * */
     static getRegularFieldName(propertyName, propertyJsonSchema) {
@@ -174,7 +164,7 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param createViewDto {CreateViewDto}
+     * @param createViewDto {CreateDualityViewDto}
      * @return {string}
      * */
     getCreateJsonRelationalDualityViewHeadingDdl(createViewDto) {
@@ -198,7 +188,7 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param createViewDto {CreateViewDto}
+     * @param createViewDto {CreateDualityViewDto}
      * @return {string}
      * */
     getDualityViewBodyDdl(createViewDto) {
@@ -206,7 +196,7 @@ class AbstractDualityViewFeDdlCreator {
     }
 
     /**
-     * @param createViewDto {CreateViewDto}
+     * @param createViewDto {CreateDualityViewDto}
      * @return {string}
      * */
     convertDualityViewToDdl(createViewDto) {

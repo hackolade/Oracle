@@ -591,6 +591,9 @@ module.exports = (baseProvider, options, app) => {
             );
         },
 
+        /**
+         * @return {string}
+         * */
         createDualityView({
                               jsonSchema,
                               view,
