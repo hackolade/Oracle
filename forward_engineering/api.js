@@ -10,7 +10,7 @@ module.exports = {
 			const script = buildEntityLevelAlterScript(data, app);
 			callback(null, script);
 		} catch (error) {
-			logger.log('error', {message: error.message, stack: error.stack}, 'PostgreSQL Forward-Engineering Error');
+			logger.log('error', {message: error.message, stack: error.stack}, 'Oracle Forward-Engineering Error');
 
 			callback({message: error.message, stack: error.stack});
 		}
@@ -25,7 +25,7 @@ module.exports = {
 			const script = buildContainerLevelAlterScript(data, app);
 			callback(null, script);
 		} catch (error) {
-			logger.log('error', {message: error.message, stack: error.stack}, 'PostgreSQL Forward-Engineering Error');
+			logger.log('error', {message: error.message, stack: error.stack}, 'Oracle Forward-Engineering Error');
 
 			callback({message: error.message, stack: error.stack});
 		}
