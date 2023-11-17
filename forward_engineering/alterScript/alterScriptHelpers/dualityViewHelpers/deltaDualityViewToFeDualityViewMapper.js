@@ -54,6 +54,23 @@ const mapRegularField = (_) => (code, property, collectionRefsDefinitionsMap) =>
 }
 
 /**
+ * @param code {string}
+ * @param subquery {DeltaDualityViewRoleJoinSubquery}
+ * @param collectionRefsDefinitionsMap {DeltaDualityViewCompModCollectionRefsDefinitionsMap}
+ * */
+const assertSubqueryIsValid = (code, subquery, collectionRefsDefinitionsMap) => {
+    if (!collectionRefsDefinitionsMap[subquery.GUID]) {
+        let namePartOfErrorMessage = code || subquery.title;
+        if (namePartOfErrorMessage) {
+            namePartOfErrorMessage = `<u>${namePartOfErrorMessage}</u>`;
+        } else {
+            namePartOfErrorMessage = 'a';
+        }
+        throw new Error(`Could not find referenced collection for ${namePartOfErrorMessage} subquery. Check if all the subqueries have the "child table" property set`);
+    }
+}
+
+/**
  * @return {(
  *     code: string,
  *     subquery: DeltaDualityViewRoleJoinSubquery,
@@ -61,6 +78,8 @@ const mapRegularField = (_) => (code, property, collectionRefsDefinitionsMap) =>
  * ) => JoinSubquery}
  * */
 const mapSubquery = (_) => (code, subquery, collectionRefsDefinitionsMap) => {
+    assertSubqueryIsValid(code, subquery, collectionRefsDefinitionsMap)
+
     /**
      * @type {JoinSubquery}
      * */
