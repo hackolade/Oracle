@@ -479,6 +479,7 @@ module.exports = (baseProvider, options, app) => {
                 tableName: data.entityName,
                 alias: data.alias,
                 isActivated: data.isActivated,
+                dbName: data.dbName,
             };
         },
 
