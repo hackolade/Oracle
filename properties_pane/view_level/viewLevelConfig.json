@@ -386,6 +386,23 @@
 				}
 			},
 			{
+				"propertyKeyword": "viewOn",
+				"hidden": true,
+				"dependency": {
+					"type": "or",
+					"values": [
+						{
+							"key": "duality",
+							"value": false
+						},
+						{
+							"key": "duality",
+							"exists": false
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Root table alias",
 				"propertyKeyword": "rootTableAlias",
 				"propertyType": "text",
