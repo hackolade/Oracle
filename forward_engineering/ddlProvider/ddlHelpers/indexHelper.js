@@ -5,15 +5,15 @@ module.exports = ({_, wrapInQuotes}) => {
 
     /**
      * @param indxKey {Array<Object> | undefined}
-     * @param indxConditionalFunction {string | undefined}
+     * @param column_expression {string | undefined}
      * @return {string}
      * */
     const getIndexKeys = ({
                               indxKey,
-                              indxConditionalFunction,
+                              column_expression,
                           }) => {
-        if (indxConditionalFunction) {
-            return `\n(\n\t${indxConditionalFunction}\n)\n\t`;
+        if (column_expression) {
+            return `\n(\n\t${column_expression}\n)\n\t`;
         }
         if (_.isArray(indxKey) && !_.isEmpty(indxKey)) {
             const indexedColumnsClause = _.map(
@@ -38,7 +38,7 @@ module.exports = ({_, wrapInQuotes}) => {
                                  index_compression,
                                  logging_clause,
                                  indxKey,
-                                 indxConditionalFunction,
+                                 column_expression,
                              }) => {
         let options = `${logging_clause ? ` ${_.toUpper(logging_clause)}` : ''}` +
             `${tablespace ? ` TABLESPACE ${tablespace}` : ''}` +
@@ -49,7 +49,7 @@ module.exports = ({_, wrapInQuotes}) => {
         } else if (index_attributes) {
             options = ` ${index_attributes}`;
         }
-        const isKeysEmpty = _.isEmpty(indxKey) && _.isEmpty(indxConditionalFunction);
+        const isKeysEmpty = _.isEmpty(indxKey) && _.isEmpty(column_expression);
 
         if (!isKeysEmpty) {
             return _.trim(options);

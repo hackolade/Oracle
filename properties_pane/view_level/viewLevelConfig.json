@@ -570,11 +570,11 @@
 							"type": "or",
 							"values": [
 								{
-									"key": "indxConditionalFunction",
+									"key": "column_expression",
 									"exist": false
 								},
 								{
-									"key": "indxConditionalFunction",
+									"key": "column_expression",
 									"value": ""
 								}
 							]
@@ -582,7 +582,7 @@
 					},
 					{
 						"propertyName": "Conditional function",
-						"propertyKeyword": "indxConditionalFunction",
+						"propertyKeyword": "column_expression",
 						"propertyTooltip": "Enter conditional function for a function-based index",
 						"propertyType": "details",
 						"markdown": false,
