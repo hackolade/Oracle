@@ -12,8 +12,11 @@ module.exports = ({_, wrapInQuotes}) => {
                               indxKey,
                               column_expression,
                           }) => {
+        const { escapeSingleQuote } = require('../../utils/general')();
+
         if (column_expression) {
-            return `\n(\n\t${column_expression}\n)\n\t`;
+            const ddlColumnExpression = escapeSingleQuote(column_expression);
+            return `\n(\n\t${ddlColumnExpression}\n)\n\t`;
         }
         if (_.isArray(indxKey) && !_.isEmpty(indxKey)) {
             const indexedColumnsClause = _.map(

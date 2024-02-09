@@ -165,6 +165,14 @@ module.exports = _ => {
 			: ' (' + columns.map(mapColumn).join(', ') + ')';
 	};
 
+	/**
+	 * @param str {string}
+	 * @return {string}
+	 * */
+	const escapeSingleQuote = str => {
+		return str.replaceAll("'", "''");
+	};
+
 	return {
 		getDbName,
 		getBucketName,
@@ -187,5 +195,6 @@ module.exports = _ => {
 		getNamePrefixedWithSchemaName,
 		checkFieldPropertiesChanged,
 		getColumnsList,
+		escapeSingleQuote,
 	};
 };
