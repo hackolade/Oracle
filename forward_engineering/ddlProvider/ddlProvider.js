@@ -446,7 +446,7 @@ module.exports = (baseProvider, options, app) => {
             const name = getIndexName(index.indxName);
             const indexType = getIndexType(index.indxType);
             const keys = getIndexKeys(index);
-            const indexOptions = getIndexOptions(index, isParentActivated);
+            const indexOptions = getIndexOptions(index);
             const dbVersion = options.dbVersion || '';
             const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
             const statement = assignTemplates(templates.createIndex, {
@@ -459,8 +459,9 @@ module.exports = (baseProvider, options, app) => {
                 });
 
             if (usingTryCatchWrapper) {
+                const statementWithoutTrailingQueryDelimiter = statement.replace(/;$/, '');
                 return commentIfDeactivated(
-                    wrapIfNotExists(statement, true),
+                    wrapIfNotExists(statementWithoutTrailingQueryDelimiter, true),
                     {
                         isActivated: index.isActivated,
                     }

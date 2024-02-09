@@ -1052,6 +1052,7 @@ making sure that you maintain a proper JSON format.
 				{
 					"propertyName": "Conditional function",
 					"propertyKeyword": "indxConditionalFunction",
+					"propertyTooltip": "Enter conditional function for a function-based index",
 					"propertyType": "details",
 					"markdown": false,
 					"template": "codeEditor",
@@ -1087,17 +1088,6 @@ making sure that you maintain a proper JSON format.
 					"propertyKeyword": "tablespace",
 					"propertyTooltip": "Specify the tablespace in which Oracle Database creates the table.  If you omit TABLESPACE, then the database creates that item in the default tablespace of the owner of the schema containing the table.",
 					"propertyType": "text"
-				},
-				{
-					"propertyName": "Expression",
-					"propertyKeyword": "column_expression",
-					"propertyTooltip": "For function-based index.  Specify an expression built from columns of table, constants, SQL functions, and user-defined functions. ",
-					"propertyType": "details",
-					"markdown": false,
-					"template": "codeEditor",
-					"templateOptions": {
-						"editorDialect": "sql"
-					}
 				},
 				{
 					"propertyName": "Properties",
