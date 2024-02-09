@@ -97,8 +97,11 @@ module.exports = (baseProvider, options, app) => {
 
     const wrapIfNotExists = (statement, ifNotExist, errorCode = 955) => {
         if (ifNotExist) {
-            const ddlToWrap = _.trim(tab(tab(statement)));
-            return assignTemplates(templates.ifNotExists, {statement: ddlToWrap, errorCode})
+            const tabbedStatement = tab(tab(statement));
+            const trimmedStatement = _.trim(tabbedStatement);
+            const statementWithNoTrailingDelimiter = trimmedStatement.replace(/;$/, '');
+
+            return assignTemplates(templates.ifNotExists, {statement: statementWithNoTrailingDelimiter, errorCode})
         }
         return statement + ';';
     };
@@ -459,9 +462,8 @@ module.exports = (baseProvider, options, app) => {
                 });
 
             if (usingTryCatchWrapper) {
-                const statementWithoutTrailingQueryDelimiter = statement.replace(/;$/, '');
                 return commentIfDeactivated(
-                    wrapIfNotExists(statementWithoutTrailingQueryDelimiter, true),
+                    wrapIfNotExists(statement, true),
                     {
                         isActivated: index.isActivated,
                     }
