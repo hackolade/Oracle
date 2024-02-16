@@ -562,7 +562,47 @@
 						"propertyKeyword": "indxKey",
 						"propertyType": "fieldList",
 						"template": "orderedList",
-						"attributeList": ["asc", "desc"]
+						"attributeList": [
+							"asc",
+							"desc"
+						],
+						"dependency": {
+							"type": "or",
+							"values": [
+								{
+									"key": "column_expression",
+									"exist": false
+								},
+								{
+									"key": "column_expression",
+									"value": ""
+								}
+							]
+						}
+					},
+					{
+						"propertyName": "Conditional function",
+						"propertyKeyword": "column_expression",
+						"propertyTooltip": "Enter conditional function for a function-based index",
+						"propertyType": "details",
+						"markdown": false,
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "sql"
+						},
+						"dependency": {
+							"type": "or",
+							"values": [
+								{
+									"key": "indxKey",
+									"exist": false
+								},
+								{
+									"key": "indxKey",
+									"isEmpty": true
+								}
+							]
+						}
 					},
 					{
 						"propertyName": "Description",
@@ -576,14 +616,6 @@
 						"propertyKeyword": "tablespace",
 						"propertyTooltip": "Specify the tablespace in which Oracle Database creates the table.  If you omit TABLESPACE, then the database creates that item in the default tablespace of the owner of the schema containing the table.",
 						"propertyType": "text"
-					},
-					{
-						"propertyName": "Expression",
-						"propertyKeyword": "column_expression",
-						"propertyTooltip": "For function-based index.  Specify an expression built from columns of table, constants, SQL functions, and user-defined functions. ",
-						"propertyType": "details",
-						"template": "textarea",
-						"markdown": false
 					},
 					{
 						"propertyName": "Properties",

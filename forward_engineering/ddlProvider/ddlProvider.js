@@ -97,8 +97,11 @@ module.exports = (baseProvider, options, app) => {
 
     const wrapIfNotExists = (statement, ifNotExist, errorCode = 955) => {
         if (ifNotExist) {
-            const ddlToWrap = _.trim(tab(tab(statement)));
-            return assignTemplates(templates.ifNotExists, {statement: ddlToWrap, errorCode})
+            const tabbedStatement = tab(tab(statement));
+            const trimmedStatement = _.trim(tabbedStatement);
+            const statementWithNoTrailingDelimiter = trimmedStatement.replace(/;$/, '');
+
+            return assignTemplates(templates.ifNotExists, {statement: statementWithNoTrailingDelimiter, errorCode})
         }
         return statement + ';';
     };
@@ -446,7 +449,7 @@ module.exports = (baseProvider, options, app) => {
             const name = getIndexName(index.indxName);
             const indexType = getIndexType(index.indxType);
             const keys = getIndexKeys(index);
-            const indexOptions = getIndexOptions(index, isParentActivated);
+            const indexOptions = getIndexOptions(index);
             const dbVersion = options.dbVersion || '';
             const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
             const statement = assignTemplates(templates.createIndex, {

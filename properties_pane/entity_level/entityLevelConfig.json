@@ -2,9 +2,9 @@
 * Copyright © 2016-2020 by IntegrIT S.A. dba Hackolade.  All rights reserved.
 *
 * The copyright to the computer software herein is the property of IntegrIT S.A.
-* The software may be used and/or copied only with the written permission of 
-* IntegrIT S.A. or in accordance with the terms and conditions stipulated in 
-* the agreement/contract under which the software has been supplied. 
+* The software may be used and/or copied only with the written permission of
+* IntegrIT S.A. or in accordance with the terms and conditions stipulated in
+* the agreement/contract under which the software has been supplied.
 
 In order to define custom properties for any object's properties pane, you may copy/paste from the following,
 making sure that you maintain a proper JSON format.
@@ -70,8 +70,8 @@ making sure that you maintain a proper JSON format.
 				]
 			},
 // “groupInput” can have the following states - 0 items, 1 item, and many items.
-// “blockInput” has only 2 states - 0 items or 1 item. 
-// This gives us an easy way to represent it as an object and not as an array internally which is beneficial for processing 
+// “blockInput” has only 2 states - 0 items or 1 item.
+// This gives us an easy way to represent it as an object and not as an array internally which is beneficial for processing
 // and forward-engineering in particular.
 			{
 				"propertyName": "Block",
@@ -99,7 +99,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "keyList",
 				"propertyType": "fieldList",
 				"template": "orderedList"
-			}, 
+			},
 			{
 				"propertyName": "List with attribute",
 				"propertyKeyword": "keyListOrder",
@@ -910,7 +910,7 @@ making sure that you maintain a proper JSON format.
 								}
 							]
 						}
-					}, 
+					},
 					{
 						"tooltip": "Remove or update the existing composite primary key definition prior to unlock the possibility to create a new composite primary key definition for this table",
 						"dependency": {
@@ -971,7 +971,7 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "primaryKeySetter",
 				"abbr": "pk"
 			}]
-		}, 
+		},
 		{
 			"propertyName": "Unique key",
 			"propertyType": "group",
@@ -1034,14 +1034,54 @@ making sure that you maintain a proper JSON format.
 					"attributeList": [
 						"asc",
 						"desc"
-					]
+					],
+					"dependency": {
+						"type": "or",
+						"values": [
+							{
+								"key": "column_expression",
+								"exist": false
+							},
+							{
+								"key": "column_expression",
+								"value": ""
+							}
+						]
+					}
+				},
+				{
+					"propertyName": "Conditional function",
+					"propertyKeyword": "column_expression",
+					"propertyTooltip": "Enter conditional function for a function-based index",
+					"propertyType": "details",
+					"markdown": false,
+					"template": "codeEditor",
+					"templateOptions": {
+						"editorDialect": "sql"
+					},
+					"dependency": {
+						"type": "or",
+						"values": [
+							{
+								"key": "indxKey",
+								"exist": false
+							},
+							{
+								"key": "indxKey",
+								"isEmpty": true
+							}
+						]
+					}
 				},
 				{
 					"propertyName": "Description",
 					"propertyKeyword": "indxDescription",
 					"propertyTooltip": "description",
 					"propertyType": "details",
-					"template": "textarea"
+					"template": "codeEditor",
+					"templateOptions": {
+						"editorDialect": "markdown"
+					}
 				},
 				{
 					"propertyName": "Tablespace",
@@ -1050,36 +1090,37 @@ making sure that you maintain a proper JSON format.
 					"propertyType": "text"
 				},
 				{
-					"propertyName": "Expression",
-					"propertyKeyword": "column_expression",
-					"propertyTooltip": "For function-based index.  Specify an expression built from columns of table, constants, SQL functions, and user-defined functions. ",
-					"propertyType": "details",
-					"template": "textarea",
-					"markdown": false
-				},
-				{
 					"propertyName": "Properties",
 					"propertyKeyword": "index_properties",
 					"propertyTooltip": "Specify the optional index attributes.",
 					"propertyType": "details",
-					"template": "textarea",
-					"markdown": false
+					"markdown": false,
+					"template": "codeEditor",
+					"templateOptions": {
+						"editorDialect": "sql"
+					}
 				},
 				{
 					"propertyName": "Attributes",
 					"propertyKeyword": "index_attributes",
 					"propertyTooltip": "Specify the optional index attributes.",
 					"propertyType": "details",
-					"template": "textarea",
-					"markdown": false
+					"markdown": false,
+					"template": "codeEditor",
+					"templateOptions": {
+						"editorDialect": "sql"
+					}
 				},
 				{
 					"propertyName": "Compression",
 					"propertyKeyword": "index_compression",
 					"propertyTooltip": "If you want to use compression for a partitioned index, then you must create the index with compression enabled at the index level. You can subsequently enable and disable the compression setting for individual partitions of such a partitioned index. ",
 					"propertyType": "details",
-					"template": "textarea",
-					"markdown": false
+					"markdown": false,
+					"template": "codeEditor",
+					"templateOptions": {
+						"editorDialect": "sql"
+					}
 				},
 				{
 					"propertyName": "Logging",
@@ -1099,7 +1140,10 @@ making sure that you maintain a proper JSON format.
 					"propertyTooltip": "comments",
 					"addTimestampButton": false,
 					"propertyType": "details",
-					"template": "textarea"
+					"template": "codeEditor",
+					"templateOptions": {
+						"editorDialect": "markdown"
+					}
 				}
 			]
 		}]
