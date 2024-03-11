@@ -452,18 +452,25 @@ module.exports = (baseProvider, options, app) => {
             const indexOptions = getIndexOptions(index);
             const dbVersion = options.dbVersion || '';
             const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
-            const statement = assignTemplates(templates.createIndex, {
+
+            const shouldInsertIfNotExistsStatement = index.ifNotExist && !usingTryCatchWrapper;
+
+            let statement = assignTemplates(templates.createIndex, {
                     indexType,
-                    ifNotExists: !usingTryCatchWrapper ? ' IF NOT EXISTS' : '',
+                    ifNotExists: shouldInsertIfNotExistsStatement ? ' IF NOT EXISTS' : '',
                     name,
                     keys,
                     options: indexOptions,
                     tableName: getNamePrefixedWithSchemaName(tableName, index.schemaName),
                 });
 
+            if (index.ifNotExist && usingTryCatchWrapper) {
+                statement = wrapIfNotExists(statement, true);
+            }
+
             if (usingTryCatchWrapper) {
                 return commentIfDeactivated(
-                    wrapIfNotExists(statement, true),
+                    statement,
                     {
                         isActivated: index.isActivated,
                     }
