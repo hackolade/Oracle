@@ -1016,6 +1016,11 @@ making sure that you maintain a proper JSON format.
 					"defaultValue": true
 				},
 				{
+					"propertyName": "If not exists",
+					"propertyKeyword": "ifNotExist",
+					"propertyType": "checkbox"
+				},
+				{
 					"propertyName": "Type",
 					"propertyKeyword": "indxType",
 					"propertyType": "select",
