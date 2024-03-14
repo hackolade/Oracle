@@ -24,6 +24,12 @@ module.exports = {
 
 	createIndex: `CREATE$\{indexType} INDEX$\{ifNotExists}$\{name} ON $\{tableName}$\{keys}$\{options};\n`,
 
+	dropIndex: 'DROP INDEX ${name};',
+
+	alterIndexRename: 'ALTER INDEX ${oldName} RENAME TO ${newName};',
+
+	alterIndexRebuild: 'ALTER INDEX ${name} REBUILD ${options};',
+
 	createView:
 		'CREATE${orReplace}${force}${viewType}${materialized} VIEW${ifNotExists} ${name} ${sharing}${viewProperties}\n\tAS ${selectStatement}',
 

@@ -1,6 +1,7 @@
 const {AlterScriptDto} = require("../types/AlterScriptDto");
 const {getUpdateTypesScriptDtos} = require("./columnHelpers/alterTypeHelper");
 const {getRenameColumnScriptDtos} = require("./columnHelpers/renameColumnHelper");
+const { getModifyIndexesScriptDtos } = require("./entityHelpers/indexesHelper");
 
 /**
  * @return {(collection: AlterCollectionDto) => AlterScriptDto | undefined}
@@ -66,6 +67,17 @@ const getDeleteCollectionScriptDto = app => collection => {
     const script = `DROP TABLE ${fullName};`;
     return AlterScriptDto.getInstance([script], true, true);
 };
+
+/**
+ * @return {(collection: AlterCollectionDto) => AlterScriptDto[]}
+ * */
+const getModifyCollectionScriptDtos = ({ app, dbVersion }) => collection => {
+		const _ = app.require('lodash');
+		const ddlProvider = require('../../ddlProvider/ddlProvider')(null, { dbVersion }, app);
+
+		const modifyIndexesScriptDtos = getModifyIndexesScriptDtos({ _, ddlProvider })({ collection });
+		return [...modifyIndexesScriptDtos].filter(Boolean);
+	};
 
 /**
  * @return {(collection: Object) => AlterScriptDto[]}
@@ -147,6 +159,7 @@ const getModifyColumnScriptDtos = (app, dbVersion) => collection => {
 module.exports = {
     getAddCollectionScriptDto,
     getDeleteCollectionScriptDto,
+    getModifyCollectionScriptDtos,
     getAddColumnScriptDtos,
     getDeleteColumnScriptDtos,
     getModifyColumnScriptDtos,

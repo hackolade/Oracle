@@ -145,6 +145,14 @@ module.exports = _ => {
 		return wrapInQuotes(name);
 	};
 
+	/**
+	 * @param {{propertyName: string, tableName: string, schemaName: string}} param0 
+	 * @returns {string}
+	 */
+	const getFullPropertyName = ({ propertyName, tableName, schemaName }) => {
+		return `${getNamePrefixedWithSchemaName(tableName, schemaName)}.${wrapInQuotes(propertyName)}`
+	}
+
 	const checkFieldPropertiesChanged = (compMod, propertiesToCheck) => {
 		return propertiesToCheck.some(prop => compMod?.oldField[prop] !== compMod?.newField[prop]);
 	};
@@ -196,5 +204,6 @@ module.exports = _ => {
 		checkFieldPropertiesChanged,
 		getColumnsList,
 		escapeSingleQuote,
+		getFullPropertyName,
 	};
 };
