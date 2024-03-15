@@ -5,6 +5,7 @@ const {
 const {
     getAddCollectionScriptDto,
     getDeleteCollectionScriptDto,
+    getModifyCollectionScriptDtos,
     getAddColumnScriptDtos,
     getDeleteColumnScriptDtos,
     getModifyColumnScriptDtos,
@@ -83,6 +84,12 @@ const getAlterCollectionsScriptDtos = ({
         .map(item => Object.values(item.properties)[0])
         .filter(collection => collection.compMod?.deleted)
         .map(getDeleteCollectionScriptDto(app));
+    const modifyCollectionsScriptDtos = []
+        .concat(collection.properties?.entities?.properties?.modified?.items)
+        .filter(Boolean)
+        .map(item => Object.values(item.properties)[0])
+        .filter(collection => collection.compMod?.modified)
+        .flatMap(getModifyCollectionScriptDtos({app, dbVersion}))
     const addColumnScriptDtos = []
         .concat(collection.properties?.entities?.properties?.added?.items)
         .filter(Boolean)
@@ -108,6 +115,7 @@ const getAlterCollectionsScriptDtos = ({
         ...addColumnScriptDtos,
         ...deleteColumnScriptDtos,
         ...modifyColumnScriptDtos,
+        ...modifyCollectionsScriptDtos,
     ].filter(Boolean);
 };
 

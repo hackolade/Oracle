@@ -4,6 +4,7 @@ const templates = require('./templates');
 const {DualityViewDdlCreatorFactory} = require("./ddlHelpers/dualityViewFeHelper/dualityViewDdlCreatorFactory");
 const {DualityViewSyntaxType} = require("../enums/DualityViewSyntaxType");
 const {DbVersion} = require("../enums/DbVersion");
+const { AlterIndexDto } = require('../alterScript/types/AlterIndexDto.js');
 
 /**
  * @param dbVersion {string} DB version in "21c" format
@@ -482,6 +483,30 @@ module.exports = (baseProvider, options, app) => {
                 },
             );
         },
+
+        /**
+         * @param {{name: string}} param0 
+         */
+        dropIndex({ name }) {
+            return assignTemplates(templates.dropIndex, { name });
+        },
+
+        /**
+         * @param {{oldName: string, newName: string}} param0 
+         */
+        alterIndexRename({ oldName, newName }) {
+            return assignTemplates(templates.alterIndexRename, { oldName, newName });
+        },
+
+        /**
+         * @param {{name: string, indexData: AlterIndexDto}} param0 
+         */
+        alterIndexRebuild({ name, indexData }) {
+            const optionsStatement = getIndexOptions(indexData);
+
+            return assignTemplates(templates.alterIndexRebuild, { name, options: optionsStatement });
+        },
+
 
         hydrateViewColumn(data) {
             return {
