@@ -1,7 +1,7 @@
 const { AlterScriptDto } = require('../../types/AlterScriptDto.js');
 const { AlterCollectionDto } = require('../../types/AlterCollectionDto');
 const { AlterIndexDto } = require('../../types/AlterIndexDto');
-const { getFullPropertyName, wrapInQuotes } = require('../../../utils/general.js')();
+const { wrapInQuotes } = require('../../../utils/general.js')();
 
 /**
  * @typedef {{
@@ -64,6 +64,18 @@ const areOldIndexDtoAndNewIndexDtoDescribingSameDatabaseIndex = ({ oldIndex, new
 };
 
 /**
+ *
+ * @param {{indexKey: { keyId: string, type: string }[], collection: AlterCollectionDto}} param0
+ * @returns
+ */
+const addNameToIndexKey = ({ indexKey, collection }) => {
+	return indexKey.map(key => ({
+		...key,
+		name: Object.values(collection.role.properties).find(property => key.keyId === property.GUID).compMod.newField.name,
+	}));
+};
+
+/**
  * @returns {GetAlterScriptDtosFunction}
  */
 const getDeletedIndexesScriptDtos =
@@ -91,11 +103,10 @@ const getDeletedIndexesScriptDtos =
 const getDeleteIndexScriptDto =
 	({ ddlProvider }) =>
 	({ index, collection }) => {
-		const name = getFullPropertyName({
-			propertyName: index.indxName,
-			tableName: collection?.role?.compMod?.collectionName?.old,
-			schemaName: collection?.role?.compMod?.bucketProperties?.name,
-		});
+		if (index?.indxKey?.length) {
+			index.indxKey = addNameToIndexKey({ indexKey: index.indxKey, collection });
+		}
+		const name = wrapInQuotes(index.indxName);
 		const script = ddlProvider.dropIndex({ name });
 
 		return AlterScriptDto.getInstance([script], index.isActivated, true);
@@ -129,6 +140,9 @@ const getAddedIndexesScriptDtos =
 const getAddIndexScriptDto =
 	({ ddlProvider }) =>
 	({ index, collection }) => {
+		if (index?.indxKey?.length) {
+			index.indxKey = addNameToIndexKey({ indexKey: index.indxKey, collection });
+		}
 		const tableName = collection?.role?.compMod?.collectionName?.new;
 		const script = ddlProvider.createIndex(tableName, {
 			...index,
@@ -176,16 +190,12 @@ const getModifiedIndexesScriptDtos =
 const getModifyIndexScriptDto =
 	({ _, ddlProvider }) =>
 	({ modifiedIndex: { oldIndex, newIndex }, collection }) => {
-		const oldName = getFullPropertyName({
-			propertyName: oldIndex.indxName,
-			tableName: collection?.role?.compMod?.collectionName?.old,
-			schemaName: collection?.role?.compMod?.bucketProperties?.name,
-		});
-		const name = getFullPropertyName({
-			propertyName: newIndex.indxName,
-			tableName: collection?.role?.compMod?.collectionName?.old,
-			schemaName: collection?.role?.compMod?.bucketProperties?.name,
-		});
+		if (oldIndex?.indxKey?.length && newIndex?.indxKey?.length) {
+			oldIndex.indxKey = addNameToIndexKey({ indexKey: oldIndex.indxKey, collection });
+			newIndex.indxKey = addNameToIndexKey({ indexKey: newIndex.indxKey, collection });
+		}
+		const oldName = wrapInQuotes(oldIndex.indxName);
+		const newName = wrapInQuotes(newIndex.indxName);
 
 		let alterScriptDtos = [];
 
@@ -210,30 +220,30 @@ const getModifyIndexScriptDto =
 			return alterScriptDtos;
 		}
 
-		if (shouldAlterIndexRebuild({ oldIndex, newIndex })) {
-			const alterIndexRebuildDto = AlterScriptDto.getInstance(
-				[ddlProvider.alterIndexRebuild({ name, indexData: newIndex })],
-				newIndex.isActivated,
-				false,
-			);
-			alterScriptDtos.push(alterIndexRebuildDto);
-		}
-
 		const shouldRenameIndex = oldIndex.indxName !== newIndex.indxName;
 		if (shouldRenameIndex) {
 			const alterIndexDto = AlterScriptDto.getInstance(
-				[ddlProvider.alterIndexRename({ oldName, newName: wrapInQuotes(newIndex.indxName) })],
+				[ddlProvider.alterIndexRename({ oldName, newName })],
 				newIndex.isActivated,
 				false,
 			);
 			alterScriptDtos.push(alterIndexDto);
 		}
 
+		if (shouldAlterIndexRebuild({ oldIndex, newIndex })) {
+			const alterIndexRebuildDto = AlterScriptDto.getInstance(
+				[ddlProvider.alterIndexRebuild({ name: newName, indexData: newIndex })],
+				newIndex.isActivated,
+				false,
+			);
+			alterScriptDtos.push(alterIndexRebuildDto);
+		}
+
 		return alterScriptDtos;
 	};
 
 /**
- * @return {(collection: Object) => AlterScriptDto[]}
+ * @returns {GetAlterScriptDtosFunction}
  * */
 const getModifyIndexesScriptDtos =
 	({ _, ddlProvider }) =>
