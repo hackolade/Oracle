@@ -64,15 +64,32 @@ const areOldIndexDtoAndNewIndexDtoDescribingSameDatabaseIndex = ({ oldIndex, new
 };
 
 /**
- *
- * @param {{indexKey: { keyId: string, type: string }[], collection: AlterCollectionDto}} param0
- * @returns
+ * @param {{index: AlterIndexDto, collection: AlterCollectionDto}} param0
+ * @returns {AlterIndexDto}
  */
-const addNameToIndexKey = ({ indexKey, collection }) => {
-	return indexKey.map(key => ({
-		...key,
-		name: Object.values(collection.role.properties).find(property => key.keyId === property.GUID).compMod.newField.name,
-	}));
+const addNameToIndexKey = ({ index, collection }) => {
+	if (!index?.indxKey?.length) {
+		return index;
+	}
+
+	return {
+		...index,
+		indxKey: index.indxKey.map(key => {
+			if (!key?.keyId) {
+				return key;
+			}
+			const property = Object.values(collection?.role?.properties || {}).find(
+				property => property?.GUID === key?.keyId,
+			);
+			if (!property?.compMod?.newField) {
+				return key;
+			}
+			return {
+				...key,
+				name: property?.compMod?.newField?.name || null,
+			};
+		}),
+	};
 };
 
 /**
@@ -102,10 +119,7 @@ const getDeletedIndexesScriptDtos =
  */
 const getDeleteIndexScriptDto =
 	({ ddlProvider }) =>
-	({ index, collection }) => {
-		if (index?.indxKey?.length) {
-			index.indxKey = addNameToIndexKey({ indexKey: index.indxKey, collection });
-		}
+	({ index }) => {
 		const name = wrapInQuotes(index.indxName);
 		const script = ddlProvider.dropIndex({ name });
 
@@ -140,12 +154,10 @@ const getAddedIndexesScriptDtos =
 const getAddIndexScriptDto =
 	({ ddlProvider }) =>
 	({ index, collection }) => {
-		if (index?.indxKey?.length) {
-			index.indxKey = addNameToIndexKey({ indexKey: index.indxKey, collection });
-		}
+		const indexWithAddedKeyNames = addNameToIndexKey({ index, collection });
 		const tableName = collection?.role?.compMod?.collectionName?.new;
 		const script = ddlProvider.createIndex(tableName, {
-			...index,
+			...indexWithAddedKeyNames,
 			schemaName: collection?.role?.compMod?.bucketProperties?.name,
 		});
 
@@ -190,10 +202,6 @@ const getModifiedIndexesScriptDtos =
 const getModifyIndexScriptDto =
 	({ _, ddlProvider }) =>
 	({ modifiedIndex: { oldIndex, newIndex }, collection }) => {
-		if (oldIndex?.indxKey?.length && newIndex?.indxKey?.length) {
-			oldIndex.indxKey = addNameToIndexKey({ indexKey: oldIndex.indxKey, collection });
-			newIndex.indxKey = addNameToIndexKey({ indexKey: newIndex.indxKey, collection });
-		}
 		const oldName = wrapInQuotes(oldIndex.indxName);
 		const newName = wrapInQuotes(newIndex.indxName);
 
@@ -205,10 +213,11 @@ const getModifyIndexScriptDto =
 				newIndex.isActivated,
 				true,
 			);
+			const newIndexWithAddedKeyNames = addNameToIndexKey({ index: newIndex, collection });
 			const createIndexDto = AlterScriptDto.getInstance(
 				[
 					ddlProvider.createIndex(collection?.role?.compMod?.collectionName?.new, {
-						...newIndex,
+						...newIndexWithAddedKeyNames,
 						schemaName: collection?.role?.compMod?.bucketProperties?.name,
 					}),
 				],
