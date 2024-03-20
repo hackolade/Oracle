@@ -162,7 +162,7 @@ module.exports = ({
       return '';
     }
 
-    return ' SHARING = ' + _.toUpper(sequence.sharing);
+    return ' SHARING=' + _.toUpper(sequence.sharing);
   };
 
   return {
