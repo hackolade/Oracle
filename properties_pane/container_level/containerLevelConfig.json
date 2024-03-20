@@ -229,26 +229,15 @@ making sure that you maintain a proper JSON format.
 						"propertyType": "checkbox"
 					},
 					{
-						"propertyName": "Session",
-						"propertyKeyword": "session",
-						"propertyTooltip": "If specified, the sequence object is created only for this session, and is automatically dropped on session exit. Existing permanent sequences with the same name are not visible (in this session) while the session sequence exists, unless they are referenced with schema-qualified names.",
-						"defaultValue": false,
-						"propertyType": "checkbox",
-						"disabledOnCondition": {
-							"key": "global",
-							"value": true
-						}
-					},
-					{
-						"propertyName": "Global",
-						"propertyKeyword": "global",
-						"propertyTooltip": "If specified, the sequence is created as a global sequence. It is accessible to all sessions in the database.",
-						"defaultValue": false,
-						"propertyType": "checkbox",
-						"disabledOnCondition": {
-							"key": "session",
-							"value": true
-						}
+						"propertyName": "Type",
+						"propertyKeyword": "type",
+						"propertyTooltip": "Specify session if you want to sequence returns a unique range of sequence numbers only within a session, or global to create a regular sequence.",
+						"propertyType": "select",
+						"options": [
+							"",
+							"global",
+							"session"
+						]
 					},
 					{
 						"propertyName": "Sharing",

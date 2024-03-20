@@ -30,7 +30,7 @@ module.exports = ({
    * @returns {string}
    */
   const createSequenceScript = ({ schemaName, sequence, usingTryCatchWrapper }) => {
-    const sequenceSchemaName = sequence.session ? '' : schemaName;
+    const sequenceSchemaName = sequence.type === 'session' ? '' : schemaName;
     const name = getNamePrefixedWithSchemaName(sequence.sequenceName, sequenceSchemaName);
     const ifNotExists = usingTryCatchWrapper ? '' : getIfNotExists({ sequence });
     const options = getSequenceOptions({ sequence, schemaName });
@@ -70,7 +70,7 @@ module.exports = ({
       { getOption: getLiteralOption, key: 'keep' , extendedKey: '' },
       { getOption: getLiteralOption, key: 'scale', extendedKey: 'scaleExtend' },
       { getOption: getLiteralOption, key: 'shard', extendedKey: 'shardExtend' },
-      { getOption: getSequenceType },
+      { getOption: getLiteralOption, key: 'type',  extendedKey: '' },
     ];
 
     const options = optionConfigs
