@@ -114,6 +114,15 @@ module.exports = (baseProvider, options, app) => {
         getNamePrefixedWithSchemaName,
     });
 
+    const {getSequencesScript} = require('./ddlHelpers/sequenceHelper')({
+        _,
+        templates,
+        assignTemplates,
+        getNamePrefixedWithSchemaName,
+        wrapInQuotes,
+        wrapIfNotExists,
+    });
+
     return {
         getDefaultType(type) {
             return defaultTypes[type];
@@ -134,25 +143,30 @@ module.exports = (baseProvider, options, app) => {
                 ifNotExist: containerData.ifNotExist,
                 dbVersion,
                 synonyms: data.synonyms,
+                sequences: data.sequences,
             };
         },
 
-        createSchema({schemaName, ifNotExist, dbVersion}) {
+        createSchema({schemaName, ifNotExist, dbVersion, sequences}) {
             const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
             const schemaStatement = assignTemplates(templates.createSchema, {
                 schemaName: wrapInQuotes(schemaName),
                 ifNotExists: !usingTryCatchWrapper && ifNotExist ? ' IF NOT EXISTS' : '',
             });
+            const sequencesStatement = getSequencesScript({ schemaName, sequences, usingTryCatchWrapper });
+            const schemaSequencesStatement = sequencesStatement ? '\n\n' + sequencesStatement : '';
 
             if (!usingTryCatchWrapper) {
-                return schemaStatement + ';';
+                return schemaStatement + ';' + schemaSequencesStatement;
             }
 
-            return wrapIfNotExists(
+            const wrappedSchemaStatement = wrapIfNotExists(
                 schemaStatement,
                 ifNotExist,
                 1920,
             );
+
+            return wrappedSchemaStatement + schemaSequencesStatement;
         },
 
         hydrateColumn({columnDefinition, jsonSchema, schemaData, definitionJsonSchema = {}}) {

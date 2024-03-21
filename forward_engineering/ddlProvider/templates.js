@@ -49,6 +49,10 @@ module.exports = {
 
 	renameColumn: 'ALTER TABLE ${tableName} RENAME COLUMN ${oldColumnName} TO ${newColumnName};',
 
+	createSequence: 
+	'CREATE SEQUENCE${ifNotExists} ${name}${sharing}' +
+	'${options}',
+
 	dualityView: {
 		createJsonRelationalDualityViewHeading: 'CREATE${orReplaceStatement}${forceStatement}${editionableStatement} JSON RELATIONAL DUALITY VIEW ${viewName} AS',
 
