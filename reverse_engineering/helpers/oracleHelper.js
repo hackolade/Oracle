@@ -5,6 +5,11 @@ const fs = require('fs');
 const parseTns = require('./parseTns');
 const ssh = require('tunnel-ssh');
 
+const OPTION_VALUE = {
+	true: 'Y',
+	false: 'N',
+};
+
 const noConnectionError = { message: 'Connection error' };
 
 const setDependencies = ({ lodash }) => (_ = lodash);
@@ -924,6 +929,83 @@ const getSynonymsDDL = async () => {
 	return synonymsDDL;
 };
 
+const getDbSequences = async logger => {
+	try {
+		const queryResult = await execute(
+			`SELECT
+			 	SEQUENCE_OWNER,
+			 	SEQUENCE_NAME,
+			 	MIN_VALUE,
+			 	MAX_VALUE,
+			 	INCREMENT_BY,
+			 	CYCLE_FLAG,
+			 	ORDER_FLAG,
+			 	CACHE_SIZE,
+			 	SCALE_FLAG,
+			 	EXTEND_FLAG,
+			 	SHARDED_FLAG,
+			 	SESSION_FLAG,
+			 	KEEP_VALUE 
+			 FROM ALL_SEQUENCES`,
+		);
+
+		if (_.isEmpty(queryResult)) {
+      return [];
+    }
+
+    const sequences = queryResult.map(
+      ([
+				schemaName,
+        sequenceName,
+        minValue,
+        maxValue,
+        increment,
+        cycle,
+        order,
+        cacheValue,
+        scale,
+        scaleExtend,
+        shard,
+        session,
+        keep,
+			]) => {
+				return {
+					schemaName,
+					sequenceName,
+					minValue,
+					maxValue,
+					increment,
+					cycle: { [OPTION_VALUE.true]: 'cycle', [OPTION_VALUE.false]: 'nocycle' }[cycle],
+					order: { [OPTION_VALUE.true]: 'order', [OPTION_VALUE.false]: 'noorder' }[order],
+					shard: { [OPTION_VALUE.true]: 'shard', [OPTION_VALUE.false]: 'noshard' }[shard],
+					scale: { [OPTION_VALUE.true]: 'scale', [OPTION_VALUE.false]: 'noscale' }[scale],
+					type: { [OPTION_VALUE.true]: 'session', [OPTION_VALUE.false]: 'global' }[session],
+					keep: { [OPTION_VALUE.true]: 'keep', [OPTION_VALUE.false]: 'nookeep' }[keep],
+					scaleExtend: { [OPTION_VALUE.true]: 'extend', [OPTION_VALUE.false]: 'noextend' }[scaleExtend],
+					cache: cacheValue ? 'cache' : 'nocache',
+					cacheValue,
+				};
+			}
+    );
+		logger.log('info', sequences, 'Getting sequences');
+
+		const groupedSequences = _.groupBy(sequences, 'schemaName');
+
+		return groupedSequences;
+	} catch (err) {
+		logger.log(
+			'error',
+			{
+				message: 'Cannot get sequences',
+				error: { message: err.message, stack: err.stack, err: _.omit(err, ['message', 'stack']) },
+			},
+			'Getting sequences',
+		);
+
+		return [];
+	}
+};
+
 module.exports = {
 	connect,
 	disconnect,
@@ -939,4 +1021,5 @@ module.exports = {
 	logEnvironment,
 	execute,
 	getDbSynonyms,
+	getDbSequences,
 };
