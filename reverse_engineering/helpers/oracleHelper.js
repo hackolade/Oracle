@@ -10,6 +10,25 @@ const OPTION_VALUE = {
 	false: 'N',
 };
 
+const SEQUENCE_OPTION = {
+	cache: 'cache',
+	cycle: 'cycle',
+	extend: 'extend',
+	global: 'global',
+	keep: 'keep',
+	noCache: 'nocache',
+	noCycle: 'nocycle',
+	noExtend: 'noextend',
+	noKeep: 'nokeep',
+	noOrder:'noorder',
+	noScale: 'noscale',
+	noShard:'noshard',
+	order: 'order',
+	scale: 'scale',
+	session: 'session',
+	shard: 'shard',
+};
+
 const noConnectionError = { message: 'Connection error' };
 
 const setDependencies = ({ lodash }) => (_ = lodash);
@@ -953,21 +972,21 @@ const getDbSequences = async logger => {
       return [];
     }
 
-    const sequences = queryResult.map(
-      ([
+		const sequences = queryResult.map(
+			([
 				schemaName,
-        sequenceName,
-        minValue,
-        maxValue,
-        increment,
-        cycle,
-        order,
-        cacheValue,
-        scale,
-        scaleExtend,
-        shard,
-        session,
-        keep,
+				sequenceName,
+				minValue,
+				maxValue,
+				increment,
+				cycle,
+				order,
+				cacheValue,
+				scale,
+				scaleExtend,
+				shard,
+				session,
+				keep,
 			]) => {
 				return {
 					schemaName,
@@ -975,18 +994,18 @@ const getDbSequences = async logger => {
 					minValue,
 					maxValue,
 					increment,
-					cycle: { [OPTION_VALUE.true]: 'cycle', [OPTION_VALUE.false]: 'nocycle' }[cycle],
-					order: { [OPTION_VALUE.true]: 'order', [OPTION_VALUE.false]: 'noorder' }[order],
-					shard: { [OPTION_VALUE.true]: 'shard', [OPTION_VALUE.false]: 'noshard' }[shard],
-					scale: { [OPTION_VALUE.true]: 'scale', [OPTION_VALUE.false]: 'noscale' }[scale],
-					type: { [OPTION_VALUE.true]: 'session', [OPTION_VALUE.false]: 'global' }[session],
-					keep: { [OPTION_VALUE.true]: 'keep', [OPTION_VALUE.false]: 'nookeep' }[keep],
-					scaleExtend: { [OPTION_VALUE.true]: 'extend', [OPTION_VALUE.false]: 'noextend' }[scaleExtend],
-					cache: cacheValue ? 'cache' : 'nocache',
+					cycle: { [OPTION_VALUE.true]: SEQUENCE_OPTION.cycle, [OPTION_VALUE.false]: SEQUENCE_OPTION.noCycle }[cycle],
+					order: { [OPTION_VALUE.true]: SEQUENCE_OPTION.order, [OPTION_VALUE.false]: SEQUENCE_OPTION.noOrder }[order],
+					shard: { [OPTION_VALUE.true]: SEQUENCE_OPTION.shard, [OPTION_VALUE.false]: SEQUENCE_OPTION.noShard }[shard],
+					scale: { [OPTION_VALUE.true]: SEQUENCE_OPTION.scale, [OPTION_VALUE.false]: SEQUENCE_OPTION.noScale }[scale],
+					type:  { [OPTION_VALUE.true]: SEQUENCE_OPTION.session, [OPTION_VALUE.false]: SEQUENCE_OPTION.global }[session],
+					keep:  { [OPTION_VALUE.true]: SEQUENCE_OPTION.keep, [OPTION_VALUE.false]: SEQUENCE_OPTION.noKeep }[keep],
+					scaleExtend: { [OPTION_VALUE.true]: SEQUENCE_OPTION.extend, [OPTION_VALUE.false]: SEQUENCE_OPTION.noExtend }[scaleExtend],
+					cache: cacheValue ? SEQUENCE_OPTION.cache : SEQUENCE_OPTION.noCache,
 					cacheValue,
 				};
 			}
-    );
+		);
 		logger.log('info', sequences, 'Getting sequences');
 
 		const groupedSequences = _.groupBy(sequences, 'schemaName');
