@@ -81,7 +81,7 @@ const SEQUENCE_OPTION_MAP = {
  */
 const getSchemaSequenceDtos = async ({ schema, execute, logger }) => {
   try {
-    const rawSequences = await execute(
+    const rawSequenceDtos = await execute(
       `
       SELECT JSON_OBJECT(
           'sharing'      VALUE SHARING,
@@ -107,7 +107,7 @@ const getSchemaSequenceDtos = async ({ schema, execute, logger }) => {
       `
     );
 
-    if (!rawSequences?.length) {
+    if (!rawSequenceDtos?.length) {
       return [];
     }
 
@@ -117,12 +117,12 @@ const getSchemaSequenceDtos = async ({ schema, execute, logger }) => {
       logger,
     });
 
-    return rawSequences.map(([rawSequence]) => {
-      const sequenceData = JSON.parse(rawSequence);
-      const ddlScript = ddlScriptMap[sequenceData.sequenceName] || '';
+    return rawSequenceDtos.map(([rawSequence]) => {
+      const sequenceDto = JSON.parse(rawSequence);
+      const ddlScript = ddlScriptMap[sequenceDto.sequenceName] || '';
 
       return {
-        ...sequenceData,
+        ...sequenceDto,
         ddlScript,
       };
     });
@@ -187,23 +187,23 @@ const getSchemaSequenceDdl = async ({ schema, execute, logger }) => {
 const getSchemaSequences =
   ({ execute }) =>
   async ({ schema, logger }) => {
-    const sequences = await getSchemaSequenceDtos({ schema, execute, logger });
+    const sequenceDtos = await getSchemaSequenceDtos({ schema, execute, logger });
 
-    return sequences.map((sequenceData) => {
-      const sharing = getSequenceSharing({ sequenceData });
-      const options = getBooleanOptions({ sequenceData });
-      const optionsFromDdl = getOptionsFromDdl({ sequenceData });
-      const extendOptions = getExtendOptions({ sequenceData });
-      const cache = sequenceData.cacheValue
+    return sequenceDtos.map((sequenceDto) => {
+      const sharing = getSequenceSharing({ sequenceDto });
+      const options = getBooleanOptions({ sequenceDto });
+      const optionsFromDdl = getOptionsFromDdl({ sequenceDto });
+      const extendOptions = getExtendOptions({ sequenceDto });
+      const cache = sequenceDto.cacheValue
         ? SEQUENCE_OPTION.cache
         : SEQUENCE_OPTION.noCache;
 
       return {
-        sequenceName: sequenceData.sequenceName,
-        minValue: sequenceData.minValue,
-        maxValue: sequenceData.maxValue,
-        increment: sequenceData.increment,
-        cacheValue: sequenceData.cacheValue,
+        sequenceName: sequenceDto.sequenceName,
+        minValue: sequenceDto.minValue,
+        maxValue: sequenceDto.maxValue,
+        increment: sequenceDto.increment,
+        cacheValue: sequenceDto.cacheValue,
         cache,
         sharing,
         ...options,
@@ -214,21 +214,21 @@ const getSchemaSequences =
   };
 
 /**
- * @param {{ sequenceData: SequenceDto }}
+ * @param {{ sequenceDto: SequenceDto }}
  * @returns {string}
  */
-const getSequenceSharing = ({ sequenceData }) => {
-  return sequenceData.sharing?.replace(SHARING_LINK_REGEX, '')?.toLowerCase();
+const getSequenceSharing = ({ sequenceDto }) => {
+  return sequenceDto.sharing?.replace(SHARING_LINK_REGEX, '')?.toLowerCase();
 };
 
 /**
- * @param {{ sequenceData: SequenceDto }}
+ * @param {{ sequenceDto: SequenceDto }}
  * @returns {Options}
  */
-const getExtendOptions = ({ sequenceData }) => {
-  const scaleValue = sequenceData[SEQUENCE_OPTION.scale];
-  const shardValue = sequenceData[SEQUENCE_OPTION.shard];
-  const extendValue = sequenceData[SEQUENCE_OPTION.extend];
+const getExtendOptions = ({ sequenceDto }) => {
+  const scaleValue = sequenceDto[SEQUENCE_OPTION.scale];
+  const shardValue = sequenceDto[SEQUENCE_OPTION.shard];
+  const extendValue = sequenceDto[SEQUENCE_OPTION.extend];
   const extend = SEQUENCE_OPTION_MAP[SEQUENCE_OPTION.extend][extendValue];
   const scaleExtend = scaleValue === OPTION_VALUE.true ? extend : '';
   const shardExtend = shardValue === OPTION_VALUE.true ? extend : '';
@@ -240,15 +240,15 @@ const getExtendOptions = ({ sequenceData }) => {
 };
 
 /**
- * @param {{ sequenceData: SequenceDto }}
+ * @param {{ sequenceDto: SequenceDto }}
  * @returns {Options}
  */
-const getBooleanOptions = ({ sequenceData }) => {
+const getBooleanOptions = ({ sequenceDto }) => {
   return Object.entries(SEQUENCE_OPTION_MAP).reduce(
     (result, [optionName, optionMap]) => {
       return {
         ...result,
-        [optionName]: optionMap[sequenceData[optionName]],
+        [optionName]: optionMap[sequenceDto[optionName]],
       };
     },
     {}
@@ -256,11 +256,11 @@ const getBooleanOptions = ({ sequenceData }) => {
 };
 
 /**
- * @param {{ sequenceData }}
+ * @param {{ sequenceDto: SequenceDto }}
  * @returns {Options}
  */
-const getOptionsFromDdl = ({ sequenceData }) => {
-  const start = getStartOptionFromDdl({ sequenceData });
+const getOptionsFromDdl = ({ sequenceDto }) => {
+  const start = getStartOptionFromDdl({ sequenceDto });
 
   return {
     start,
@@ -268,16 +268,16 @@ const getOptionsFromDdl = ({ sequenceData }) => {
 };
 
 /**
- * @param {{ sequenceData }}
+ * @param {{ sequenceDto: SequenceDto }}
  * @returns {number | undefined}
  */
-const getStartOptionFromDdl = ({ sequenceData }) => {
-  const ddlScript = sequenceData.ddlScript;
+const getStartOptionFromDdl = ({ sequenceDto }) => {
+  const ddlScript = sequenceDto.ddlScript;
 
   if (!ddlScript.includes('START WITH')) {
-    return sequenceData.minValue < sequenceData.maxValue
-      ? sequenceData.minValue
-      : sequenceData.maxValue;
+    return sequenceDto.minValue < sequenceDto.maxValue
+      ? sequenceDto.minValue
+      : sequenceDto.maxValue;
   }
 
   const start = ddlScript.match(START_VALUE_REGEX)?.[2];
