@@ -94,10 +94,10 @@ module.exports = {
 			const dataBaseNames = data.dataBaseNames;
 			const dbVersion = await oracleHelper.getDbVersion(logger);
 			const synonyms = await oracleHelper.getDbSynonyms(logger);
-			const sequences = await oracleHelper.getDbSequences(logger);
 			const packages = await dataBaseNames.reduce(async (packagesPromise, schema) => {
 				const packages = await packagesPromise;
 				const entities = oracleHelper.splitEntityNames(collections[schema]);
+				const sequences = await oracleHelper.getSchemaSequences({ schema, logger });
 
 				const tablesPackages = await entities.tables.reduce(async (next, table) => {
 					const result = await next;
@@ -145,7 +145,7 @@ module.exports = {
 						bucketInfo: {
 							database: schema,
 							synonyms: synonyms?.[schema] || [],
-							sequences: sequences?.[schema] || [],
+							sequences: sequences,
 						},
 					});
 				}, Promise.resolve([]));
@@ -182,7 +182,7 @@ module.exports = {
 						indexes: [],
 						database: schema,
 						synonyms: synonyms?.[schema] || [],
-						sequences: sequences?.[schema] || [],
+						sequences: sequences,
 					},
 				};
 				return [...packages, ...tablesPackages, viewPackage];
