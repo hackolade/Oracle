@@ -4,30 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const parseTns = require('./parseTns');
 const ssh = require('tunnel-ssh');
-
-const OPTION_VALUE = {
-	true: 'Y',
-	false: 'N',
-};
-
-const SEQUENCE_OPTION = {
-	cache: 'cache',
-	cycle: 'cycle',
-	extend: 'extend',
-	global: 'global',
-	keep: 'keep',
-	noCache: 'nocache',
-	noCycle: 'nocycle',
-	noExtend: 'noextend',
-	noKeep: 'nokeep',
-	noOrder:'noorder',
-	noScale: 'noscale',
-	noShard:'noshard',
-	order: 'order',
-	scale: 'scale',
-	session: 'session',
-	shard: 'shard',
-};
+const { getSchemaSequences } = require('./sequenceHelper');
 
 const noConnectionError = { message: 'Connection error' };
 
@@ -948,83 +925,6 @@ const getSynonymsDDL = async () => {
 	return synonymsDDL;
 };
 
-const getDbSequences = async logger => {
-	try {
-		const queryResult = await execute(
-			`SELECT
-			 	SEQUENCE_OWNER,
-			 	SEQUENCE_NAME,
-			 	MIN_VALUE,
-			 	MAX_VALUE,
-			 	INCREMENT_BY,
-			 	CYCLE_FLAG,
-			 	ORDER_FLAG,
-			 	CACHE_SIZE,
-			 	SCALE_FLAG,
-			 	EXTEND_FLAG,
-			 	SHARDED_FLAG,
-			 	SESSION_FLAG,
-			 	KEEP_VALUE 
-			 FROM ALL_SEQUENCES`,
-		);
-
-		if (_.isEmpty(queryResult)) {
-      return [];
-    }
-
-		const sequences = queryResult.map(
-			([
-				schemaName,
-				sequenceName,
-				minValue,
-				maxValue,
-				increment,
-				cycle,
-				order,
-				cacheValue,
-				scale,
-				scaleExtend,
-				shard,
-				session,
-				keep,
-			]) => {
-				return {
-					schemaName,
-					sequenceName,
-					minValue,
-					maxValue,
-					increment,
-					cycle: { [OPTION_VALUE.true]: SEQUENCE_OPTION.cycle, [OPTION_VALUE.false]: SEQUENCE_OPTION.noCycle }[cycle],
-					order: { [OPTION_VALUE.true]: SEQUENCE_OPTION.order, [OPTION_VALUE.false]: SEQUENCE_OPTION.noOrder }[order],
-					shard: { [OPTION_VALUE.true]: SEQUENCE_OPTION.shard, [OPTION_VALUE.false]: SEQUENCE_OPTION.noShard }[shard],
-					scale: { [OPTION_VALUE.true]: SEQUENCE_OPTION.scale, [OPTION_VALUE.false]: SEQUENCE_OPTION.noScale }[scale],
-					type:  { [OPTION_VALUE.true]: SEQUENCE_OPTION.session, [OPTION_VALUE.false]: SEQUENCE_OPTION.global }[session],
-					keep:  { [OPTION_VALUE.true]: SEQUENCE_OPTION.keep, [OPTION_VALUE.false]: SEQUENCE_OPTION.noKeep }[keep],
-					scaleExtend: { [OPTION_VALUE.true]: SEQUENCE_OPTION.extend, [OPTION_VALUE.false]: SEQUENCE_OPTION.noExtend }[scaleExtend],
-					cache: cacheValue ? SEQUENCE_OPTION.cache : SEQUENCE_OPTION.noCache,
-					cacheValue,
-				};
-			}
-		);
-		logger.log('info', sequences, 'Getting sequences');
-
-		const groupedSequences = _.groupBy(sequences, 'schemaName');
-
-		return groupedSequences;
-	} catch (err) {
-		logger.log(
-			'error',
-			{
-				message: 'Cannot get sequences',
-				error: { message: err.message, stack: err.stack, err: _.omit(err, ['message', 'stack']) },
-			},
-			'Getting sequences',
-		);
-
-		return [];
-	}
-};
-
 module.exports = {
 	connect,
 	disconnect,
@@ -1040,5 +940,5 @@ module.exports = {
 	logEnvironment,
 	execute,
 	getDbSynonyms,
-	getDbSequences,
+	getSchemaSequences: getSchemaSequences({ execute }),
 };
