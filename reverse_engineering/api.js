@@ -145,7 +145,7 @@ module.exports = {
 						bucketInfo: {
 							database: schema,
 							synonyms: synonyms?.[schema] || [],
-							sequences: sequences,
+							sequences,
 						},
 					});
 				}, Promise.resolve([]));
@@ -182,7 +182,7 @@ module.exports = {
 						indexes: [],
 						database: schema,
 						synonyms: synonyms?.[schema] || [],
-						sequences: sequences,
+						sequences,
 					},
 				};
 				return [...packages, ...tablesPackages, viewPackage];

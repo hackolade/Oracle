@@ -81,7 +81,7 @@ const SEQUENCE_OPTION_MAP = {
  */
 const getSchemaSequenceDtos = async ({ schema, execute, logger }) => {
   try {
-    const queryResult = await execute(
+    const rawSequences = await execute(
       `
       SELECT JSON_OBJECT(
           'sharing'      VALUE SHARING,
@@ -107,7 +107,7 @@ const getSchemaSequenceDtos = async ({ schema, execute, logger }) => {
       `
     );
 
-    if (!queryResult?.length) {
+    if (!rawSequences?.length) {
       return [];
     }
 
@@ -117,8 +117,8 @@ const getSchemaSequenceDtos = async ({ schema, execute, logger }) => {
       logger,
     });
 
-    return queryResult.map(([data]) => {
-      const sequenceData = JSON.parse(data);
+    return rawSequences.map(([rawSequence]) => {
+      const sequenceData = JSON.parse(rawSequence);
       const ddlScript = ddlScriptMap[sequenceData.sequenceName] || '';
 
       return {
@@ -144,7 +144,7 @@ const getSchemaSequenceDtos = async ({ schema, execute, logger }) => {
  */
 const getSchemaSequenceDdl = async ({ schema, execute, logger }) => {
   try {
-    const queryResult = await execute(
+    const sequenceDdlScripts = await execute(
       `
       SELECT JSON_OBJECT(
           'sequenceName' VALUE OBJECT_NAME,
@@ -156,12 +156,12 @@ const getSchemaSequenceDdl = async ({ schema, execute, logger }) => {
       `
     );
 
-    if (!queryResult?.length) {
+    if (!sequenceDdlScripts?.length) {
       return {};
     }
 
-    return queryResult.reduce((result, [data]) => {
-      const { sequenceName, ddlScript } = JSON.parse(data);
+    return sequenceDdlScripts.reduce((result, [rawDdlScript]) => {
+      const { sequenceName, ddlScript } = JSON.parse(rawDdlScript);
 
       return {
         ...result,
