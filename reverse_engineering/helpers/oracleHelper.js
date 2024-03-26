@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const parseTns = require('./parseTns');
 const ssh = require('tunnel-ssh');
-const { getSchemaSequences } = require('./sequenceHelper');
+const { getSchemaSequences } = require('./getSchemaSequences');
 
 const noConnectionError = { message: 'Connection error' };
 
