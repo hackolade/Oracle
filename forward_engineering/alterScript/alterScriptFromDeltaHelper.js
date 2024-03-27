@@ -24,6 +24,7 @@ const {
 const {AlterScriptDto, ModificationScript} = require("./types/AlterScriptDto");
 const {App, CoreData} = require("../types/coreApplicationTypes");
 const {InternalDefinitions, ModelDefinitions, ExternalDefinitions} = require("../types/coreApplicationDataTypes");
+const { getModifyContainerSequencesScriptDtos, getDeleteContainerSequencesScriptDtos, getAddContainerSequencesScriptDtos } = require('./alterScriptHelpers/containerHelpers/alterSequenceHelper');
 
 
 /**
@@ -244,6 +245,43 @@ const prettifyAlterScriptDto = (dto) => {
 }
 
 /**
+ * @param {{
+* collection: Object,
+* app: App,
+* dbVersion: string,
+* }} dto
+* @return {AlterScriptDto[]}
+* */
+const getAlterContainersSequencesScriptDtos = ({ collection, app, dbVersion }) => {
+   const addedContainers = collection.properties?.containers?.properties?.added?.items;
+   const deletedContainers = collection.properties?.containers?.properties?.deleted?.items;
+   const modifiedContainers = collection.properties?.containers?.properties?.modified?.items;
+
+   const addContainersSequencesScriptDtos = []
+       .concat(addedContainers)
+       .filter(Boolean)
+       .map(container => Object.values(container.properties)[0])
+       .flatMap(container => getAddContainerSequencesScriptDtos({ app })({ container, dbVersion }))
+   const deleteContainersScriptDtos = []
+       .concat(deletedContainers)
+       .filter(Boolean)
+       .map(container => Object.values(container.properties)[0])
+       .flatMap(container => getDeleteContainerSequencesScriptDtos({ app })({ container, dbVersion }))
+   const modifyContainersScriptDtos = []
+       .concat(modifiedContainers)
+       .filter(Boolean)
+       .map(container => Object.values(container.properties)[0])
+       .flatMap(container => getModifyContainerSequencesScriptDtos({ app })({ container, dbVersion }))
+
+   return [
+       ...addContainersSequencesScriptDtos,
+       ...deleteContainersScriptDtos,
+       ...modifyContainersScriptDtos,
+   ].filter(Boolean);
+};
+
+
+/**
  * @param data {CoreData}
  * @param app {App}
  * @return {Array<AlterScriptDto>}
@@ -278,9 +316,11 @@ const getAlterScriptDtos = (data, app) => {
         internalDefinitions,
         externalDefinitions,
     });
+    const containersSequencesScriptDtos = getAlterContainersSequencesScriptDtos({collection, app, dbVersion});
 
     return [
         ...containersScriptDtos,
+        ...containersSequencesScriptDtos,
         ...modelDefinitionsScriptDtos,
         ...collectionsScriptDtos,
         ...viewScriptDtos,

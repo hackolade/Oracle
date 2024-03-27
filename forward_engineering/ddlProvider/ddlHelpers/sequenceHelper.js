@@ -30,7 +30,7 @@ module.exports = ({
    * @returns {string}
    */
   const createSequenceScript = ({ schemaName, sequence, usingTryCatchWrapper }) => {
-    const sequenceSchemaName = sequence.type === 'session' ? '' : schemaName;
+    const sequenceSchemaName = getSequenceSchemaName({ schemaName, sequence });
     const name = getNamePrefixedWithSchemaName(sequence.sequenceName, sequenceSchemaName);
     const ifNotExists = usingTryCatchWrapper ? '' : getIfNotExists({ sequence });
     const options = getSequenceOptions({ sequence, schemaName });
@@ -48,6 +48,57 @@ module.exports = ({
     }
 
     return statement + ';';
+  };
+
+/**
+ * @param {{ schemaName: string, sequence: Sequence, oldSequence: Sequence, usingTryCatchWrapper: boolean }} 
+ * @returns {string}
+ */
+  const alterSequenceScript = ({ schemaName, sequence, oldSequence, usingTryCatchWrapper }) => {
+    const sequenceName = oldSequence.sequenceName || sequence.sequenceName;
+    const sequenceSchemaName = getSequenceSchemaName({ schemaName, sequence });
+    const wrappedSequenceName = getNamePrefixedWithSchemaName(sequenceName);
+    const fullName = getNamePrefixedWithSchemaName(sequenceName,sequenceSchemaName);
+    const modifiedSequence = getModifiedSequence({ sequence, oldSequence });
+    const options = getSequenceOptions({ schemaName, sequence: modifiedSequence });
+    const newName = modifiedSequence.sequenceName ? getNamePrefixedWithSchemaName(modifiedSequence.sequenceName) : '';
+    const ifExists = getIfExists({ usingTryCatchWrapper });
+    const shouldRecreateSequence = modifiedSequence.hasOwnProperty('sharing');
+
+    if (shouldRecreateSequence) {
+      const dropStatement = dropSequenceScript({ schemaName, sequence: oldSequence, usingTryCatchWrapper });
+      const createStatement = createSequenceScript({ schemaName, sequence, usingTryCatchWrapper });
+
+      return dropStatement + '\n' + createStatement + '\n';
+    }
+
+    /**
+     * @type {Array}
+     */
+    const configs = [
+      { key: 'options', value: options, name: fullName, template: templates.alterSequence },
+      { key: 'newName', value: newName, name: wrappedSequenceName, template: templates.renameSequence }
+    ];
+
+    return configs
+      .filter(config => config.value)
+      .map(config => assignTemplates(config.template, { [config.key]: config.value, name: config.name, ifExists }))
+      .join('\n');
+  };
+
+  /**
+   * @param {{ schemaName: string, sequence: Sequence, usingTryCatchWrapper: boolean }} 
+   * @returns {string}
+   */
+  const dropSequenceScript = ({ schemaName, sequence, usingTryCatchWrapper }) => {
+    const sequenceSchemaName = getSequenceSchemaName({ schemaName, sequence });
+    const name = getNamePrefixedWithSchemaName(sequence.sequenceName, sequenceSchemaName);
+    const ifExists = getIfExists({ usingTryCatchWrapper });
+
+    return assignTemplates(templates.dropSequence, {
+      name,
+      ifExists,
+    });
   };
 
   /**
@@ -141,16 +192,12 @@ module.exports = ({
     return sequence.ifNotExist ? ' IF NOT EXISTS' : '';
   };
 
-  const getSequenceType = ({ sequence }) => {
-    if (sequence.global) {
-      return 'GLOBAL';
-    }
-
-    if (sequence.session) {
-      return 'SESSION';
-    }
-
-    return '';
+  /**
+   * @param {{ usingTryCatchWrapper: boolean }} 
+   * @returns {string}
+   */
+  const getIfExists = ({ usingTryCatchWrapper }) => {
+    return usingTryCatchWrapper ? '' : ' IF EXISTS';
   };
 
   /**
@@ -165,8 +212,35 @@ module.exports = ({
     return ' SHARING=' + _.toUpper(sequence.sharing);
   };
 
+  /**
+   * @param {{ sequence: Sequence, oldSequence: Sequence }} 
+   * @returns {Sequence}
+   */
+  const getModifiedSequence = ({ sequence, oldSequence }) => {
+    const modifiedSequence = _.omitBy(sequence, (value, key) => _.isEqual(value, oldSequence[key]));
+
+    if (sequence.minValue > oldSequence.minValue) {
+      return {
+        ...modifiedSequence,
+        restart: sequence.start,
+      };
+    }
+
+    return modifiedSequence;
+  };
+
+  /**
+   * @param {{ schemaName: string, sequence: Sequence }} 
+   * @returns {string}
+   */
+  const getSequenceSchemaName = ({ schemaName, sequence }) => {
+    return sequence.type === 'session' ? '' : schemaName;
+  };
+
   return {
     getSequencesScript,
     createSequenceScript,
+    alterSequenceScript,
+    dropSequenceScript,
   };
 };
