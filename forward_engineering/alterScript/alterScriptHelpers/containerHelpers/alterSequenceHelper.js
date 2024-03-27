@@ -13,8 +13,11 @@ const getAddContainerSequencesScriptDtos = ({ app }) => ({ container, dbVersion 
     const schemaName = getDbName([container.role]);
 
     return (container.role?.sequences || [])
-        .map((sequence) => ddlProvider.createSchemaSequence({ schemaName, sequence }))
-        .map((script) => AlterScriptDto.getInstance([script], true, false))
+        .map((sequence) => {
+            const script = ddlProvider.createSchemaSequence({ schemaName, sequence })
+
+            return AlterScriptDto.getInstance([script], true, false);
+        })
         .filter(Boolean);
 };
 
@@ -38,26 +41,24 @@ const getModifyContainerSequencesScriptDtos = ({ app }) => ({ container, dbVersi
 
     const removedScriptDtos = removed
         .map((sequence) => {
-            return ddlProvider.dropSchemaSequence({ schemaName, sequence });
-        })
-        .map((script) => AlterScriptDto.getInstance([script], true, true));
+            const script = ddlProvider.dropSchemaSequence({ schemaName, sequence });
+
+            return AlterScriptDto.getInstance([script], true, true);
+        });
+
     const addedScriptDtos = added
-        .map((sequence) =>
-            ddlProvider.createSchemaSequence({ schemaName, sequence })
-        )
-        .map((script) => AlterScriptDto.getInstance([script], true, false));
+        .map((sequence) => {
+            const script = ddlProvider.createSchemaSequence({ schemaName, sequence });
+
+            return AlterScriptDto.getInstance([script], true, false);
+        });
 
     const modifiedScriptDtos = modified
         .map((sequence) => {
             const oldSequence = _.find(oldItems, { id: sequence.id }) || {};
-            return ddlProvider.alterSchemaSequence({
-                schemaName,
-                sequence,
-                oldSequence,
-            });
-        })
-        .map((script) => {
+            const script = ddlProvider.alterSchemaSequence({ schemaName, sequence, oldSequence });
             const isDropScript = script.startsWith('DROP');
+
             return AlterScriptDto.getInstance([script], true, isDropScript);
         });
 
@@ -79,8 +80,11 @@ const getDeleteContainerSequencesScriptDtos = ({ app }) => ({ container, dbVersi
     const schemaName = getDbName([container.role]);
 
     return (container.role?.sequences || [])
-        .map((sequence) => ddlProvider.dropSchemaSequence({ schemaName, sequence }))
-        .map((script) => AlterScriptDto.getInstance([script], true, true))
+        .map((sequence) => {
+            const script = ddlProvider.dropSchemaSequence({ schemaName, sequence });
+
+            return AlterScriptDto.getInstance([script], true, true);
+        })
         .filter(Boolean);
 };
 

@@ -696,34 +696,34 @@ module.exports = (baseProvider, options, app) => {
         },
 
         /**
-		 * @param {{ schemaName: string, sequence: Sequence }} 
-		 * @returns {string}
-		 */
-		createSchemaSequence({ schemaName, sequence }) {
+         * @param {{ schemaName: string, sequence: Sequence }} 
+         * @returns {string}
+         */
+        createSchemaSequence({ schemaName, sequence }) {
             const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(options?.dbVersion);
 
-			return createSequenceScript({ schemaName, sequence, usingTryCatchWrapper });
-		},
+            return createSequenceScript({ schemaName, sequence, usingTryCatchWrapper });
+        },
 
-		/**
-		 * @param {{ schemaName: string, sequence: Sequence }} 
-		 * @returns {string}
-		 */
-		dropSchemaSequence({ schemaName, sequence }) {
+        /**
+         * @param {{ schemaName: string, sequence: Sequence }} 
+         * @returns {string}
+         */
+        dropSchemaSequence({ schemaName, sequence }) {
             const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(options?.dbVersion);
 
-			return dropSequenceScript({ schemaName, sequence, usingTryCatchWrapper });
-		},
+            return dropSequenceScript({ schemaName, sequence, usingTryCatchWrapper });
+        },
 
-		/**
-		 * @param {{ schemaName: string, sequence: Sequence, oldSequence: Sequence }} 
-		 * @returns {string}
-		 */
-		alterSchemaSequence({ schemaName, sequence, oldSequence }) {
+        /**
+         * @param {{ schemaName: string, sequence: Sequence, oldSequence: Sequence }} 
+         * @returns {string}
+         */
+        alterSchemaSequence({ schemaName, sequence, oldSequence }) {
             const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(options?.dbVersion);
 
-			return alterSequenceScript({ schemaName, sequence, oldSequence, usingTryCatchWrapper });
-		},
+            return alterSequenceScript({ schemaName, sequence, oldSequence, usingTryCatchWrapper });
+        },
 
     };
 };
