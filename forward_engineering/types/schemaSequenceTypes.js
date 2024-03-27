@@ -5,7 +5,7 @@ class Sequence {
   cache
 
   /**
-   *@type {string | undefined} 
+   *@type {number | undefined} 
    */
   cacheValue
 
@@ -45,11 +45,6 @@ class Sequence {
   start
 
   /**
-   * @type {boolean}
-   */
-  session
-
-  /**
    * @type {string | undefined}
    */
   sharing
@@ -85,12 +80,85 @@ class Sequence {
    */
   shardExtend
 
+/**
+ * @type {string | undefined}
+ */
+  type
+}
+
+class SequenceDto {
   /**
-   * @type {boolean}
+   * @type {string}
    */
-  global
+  sharing
+
+  /**
+   * @type {string}
+   */
+  ddlScript
+
+  /**
+   * @type {string}
+   */
+  sequenceName
+  
+  /**
+   * @type {number}
+   */
+  minValue
+
+  /**
+   * @type {number}
+   */
+  maxValue
+
+  /**
+   * @type {number}
+   */
+  increment
+
+  /**
+   * @type {string}
+   */
+  cycle
+  
+  /**
+   * @type {string}
+   */
+  order
+
+  /**
+   * @type {number}
+   */
+  cacheValue   
+
+  /**
+   * @type {string}
+   */
+  scale
+
+  /**
+   * @type {string}
+   */
+  extend
+
+  /**
+   * @type {string}
+   */
+  shard        
+
+  /**
+   * @type {string}
+   */
+  type        
+
+  /**
+   * @type {string}
+   */
+  keep    
 }
 
 module.exports = {
   Sequence,
+  SequenceDto,
 };
