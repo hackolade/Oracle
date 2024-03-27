@@ -53,6 +53,16 @@ module.exports = {
 	'CREATE SEQUENCE${ifNotExists} ${name}${sharing}' +
 	'${options}',
 
+	dropSequence:
+	'DROP SEQUENCE${ifExists} ${name};\n',
+
+	renameSequence:
+	'RENAME ${name} TO ${newName};\n',
+
+	alterSequence: 
+	'ALTER SEQUENCE${ifExists} ${name}' +
+	'${options};\n',
+
 	dualityView: {
 		createJsonRelationalDualityViewHeading: 'CREATE${orReplaceStatement}${forceStatement}${editionableStatement} JSON RELATIONAL DUALITY VIEW ${viewName} AS',
 
