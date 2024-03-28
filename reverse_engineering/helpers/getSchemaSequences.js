@@ -55,7 +55,7 @@ const SEQUENCE_OPTION_MAP = {
   },
   [SEQUENCE_OPTION.shard]: {
     [OPTION_VALUE.true]: SEQUENCE_OPTION.shard,
-    [OPTION_VALUE.false]: SEQUENCE_OPTION.noShard,
+    [OPTION_VALUE.false]: '',
   },
   [SEQUENCE_OPTION.scale]: {
     [OPTION_VALUE.true]: SEQUENCE_OPTION.scale,
