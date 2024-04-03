@@ -173,6 +173,30 @@ module.exports = _ => {
 		return str.replaceAll("'", "''");
 	};
 
+	const getGroupItemsByCompMode = ({ newItems = [], oldItems = [] }) => {
+		const addedItems = newItems.filter(
+			(newItem) => !oldItems.some((item) => item.id === newItem.id)
+		);
+		const removedItems = [];
+		const modifiedItems = [];
+
+		oldItems.forEach((oldItem) => {
+			const newItem = newItems.find((item) => item.id === oldItem.id);
+
+			if (!newItem) {
+				removedItems.push(oldItem);
+			} else if (!_.isEqual(newItem, oldItem)) {
+				modifiedItems.push(newItem);
+			}
+		});
+
+		return {
+			added: addedItems,
+			removed: removedItems,
+			modified: modifiedItems,
+		};
+	};
+
 	return {
 		getDbName,
 		getBucketName,
@@ -196,5 +220,6 @@ module.exports = _ => {
 		checkFieldPropertiesChanged,
 		getColumnsList,
 		escapeSingleQuote,
+		getGroupItemsByCompMode,
 	};
 };
