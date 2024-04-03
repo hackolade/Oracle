@@ -78,12 +78,22 @@ const addNameToIndexKey = ({ index, collection }) => {
 			if (!key?.keyId) {
 				return key;
 			}
-			const property = Object.values(collection?.role?.properties || {}).find(
-				property => property?.GUID === key?.keyId,
-			);
-			if (!property?.compMod?.newField) {
-				return key;
+			const collectionProperties = Object.entries(collection?.role?.properties || collection?.properties || {}).map(([name, value]) => ({...value, name}))
+			const oldProperties = (collection?.role?.compMod?.oldProperties || []).map(property => ({...property, GUID: property.id}))
+			const properties = collectionProperties.length > 0 ? collectionProperties : oldProperties
+			const property = properties.find(property => property?.GUID === key?.keyId);
+
+			if (!property) {
+				return key
 			}
+
+			if (!property?.compMod?.newField) {
+				return {
+					...key,
+					name: property.name
+				};
+			}
+
 			return {
 				...key,
 				name: property?.compMod?.newField?.name || null,
@@ -132,7 +142,7 @@ const getDeleteIndexScriptDto =
 const getAddedIndexesScriptDtos =
 	({ _, ddlProvider }) =>
 	({ collection }) => {
-		const newIndexes = collection?.role?.compMod?.Indxs?.new || [];
+		const newIndexes = collection?.role?.compMod?.Indxs?.new || collection?.role?.Indxs || [];
 		const oldIndexes = collection?.role?.compMod?.Indxs?.old || [];
 
 		const addedIndexes = newIndexes.filter(newIndex => {
@@ -155,7 +165,7 @@ const getAddIndexScriptDto =
 	({ ddlProvider }) =>
 	({ index, collection }) => {
 		const indexWithAddedKeyNames = addNameToIndexKey({ index, collection });
-		const tableName = collection?.role?.compMod?.collectionName?.new;
+		const tableName = collection?.role?.compMod?.collectionName?.new || collection?.role?.name;
 		const script = ddlProvider.createIndex(tableName, {
 			...indexWithAddedKeyNames,
 			schemaName: collection?.role?.compMod?.bucketProperties?.name,
