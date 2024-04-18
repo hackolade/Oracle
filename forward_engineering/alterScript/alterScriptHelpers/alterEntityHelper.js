@@ -131,7 +131,7 @@ const getAddColumnScriptDtos =
  * @return {AlterScriptDto[]}
  * */
 const getIndexesBasedOnNewlyCreatedColumnsScript = ({_, ddlProvider, dbVersion, collection}) => {
-    const newIndexes = collection?.role?.compMod?.Indxs?.new || collection?.role?.Indxs || []
+    const newIndexes = collection?.role?.Indxs || []
     const newPropertiesIds = Object.values(collection?.properties ?? {}).map(({GUID}) => GUID)
 
     if (newIndexes.length === 0 || newPropertiesIds.length === 0) {
