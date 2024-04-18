@@ -1,7 +1,7 @@
 const {AlterScriptDto} = require("../types/AlterScriptDto");
 const {getUpdateTypesScriptDtos} = require("./columnHelpers/alterTypeHelper");
 const {getRenameColumnScriptDtos} = require("./columnHelpers/renameColumnHelper");
-const { getModifyIndexesScriptDtos } = require("./entityHelpers/indexesHelper");
+const { getModifyIndexesScriptDtos, getAddedIndexesScriptDtos } = require("./entityHelpers/indexesHelper");
 
 /**
  * @return {(collection: AlterCollectionDto) => AlterScriptDto | undefined}
@@ -131,7 +131,7 @@ const getAddColumnScriptDtos =
  * @return {AlterScriptDto[]}
  * */
 const getIndexesBasedOnNewlyCreatedColumnsScript = ({_, ddlProvider, dbVersion, collection}) => {
-    const newIndexes = collection?.role?.compMod?.Indxs?.new || collection?.role?.Indxs || []
+    const newIndexes = collection?.role?.Indxs || []
     const newPropertiesIds = Object.values(collection?.properties ?? {}).map(({GUID}) => GUID)
 
     if (newIndexes.length === 0 || newPropertiesIds.length === 0) {
@@ -144,7 +144,7 @@ const getIndexesBasedOnNewlyCreatedColumnsScript = ({_, ddlProvider, dbVersion, 
         return []
     }
 
-    return getModifyIndexesScriptDtos({ _, ddlProvider })({ collection, dbVersion })
+    return getAddedIndexesScriptDtos({ _, ddlProvider })({ collection })
 }
 
 /**
