@@ -142,7 +142,7 @@ const getDeleteIndexScriptDto =
 const getAddedIndexesScriptDtos =
 	({ _, ddlProvider }) =>
 	({ collection }) => {
-		const newIndexes = collection?.role?.compMod?.Indxs?.new || collection?.role?.Indxs || [];
+		const newIndexes = collection?.role?.Indxs || [];
 		const oldIndexes = collection?.role?.compMod?.Indxs?.old || [];
 
 		const addedIndexes = newIndexes.filter(newIndex => {
@@ -276,4 +276,5 @@ const getModifyIndexesScriptDtos =
 
 module.exports = {
 	getModifyIndexesScriptDtos,
+	getAddedIndexesScriptDtos,
 };
