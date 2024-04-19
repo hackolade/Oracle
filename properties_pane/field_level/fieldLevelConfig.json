@@ -6424,6 +6424,10 @@ making sure that you maintain a proper JSON format.
                     "value": true
                   }
                 ]
+              },
+              {
+                "key": "subtype",
+                "value": "array"
               }
             ]
           }
@@ -6449,6 +6453,10 @@ making sure that you maintain a proper JSON format.
                     "value": true
                   }
                 ]
+              },
+              {
+                "key": "subtype",
+                "value": "array"
               }
             ]
           }
