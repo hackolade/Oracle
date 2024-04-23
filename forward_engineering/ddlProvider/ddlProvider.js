@@ -329,6 +329,19 @@ module.exports = (baseProvider, options, app) => {
             };
         },
 
+        /**
+		 * @param tableName {string}
+		 * @param fkConstraintName {string}
+		 * @return string
+		 * */
+		dropForeignKey(tableName, fkConstraintName) {
+			const templateConfig = {
+				tableName,
+				fkConstraintName,
+			}
+			return assignTemplates(templates.dropForeignKey, templateConfig);
+		},
+
         hydrateTable({tableData, entityData, jsonSchema}) {
             const detailsTab = entityData[0];
             const partitioning = _.first(detailsTab.partitioning) || {};
