@@ -1,6 +1,6 @@
 {
     "name": "Oracle",
-    "version": "0.1.45",
+    "version": "0.2.0",
     "versionDate": "2024-04-26",
     "author": "hackolade",
     "engines": {
@@ -73,5 +73,11 @@
         "lint-staged": "14.0.1",
         "prettier": "3.2.5",
         "simple-git-hooks": "2.11.1"
+    },
+    "overrides": {
+        "tunnel-ssh": {
+            "cpu-features": "npm:-@0.0.1",
+            "ssh2": "npm:-@0.0.1"
+        }
     }
 }
