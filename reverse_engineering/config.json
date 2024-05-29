@@ -5,6 +5,6 @@
 	},
 	"defaultDdlType": "oracle",
 	"excludeDocKind": ["id"],
-	"connectionList": [ "name", "host", "port", "userName" ],
+	"connectionList": ["name", "host", "port", "userName"],
 	"helpUrl": "https://hackolade.com/help/ConnecttoanOracleinstance.html"
 }

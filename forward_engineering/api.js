@@ -1,8 +1,11 @@
 const reApi = require('../reverse_engineering/api');
 const applyToInstanceHelper = require('./applyToInstanceHelper');
-const {doesContainerLevelAlterScriptContainDropStatements, doesEntityLevelAlterScriptContainDropStatements,
-	buildContainerLevelAlterScript, buildEntityLevelAlterScript
-} = require("./alterScript/alterScriptBuilder");
+const {
+	doesContainerLevelAlterScriptContainDropStatements,
+	doesEntityLevelAlterScriptContainDropStatements,
+	buildContainerLevelAlterScript,
+	buildEntityLevelAlterScript,
+} = require('./alterScript/alterScriptBuilder');
 
 module.exports = {
 	generateScript(data, logger, callback, app) {
@@ -10,9 +13,9 @@ module.exports = {
 			const script = buildEntityLevelAlterScript(data, app);
 			callback(null, script);
 		} catch (error) {
-			logger.log('error', {message: error.message, stack: error.stack}, 'Oracle Forward-Engineering Error');
+			logger.log('error', { message: error.message, stack: error.stack }, 'Oracle Forward-Engineering Error');
 
-			callback({message: error.message, stack: error.stack});
+			callback({ message: error.message, stack: error.stack });
 		}
 	},
 
@@ -25,9 +28,9 @@ module.exports = {
 			const script = buildContainerLevelAlterScript(data, app);
 			callback(null, script);
 		} catch (error) {
-			logger.log('error', {message: error.message, stack: error.stack}, 'Oracle Forward-Engineering Error');
+			logger.log('error', { message: error.message, stack: error.stack }, 'Oracle Forward-Engineering Error');
 
-			callback({message: error.message, stack: error.stack});
+			callback({ message: error.message, stack: error.stack });
 		}
 	},
 
@@ -70,7 +73,7 @@ module.exports = {
 				callback(null, containsDropStatements);
 			}
 		} catch (e) {
-			callback({message: e.message, stack: e.stack});
+			callback({ message: e.message, stack: e.stack });
 		}
 	},
 };

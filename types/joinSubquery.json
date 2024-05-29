@@ -1,34 +1,34 @@
 {
-  "name": "joinSubquery",
-  "parentType": "document",
-  "erdAbbreviation": "<join-sq>",
-  "dtdAbbreviation": "{...}",
-  "hiddenOnEntity": ["collection", "definitions", "modeldefinitions"],
-  "subtypes": {
-    "object": {
-      "parentType": "document"
-    },
-    "array": {
-      "parentType": "array",
-      "childValueType": ["object"]
-    }
-  },
-  "dependency": {
-    "type": "and",
-    "values": [
-      {
-        "level": "model",
-        "key": "dbVersion",
-        "value": "23c"
-      },
-      {
-        "level": "root",
-        "key": "duality",
-        "value": true
-      }
-    ]
-  },
-  "defaultValues": {
-    "subtypes": "object"
-  }
+	"name": "joinSubquery",
+	"parentType": "document",
+	"erdAbbreviation": "<join-sq>",
+	"dtdAbbreviation": "{...}",
+	"hiddenOnEntity": ["collection", "definitions", "modeldefinitions"],
+	"subtypes": {
+		"object": {
+			"parentType": "document"
+		},
+		"array": {
+			"parentType": "array",
+			"childValueType": ["object"]
+		}
+	},
+	"dependency": {
+		"type": "and",
+		"values": [
+			{
+				"level": "model",
+				"key": "dbVersion",
+				"value": "23c"
+			},
+			{
+				"level": "root",
+				"key": "duality",
+				"value": true
+			}
+		]
+	},
+	"defaultValues": {
+		"subtypes": "object"
+	}
 }

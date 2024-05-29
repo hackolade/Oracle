@@ -6,11 +6,14 @@ const applyToInstance = async (connectionInfo, logger, app) => {
 
 	oracleHelper.setDependencies({ lodash: _ });
 	oracleHelper.logEnvironment(logger);
-	await oracleHelper.connect(connectionInfo, (message) => {
+	await oracleHelper.connect(connectionInfo, message => {
 		logger.log('info', message, 'Connection');
 	});
 
-	const queries = connectionInfo.script.split('\n\n').filter(Boolean).map((query) => _.trim(_.trim(_.trim(query), '/'), ';'));
+	const queries = connectionInfo.script
+		.split('\n\n')
+		.filter(Boolean)
+		.map(query => _.trim(_.trim(_.trim(query), '/'), ';'));
 	let i = 0;
 	let error;
 

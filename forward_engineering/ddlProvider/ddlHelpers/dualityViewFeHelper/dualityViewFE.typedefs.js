@@ -1,4 +1,3 @@
-
 /**
  * @typedef {Record<string, {
  *     GUID: string,

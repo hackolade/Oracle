@@ -164,7 +164,9 @@ const getSshConnectionString = async (data, logger) => {
 		const filePath = getTnsNamesOraFile(data.configDir);
 
 		if (!fs.existsSync(filePath)) {
-			throw new Error('Cannot find tnsnames.ora file. Please, specify tnsnames folder or use Base connection method.');
+			throw new Error(
+				'Cannot find tnsnames.ora file. Please, specify tnsnames folder or use Base connection method.',
+			);
 		}
 
 		logger({ message: 'Found tnsnames.ora file: ' + filePath });
@@ -237,7 +239,7 @@ const connect = async (
 		ssh_key_passphrase,
 		ssh_password,
 		authRole,
-		mode
+		mode,
 	},
 	logger,
 ) => {
@@ -247,7 +249,7 @@ const connect = async (
 
 	const MODES = {
 		thin: 'thin',
-		thick: 'thick'
+		thick: 'thick',
 	};
 	let configDir;
 	let libDir;

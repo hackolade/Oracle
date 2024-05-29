@@ -144,10 +144,7 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "A private temporary table differs from a temporary table in that its definition and data are visible only within the session that created it.",
 				"propertyType": "select",
 				"defaultValue": "global",
-				"options": [
-					"global",
-					"private"
-				],
+				"options": ["global", "private"],
 				"dependency": {
 					"key": "temporary",
 					"value": true
@@ -190,11 +187,7 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "Select from list of options",
 						"propertyType": "select",
 						"defaultValue": "heap",
-						"options": [
-							"heap",
-							"index",
-							"external"
-						]
+						"options": ["heap", "index", "external"]
 					},
 					{
 						"propertyName": "Tablespace",
@@ -282,13 +275,7 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "The access driver is the API that interprets the external data for the database.",
 						"propertyType": "select",
 						"defaultValue": "ORACLE_LOADER",
-						"options": [
-							"ORACLE_LOADER",
-							"ORACLE_DATAPUMP",
-							"ORACLE_BIGDATA",
-							"ORACLE_HIVE",
-							"ORACLE_HDFS"
-						]
+						"options": ["ORACLE_LOADER", "ORACLE_DATAPUMP", "ORACLE_BIGDATA", "ORACLE_HIVE", "ORACLE_HDFS"]
 					},
 					{
 						"propertyName": "Default directory",
@@ -302,11 +289,7 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "Lets you assign values to the parameters of the specific access driver for this external table.",
 						"propertyType": "select",
 						"defaultValue": "Opaque Format Spec",
-						"options": [
-							"Opaque Format Spec",
-							"Using CLOB Subquery",
-							"NONE"
-						]
+						"options": ["Opaque Format Spec", "Using CLOB Subquery", "NONE"]
 					},
 					{
 						"propertyName": "Opaque format spec",
@@ -348,10 +331,7 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "This clause lets you determine how the access driver validates the rows of an external table in subsequent queries.",
 						"propertyType": "select",
 						"defaultValue": "all",
-						"options": [
-							"all",
-							"referenced"
-						]
+						"options": ["all", "referenced"]
 					},
 					{
 						"propertyName": "Location",
@@ -445,12 +425,7 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "Choose the desired subpartition type",
 						"propertyType": "select",
 						"defaultValue": "",
-						"options": [
-							"",
-							"range",
-							"list",
-							"hash"
-						],
+						"options": ["", "range", "list", "hash"],
 						"dependency": {
 							"key": "partitionBy",
 							"value": ["composite range", "composite list", "composite hash"]
@@ -499,10 +474,7 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "Choose the desired hashing type",
 						"propertyType": "select",
 						"defaultValue": "",
-						"options": [
-							"individual hash partitions",
-							"hash partitions by quantity"
-						],
+						"options": ["individual hash partitions", "hash partitions by quantity"],
 						"dependency": {
 							"key": "partitionBy",
 							"value": ["hash", "composite hash"]
@@ -664,11 +636,7 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "Choose the desired hashing type",
 						"propertyType": "select",
 						"defaultValue": "",
-						"options": [
-							"",
-							"table",
-							"index"
-						],
+						"options": ["", "table", "index"],
 						"dependency": {
 							"type": "and",
 							"values": [
@@ -883,314 +851,311 @@ making sure that you maintain a proper JSON format.
 	{
 		"lowerTab": "Composite keys",
 		"structure": [
-		{
-			"propertyName": "Primary key",
-			"propertyType": "group",
-			"groupItemLimit": 1,
-			"propertyKeyword": "primaryKey",
-			"propertyTooltip": {
-				"disabled": [
+			{
+				"propertyName": "Primary key",
+				"propertyType": "group",
+				"groupItemLimit": 1,
+				"propertyKeyword": "primaryKey",
+				"propertyTooltip": {
+					"disabled": [
+						{
+							"tooltip": "Remove the existing single column primary key definition prior to unlock the possibility to create a composite primary key definition for this table",
+							"dependency": {
+								"type": "and",
+								"values": [
+									{
+										"level": "children",
+										"key": "primaryKey",
+										"value": true
+									},
+									{
+										"type": "not",
+										"values": {
+											"level": "children",
+											"key": "compositePrimaryKey",
+											"value": true
+										}
+									}
+								]
+							}
+						},
+						{
+							"tooltip": "Remove or update the existing composite primary key definition prior to unlock the possibility to create a new composite primary key definition for this table",
+							"dependency": {
+								"key": "primaryKey",
+								"minLength": 1
+							}
+						}
+					]
+				},
+				"disabledOnCondition": [
 					{
-						"tooltip": "Remove the existing single column primary key definition prior to unlock the possibility to create a composite primary key definition for this table",
-						"dependency": {
+						"level": "children",
+						"value": {
 							"type": "and",
 							"values": [
 								{
-									"level": "children",
 									"key": "primaryKey",
 									"value": true
 								},
 								{
-									"type": "not",
-									"values": {
-										"level": "children",
-										"key": "compositePrimaryKey",
-										"value": true
-									}
+									"type": "or",
+									"values": [
+										{
+											"key": "compositePrimaryKey",
+											"value": false
+										},
+										{
+											"key": "compositePrimaryKey",
+											"exist": false
+										}
+									]
+								},
+								{
+									"type": "or",
+									"values": [
+										{
+											"key": "compositeUniqueKey",
+											"value": false
+										},
+										{
+											"key": "compositeUniqueKey",
+											"exist": false
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"structure": [
+					{
+						"propertyName": "Constraint name",
+						"propertyKeyword": "constraintName",
+						"propertyTooltip": "",
+						"propertyType": "text"
+					},
+					{
+						"propertyName": "Key",
+						"propertyKeyword": "compositePrimaryKey",
+						"propertyType": "primaryKeySetter",
+						"abbr": "pk"
+					}
+				]
+			},
+			{
+				"propertyName": "Unique key",
+				"propertyType": "group",
+				"propertyKeyword": "uniqueKey",
+				"propertyTooltip": "",
+				"structure": [
+					{
+						"propertyName": "Constraint name",
+						"propertyKeyword": "constraintName",
+						"propertyTooltip": "",
+						"propertyType": "text"
+					},
+					{
+						"propertyName": "Key",
+						"propertyKeyword": "compositeUniqueKey",
+						"propertyType": "compositeKeySetter",
+						"setPrimaryKey": false,
+						"template": "collectiontree",
+						"isCompositeKey": true,
+						"abbr": " "
+					}
+				]
+			}
+		]
+	},
+	{
+		"lowerTab": "Indexes",
+		"structure": [
+			{
+				"propertyName": "Index",
+				"propertyType": "group",
+				"propertyKeyword": "Indxs",
+				"propertyTooltip": "",
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "indxName",
+						"propertyTooltip": "",
+						"propertyType": "text"
+					},
+					{
+						"propertyName": "Activated",
+						"propertyKeyword": "isActivated",
+						"propertyTooltip": "Deactivated item will be not included in FE script",
+						"propertyType": "checkbox",
+						"defaultValue": true
+					},
+					{
+						"propertyName": "If not exists",
+						"propertyKeyword": "ifNotExist",
+						"propertyType": "checkbox"
+					},
+					{
+						"propertyName": "Type",
+						"propertyKeyword": "indxType",
+						"propertyType": "select",
+						"options": ["", "multivalue", "unique", "bitmap"]
+					},
+					{
+						"propertyName": "Keys",
+						"propertyKeyword": "indxKey",
+						"propertyType": "fieldList",
+						"template": "orderedList",
+						"attributeList": ["asc", "desc"],
+						"dependency": {
+							"type": "or",
+							"values": [
+								{
+									"key": "column_expression",
+									"exist": false
+								},
+								{
+									"key": "column_expression",
+									"value": ""
 								}
 							]
 						}
 					},
 					{
-						"tooltip": "Remove or update the existing composite primary key definition prior to unlock the possibility to create a new composite primary key definition for this table",
+						"propertyName": "Conditional function",
+						"propertyKeyword": "column_expression",
+						"propertyTooltip": "Enter conditional function for a function-based index",
+						"propertyType": "details",
+						"markdown": false,
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "sql"
+						},
 						"dependency": {
-							"key": "primaryKey",
-							"minLength": 1
+							"type": "or",
+							"values": [
+								{
+									"key": "indxKey",
+									"exist": false
+								},
+								{
+									"key": "indxKey",
+									"isEmpty": true
+								}
+							]
+						}
+					},
+					{
+						"propertyName": "Description",
+						"propertyKeyword": "indxDescription",
+						"propertyTooltip": "description",
+						"propertyType": "details",
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
+					},
+					{
+						"propertyName": "Tablespace",
+						"propertyKeyword": "tablespace",
+						"propertyTooltip": "Specify the tablespace in which Oracle Database creates the table.  If you omit TABLESPACE, then the database creates that item in the default tablespace of the owner of the schema containing the table.",
+						"propertyType": "text"
+					},
+					{
+						"propertyName": "Properties",
+						"propertyKeyword": "index_properties",
+						"propertyTooltip": "Specify the optional index attributes.",
+						"propertyType": "details",
+						"markdown": false,
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "sql"
+						}
+					},
+					{
+						"propertyName": "Attributes",
+						"propertyKeyword": "index_attributes",
+						"propertyTooltip": "Specify the optional index attributes.",
+						"propertyType": "details",
+						"markdown": false,
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "sql"
+						}
+					},
+					{
+						"propertyName": "Compression",
+						"propertyKeyword": "index_compression",
+						"propertyTooltip": "If you want to use compression for a partitioned index, then you must create the index with compression enabled at the index level. You can subsequently enable and disable the compression setting for individual partitions of such a partitioned index. ",
+						"propertyType": "details",
+						"markdown": false,
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "sql"
+						}
+					},
+					{
+						"propertyName": "Logging",
+						"propertyKeyword": "logging_clause",
+						"propertyType": "select",
+						"defaultValue": "logging",
+						"options": ["", "logging", "nologging", "filesystem_like_logging"]
+					},
+					{
+						"propertyName": "Comments",
+						"propertyKeyword": "indxComments",
+						"propertyTooltip": "comments",
+						"addTimestampButton": false,
+						"propertyType": "details",
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
 						}
 					}
 				]
-			},
-			"disabledOnCondition": [
-				{
-					"level": "children",
-					"value": {
-						"type": "and",
-						"values": [
-							{
-								"key": "primaryKey",
-								"value": true
-							},
-							{
-								"type": "or",
-								"values": [
-									{
-										"key": "compositePrimaryKey",
-										"value": false
-									},
-									{
-										"key": "compositePrimaryKey",
-										"exist": false
-									}
-								]
-							},
-							{
-								"type": "or",
-								"values": [
-									{
-										"key": "compositeUniqueKey",
-										"value": false
-									},
-									{
-										"key": "compositeUniqueKey",
-										"exist": false
-									}
-								]
-							}
-						]
-					}
-				}
-			],
-			"structure": [{
-				"propertyName": "Constraint name",
-				"propertyKeyword": "constraintName",
-				"propertyTooltip": "",
-				"propertyType": "text"
-			}, {
-				"propertyName": "Key",
-				"propertyKeyword": "compositePrimaryKey",
-				"propertyType": "primaryKeySetter",
-				"abbr": "pk"
-			}]
-		},
-		{
-			"propertyName": "Unique key",
-			"propertyType": "group",
-			"propertyKeyword": "uniqueKey",
-			"propertyTooltip": "",
-			"structure": [{
-				"propertyName": "Constraint name",
-				"propertyKeyword": "constraintName",
-				"propertyTooltip": "",
-				"propertyType": "text"
-			}, {
-				"propertyName": "Key",
-				"propertyKeyword": "compositeUniqueKey",
-				"propertyType": "compositeKeySetter",
-				"setPrimaryKey": false,
-				"template": "collectiontree",
-				"isCompositeKey": true,
-				"abbr": " "
-			}]
-		}]
-	},
-	{
-		"lowerTab": "Indexes",
-		"structure": [
-		{
-			"propertyName": "Index",
-			"propertyType": "group",
-			"propertyKeyword": "Indxs",
-			"propertyTooltip": "",
-			"structure": [
-				{
-					"propertyName": "Name",
-					"propertyKeyword": "indxName",
-					"propertyTooltip": "",
-					"propertyType": "text"
-				},
-				{
-					"propertyName": "Activated",
-					"propertyKeyword": "isActivated",
-					"propertyTooltip": "Deactivated item will be not included in FE script",
-					"propertyType": "checkbox",
-					"defaultValue": true
-				},
-				{
-					"propertyName": "If not exists",
-					"propertyKeyword": "ifNotExist",
-					"propertyType": "checkbox"
-				},
-				{
-					"propertyName": "Type",
-					"propertyKeyword": "indxType",
-					"propertyType": "select",
-					"options": [
-						"",
-						"multivalue",
-						"unique",
-						"bitmap"
-					]
-				},
-				{
-					"propertyName": "Keys",
-					"propertyKeyword": "indxKey",
-					"propertyType": "fieldList",
-					"template": "orderedList",
-					"attributeList": [
-						"asc",
-						"desc"
-					],
-					"dependency": {
-						"type": "or",
-						"values": [
-							{
-								"key": "column_expression",
-								"exist": false
-							},
-							{
-								"key": "column_expression",
-								"value": ""
-							}
-						]
-					}
-				},
-				{
-					"propertyName": "Conditional function",
-					"propertyKeyword": "column_expression",
-					"propertyTooltip": "Enter conditional function for a function-based index",
-					"propertyType": "details",
-					"markdown": false,
-					"template": "codeEditor",
-					"templateOptions": {
-						"editorDialect": "sql"
-					},
-					"dependency": {
-						"type": "or",
-						"values": [
-							{
-								"key": "indxKey",
-								"exist": false
-							},
-							{
-								"key": "indxKey",
-								"isEmpty": true
-							}
-						]
-					}
-				},
-				{
-					"propertyName": "Description",
-					"propertyKeyword": "indxDescription",
-					"propertyTooltip": "description",
-					"propertyType": "details",
-					"template": "codeEditor",
-					"templateOptions": {
-						"editorDialect": "markdown"
-					}
-				},
-				{
-					"propertyName": "Tablespace",
-					"propertyKeyword": "tablespace",
-					"propertyTooltip": "Specify the tablespace in which Oracle Database creates the table.  If you omit TABLESPACE, then the database creates that item in the default tablespace of the owner of the schema containing the table.",
-					"propertyType": "text"
-				},
-				{
-					"propertyName": "Properties",
-					"propertyKeyword": "index_properties",
-					"propertyTooltip": "Specify the optional index attributes.",
-					"propertyType": "details",
-					"markdown": false,
-					"template": "codeEditor",
-					"templateOptions": {
-						"editorDialect": "sql"
-					}
-				},
-				{
-					"propertyName": "Attributes",
-					"propertyKeyword": "index_attributes",
-					"propertyTooltip": "Specify the optional index attributes.",
-					"propertyType": "details",
-					"markdown": false,
-					"template": "codeEditor",
-					"templateOptions": {
-						"editorDialect": "sql"
-					}
-				},
-				{
-					"propertyName": "Compression",
-					"propertyKeyword": "index_compression",
-					"propertyTooltip": "If you want to use compression for a partitioned index, then you must create the index with compression enabled at the index level. You can subsequently enable and disable the compression setting for individual partitions of such a partitioned index. ",
-					"propertyType": "details",
-					"markdown": false,
-					"template": "codeEditor",
-					"templateOptions": {
-						"editorDialect": "sql"
-					}
-				},
-				{
-					"propertyName": "Logging",
-					"propertyKeyword": "logging_clause",
-					"propertyType": "select",
-					"defaultValue": "logging",
-					"options": [
-						"",
-						"logging",
-						"nologging",
-						"filesystem_like_logging"
-					]
-				},
-				{
-					"propertyName": "Comments",
-					"propertyKeyword": "indxComments",
-					"propertyTooltip": "comments",
-					"addTimestampButton": false,
-					"propertyType": "details",
-					"template": "codeEditor",
-					"templateOptions": {
-						"editorDialect": "markdown"
-					}
-				}
-			]
-		}]
+			}
+		]
 	},
 	{
 		"lowerTab": "Check Constraints",
-		"structure": [{
-			"propertyName": "Check Constraint",
-			"propertyType": "group",
-			"propertyKeyword": "chkConstr",
-			"propertyTooltip": "",
-			"structure": [
-				{
-					"propertyName": "Name",
-					"propertyKeyword": "chkConstrName",
-					"propertyTooltip": "",
-					"propertyType": "text"
-				},
-				{
-					"propertyName": "Expression",
-					"propertyKeyword": "constrExpression",
-					"propertyTooltip": "Expression",
-					"propertyType": "details",
-					"template": "textarea",
-					"markdown": false
-				},
-				{
-					"propertyName": "Description",
-					"propertyKeyword": "constrDescription",
-					"propertyTooltip": "description",
-					"propertyType": "details",
-					"template": "textarea"
-				},
-				{
-					"propertyName": "Comments",
-					"propertyKeyword": "constrComments",
-					"propertyTooltip": "comments",
-					"addTimestampButton": false,
-					"propertyType": "details",
-					"template": "textarea"
-				}
-			]
-		}]
+		"structure": [
+			{
+				"propertyName": "Check Constraint",
+				"propertyType": "group",
+				"propertyKeyword": "chkConstr",
+				"propertyTooltip": "",
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "chkConstrName",
+						"propertyTooltip": "",
+						"propertyType": "text"
+					},
+					{
+						"propertyName": "Expression",
+						"propertyKeyword": "constrExpression",
+						"propertyTooltip": "Expression",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					},
+					{
+						"propertyName": "Description",
+						"propertyKeyword": "constrDescription",
+						"propertyTooltip": "description",
+						"propertyType": "details",
+						"template": "textarea"
+					},
+					{
+						"propertyName": "Comments",
+						"propertyKeyword": "constrComments",
+						"propertyTooltip": "comments",
+						"addTimestampButton": false,
+						"propertyType": "details",
+						"template": "textarea"
+					}
+				]
+			}
+		]
 	}
 ]

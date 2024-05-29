@@ -208,7 +208,11 @@ module.exports = {
 				});
 			}
 
-			logger.log('error', { message: error.message, stack: error.stack, error }, 'Reverse-engineering process failed');
+			logger.log(
+				'error',
+				{ message: error.message, stack: error.stack, error },
+				'Reverse-engineering process failed',
+			);
 			callback({ message: error.message, stack: error.stack });
 		}
 	},

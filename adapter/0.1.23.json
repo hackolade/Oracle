@@ -40,64 +40,64 @@
  * }
  */
 {
-  "modify": {
-    "view": [
-      {
-        "from": {
-          "force": true
-        },
-        "to": {
-          "force": "force"
-        }
-      },
-      {
-        "from": {
-          "editionable": true
-        },
-        "to": {
-          "editionable": "editionable"
-        }
-      },
-      {
-        "from": {
-          "editioning": true
-        },
-        "to": {
-          "editioning": "editioning"
-        }
-      },
-      {
-        "from": {
-          "force": false
-        },
-        "to": {
-          "force": "no force"
-        }
-      },
-      {
-        "from": {
-          "editionable": false
-        },
-        "to": {
-          "editionable": "noneditionable"
-        }
-      },
-      {
-        "from": {
-          "editioning": false
-        },
-        "to": {
-          "editioning": ""
-        }
-      },
-      {
-        "from": {
-          "editioning": false
-        },
-        "to": {
-          "editioning": ""
-        }
-      }
-    ]
-  }
+	"modify": {
+		"view": [
+			{
+				"from": {
+					"force": true
+				},
+				"to": {
+					"force": "force"
+				}
+			},
+			{
+				"from": {
+					"editionable": true
+				},
+				"to": {
+					"editionable": "editionable"
+				}
+			},
+			{
+				"from": {
+					"editioning": true
+				},
+				"to": {
+					"editioning": "editioning"
+				}
+			},
+			{
+				"from": {
+					"force": false
+				},
+				"to": {
+					"force": "no force"
+				}
+			},
+			{
+				"from": {
+					"editionable": false
+				},
+				"to": {
+					"editionable": "noneditionable"
+				}
+			},
+			{
+				"from": {
+					"editioning": false
+				},
+				"to": {
+					"editioning": ""
+				}
+			},
+			{
+				"from": {
+					"editioning": false
+				},
+				"to": {
+					"editioning": ""
+				}
+			}
+		]
+	}
 }

@@ -1,8 +1,6 @@
-# OSX
+.vscode
+.antlr
+.idea
+node_modules
 .DS_Store
-
-# VisualStudioCode
-.vscode/
-
-# Jet Brains
-.idea/
+release

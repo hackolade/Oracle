@@ -1,13 +1,7 @@
 {
-  "name": "Oracle",
-  "version": "1.0.0",
-  "description": "",
-  "author": "Hackolade",
-  "dependencies": {
-    "adm-zip": "^0.5.9",
-    "oracledb": "^6.0.3",
-    "perplex": "^0.11.0",
-    "tunnel-ssh": "^4.1.6"
-  },
-  "installed": true
+    "name": "Oracle",
+    "version": "1.0.0",
+    "description": "",
+    "author": "Hackolade",
+    "installed": true
 }

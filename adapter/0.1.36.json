@@ -41,23 +41,23 @@
  */
 
 {
-  "modify": {
-    "view": [
-      [
-        "assignProperties",
-        {
-          "type": "not",
-          "values": [
-            {
-              "key": "duality",
-              "value": true
-            }
-          ]
-        },
-        {
-          "viewOn": ""
-        }
-      ]
-    ]
-  }
+	"modify": {
+		"view": [
+			[
+				"assignProperties",
+				{
+					"type": "not",
+					"values": [
+						{
+							"key": "duality",
+							"value": true
+						}
+					]
+				},
+				{
+					"viewOn": ""
+				}
+			]
+		]
+	}
 }

@@ -1,13 +1,10 @@
 {
-    "name": "collection_udt",
-    "erdAbbreviation": "<coll_udt>",
-    "dtdAbbreviation": "{coll}",
-    "parentType": "string",
-    "hiddenOnEntity": [
-        "collection",
-        "view"
-    ],
-    "defaultValues": {
-        "properties": []
-    }
+	"name": "collection_udt",
+	"erdAbbreviation": "<coll_udt>",
+	"dtdAbbreviation": "{coll}",
+	"parentType": "string",
+	"hiddenOnEntity": ["collection", "view"],
+	"defaultValues": {
+		"properties": []
+	}
 }
