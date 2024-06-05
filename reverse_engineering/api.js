@@ -7,11 +7,13 @@ let _;
 
 module.exports = {
 	async connect(connectionInfo, logger, callback, app) {
+		const sshService = app.require('@hackolade/ssh-service');
+
 		initDependencies(app);
 		logInfo('Connect to instance', connectionInfo, logger);
 		oracleHelper.logEnvironment(logger);
 		try {
-			await oracleHelper.connect(connectionInfo, message => {
+			await oracleHelper.connect(connectionInfo, sshService, message => {
 				logger.log('info', message, 'Connection');
 			});
 			callback();
@@ -23,7 +25,8 @@ module.exports = {
 
 	async disconnect(connectionInfo, logger, callback) {
 		try {
-			await oracleHelper.disconnect();
+			const sshService = app.require('@hackolade/ssh-service');
+			await oracleHelper.disconnect(sshService);
 			callback(null);
 		} catch (err) {
 			handleError(logger, err, callback);
