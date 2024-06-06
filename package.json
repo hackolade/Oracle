@@ -48,6 +48,7 @@
     "disabled": false,
     "dependencies": {
         "adm-zip": "0.5.9",
+        "lodash": "4.17.21",
         "oracledb": "6.0.3",
         "perplex": "0.11.0",
         "tunnel-ssh": "4.1.6"

@@ -3,7 +3,7 @@
 const oracleHelper = require('./helpers/oracleHelper');
 const logInfo = require('./helpers/logInfo');
 const { setDependencies, dependencies } = require('./helpers/appDependencies');
-let _;
+const _ = require('lodash');
 
 module.exports = {
 	async connect(connectionInfo, logger, callback, app) {
@@ -237,6 +237,5 @@ const getSampleDocSize = (count, recordSamplingSettings) => {
 
 const initDependencies = app => {
 	setDependencies(app);
-	_ = dependencies.lodash;
 	oracleHelper.setDependencies(dependencies);
 };
