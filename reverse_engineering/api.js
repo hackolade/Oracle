@@ -2,7 +2,6 @@
 
 const oracleHelper = require('./helpers/oracleHelper');
 const logInfo = require('./helpers/logInfo');
-const { setDependencies, dependencies } = require('./helpers/appDependencies');
 const _ = require('lodash');
 
 module.exports = {
@@ -233,9 +232,4 @@ const getSampleDocSize = (count, recordSamplingSettings) => {
 	const limit = Math.ceil((count * recordSamplingSettings.relative.value) / 100);
 
 	return Math.min(limit, recordSamplingSettings.maxValue);
-};
-
-const initDependencies = app => {
-	setDependencies(app);
-	oracleHelper.setDependencies(dependencies);
 };

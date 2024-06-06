@@ -2,6 +2,7 @@ const { AlterScriptDto } = require('../types/AlterScriptDto');
 const { getUpdateTypesScriptDtos } = require('./columnHelpers/alterTypeHelper');
 const { getRenameColumnScriptDtos } = require('./columnHelpers/renameColumnHelper');
 const { getModifyIndexesScriptDtos, getAddedIndexesScriptDtos } = require('./entityHelpers/indexesHelper');
+const _ = require('lodash');
 
 /**
  * @return {(collection: AlterCollectionDto) => AlterScriptDto | undefined}
@@ -9,7 +10,6 @@ const { getModifyIndexesScriptDtos, getAddedIndexesScriptDtos } = require('./ent
 const getAddCollectionScriptDto =
 	({ app, dbVersion, modelDefinitions, internalDefinitions, externalDefinitions }) =>
 	collection => {
-		const _ = app.require('lodash');
 		const { getEntityName } = require('../../utils/general')(_);
 		const { createColumnDefinitionBySchema } = require('./createColumnDefinition')(app);
 		const ddlProvider = require('../../ddlProvider/ddlProvider')(null, { dbVersion }, app);
@@ -62,7 +62,6 @@ const getAddCollectionScriptDto =
  * @return {(collection: AlterCollectionDto) => AlterScriptDto | undefined}
  * */
 const getDeleteCollectionScriptDto = app => collection => {
-	const _ = app.require('lodash');
 	const { getEntityName, getNamePrefixedWithSchemaName } = require('../../utils/general')(_);
 
 	const jsonData = { ...collection, ...(_.omit(collection?.role, 'properties') || {}) };
@@ -80,7 +79,6 @@ const getDeleteCollectionScriptDto = app => collection => {
 const getModifyCollectionScriptDtos =
 	({ app, dbVersion }) =>
 	collection => {
-		const _ = app.require('lodash');
 		const ddlProvider = require('../../ddlProvider/ddlProvider')(null, { dbVersion }, app);
 
 		const modifyIndexesScriptDtos = getModifyIndexesScriptDtos({ _, ddlProvider })({ collection });
@@ -93,7 +91,6 @@ const getModifyCollectionScriptDtos =
 const getAddColumnScriptDtos =
 	({ app, dbVersion, modelDefinitions, internalDefinitions, externalDefinitions }) =>
 	collection => {
-		const _ = app.require('lodash');
 		const { getEntityName, getNamePrefixedWithSchemaName } = require('../../utils/general')(_);
 		const { createColumnDefinitionBySchema } = require('./createColumnDefinition')(app);
 		const ddlProvider = require('../../ddlProvider/ddlProvider')(null, { dbVersion }, app);
@@ -161,7 +158,6 @@ const getNewlyCreatedIndexesScripts = ({ _, ddlProvider, collection }) => {
  * @return {(collection: Object) => AlterScriptDto[]}
  * */
 const getDeleteColumnScriptDtos = app => collection => {
-	const _ = app.require('lodash');
 	const { getEntityName, getNamePrefixedWithSchemaName, wrapInQuotes } = require('../../utils/general')(_);
 	const collectionSchema = { ...collection, ...(_.omit(collection?.role, 'properties') || {}) };
 	const tableName = getEntityName(collectionSchema);
@@ -179,7 +175,6 @@ const getDeleteColumnScriptDtos = app => collection => {
  * @return {(collection: Object) => AlterScriptDto[]}
  * */
 const getModifyColumnScriptDtos = (app, dbVersion) => collection => {
-	const _ = app.require('lodash');
 	const ddlProvider = require('../../ddlProvider/ddlProvider')(null, { dbVersion }, app);
 
 	const renameColumnScriptDtos = getRenameColumnScriptDtos(_, ddlProvider)(collection);

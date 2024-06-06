@@ -5,10 +5,9 @@ const fs = require('fs');
 const parseTns = require('./parseTns');
 const ssh = require('tunnel-ssh');
 const { getSchemaSequences } = require('./getSchemaSequences');
+const _ = require('lodash');
 
 const noConnectionError = { message: 'Connection error' };
-
-const setDependencies = ({ lodash }) => (_ = lodash);
 
 let connection;
 let sshTunnel;

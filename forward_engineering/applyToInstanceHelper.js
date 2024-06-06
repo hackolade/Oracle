@@ -1,7 +1,7 @@
 const oracleHelper = require('../reverse_engineering/helpers/oracleHelper');
+const _ = require('lodash');
 
 const applyToInstance = async (connectionInfo, logger, app) => {
-	const _ = app.require('lodash');
 	const async = app.require('async');
 
 	oracleHelper.setDependencies({ lodash: _ });

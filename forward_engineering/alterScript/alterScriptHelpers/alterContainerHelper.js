@@ -4,7 +4,6 @@ const { AlterScriptDto } = require('../types/AlterScriptDto');
  * @return {(containerName: string) => AlterScriptDto | undefined}
  * */
 const getAddContainerScriptDto = app => containerName => {
-	const _ = app.require('lodash');
 	const { wrapInQuotes } = require('../../utils/general')(_);
 	const ddlContainerName = wrapInQuotes(containerName);
 
@@ -16,7 +15,6 @@ const getAddContainerScriptDto = app => containerName => {
  * @return {(containerName: string) => AlterScriptDto | undefined}
  * */
 const getDeleteContainerScriptDto = app => containerName => {
-	const _ = app.require('lodash');
 	const { wrapInQuotes } = require('../../utils/general')(_);
 	const ddlContainerName = wrapInQuotes(containerName);
 
