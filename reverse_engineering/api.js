@@ -6,7 +6,6 @@ const _ = require('lodash');
 
 module.exports = {
 	async connect(connectionInfo, logger, callback, app) {
-		initDependencies(app);
 		logInfo('Connect to instance', connectionInfo, logger);
 		oracleHelper.logEnvironment(logger);
 		try {
@@ -86,7 +85,6 @@ module.exports = {
 				logger.progress({ message, containerName, entityName });
 			};
 			logger.log('info', collectionsInfo, 'Retrieving schema', collectionsInfo.hiddenKeys);
-			initDependencies(app);
 			progress({ message: 'Start reverse-engineering process', containerName: '', entityName: '' });
 			const data = collectionsInfo.collectionData;
 			const collections = data.collections;
