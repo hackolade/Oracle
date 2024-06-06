@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const { DbVersion } = require('../../enums/DbVersion');
 /**
  * @param dbVersion {string} DB version in "21&i" format
