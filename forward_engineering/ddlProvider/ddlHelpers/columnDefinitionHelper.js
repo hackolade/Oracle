@@ -1,13 +1,10 @@
 const { DbVersion } = require('../../enums/DbVersion');
 /**
- * @param dbVersion {string} DB version in "21c" format
+ * @param dbVersion {string} DB version in "21&i" format
  * @return {boolean}
  * */
 const shouldUseClobForJsonColumns = dbVersion => {
-	if (!/[0-9]{2}c/.test(dbVersion)) {
-		return true;
-	}
-	const dbVersionAsNumber = Number(dbVersion.substring(0, 2));
+	const dbVersionAsNumber = Number.parseInt(dbVersion, 10);
 	return dbVersionAsNumber < DbVersion.JSON_TYPE_SINCE;
 };
 

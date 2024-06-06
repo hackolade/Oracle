@@ -504,28 +504,28 @@ const execute = (command, options = {}, binds = []) => {
 };
 
 const getDbVersion = async logger => {
+	const versions = ['12c', '18c', '19c', '21c', '23ai'];
+	const defaultVersion = '21c';
+
 	try {
-		const version = await execute(
+		const versionTable = await execute(
 			"SELECT VERSION FROM PRODUCT_COMPONENT_VERSION WHERE product LIKE 'Oracle Database%'",
 		);
 
-		logger.log('info', version, 'DB Version');
+		logger.log('info', versionTable, 'DB Version');
 
-		if (!version?.[0]?.[0]) {
-			return '21c';
+		const majorVersion = versionTable?.[0]?.[0]?.split('.').shift();
+
+		if (!majorVersion) {
+			return defaultVersion;
 		}
 
-		const v = version[0][0].split('.').shift() + 'c';
-		const versions = ['12c', '18c', '19c', '21c', '23c'];
+		const currentVersion = versions.find(version => version.startsWith(majorVersion));
 
-		if (!versions.includes(v)) {
-			return '21c';
-		}
-
-		return v;
+		return currentVersion || defaultVersion;
 	} catch (e) {
 		logger.log('error', { message: e.message, stack: e.stack }, 'Error of getting DB Version');
-		return '21c';
+		return defaultVersion;
 	}
 };
 

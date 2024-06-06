@@ -8,14 +8,11 @@ const { AlterIndexDto } = require('../alterScript/types/AlterIndexDto.js');
 const { Sequence } = require('../types/schemaSequenceTypes');
 
 /**
- * @param dbVersion {string} DB version in "21c" format
+ * @param dbVersion {string} DB version in "21ai" format
  * @return {boolean}
  * */
 const shouldUseTryCatchIfNotExistsWrapper = dbVersion => {
-	if (!/[0-9]{2}c/.test(dbVersion)) {
-		return true;
-	}
-	const dbVersionAsNumber = Number(dbVersion.substring(0, 2));
+	const dbVersionAsNumber = Number.parseInt(dbVersion, 10);
 	return dbVersionAsNumber < DbVersion.IF_NOT_EXISTS_SINCE;
 };
 

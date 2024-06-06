@@ -133,7 +133,7 @@ making sure that you maintain a proper JSON format.
 				"shouldValidate": false,
 				"propertyTooltip": "DB version",
 				"propertyType": "select",
-				"options": ["12c", "18c", "19c", "21c", "23c"],
+				"options": ["12c", "18c", "19c", "21c", "23ai"],
 				"disabledOption": false,
 				"adapters": [
 					{
