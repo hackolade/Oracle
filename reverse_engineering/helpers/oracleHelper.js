@@ -929,7 +929,6 @@ const getSynonymsDDL = async () => {
 module.exports = {
 	connect,
 	disconnect,
-	setDependencies,
 	getEntitiesNames,
 	getSchemaNames,
 	splitEntityNames,

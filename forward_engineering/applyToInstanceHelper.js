@@ -4,7 +4,6 @@ const _ = require('lodash');
 const applyToInstance = async (connectionInfo, logger, app) => {
 	const async = app.require('async');
 
-	oracleHelper.setDependencies({ lodash: _ });
 	oracleHelper.logEnvironment(logger);
 	await oracleHelper.connect(connectionInfo, message => {
 		logger.log('info', message, 'Connection');
