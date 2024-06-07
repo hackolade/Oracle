@@ -49,8 +49,7 @@
     "dependencies": {
         "adm-zip": "0.5.9",
         "oracledb": "6.0.3",
-        "perplex": "0.11.0",
-        "tunnel-ssh": "4.1.6"
+        "perplex": "0.11.0"
     },
     "lint-staged": {
         "*.{js,json}": "prettier --write"
@@ -73,11 +72,5 @@
         "lint-staged": "14.0.1",
         "prettier": "3.2.5",
         "simple-git-hooks": "2.11.1"
-    },
-    "overrides": {
-        "tunnel-ssh": {
-            "cpu-features": "npm:-@0.0.1",
-            "ssh2": "npm:-@0.0.1"
-        }
     }
 }
