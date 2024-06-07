@@ -6,8 +6,7 @@
   "dependencies": {
     "adm-zip": "^0.5.9",
     "oracledb": "^6.0.3",
-    "perplex": "^0.11.0",
-    "tunnel-ssh": "^4.1.6"
+    "perplex": "^0.11.0"
   },
   "installed": true
 }
