@@ -3,10 +3,11 @@ const oracleHelper = require('../reverse_engineering/helpers/oracleHelper');
 const applyToInstance = async (connectionInfo, logger, app) => {
 	const _ = app.require('lodash');
 	const async = app.require('async');
+	const sshService = app.require('@hackolade/ssh-service');
 
 	oracleHelper.setDependencies({ lodash: _ });
 	oracleHelper.logEnvironment(logger);
-	await oracleHelper.connect(connectionInfo, message => {
+	await oracleHelper.connect(connectionInfo, sshService, (message) => {
 		logger.log('info', message, 'Connection');
 	});
 
