@@ -1,4 +1,5 @@
 const globals = require('globals');
+const pluginImportX = require('eslint-plugin-import-x');
 
 module.exports = {
 	ignores: [
@@ -31,6 +32,16 @@ module.exports = {
 		'no-redeclare': 'warn',
 		'no-debugger': 'error',
 		'no-console': 'error',
+		...pluginImportX.configs.recommended.rules,
+		'import-x/order': [
+			'warn',
+			{
+				'newlines-between': 'always',
+				alphabetize: {
+					order: 'asc',
+				},
+			},
+		],
 	},
 	languageOptions: {
 		sourceType: 'commonjs',
@@ -38,5 +49,8 @@ module.exports = {
 			...globals.node,
 		},
 		ecmaVersion: 'latest',
+	},
+	plugins: {
+		'import-x': pluginImportX,
 	},
 };
