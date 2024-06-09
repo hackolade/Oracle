@@ -10,7 +10,7 @@ function parseObject(lex, obj = {}) {
 		value = {};
 		do {
 			Object.assign(value, parseObject(lex, obj));
-		} while (lex.peek().type == '(');
+		} while (lex.peek().type === '(');
 	} else {
 		value = lex.expect('WORD').match;
 	}

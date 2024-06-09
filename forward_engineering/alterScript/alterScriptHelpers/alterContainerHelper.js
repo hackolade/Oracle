@@ -1,5 +1,5 @@
 const { AlterScriptDto } = require('../types/AlterScriptDto');
-
+const _ = require('lodash');
 /**
  * @return {(containerName: string) => AlterScriptDto | undefined}
  * */
