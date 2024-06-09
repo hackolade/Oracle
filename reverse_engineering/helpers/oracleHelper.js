@@ -113,7 +113,7 @@ const getConnectionStringByTnsNames = (configDir, serviceName, proxy, logger) =>
 
 	const address = tnsData[serviceName]?.data?.description?.address;
 	const service = tnsData[serviceName]?.data?.description?.connect_data?.service_name;
-	const sid = tnsData[dserviceName]?.data?.description?.connect_data?.sid;
+	const sid = tnsData[serviceName]?.data?.description?.connect_data?.sid;
 
 	logger({ message: 'tnsnames.ora', address, service });
 
