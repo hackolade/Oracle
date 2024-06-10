@@ -6405,7 +6405,6 @@ making sure that you maintain a proper JSON format.
         ]
       },
       {
-        "fieldName": "Min Properties",
         "fieldKeyword": "minProperties",
         "dependency": [
           {
@@ -6456,7 +6455,6 @@ making sure that you maintain a proper JSON format.
         ]
       },
       {
-        "fieldName": "Max Properties",
         "fieldKeyword": "maxProperties",
         "dependency": [
           {
