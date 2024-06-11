@@ -6426,8 +6426,29 @@ making sure that you maintain a proper JSON format.
                 ]
               },
               {
-                "key": "subtype",
-                "value": "array"
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subtype",
+                    "value": "array"
+                  },
+                  {
+                    "key": "subtype",
+                    "value": "number"
+                  },
+                  {
+                    "key": "subtype",
+                    "value": "string"
+                  },
+                  {
+                    "key": "subtype",
+                    "value": "boolean"
+                  },
+                  {
+                    "key": "subtype",
+                    "value": "null"
+                  }
+                ]
               }
             ]
           }
@@ -6455,8 +6476,29 @@ making sure that you maintain a proper JSON format.
                 ]
               },
               {
-                "key": "subtype",
-                "value": "array"
+                "type": "or",
+                "values": [
+                  {
+                    "key": "subtype",
+                    "value": "array"
+                  },
+                  {
+                    "key": "subtype",
+                    "value": "number"
+                  },
+                  {
+                    "key": "subtype",
+                    "value": "string"
+                  },
+                  {
+                    "key": "subtype",
+                    "value": "boolean"
+                  },
+                  {
+                    "key": "subtype",
+                    "value": "null"
+                  }
+                ]
               }
             ]
           }
@@ -10482,7 +10524,9 @@ making sure that you maintain a proper JSON format.
         "addTimestampButton": true,
         "propertyType": "details",
         "template": "textarea"
-      }
+      },
+      "minProperties",
+      "maxProperties"
     ],
     "collection_udt": [
       {
