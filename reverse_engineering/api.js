@@ -1,15 +1,16 @@
 'use strict';
 
-const oracleHelper = require('./helpers/oracleHelper');
-const logInfo = require('./helpers/logInfo');
 const _ = require('lodash');
+const logInfo = require('./helpers/logInfo');
+const oracleHelper = require('./helpers/oracleHelper');
 
 module.exports = {
 	async connect(connectionInfo, logger, callback, app) {
+		const sshService = app.require('@hackolade/ssh-service');
 		logInfo('Connect to instance', connectionInfo, logger);
 		oracleHelper.logEnvironment(logger);
 		try {
-			await oracleHelper.connect(connectionInfo, message => {
+			await oracleHelper.connect(connectionInfo, sshService, message => {
 				logger.log('info', message, 'Connection');
 			});
 			callback();
@@ -19,9 +20,10 @@ module.exports = {
 		}
 	},
 
-	async disconnect(connectionInfo, logger, callback) {
+	async disconnect(connectionInfo, logger, callback, app) {
 		try {
-			await oracleHelper.disconnect();
+			const sshService = app.require('@hackolade/ssh-service');
+			await oracleHelper.disconnect(sshService);
 			callback(null);
 		} catch (err) {
 			handleError(logger, err, callback);

@@ -1,5 +1,5 @@
-const globals = require('globals');
 const pluginImportX = require('eslint-plugin-import-x');
+const globals = require('globals');
 
 module.exports = {
 	ignores: [
@@ -33,15 +33,14 @@ module.exports = {
 		'no-debugger': 'error',
 		'no-console': 'error',
 		...pluginImportX.configs.recommended.rules,
-		'import-x/order': [
-			'warn',
-			{
-				'newlines-between': 'always',
-				alphabetize: {
-					order: 'asc',
-				},
-			},
-		],
+		// 'import-x/order': [
+		// 	'warn',
+		// 	{
+		// 		alphabetize: {
+		// 			order: 'asc',
+		// 		},
+		// 	},
+		// ],
 	},
 	languageOptions: {
 		sourceType: 'commonjs',

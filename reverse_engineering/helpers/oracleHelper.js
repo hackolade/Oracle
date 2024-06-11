@@ -3,54 +3,13 @@ const extractWallet = require('./extractWallet');
 const path = require('path');
 const fs = require('fs');
 const parseTns = require('./parseTns');
-const ssh = require('tunnel-ssh');
 const { getSchemaSequences } = require('./getSchemaSequences');
 const _ = require('lodash');
 
 const noConnectionError = { message: 'Connection error' };
 
 let connection;
-let sshTunnel;
-
-const getSshConfig = info => {
-	const config = {
-		username: info.ssh_user,
-		host: info.ssh_host,
-		port: info.ssh_port,
-		dstHost: info.host,
-		dstPort: info.port,
-		localHost: '127.0.0.1',
-		localPort: info.port,
-		keepAlive: true,
-	};
-
-	if (info.ssh_method === 'privateKey') {
-		return Object.assign({}, config, {
-			privateKey: fs.readFileSync(info.ssh_key_file),
-			passphrase: info.ssh_key_passphrase,
-		});
-	} else {
-		return Object.assign({}, config, {
-			password: info.ssh_password,
-		});
-	}
-};
-
-const connectViaSsh = info =>
-	new Promise((resolve, reject) => {
-		ssh(getSshConfig(info), (err, tunnel) => {
-			if (err) {
-				reject(err);
-			} else {
-				resolve({
-					tunnel,
-					info: Object.assign({}, info, {
-						host: 'localhost',
-					}),
-				});
-			}
-		});
-	});
+let useSshTunnel;
 
 const parseProxyOptions = (proxyString = '') => {
 	const result = proxyString.match(/http:\/\/(?:.*?:.*?@)?(.*?):(\d+)/i);
@@ -151,7 +110,7 @@ const getConnectionDescription = ({ protocol, host, port, sid, service, httpsPro
 	return connectionString;
 };
 
-const getSshConnectionString = async (data, logger) => {
+const getSshConnectionString = async (data, sshService, logger) => {
 	let connectionData = {
 		protocol: '',
 		host: '',
@@ -193,19 +152,23 @@ const getSshConnectionString = async (data, logger) => {
 		(connectionData.service = data.serviceName), (connectionData.sid = data.sid);
 	}
 
-	const { tunnel, info } = await connectViaSsh({
-		...data.sshConfig,
+	const { options } = await sshService.openTunnel({
+		sshAuthMethod: data.sshConfig.ssh_method === 'privateKey' ? 'IDENTITY_FILE' : 'USER_PASSWORD',
+		sshTunnelHostname: data.sshConfig.ssh_host,
+		sshTunnelPort: data.sshConfig.ssh_port,
+		sshTunnelUsername: data.sshConfig.ssh_user,
+		sshTunnelPassword: data.sshConfig.ssh_password,
+		sshTunnelIdentityFile: data.sshConfig.ssh_key_file,
+		sshTunnelPassphrase: data.sshConfig.ssh_key_passphrase,
 		host: connectionData.host,
 		port: connectionData.port,
 	});
 
-	sshTunnel = tunnel;
-
 	return getConnectionDescription(
 		{
 			...connectionData,
-			host: info.host,
-			port: info.port,
+			host: options.host,
+			port: options.port.toString(),
 		},
 		logger,
 	);
@@ -240,6 +203,7 @@ const connect = async (
 		authRole,
 		mode,
 	},
+	sshService,
 	logger,
 ) => {
 	if (connection) {
@@ -296,6 +260,7 @@ const connect = async (
 	}
 
 	if (ssh) {
+		useSshTunnel = true;
 		connectString = await getSshConnectionString(
 			{
 				host,
@@ -314,6 +279,7 @@ const connect = async (
 					ssh_key_passphrase,
 				},
 			},
+			sshService,
 			logger,
 		);
 	}
@@ -338,13 +304,14 @@ const connect = async (
 	});
 };
 
-const disconnect = async () => {
+const disconnect = async sshService => {
 	if (!connection) {
 		return Promise.reject(noConnectionError);
 	}
 
-	if (sshTunnel) {
-		sshTunnel.close();
+	if (useSshTunnel) {
+		useSshTunnel = false;
+		await sshService.closeConsumer();
 	}
 
 	return new Promise((resolve, reject) => {

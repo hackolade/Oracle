@@ -3,9 +3,10 @@ const _ = require('lodash');
 
 const applyToInstance = async (connectionInfo, logger, app) => {
 	const async = app.require('async');
+	const sshService = app.require('@hackolade/ssh-service');
 
 	oracleHelper.logEnvironment(logger);
-	await oracleHelper.connect(connectionInfo, message => {
+	await oracleHelper.connect(connectionInfo, sshService, message => {
 		logger.log('info', message, 'Connection');
 	});
 
