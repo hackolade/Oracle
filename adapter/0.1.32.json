@@ -41,9 +41,9 @@
  */
 
 {
-  "add": {
-    "field": {
-      "json": ["mode"]
-    }
-  }
+	"add": {
+		"field": {
+			"json": ["mode"]
+		}
+	}
 }

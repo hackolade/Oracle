@@ -182,11 +182,7 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "",
 						"propertyType": "select",
 						"defaultValue": "",
-						"options": [
-							"",
-							"EDITIONABLE",
-							"NONEDITIONABLE"
-						]
+						"options": ["", "EDITIONABLE", "NONEDITIONABLE"]
 					},
 					{
 						"propertyName": "Entity",
@@ -194,11 +190,7 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "Chose entity to create synonym for",
 						"propertyType": "selecthashed",
 						"fieldParentCategory": "collection",
-						"template": [
-							"entities",
-							"views",
-							"definitions"
-						],
+						"template": ["entities", "views", "definitions"],
 						"withEmptyOption": true,
 						"selectedBucketEntitiesOnly": true,
 						"requiredProperty": true
@@ -233,23 +225,14 @@ making sure that you maintain a proper JSON format.
 						"propertyKeyword": "type",
 						"propertyTooltip": "Specify session if you want to sequence returns a unique range of sequence numbers only within a session, or global to create a regular sequence.",
 						"propertyType": "select",
-						"options": [
-							"",
-							"global",
-							"session"
-						]
+						"options": ["", "global", "session"]
 					},
 					{
 						"propertyName": "Sharing",
 						"propertyKeyword": "sharing",
 						"propertyTooltip": "If you omit this clause, then the database uses the value of the DEFAULT_SHARING initialization parameter to determine the sharing attribute of the sequence. A metadata link shares the sequence’s metadata, but its data is unique to each container. A data link shares the sequence, and its data is the same for all containers in the application container. If None, the sequence is not shared.",
 						"propertyType": "select",
-						"options": [
-							"",
-							"metadata",
-							"data",
-							"none"
-						]
+						"options": ["", "metadata", "data", "none"]
 					},
 					{
 						"propertyName": "Start with",
@@ -284,22 +267,14 @@ making sure that you maintain a proper JSON format.
 						"propertyKeyword": "cycle",
 						"propertyTooltip": "Specify CYCLE to indicate that the sequence continues to generate values after reaching either its maximum or minimum value. Specify NOCYCLE to indicate that the sequence cannot generate more values after reaching its maximum or minimum value. This is the default.",
 						"propertyType": "select",
-						"options": [
-							"",
-							"cycle",
-							"nocycle"
-						]
+						"options": ["", "cycle", "nocycle"]
 					},
 					{
 						"propertyName": "Cache",
 						"propertyKeyword": "cache",
 						"propertyTooltip": "Specify how many values of the sequence the database preallocates and keeps in memory for faster access. Specify NOCACHE to indicate that values of the sequence are not preallocated. If you omit both CACHE and NOCACHE, then the database caches 20 sequence numbers by default.",
 						"propertyType": "select",
-						"options": [
-							"",
-							"cache",
-							"nocache"
-						]
+						"options": ["", "cache", "nocache"]
 					},
 					{
 						"propertyName": "Cache value",
@@ -318,44 +293,28 @@ making sure that you maintain a proper JSON format.
 						"propertyKeyword": "order",
 						"propertyTooltip": "Specify ORDER to guarantee that sequence numbers are generated in order of request. Specify NOORDER if you do not want to guarantee sequence numbers are generated in order of request. This is the default.",
 						"propertyType": "select",
-						"options": [
-							"",
-							"order",
-							"noorder"
-						]
+						"options": ["", "order", "noorder"]
 					},
 					{
 						"propertyName": "Keep",
 						"propertyKeyword": "keep",
 						"propertyTooltip": "Specify KEEP if you want NEXTVAL to retain its original value during replay for Application Continuity.  Specify NOKEEP if you do not want NEXTVAL to retain its original value during replay for Application Continuity. This is the default.",
 						"propertyType": "select",
-						"options": [
-							"",
-							"keep",
-							"nokeep"
-						]
+						"options": ["", "keep", "nokeep"]
 					},
 					{
 						"propertyName": "Scale",
 						"propertyKeyword": "scale",
 						"propertyTooltip": "When you use SCALE it is highly recommended that you not use ORDER simultaneously on the sequence. Use SCALE to enable sequence scalability. When SCALE is specified, a numeric offset is affixed to the beginning of the sequence which removes all duplicates in generated values.",
 						"propertyType": "select",
-						"options": [
-							"",
-							"scale",
-							"noscale"
-						]
+						"options": ["", "scale", "noscale"]
 					},
 					{
 						"propertyName": "Scale extend",
 						"propertyKeyword": "scaleExtend",
 						"propertyTooltip": "If you specify EXTEND with SCALE the generated sequence values are all of length (x+y), where x is the length of the scalable offset (default value is 6), and y is the maximum number of digits in the sequence (maxvalue/minvalue). With the NOEXTEND setting, the generated sequence values are at most as wide as the maximum number of digits in the sequence (maxvalue/minvalue). This setting is useful for integration with existing applications where sequences are used to populate fixed width columns.",
 						"propertyType": "select",
-						"options": [
-							"",
-							"extend",
-							"noextend"
-						],
+						"options": ["", "extend", "noextend"],
 						"dependency": {
 							"key": "scale",
 							"value": "scale"
@@ -366,22 +325,14 @@ making sure that you maintain a proper JSON format.
 						"propertyKeyword": "shard",
 						"propertyTooltip": "The sequence object is created as a global, all-shards sharded object that returns unique sequence values across all shards.",
 						"propertyType": "select",
-						"options": [
-							"",
-							"shard",
-							"noshard"
-						]
+						"options": ["", "shard", "noshard"]
 					},
 					{
 						"propertyName": "Shard extend",
 						"propertyKeyword": "shardExtend",
 						"propertyTooltip": "When you specify EXTEND with the SHARD clause, the generated sequence values are all of length (x + y), where x is the length of an(a) SHARD offset of size 4.  When you specify NOEXTEND, the generated sequence values are at most as wide as the maximum number of digits in the sequence maxvalue/minvalue. ",
 						"propertyType": "select",
-						"options": [
-							"",
-							"extend",
-							"noextend"
-						],
+						"options": ["", "extend", "noextend"],
 						"dependency": {
 							"key": "shard",
 							"value": "shard"

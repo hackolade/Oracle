@@ -4,10 +4,9 @@ const path = require('path');
 const fs = require('fs');
 const parseTns = require('./parseTns');
 const { getSchemaSequences } = require('./getSchemaSequences');
+const _ = require('lodash');
 
 const noConnectionError = { message: 'Connection error' };
-
-const setDependencies = ({ lodash }) => (_ = lodash);
 
 let connection;
 let useSshTunnel;
@@ -73,7 +72,7 @@ const getConnectionStringByTnsNames = (configDir, serviceName, proxy, logger) =>
 
 	const address = tnsData[serviceName]?.data?.description?.address;
 	const service = tnsData[serviceName]?.data?.description?.connect_data?.service_name;
-	const sid = tnsData[data.serviceName]?.data?.description?.connect_data?.sid;
+	const sid = tnsData[serviceName]?.data?.description?.connect_data?.sid;
 
 	logger({ message: 'tnsnames.ora', address, service });
 
@@ -123,7 +122,9 @@ const getSshConnectionString = async (data, sshService, logger) => {
 		const filePath = getTnsNamesOraFile(data.configDir);
 
 		if (!fs.existsSync(filePath)) {
-			throw new Error('Cannot find tnsnames.ora file. Please, specify tnsnames folder or use Base connection method.');
+			throw new Error(
+				'Cannot find tnsnames.ora file. Please, specify tnsnames folder or use Base connection method.',
+			);
 		}
 
 		logger({ message: 'Found tnsnames.ora file: ' + filePath });
@@ -200,7 +201,7 @@ const connect = async (
 		ssh_key_passphrase,
 		ssh_password,
 		authRole,
-		mode
+		mode,
 	},
 	sshService,
 	logger,
@@ -211,7 +212,7 @@ const connect = async (
 
 	const MODES = {
 		thin: 'thin',
-		thick: 'thick'
+		thick: 'thick',
 	};
 	let configDir;
 	let libDir;
@@ -303,7 +304,7 @@ const connect = async (
 	});
 };
 
-const disconnect = async (sshService) => {
+const disconnect = async sshService => {
 	if (!connection) {
 		return Promise.reject(noConnectionError);
 	}
@@ -485,7 +486,7 @@ const getDbVersion = async logger => {
 			return defaultVersion;
 		}
 
-		const currentVersion = versions.find((version) => version.startsWith(majorVersion));
+		const currentVersion = versions.find(version => version.startsWith(majorVersion));
 
 		return currentVersion || defaultVersion;
 	} catch (e) {
@@ -895,7 +896,6 @@ const getSynonymsDDL = async () => {
 module.exports = {
 	connect,
 	disconnect,
-	setDependencies,
 	getEntitiesNames,
 	getSchemaNames,
 	splitEntityNames,

@@ -1,15 +1,12 @@
 'use strict';
 
-const oracleHelper = require('./helpers/oracleHelper');
+const _ = require('lodash');
 const logInfo = require('./helpers/logInfo');
-const { setDependencies, dependencies } = require('./helpers/appDependencies');
-let _;
+const oracleHelper = require('./helpers/oracleHelper');
 
 module.exports = {
 	async connect(connectionInfo, logger, callback, app) {
 		const sshService = app.require('@hackolade/ssh-service');
-
-		initDependencies(app);
 		logInfo('Connect to instance', connectionInfo, logger);
 		oracleHelper.logEnvironment(logger);
 		try {
@@ -90,7 +87,6 @@ module.exports = {
 				logger.progress({ message, containerName, entityName });
 			};
 			logger.log('info', collectionsInfo, 'Retrieving schema', collectionsInfo.hiddenKeys);
-			initDependencies(app);
 			progress({ message: 'Start reverse-engineering process', containerName: '', entityName: '' });
 			const data = collectionsInfo.collectionData;
 			const collections = data.collections;
@@ -211,7 +207,11 @@ module.exports = {
 				});
 			}
 
-			logger.log('error', { message: error.message, stack: error.stack, error }, 'Reverse-engineering process failed');
+			logger.log(
+				'error',
+				{ message: error.message, stack: error.stack, error },
+				'Reverse-engineering process failed',
+			);
 			callback({ message: error.message, stack: error.stack });
 		}
 	},
@@ -232,10 +232,4 @@ const getSampleDocSize = (count, recordSamplingSettings) => {
 	const limit = Math.ceil((count * recordSamplingSettings.relative.value) / 100);
 
 	return Math.min(limit, recordSamplingSettings.maxValue);
-};
-
-const initDependencies = app => {
-	setDependencies(app);
-	_ = dependencies.lodash;
-	oracleHelper.setDependencies(dependencies);
 };

@@ -7,6 +7,8 @@
  * the agreement/contract under which the software has been supplied.
  */
 
+const _ = require('lodash');
+
 module.exports = _ => {
 	const getDbName = containerData => {
 		return _.get(containerData, '[0].code') || _.get(containerData, '[0].name', '');
@@ -155,9 +157,9 @@ module.exports = _ => {
 		const dividedColumns = divideIntoActivatedAndDeactivated(columns, mapColumn);
 		const deactivatedColumnsAsString = dividedColumns?.deactivatedItems?.length
 			? commentIfDeactivated(dividedColumns.deactivatedItems.join(', '), {
-				isActivated: false,
-				isPartOfLine: true,
-			})
+					isActivated: false,
+					isPartOfLine: true,
+				})
 			: '';
 
 		return !isAllColumnsDeactivated && isParentActivated
@@ -174,14 +176,12 @@ module.exports = _ => {
 	};
 
 	const getGroupItemsByCompMode = ({ newItems = [], oldItems = [] }) => {
-		const addedItems = newItems.filter(
-			(newItem) => !oldItems.some((item) => item.id === newItem.id)
-		);
+		const addedItems = newItems.filter(newItem => !oldItems.some(item => item.id === newItem.id));
 		const removedItems = [];
 		const modifiedItems = [];
 
-		oldItems.forEach((oldItem) => {
-			const newItem = newItems.find((item) => item.id === oldItem.id);
+		oldItems.forEach(oldItem => {
+			const newItem = newItems.find(item => item.id === oldItem.id);
 
 			if (!newItem) {
 				removedItems.push(oldItem);

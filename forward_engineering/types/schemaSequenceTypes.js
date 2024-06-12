@@ -1,164 +1,163 @@
 class Sequence {
-  /**
-   *@type {string | undefined} 
-   */
-  cache
+	/**
+	 *@type {string | undefined}
+	 */
+	cache;
 
-  /**
-   *@type {number | undefined} 
-   */
-  cacheValue
+	/**
+	 *@type {number | undefined}
+	 */
+	cacheValue;
 
-  /**
-   * @type {string | undefined}
-   */
-  cycle
+	/**
+	 * @type {string | undefined}
+	 */
+	cycle;
 
-  /**
-   * @type {boolean}
-   */
-  ifNotExist
+	/**
+	 * @type {boolean}
+	 */
+	ifNotExist;
 
-  /**
-   * @type {number | undefined}
-   */
-  increment
+	/**
+	 * @type {number | undefined}
+	 */
+	increment;
 
-  /**
-   * @type {number | undefined}
-   */
-  maxValue
+	/**
+	 * @type {number | undefined}
+	 */
+	maxValue;
 
-  /**
-   * @type {number | undefined}
-   */
-  minValue
+	/**
+	 * @type {number | undefined}
+	 */
+	minValue;
 
-  /**
-   * @type {string}
-   */
-  sequenceName
+	/**
+	 * @type {string}
+	 */
+	sequenceName;
 
-  /**
-   * @type {number | undefined}
-   */
-  start
+	/**
+	 * @type {number | undefined}
+	 */
+	start;
 
-  /**
-   * @type {string | undefined}
-   */
-  sharing
+	/**
+	 * @type {string | undefined}
+	 */
+	sharing;
 
-  /**
-   * @type {string | undefined}
-   */
-  order
+	/**
+	 * @type {string | undefined}
+	 */
+	order;
 
-  /**
-   * @type {string | undefined}
-   */
-  keep
+	/**
+	 * @type {string | undefined}
+	 */
+	keep;
 
-  /**
-   * @type {string | undefined}
-   */
-  scale
+	/**
+	 * @type {string | undefined}
+	 */
+	scale;
 
-  /**
-   * @type {string | undefined}
-   */
-  scaleExtend
+	/**
+	 * @type {string | undefined}
+	 */
+	scaleExtend;
 
-  /**
-   * @type {string | undefined}
-   */
-  shard
+	/**
+	 * @type {string | undefined}
+	 */
+	shard;
 
+	/**
+	 * @type {string | undefined}
+	 */
+	shardExtend;
 
-  /**
-   * @type {string | undefined}
-   */
-  shardExtend
-
-/**
- * @type {string | undefined}
- */
-  type
+	/**
+	 * @type {string | undefined}
+	 */
+	type;
 }
 
 class SequenceDto {
-  /**
-   * @type {string}
-   */
-  sharing
+	/**
+	 * @type {string}
+	 */
+	sharing;
 
-  /**
-   * @type {string}
-   */
-  ddlScript
+	/**
+	 * @type {string}
+	 */
+	ddlScript;
 
-  /**
-   * @type {string}
-   */
-  sequenceName
-  
-  /**
-   * @type {number}
-   */
-  minValue
+	/**
+	 * @type {string}
+	 */
+	sequenceName;
 
-  /**
-   * @type {number}
-   */
-  maxValue
+	/**
+	 * @type {number}
+	 */
+	minValue;
 
-  /**
-   * @type {number}
-   */
-  increment
+	/**
+	 * @type {number}
+	 */
+	maxValue;
 
-  /**
-   * @type {string}
-   */
-  cycle
-  
-  /**
-   * @type {string}
-   */
-  order
+	/**
+	 * @type {number}
+	 */
+	increment;
 
-  /**
-   * @type {number}
-   */
-  cacheValue   
+	/**
+	 * @type {string}
+	 */
+	cycle;
 
-  /**
-   * @type {string}
-   */
-  scale
+	/**
+	 * @type {string}
+	 */
+	order;
 
-  /**
-   * @type {string}
-   */
-  extend
+	/**
+	 * @type {number}
+	 */
+	cacheValue;
 
-  /**
-   * @type {string}
-   */
-  shard        
+	/**
+	 * @type {string}
+	 */
+	scale;
 
-  /**
-   * @type {string}
-   */
-  type        
+	/**
+	 * @type {string}
+	 */
+	extend;
 
-  /**
-   * @type {string}
-   */
-  keep    
+	/**
+	 * @type {string}
+	 */
+	shard;
+
+	/**
+	 * @type {string}
+	 */
+	type;
+
+	/**
+	 * @type {string}
+	 */
+	keep;
 }
 
 module.exports = {
-  Sequence,
-  SequenceDto,
+	Sequence,
+	SequenceDto,
 };

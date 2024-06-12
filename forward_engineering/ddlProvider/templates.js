@@ -1,7 +1,7 @@
 module.exports = {
 	createSchema: 'CREATE USER${ifNotExists} ${schemaName} NO AUTHENTICATION',
 
-    comment: '\nCOMMENT ON ${object} ${objectName} IS ${comment};\n',
+	comment: '\nCOMMENT ON ${object} ${objectName} IS ${comment};\n',
 
 	createTable:
 		'CREATE${tableType} TABLE${ifNotExists} ${name}\
@@ -51,29 +51,25 @@ module.exports = {
 
 	renameColumn: 'ALTER TABLE ${tableName} RENAME COLUMN ${oldColumnName} TO ${newColumnName};',
 
-	createSequence: 
-	'CREATE SEQUENCE${ifNotExists} ${name}${sharing}' +
-	'${options}',
+	createSequence: 'CREATE SEQUENCE${ifNotExists} ${name}${sharing}' + '${options}',
 
-	dropSequence:
-	'DROP SEQUENCE${ifExists} ${name};\n',
+	dropSequence: 'DROP SEQUENCE${ifExists} ${name};\n',
 
-	renameSequence:
-	'RENAME ${name} TO ${newName};\n',
+	renameSequence: 'RENAME ${name} TO ${newName};\n',
 
-	alterSequence: 
-	'ALTER SEQUENCE${ifExists} ${name}' +
-	'${options};\n',
+	alterSequence: 'ALTER SEQUENCE${ifExists} ${name}' + '${options};\n',
 
 	dualityView: {
-		createJsonRelationalDualityViewHeading: 'CREATE${orReplaceStatement}${forceStatement}${editionableStatement} JSON RELATIONAL DUALITY VIEW ${viewName} AS',
+		createJsonRelationalDualityViewHeading:
+			'CREATE${orReplaceStatement}${forceStatement}${editionableStatement} JSON RELATIONAL DUALITY VIEW ${viewName} AS',
 
 		sql: {
-			tableTagsStatement: 'WITH${checkStatement}${etagStatement}${insertStatement}${updateStatement}${deleteStatement}',
+			tableTagsStatement:
+				'WITH${checkStatement}${etagStatement}${insertStatement}${updateStatement}${deleteStatement}',
 
 			columnTagsStatement: 'WITH${checkStatement}${etagStatement}${updateStatement}',
 
-			fromTableStatement: 'FROM ${tableName}${tableAlias}${tableTagsStatement}'
-		}
-	}
+			fromTableStatement: 'FROM ${tableName}${tableAlias}${tableTagsStatement}',
+		},
+	},
 };

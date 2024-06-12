@@ -1,8 +1,8 @@
 const DualityViewSyntaxType = Object.freeze({
-    SQL: 'SQL',
-    GRAPHQL: 'GRAPHQL',
+	SQL: 'SQL',
+	GRAPHQL: 'GRAPHQL',
 });
 
 module.exports = {
-    DualityViewSyntaxType,
-}
+	DualityViewSyntaxType,
+};

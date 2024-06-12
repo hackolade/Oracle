@@ -78,19 +78,24 @@ const addNameToIndexKey = ({ index, collection }) => {
 			if (!key?.keyId) {
 				return key;
 			}
-			const collectionProperties = Object.entries(collection?.role?.properties || collection?.properties || {}).map(([name, value]) => ({...value, name}))
-			const oldProperties = (collection?.role?.compMod?.oldProperties || []).map(property => ({...property, GUID: property.id}))
-			const properties = collectionProperties.length > 0 ? collectionProperties : oldProperties
+			const collectionProperties = Object.entries(
+				collection?.role?.properties || collection?.properties || {},
+			).map(([name, value]) => ({ ...value, name }));
+			const oldProperties = (collection?.role?.compMod?.oldProperties || []).map(property => ({
+				...property,
+				GUID: property.id,
+			}));
+			const properties = collectionProperties.length > 0 ? collectionProperties : oldProperties;
 			const property = properties.find(property => property?.GUID === key?.keyId);
 
 			if (!property) {
-				return key
+				return key;
 			}
 
 			if (!property?.compMod?.newField) {
 				return {
 					...key,
-					name: property.name
+					name: property.name,
 				};
 			}
 
