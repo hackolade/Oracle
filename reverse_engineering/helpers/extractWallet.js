@@ -1,7 +1,8 @@
-const AdmZip = require('adm-zip');
-const path = require('path');
-const fs = require('fs');
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
+
+const AdmZip = require('adm-zip');
 
 const extractZip = (zipPath, destination) =>
 	new Promise((resolve, reject) => {

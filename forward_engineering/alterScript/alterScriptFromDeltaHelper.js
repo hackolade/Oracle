@@ -28,6 +28,7 @@ const {
 	getDeleteContainerSequencesScriptDtos,
 	getAddContainerSequencesScriptDtos,
 } = require('./alterScriptHelpers/containerHelpers/alterSequenceHelper');
+const _ = require('lodash');
 
 /**
  * @param dto {{
@@ -163,14 +164,14 @@ const getAlterModelDefinitionsScriptDtos = ({
 		.concat(collection.properties?.modelDefinitions?.properties?.added?.items)
 		.filter(Boolean)
 		.map(item => Object.values(item.properties)[0])
-		.map(item => ({ ...item, ...(app.require('lodash').omit(item.role, 'properties') || {}) }))
+		.map(item => ({ ...item, ...(_.omit(item.role, 'properties') || {}) }))
 		.filter(item => item.compMod?.created)
 		.map(getCreateUdtScriptDto({ app, dbVersion, modelDefinitions, internalDefinitions, externalDefinitions }));
 	const deleteUdtScriptDtos = []
 		.concat(collection.properties?.modelDefinitions?.properties?.deleted?.items)
 		.filter(Boolean)
 		.map(item => Object.values(item.properties)[0])
-		.map(item => ({ ...item, ...(app.require('lodash').omit(item.role, 'properties') || {}) }))
+		.map(item => ({ ...item, ...(_.omit(item.role, 'properties') || {}) }))
 		.filter(collection => collection.compMod?.deleted)
 		.map(getDeleteUdtScriptDto(app));
 	const addColumnScriptDtos = []
@@ -178,7 +179,7 @@ const getAlterModelDefinitionsScriptDtos = ({
 		.filter(Boolean)
 		.map(item => Object.values(item.properties)[0])
 		.filter(item => !item.compMod)
-		.map(item => ({ ...item, ...(app.require('lodash').omit(item.role, 'properties') || {}) }))
+		.map(item => ({ ...item, ...(_.omit(item.role, 'properties') || {}) }))
 		.filter(item => item.childType === 'object_udt')
 		.flatMap(
 			getAddColumnToTypeScriptDtos({
@@ -194,7 +195,7 @@ const getAlterModelDefinitionsScriptDtos = ({
 		.filter(Boolean)
 		.map(item => Object.values(item.properties)[0])
 		.filter(item => !item.compMod)
-		.map(item => ({ ...item, ...(app.require('lodash').omit(item.role, 'properties') || {}) }))
+		.map(item => ({ ...item, ...(_.omit(item.role, 'properties') || {}) }))
 		.filter(item => item.childType === 'object_udt')
 		.flatMap(getDeleteColumnFromTypeScriptDtos(app));
 
@@ -203,7 +204,7 @@ const getAlterModelDefinitionsScriptDtos = ({
 		.filter(Boolean)
 		.map(item => Object.values(item.properties)[0])
 		.filter(item => !item.compMod)
-		.map(item => ({ ...item, ...(app.require('lodash').omit(item.role, 'properties') || {}) }))
+		.map(item => ({ ...item, ...(_.omit(item.role, 'properties') || {}) }))
 		.filter(item => item.childType === 'object_udt')
 		.flatMap(getModifyColumnOfTypeScriptDtos(app));
 
@@ -220,7 +221,6 @@ const getAlterModelDefinitionsScriptDtos = ({
  * @return Array<AlterScriptDto>
  * */
 const getAlterRelationshipsScriptDtos = ({ collection, app }) => {
-	const _ = app.require('lodash');
 	const ddlProvider = require('../ddlProvider/ddlProvider')(null, null, app);
 
 	const addedRelationships = []

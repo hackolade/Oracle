@@ -7,6 +7,8 @@
  * the agreement/contract under which the software has been supplied.
  */
 
+const _ = require('lodash');
+
 module.exports = _ => {
 	const getDbName = containerData => {
 		return _.get(containerData, '[0].code') || _.get(containerData, '[0].name', '');

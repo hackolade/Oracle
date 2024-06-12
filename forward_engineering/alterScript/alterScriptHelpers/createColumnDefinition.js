@@ -1,5 +1,5 @@
 module.exports = app => {
-	const _ = app.require('lodash');
+	const _ = require('lodash');
 	const { createColumnDefinition } = app.require('@hackolade/ddl-fe-utils');
 
 	const getType = jsonSchema => {

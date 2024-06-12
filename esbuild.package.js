@@ -1,8 +1,10 @@
 const fs = require('fs');
 const path = require('path');
+
+const { copyFolderFiles, addReleaseFlag } = require('@hackolade/hck-esbuild-plugins-pack');
 const esbuild = require('esbuild');
 const { clean } = require('esbuild-plugin-clean');
-const { copyFolderFiles, addReleaseFlag } = require('@hackolade/hck-esbuild-plugins-pack');
+
 const { EXCLUDED_EXTENSIONS, EXCLUDED_FILES, DEFAULT_RELEASE_FOLDER_PATH } = require('./buildConstants');
 
 const packageData = JSON.parse(fs.readFileSync('./package.json').toString());

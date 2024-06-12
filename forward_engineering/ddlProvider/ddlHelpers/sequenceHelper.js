@@ -6,7 +6,7 @@
  * getOption: ({ sequence, config } : { sequence: Sequence, config: OptionConfig }) => string
  * }} OptionConfig
  */
-
+const _ = require('lodash');
 const { Sequence } = require('../../types/schemaSequenceTypes');
 
 module.exports = ({ _, templates, assignTemplates, getNamePrefixedWithSchemaName, wrapIfNotExists }) => {

@@ -1,6 +1,7 @@
 const { AlterScriptDto } = require('../../types/AlterScriptDto');
 const { App } = require('../../../types/coreApplicationTypes');
 const sequencesCompModKey = 'sequences';
+const _ = require('lodash');
 
 /**
  * @param {{ app: App }}
@@ -9,7 +10,6 @@ const sequencesCompModKey = 'sequences';
 const getAddContainerSequencesScriptDtos =
 	({ app }) =>
 	({ container, dbVersion }) => {
-		const _ = app.require('lodash');
 		const ddlProvider = require('../../../ddlProvider')(null, { dbVersion }, app);
 		const { getDbName } = require('../../../utils/general')(_);
 		const schemaName = getDbName([container.role]);
@@ -30,7 +30,6 @@ const getAddContainerSequencesScriptDtos =
 const getModifyContainerSequencesScriptDtos =
 	({ app }) =>
 	({ container, dbVersion }) => {
-		const _ = app.require('lodash');
 		const ddlProvider = require('../../../ddlProvider')(null, { dbVersion }, app);
 		const { getDbName, getGroupItemsByCompMode } = require('../../../utils/general')(_);
 
@@ -73,7 +72,6 @@ const getModifyContainerSequencesScriptDtos =
 const getDeleteContainerSequencesScriptDtos =
 	({ app }) =>
 	({ container, dbVersion }) => {
-		const _ = app.require('lodash');
 		const ddlProvider = require('../../../ddlProvider')(null, { dbVersion }, app);
 		const { getDbName } = require('../../../utils/general')(_);
 		const schemaName = getDbName([container.role]);

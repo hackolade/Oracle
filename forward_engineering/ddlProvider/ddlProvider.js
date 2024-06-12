@@ -6,6 +6,7 @@ const { DualityViewSyntaxType } = require('../enums/DualityViewSyntaxType');
 const { DbVersion } = require('../enums/DbVersion');
 const { AlterIndexDto } = require('../alterScript/types/AlterIndexDto.js');
 const { Sequence } = require('../types/schemaSequenceTypes');
+const _ = require('lodash');
 
 /**
  * @param dbVersion {string} DB version in "21ai" format
@@ -17,8 +18,6 @@ const shouldUseTryCatchIfNotExistsWrapper = dbVersion => {
 };
 
 module.exports = (baseProvider, options, app) => {
-	const _ = app.require('lodash');
-
 	const toArray = val => (_.isArray(val) ? val : [val]);
 
 	const {

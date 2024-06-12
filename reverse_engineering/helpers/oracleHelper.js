@@ -4,10 +4,9 @@ const path = require('path');
 const fs = require('fs');
 const parseTns = require('./parseTns');
 const { getSchemaSequences } = require('./getSchemaSequences');
+const _ = require('lodash');
 
 const noConnectionError = { message: 'Connection error' };
-
-const setDependencies = ({ lodash }) => (_ = lodash);
 
 let connection;
 let useSshTunnel;
@@ -73,7 +72,7 @@ const getConnectionStringByTnsNames = (configDir, serviceName, proxy, logger) =>
 
 	const address = tnsData[serviceName]?.data?.description?.address;
 	const service = tnsData[serviceName]?.data?.description?.connect_data?.service_name;
-	const sid = tnsData[data.serviceName]?.data?.description?.connect_data?.sid;
+	const sid = tnsData[serviceName]?.data?.description?.connect_data?.sid;
 
 	logger({ message: 'tnsnames.ora', address, service });
 
@@ -305,7 +304,7 @@ const connect = async (
 	});
 };
 
-const disconnect = async (sshService) => {
+const disconnect = async sshService => {
 	if (!connection) {
 		return Promise.reject(noConnectionError);
 	}
@@ -897,7 +896,6 @@ const getSynonymsDDL = async () => {
 module.exports = {
 	connect,
 	disconnect,
-	setDependencies,
 	getEntitiesNames,
 	getSchemaNames,
 	splitEntityNames,
