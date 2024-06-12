@@ -23,7 +23,7 @@ module.exports = {
 		}
 	},
 
-	async disconnect(connectionInfo, logger, callback) {
+	async disconnect(connectionInfo, logger, callback, app) {
 		try {
 			const sshService = app.require('@hackolade/ssh-service');
 			await oracleHelper.disconnect(sshService);
