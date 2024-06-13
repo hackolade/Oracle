@@ -72,7 +72,6 @@
 							"key": "mode",
 							"value": "thick"
 						}
-
 					]
 				}
 			},
@@ -84,7 +83,7 @@
 				"options": [
 					{ "value": "Basic", "label": "Basic" },
 					{ "value": "Wallet", "label": "Cloud Wallet" },
-				    { "value": "TNS", "label": "TNS" }
+					{ "value": "TNS", "label": "TNS" }
 				]
 			},
 			{
@@ -117,9 +116,7 @@
 				"extensions": ["zip"],
 				"dependency": {
 					"key": "connectionMethod",
-					"value": [
-						"Wallet"
-					]
+					"value": ["Wallet"]
 				}
 			},
 			{
@@ -130,9 +127,7 @@
 				"openType": "openDirectory",
 				"dependency": {
 					"key": "connectionMethod",
-					"value": [
-						"TNS"
-					]
+					"value": ["TNS"]
 				}
 			},
 			{
@@ -197,9 +192,7 @@
 				"inputKeyword": "authMethod",
 				"inputType": "select",
 				"defaultValue": "Username / Password",
-				"options": [
-					{ "value": "Username / Password", "label": "Username / Password" }
-				]
+				"options": [{ "value": "Username / Password", "label": "Username / Password" }]
 			},
 			{
 				"inputLabel": "User Name",
@@ -208,10 +201,7 @@
 				"inputPlaceholder": "User Name",
 				"dependency": {
 					"key": "authMethod",
-					"value": [
-						"Username / Password",
-						"Kerberos"
-					]
+					"value": ["Username / Password", "Kerberos"]
 				},
 				"validation": {
 					"regex": "([^\\s])"
@@ -224,10 +214,7 @@
 				"inputPlaceholder": "Password",
 				"dependency": {
 					"key": "authMethod",
-					"value": [
-						"Username / Password",
-						"Kerberos"
-					]
+					"value": ["Username / Password", "Kerberos"]
 				},
 				"isHiddenKey": true,
 				"validation": {
@@ -296,13 +283,16 @@
 				"inputLabel": "SSH Auth Method",
 				"inputKeyword": "ssh_method",
 				"inputType": "select",
-				"options": [{
-					"value": "privateKey", 
-					"label": "Private Key"
-				}, {
-					"value": "password",
-					"label": "Password"
-				}],
+				"options": [
+					{
+						"value": "privateKey",
+						"label": "Private Key"
+					},
+					{
+						"value": "password",
+						"label": "Password"
+					}
+				],
 				"disable": {
 					"key": "ssh",
 					"value": false

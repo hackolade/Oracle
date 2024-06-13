@@ -104,10 +104,10 @@
 				},
 				"disabled": true
 			},
-		    {
-			    "propertyName": "Duality",
-			    "propertyKeyword": "duality",
-			    "propertyType": "checkbox",
+			{
+				"propertyName": "Duality",
+				"propertyKeyword": "duality",
+				"propertyType": "checkbox",
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -131,7 +131,7 @@
 						}
 					]
 				}
-		    },
+			},
 			{
 				"propertyName": "If not exist",
 				"propertyKeyword": "ifNotExist",
@@ -201,11 +201,7 @@
 				"propertyKeyword": "force",
 				"propertyTooltip": "Select from list of options",
 				"propertyType": "select",
-				"options": [
-					"",
-					"force",
-					"no force"
-				],
+				"options": ["", "force", "no force"],
 				"dependency": {
 					"type": "or",
 					"values": [
@@ -225,11 +221,7 @@
 				"propertyKeyword": "editionable",
 				"propertyTooltip": "To specify whether the view becomes an editioned or noneditioned object if editioning is enabled for the schema object type VIEW in schema.",
 				"propertyType": "select",
-				"options": [
-					"",
-					"editionable",
-					"noneditionable"
-				],
+				"options": ["", "editionable", "noneditionable"],
 				"dependency": {
 					"type": "or",
 					"values": [
@@ -249,10 +241,7 @@
 				"propertyKeyword": "editioning",
 				"propertyTooltip": "A single-table view that selects all rows from the base table and displays a subset of the base table columns. ",
 				"propertyType": "select",
-				"options": [
-					"",
-					"editioning"
-				],
+				"options": ["", "editioning"],
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -421,11 +410,7 @@
 						"propertyName": "Check",
 						"propertyKeyword": "check",
 						"propertyType": "select",
-						"options": [
-							"",
-							"check",
-							"nocheck"
-						]
+						"options": ["", "check", "nocheck"]
 					},
 					{
 						"propertyName": "Etag",
@@ -440,31 +425,19 @@
 						"propertyName": "Insert",
 						"propertyKeyword": "insert",
 						"propertyType": "select",
-						"options": [
-							"",
-							"insert",
-							"noinsert"
-						]
+						"options": ["", "insert", "noinsert"]
 					},
 					{
 						"propertyName": "Update",
 						"propertyKeyword": "update",
 						"propertyType": "select",
-						"options": [
-							"",
-							"update",
-							"noupdate"
-						]
+						"options": ["", "update", "noupdate"]
 					},
 					{
 						"propertyName": "Delete",
 						"propertyKeyword": "delete",
 						"propertyType": "select",
-						"options": [
-							"",
-							"delete",
-							"nodelete"
-						]
+						"options": ["", "delete", "nodelete"]
 					}
 				],
 				"dependency": {
@@ -562,10 +535,7 @@
 						"propertyKeyword": "indxKey",
 						"propertyType": "fieldList",
 						"template": "orderedList",
-						"attributeList": [
-							"asc",
-							"desc"
-						],
+						"attributeList": ["asc", "desc"],
 						"dependency": {
 							"type": "or",
 							"values": [

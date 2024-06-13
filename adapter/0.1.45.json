@@ -39,17 +39,17 @@
  * 		},
  * }
  */
- {
-  "modify": {
-    "model": [
-      {
-        "from": {
-          "dbVersion": "23c"
-        },
-        "to": {
-          "dbVersion": "23ai"
-        }
-      }
-    ]
-  }
+{
+	"modify": {
+		"model": [
+			{
+				"from": {
+					"dbVersion": "23c"
+				},
+				"to": {
+					"dbVersion": "23ai"
+				}
+			}
+		]
+	}
 }

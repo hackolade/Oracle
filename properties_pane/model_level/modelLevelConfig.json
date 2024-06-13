@@ -124,9 +124,7 @@ making sure that you maintain a proper JSON format.
 				"shouldValidate": false,
 				"propertyTooltip": "DB vendor",
 				"propertyType": "select",
-				"options": [
-					"Oracle"
-				],
+				"options": ["Oracle"],
 				"disabledOption": true
 			},
 			{
@@ -135,22 +133,18 @@ making sure that you maintain a proper JSON format.
 				"shouldValidate": false,
 				"propertyTooltip": "DB version",
 				"propertyType": "select",
-				"options": [
-					"12c",
-					"18c",
-					"19c",
-					"21c",
-					"23ai"
-				],
+				"options": ["12c", "18c", "19c", "21c", "23ai"],
 				"disabledOption": false,
 				"adapters": [
 					{
 						"dependency": {
 							"type": "not",
-							"values": [{
-								"key": "dbVersion",
-								"value": "21c"
-							}]
+							"values": [
+								{
+									"key": "dbVersion",
+									"value": "21c"
+								}
+							]
 						},
 						"adapter": "adaptUnavailableTypes"
 					}
@@ -174,11 +168,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "On Delete",
 				"propertyKeyword": "relationshipOnDelete",
 				"propertyType": "select",
-				"options": [
-					"",
-					"CASCADE",
-					"SET NULL"
-				]
+				"options": ["", "CASCADE", "SET NULL"]
 			}
 		]
 	}
