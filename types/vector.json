@@ -1,0 +1,33 @@
+{
+	"name": "vector",
+	"erdAbbreviation": "<vctr>",
+	"dtdAbbreviation": "[...]",
+	"parentType": "array",
+	"useSample": false,
+	"hiddenOnEntity": "view",
+	"dependency": {
+		"type": "not",
+		"values": [
+			{
+				"level": "model",
+				"key": "dbVersion",
+				"value": "12c"
+			},
+			{
+				"level": "model",
+				"key": "dbVersion",
+				"value": "18c"
+			},
+			{
+				"level": "model",
+				"key": "dbVersion",
+				"value": "19c"
+			},
+			{
+				"level": "model",
+				"key": "dbVersion",
+				"value": "21c"
+			}
+		]
+	}
+}

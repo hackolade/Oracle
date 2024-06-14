@@ -195,6 +195,8 @@ module.exports = (baseProvider, options, app) => {
 				encryption: jsonSchema.encryption,
 				synonyms: schemaData?.synonyms?.filter(synonym => synonym.synonymEntityId === jsonSchema.GUID) || [],
 				isUDTRef,
+				dimension: jsonSchema.dimension,
+				subtype: jsonSchema.subtype,
 				...(canHaveIdentity(jsonSchema.mode) && { identity: jsonSchema.identity }),
 			};
 		},
