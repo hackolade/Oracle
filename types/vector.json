@@ -8,6 +8,20 @@
 	"defaultValues": {
 		"properties": []
 	},
+	"subtypes": {
+		"vector": {
+			"childValueType": "number"
+		},
+		"int8": {
+			"childValueType": "number"
+		},
+		"float32": {
+			"childValueType": "number"
+		},
+		"float64": {
+			"childValueType": "number"
+		}
+	},
 	"dependency": {
 		"type": "not",
 		"values": [
