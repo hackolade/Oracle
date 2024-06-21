@@ -9824,8 +9824,15 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "subtype",
 				"shouldValidate": false,
 				"propertyType": "select",
-				"typeDecorator": true,
-				"options": ["", "int8", "float32", "float64"]
+				"typeDecorator": {
+					"useOptionName": true
+				},
+				"options": [
+					"",
+					{ "name": "int8", "value": "vector<int8>" },
+					{ "name": "float32", "value": "vector<float32>" },
+					{ "name": "float64", "value": "vector<float64>" }
+				]
 			},
 			{
 				"propertyName": "Comments",

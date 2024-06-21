@@ -6,19 +6,20 @@
 	"useSample": false,
 	"hiddenOnEntity": "view",
 	"defaultValues": {
+		"subtype": "",
 		"properties": []
 	},
 	"subtypes": {
 		"vector": {
 			"childValueType": "number"
 		},
-		"int8": {
+		"vector<int8>": {
 			"childValueType": "number"
 		},
-		"float32": {
+		"vector<float32>": {
 			"childValueType": "number"
 		},
-		"float64": {
+		"vector<float64>": {
 			"childValueType": "number"
 		}
 	},
