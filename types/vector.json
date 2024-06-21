@@ -23,6 +23,13 @@
 			"childValueType": "number"
 		}
 	},
+	"compatibleWith": {
+		"type": "lobs",
+		"parentType": "jsonArray",
+		"mode": "blob",
+		"subtype": "array",
+		"properties": []
+	},
 	"dependency": {
 		"type": "not",
 		"values": [
