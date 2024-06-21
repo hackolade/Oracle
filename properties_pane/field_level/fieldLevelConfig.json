@@ -9828,6 +9828,15 @@ making sure that you maintain a proper JSON format.
 				"options": ["", "int8", "float32", "float64"]
 			},
 			{
+				"propertyName": "Not null",
+				"propertyKeyword": "required",
+				"propertyType": "checkbox"
+			},
+			"minItems",
+			"maxItems",
+			"uniqueItems",
+			"additionalItems",
+			{
 				"propertyName": "Comments",
 				"propertyKeyword": "description",
 				"propertyTooltip": "comments",
