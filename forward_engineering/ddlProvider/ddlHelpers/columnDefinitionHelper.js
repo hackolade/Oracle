@@ -124,7 +124,12 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 		return ` INTERVAL DAY${_.isNumber(dayPrecision) ? `(${dayPrecision})` : ''} TO SECOND${_.isNumber(fractSecPrecision) ? `(${fractSecPrecision})` : ''}`;
 	};
 
-	const decorateVector = (type, dimensionNumber, dimensionFormat) => {
+	const decorateVector = (type, dimensionNumber, subtype) => {
+		const dimensionFormat = {
+			'vector<int8>': 'int8',
+			'vector<float32>': 'float32',
+			'vector<float64>': 'float64',
+		}[subtype];
 		const dimension = dimensionNumber || '*';
 		const format = _.toUpper(dimensionFormat || '*');
 		return ` ${type}(${dimension}, ${format})`;
