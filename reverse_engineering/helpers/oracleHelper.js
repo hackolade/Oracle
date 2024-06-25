@@ -471,7 +471,7 @@ const execute = (command, options = {}, binds = []) => {
 
 const getDbVersion = async logger => {
 	const versions = ['12c', '18c', '19c', '21c', '23ai'];
-	const defaultVersion = '23ai';
+	const defaultVersion = '21c';
 
 	try {
 		const versionTable = await execute(

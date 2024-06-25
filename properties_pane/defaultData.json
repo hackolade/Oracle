@@ -1,7 +1,7 @@
 {
 	"model": {
 		"modelName": "New model",
-		"dbVersion": "23ai",
+		"dbVersion": "21c",
 		"dbVendor": "Oracle"
 	},
 	"container": {
