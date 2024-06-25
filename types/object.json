@@ -19,7 +19,8 @@
 				"reference",
 				"multiple",
 				"object_udt",
-				"collection_udt"
+				"collection_udt",
+				"vector"
 			]
 		}
 	}
