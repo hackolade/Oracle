@@ -12,7 +12,7 @@
 	"subtypes": {
 		"vector": {
 			"childValueType": "number",
-			"childValueMode": "number"
+			"childValueMode": ["number", "float"]
 		},
 		"vector<int8>": {
 			"childValueType": "number",
