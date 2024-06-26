@@ -11,16 +11,21 @@
 	},
 	"subtypes": {
 		"vector": {
-			"childValueType": "number"
+			"childValueType": "number",
+			"childValueMode": "number"
 		},
 		"vector<int8>": {
-			"childValueType": "number"
+			"childValueType": "number",
+			"childValueMode": "number",
+			"childValueSynonym": "int"
 		},
 		"vector<float32>": {
-			"childValueType": "number"
+			"childValueType": "number",
+			"childValueMode": "float"
 		},
 		"vector<float64>": {
-			"childValueType": "number"
+			"childValueType": "number",
+			"childValueMode": "float"
 		}
 	},
 	"compatibleWith": {
