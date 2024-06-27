@@ -135,6 +135,14 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 		return ` ${type}(${dimension}, ${format})`;
 	};
 
+	const decorateJson = (type, subtype) => {
+		if (!['object', 'array'].includes(subtype)) {
+			return ' ' + type;
+		}
+
+		return ' ' + type + '(' + _.toUpper(subtype) + ')';
+	};
+
 	const canHaveByte = type => ['CHAR', 'VARCHAR2'].includes(type);
 	const canHaveLength = type => ['CHAR', 'VARCHAR2', 'NCHAR', 'NVARCHAR2', 'RAW', 'UROWID'].includes(type);
 	const canHavePrecision = type => ['NUMBER', 'FLOAT'].includes(type);
@@ -143,6 +151,7 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 	const isIntervalDay = type => type === 'INTERVAL DAY';
 	const isTimezone = type => type === 'TIMESTAMP';
 	const isVector = type => type === 'VECTOR';
+	const isJson = type => type === 'JSON';
 
 	const decorateType = (type, columnDefinition) => {
 		const {
@@ -159,6 +168,7 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 			schemaName,
 			dimension,
 			subtype,
+			dbVersion,
 		} = columnDefinition;
 
 		if (lengthSemantics && canHaveByte(type) && canHaveLength(type) && _.isNumber(length)) {
@@ -187,6 +197,10 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 		}
 		if (isVector(type) && (dimension || subtype)) {
 			return decorateVector(type, dimension, subtype);
+		}
+
+		if (isJson(type)) {
+			return decorateJson(type, subtype, dbVersion);
 		}
 
 		return ` ${type}`;

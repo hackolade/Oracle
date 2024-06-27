@@ -488,7 +488,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
 
 		const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(paddingFactor);
 		const keyName = AbstractDualityViewFeDdlCreator.getRegularFieldName(propertyName, propertyJsonSchema);
-		const ddlKeyName = wrap(keyName, "'", "'");
+		const ddlKeyName = wrap(keyName, '"', '"');
 
 		return `${padding}${ddlKeyName} AS FLEX COLUMN`;
 	}
