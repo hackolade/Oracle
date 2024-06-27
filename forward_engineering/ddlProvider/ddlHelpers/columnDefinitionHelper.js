@@ -124,6 +124,17 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 		return ` INTERVAL DAY${_.isNumber(dayPrecision) ? `(${dayPrecision})` : ''} TO SECOND${_.isNumber(fractSecPrecision) ? `(${fractSecPrecision})` : ''}`;
 	};
 
+	const decorateVector = (type, dimensionNumber, subtype) => {
+		const dimensionFormat = {
+			'vector<int8>': 'int8',
+			'vector<float32>': 'float32',
+			'vector<float64>': 'float64',
+		}[subtype];
+		const dimension = dimensionNumber || '*';
+		const format = _.toUpper(dimensionFormat || '*');
+		return ` ${type}(${dimension}, ${format})`;
+	};
+
 	const canHaveByte = type => ['CHAR', 'VARCHAR2'].includes(type);
 	const canHaveLength = type => ['CHAR', 'VARCHAR2', 'NCHAR', 'NVARCHAR2', 'RAW', 'UROWID'].includes(type);
 	const canHavePrecision = type => ['NUMBER', 'FLOAT'].includes(type);
@@ -131,35 +142,54 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 	const isIntervalYear = type => type === 'INTERVAL YEAR';
 	const isIntervalDay = type => type === 'INTERVAL DAY';
 	const isTimezone = type => type === 'TIMESTAMP';
+	const isVector = type => type === 'VECTOR';
 
 	const decorateType = (type, columnDefinition) => {
-		switch (true) {
-			case columnDefinition.lengthSemantics &&
-				canHaveByte(type) &&
-				canHaveLength(type) &&
-				_.isNumber(columnDefinition.length):
-				return addByteLength(type, columnDefinition.length, columnDefinition.lengthSemantics);
-			case canHaveLength(type) && _.isNumber(columnDefinition.length):
-				return addLength(type, columnDefinition.length);
-			case canHavePrecision(type) && canHaveScale(type):
-				return addScalePrecision(type, columnDefinition.precision, columnDefinition.scale);
-			case canHavePrecision(type) && _.isNumber(columnDefinition.precision):
-				return addPrecision(type, columnDefinition.precision);
-			case isTimezone(type):
-				return timestamp(
-					columnDefinition.fractSecPrecision,
-					columnDefinition.withTimeZone,
-					columnDefinition.localTimeZone,
-				);
-			case isIntervalYear(type):
-				return intervalYear(columnDefinition.yearPrecision);
-			case isIntervalDay(type):
-				return intervalDay(columnDefinition.dayPrecision, columnDefinition.fractSecPrecision);
-			case !!(columnDefinition.isUDTRef && columnDefinition.schemaName):
-				return ` "${columnDefinition.schemaName}"."${type}"`;
-			default:
-				return ` ${type}`;
+		const {
+			lengthSemantics,
+			length,
+			precision,
+			scale,
+			fractSecPrecision,
+			withTimeZone,
+			localTimeZone,
+			yearPrecision,
+			dayPrecision,
+			isUDTRef,
+			schemaName,
+			dimension,
+			subtype,
+		} = columnDefinition;
+
+		if (lengthSemantics && canHaveByte(type) && canHaveLength(type) && _.isNumber(length)) {
+			return addByteLength(type, length, lengthSemantics);
 		}
+		if (canHaveLength(type) && _.isNumber(length)) {
+			return addLength(type, length);
+		}
+		if (canHavePrecision(type) && canHaveScale(type)) {
+			return addScalePrecision(type, precision, scale);
+		}
+		if (canHavePrecision(type) && _.isNumber(precision)) {
+			return addPrecision(type, precision);
+		}
+		if (isTimezone(type)) {
+			return timestamp(fractSecPrecision, withTimeZone, localTimeZone);
+		}
+		if (isIntervalYear(type)) {
+			return intervalYear(yearPrecision);
+		}
+		if (isIntervalDay(type)) {
+			return intervalDay(dayPrecision, fractSecPrecision);
+		}
+		if (isUDTRef && schemaName) {
+			return ` "${schemaName}"."${type}"`;
+		}
+		if (isVector(type) && (dimension || subtype)) {
+			return decorateVector(type, dimension, subtype);
+		}
+
+		return ` ${type}`;
 	};
 
 	/**

@@ -9864,6 +9864,70 @@ making sure that you maintain a proper JSON format.
 				"template": "textarea"
 			}
 		],
+		"vector": [
+			"name",
+			"code",
+			"isActivated",
+			{
+				"propertyKeyword": "type",
+				"typeDecorator": {
+					"value": "vctr",
+					"useAsTypeName": true
+				}
+			},
+			{
+				"propertyName": "Dimension",
+				"propertyKeyword": "dimension",
+				"propertyType": "numeric",
+				"valueType": "integer",
+				"allowNegative": false,
+				"typeDecorator": {
+					"useAngleBrackets": true
+				},
+				"minValue": 1
+			},
+			{
+				"propertyName": "Subtype",
+				"propertyKeyword": "subtype",
+				"shouldValidate": false,
+				"propertyType": "select",
+				"typeDecorator": {
+					"useOptionName": true
+				},
+				"options": [
+					"",
+					{ "name": "int8", "value": "vector<int8>" },
+					{ "name": "float32", "value": "vector<float32>" },
+					{ "name": "float64", "value": "vector<float64>" }
+				]
+			},
+			{
+				"propertyName": "Not null",
+				"propertyKeyword": "required",
+				"propertyType": "checkbox"
+			},
+			"minItems",
+			"maxItems",
+			"uniqueItems",
+			"additionalItems",
+			{
+				"propertyName": "Comments",
+				"propertyKeyword": "description",
+				"propertyTooltip": "comments",
+				"addTimestampButton": false,
+				"propertyType": "details",
+				"template": "textarea"
+			},
+			{
+				"propertyName": "Remarks",
+				"propertyKeyword": "comments",
+				"shouldValidate": false,
+				"propertyTooltip": "remarks",
+				"addTimestampButton": true,
+				"propertyType": "details",
+				"template": "textarea"
+			}
+		],
 		"object_udt": [
 			{
 				"fieldKeyword": "name",
