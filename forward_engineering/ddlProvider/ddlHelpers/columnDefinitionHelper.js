@@ -168,7 +168,6 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 			schemaName,
 			dimension,
 			subtype,
-			dbVersion,
 		} = columnDefinition;
 
 		if (lengthSemantics && canHaveByte(type) && canHaveLength(type) && _.isNumber(length)) {
@@ -200,7 +199,7 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 		}
 
 		if (isJson(type)) {
-			return decorateJson(type, subtype, dbVersion);
+			return decorateJson(type, subtype);
 		}
 
 		return ` ${type}`;
