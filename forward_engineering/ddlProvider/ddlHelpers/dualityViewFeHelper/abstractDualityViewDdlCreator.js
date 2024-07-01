@@ -55,6 +55,14 @@ class AbstractDualityViewFeDdlCreator {
 	}
 
 	/**
+	 * @param {object} element
+	 * @return {boolean}
+	 * */
+	static isFlexColumn(element = {}) {
+		return element.flexColumn;
+	}
+
+	/**
 	 * @param element {Object}
 	 * @return {boolean}
 	 * */

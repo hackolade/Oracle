@@ -6993,6 +6993,55 @@ making sure that you maintain a proper JSON format.
 				]
 			},
 			{
+				"propertyName": "As FLEX column",
+				"propertyKeyword": "flexColumn",
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"level": "root",
+							"key": "viewOn",
+							"exist": true
+						},
+						{
+							"level": "root",
+							"key": "duality",
+							"value": true
+						},
+						{
+							"key": "subtype",
+							"value": "object"
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"level": "model",
+									"key": "dbVersion",
+									"value": "12c"
+								},
+								{
+									"level": "model",
+									"key": "dbVersion",
+									"value": "18c"
+								},
+								{
+									"level": "model",
+									"key": "dbVersion",
+									"value": "19c"
+								},
+								{
+									"level": "model",
+									"key": "dbVersion",
+									"value": "21c"
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
@@ -7009,6 +7058,15 @@ making sure that you maintain a proper JSON format.
 							"level": "root",
 							"key": "duality",
 							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"key": "flexColumn",
+									"value": true
+								}
+							]
 						}
 					]
 				}
@@ -7053,6 +7111,15 @@ making sure that you maintain a proper JSON format.
 							"level": "root",
 							"key": "duality",
 							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"key": "flexColumn",
+									"value": true
+								}
+							]
 						}
 					]
 				}

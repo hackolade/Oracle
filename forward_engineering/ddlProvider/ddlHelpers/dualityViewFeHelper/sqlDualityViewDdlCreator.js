@@ -339,6 +339,14 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
 	 * @return {string}
 	 * */
 	_buildKeyValueStatement({ propertyName, propertyJsonSchema, parent, paddingFactor, relatedSchemas }) {
+		if (AbstractDualityViewFeDdlCreator.isFlexColumn(propertyJsonSchema)) {
+			return this._getFlexColumnStatement({
+				propertyName,
+				propertyJsonSchema,
+				paddingFactor,
+			});
+		}
+
 		if (AbstractDualityViewFeDdlCreator.isRegularDualityViewField(propertyJsonSchema)) {
 			return this._getRegularFieldKeyValueStatement({
 				propertyName,
@@ -348,6 +356,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
 				relatedSchemas,
 			});
 		}
+
 		if (AbstractDualityViewFeDdlCreator.isJoinSubquery(propertyJsonSchema)) {
 			return this._getJoinSubqueryKeyValueStatement({
 				propertyName,
@@ -356,6 +365,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
 				relatedSchemas,
 			});
 		}
+
 		return '';
 	}
 
@@ -465,6 +475,22 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
 		const fromRootTableStatement = this._getFromRootTableStatement(view);
 		body.push(fromRootTableStatement + ';');
 		return body.join('\n');
+	}
+
+	/**
+	 * @param {string} propertyName
+	 * @param {RegularDualityViewField} propertyJsonSchema
+	 * @param {number} paddingFactor
+	 * @return {string}
+	 * */
+	_getFlexColumnStatement({ propertyName, propertyJsonSchema, paddingFactor }) {
+		const { wrap } = require('../../../utils/general')(this._lodash);
+
+		const padding = AbstractDualityViewFeDdlCreator.getKeyValueFrontPadding(paddingFactor);
+		const keyName = AbstractDualityViewFeDdlCreator.getRegularFieldName(propertyName, propertyJsonSchema);
+		const ddlKeyName = wrap(keyName, '"', '"');
+
+		return `${padding}${ddlKeyName} AS FLEX COLUMN`;
 	}
 }
 
