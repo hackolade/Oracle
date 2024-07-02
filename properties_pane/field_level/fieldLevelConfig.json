@@ -403,6 +403,7 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "Select from list of options",
 				"propertyType": "select",
 				"options": ["", "nchar varying", "national char varying", "national character varying"],
+				"defaultValue": "",
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -439,6 +440,7 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "Select from list of options",
 				"propertyType": "select",
 				"options": ["", "national char", "national character"],
+				"defaultValue": "",
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -475,6 +477,7 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "Select from list of options",
 				"propertyType": "select",
 				"options": ["", "char varying", "character varying"],
+				"defaultValue": "",
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -511,6 +514,7 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "Select from list of options",
 				"propertyType": "select",
 				"options": ["", "character"],
+				"defaultValue": "",
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -2262,6 +2266,7 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "Select from list of options",
 				"propertyType": "select",
 				"options": ["", "decimal", "numeric", "int", "integer", "smallint"],
+				"defaultValue": "",
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -2298,6 +2303,7 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "Select from list of options",
 				"propertyType": "select",
 				"options": ["", "real", "double precision"],
+				"defaultValue": "",
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -7497,6 +7503,7 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "Select from list of options",
 				"propertyType": "select",
 				"options": ["", "long varchar"],
+				"defaultValue": "",
 				"dependency": {
 					"type": "and",
 					"values": [
