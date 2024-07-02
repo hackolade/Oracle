@@ -65,6 +65,14 @@
 						}
 					}
 				]
+			],
+			[
+				"inferSynonymByType",
+				{
+					"typeName": "childType",
+					"typeValue": "integer",
+					"synonymValue": "integer"
+				}
 			]
 		]
 	}
