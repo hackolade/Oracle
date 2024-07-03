@@ -20,7 +20,8 @@
 				"multiple",
 				"object_udt",
 				"collection_udt",
-				"vector"
+				"vector",
+				"boolean"
 			]
 		}
 	}
