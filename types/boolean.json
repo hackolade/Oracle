@@ -1,0 +1,39 @@
+{
+	"name": "boolean",
+	"erdAbbreviation": "<bool>",
+	"dtdAbbreviation": "{0/1}",
+	"parentType": "boolean",
+	"sample": true,
+	"useSample": true,
+	"hiddenOnEntity": "view",
+	"defaultValues": {
+		"primaryKey": false,
+		"default": "",
+		"sample": ""
+	},
+	"dependency": {
+		"type": "not",
+		"values": [
+			{
+				"level": "model",
+				"key": "dbVersion",
+				"value": "12c"
+			},
+			{
+				"level": "model",
+				"key": "dbVersion",
+				"value": "18c"
+			},
+			{
+				"level": "model",
+				"key": "dbVersion",
+				"value": "19c"
+			},
+			{
+				"level": "model",
+				"key": "dbVersion",
+				"value": "21c"
+			}
+		]
+	}
+}
