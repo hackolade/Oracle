@@ -42,6 +42,14 @@
 {
 	"modify": {
 		"field": [
+			{
+				"from": {
+					"type": "integer"
+				},
+				"to": {
+					"synonym": "integer"
+				}
+			},
 			[
 				"renameBlockItemProperties",
 				{
@@ -65,14 +73,6 @@
 						}
 					}
 				]
-			],
-			[
-				"inferSynonymByType",
-				{
-					"typeName": "childType",
-					"typeValue": "integer",
-					"synonymValue": "integer"
-				}
 			]
 		]
 	}

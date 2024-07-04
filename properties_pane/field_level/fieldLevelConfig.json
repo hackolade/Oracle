@@ -10002,42 +10002,6 @@ making sure that you maintain a proper JSON format.
 				]
 			},
 			{
-				"propertyName": "Synonym",
-				"propertyKeyword": "synonym",
-				"propertyTooltip": "Select from list of options",
-				"propertyType": "select",
-				"options": ["", "bool"],
-				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"key": "mode",
-							"value": "boolean"
-						},
-						{
-							"type": "not",
-							"values": [
-								{
-									"type": "and",
-									"values": [
-										{
-											"level": "root",
-											"key": "viewOn",
-											"exist": true
-										},
-										{
-											"level": "root",
-											"key": "duality",
-											"value": true
-										}
-									]
-								}
-							]
-						}
-					]
-				}
-			},
-			{
 				"propertyName": "Primary key",
 				"propertyKeyword": "compositePrimaryKey",
 				"propertyType": "checkbox",
