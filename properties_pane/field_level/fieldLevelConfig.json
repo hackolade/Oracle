@@ -9971,37 +9971,6 @@ making sure that you maintain a proper JSON format.
 			},
 			"type",
 			{
-				"propertyName": "Subtype",
-				"propertyKeyword": "mode",
-				"propertyType": "select",
-				"options": ["boolean"],
-				"data": "options",
-				"valueType": "string",
-				"cleanDependency": true,
-				"dependency": [
-					{
-						"type": "not",
-						"values": [
-							{
-								"type": "and",
-								"values": [
-									{
-										"level": "root",
-										"key": "viewOn",
-										"exist": true
-									},
-									{
-										"level": "root",
-										"key": "duality",
-										"value": true
-									}
-								]
-							}
-						]
-					}
-				]
-			},
-			{
 				"propertyName": "Primary key",
 				"propertyKeyword": "compositePrimaryKey",
 				"propertyType": "checkbox",
