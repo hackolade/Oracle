@@ -7002,6 +7002,14 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "As FLEX column",
 				"propertyKeyword": "flexColumn",
 				"propertyType": "checkbox",
+				"typeDecorator": {
+					"value": "flex",
+					"useAsTypeName": true,
+					"dependency": {
+						"key": "flexColumn",
+						"value": true
+					}
+				},
 				"dependency": {
 					"type": "and",
 					"values": [
