@@ -42,6 +42,30 @@
 {
 	"modify": {
 		"field": [
+			{
+				"from": {
+					"synonym": "integer"
+				},
+				"to": {
+					"mode": "integer"
+				}
+			},
+			{
+				"from": {
+					"synonym": "int"
+				},
+				"to": {
+					"mode": "integer"
+				}
+			},
+			{
+				"from": {
+					"synonym": "smallint"
+				},
+				"to": {
+					"mode": "integer"
+				}
+			},
 			[
 				"removePropertiesByKeyPath",
 				[
