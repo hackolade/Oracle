@@ -321,7 +321,6 @@ making sure that you maintain a proper JSON format.
 						"propertyType": "numeric",
 						"propertyTooltip": "Lets you specify how many conversion errors can occur during a query of the external data before an Oracle Database error is returned and the query is aborted. The default value is 0.",
 						"valueType": "number",
-						"defaultValue": 0,
 						"step": 1,
 						"allowNegative": false
 					},
