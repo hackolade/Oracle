@@ -21,7 +21,8 @@
 				"object_udt",
 				"collection_udt",
 				"vector",
-				"boolean"
+				"boolean",
+				"object"
 			]
 		}
 	}
