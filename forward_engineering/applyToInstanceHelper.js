@@ -14,7 +14,7 @@ const applyToInstance = async (connectionInfo, logger, app) => {
 		.split('\n\n')
 		.filter(Boolean)
 		.map(query => _.trim(_.trim(_.trim(query), '/'), ';'));
-	let i = 0;
+
 	let error;
 
 	await async.mapSeries(queries, async query => {
