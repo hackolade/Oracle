@@ -5,7 +5,10 @@ module.exports = ({ wrapInQuotes, _ }) => {
 		const constraintString = constraintName ? ` CONSTRAINT ${wrapInQuotes(_.trim(constraintName))}` : '';
 		const statement = [deferClause, rely, indexClause, validate, exceptionClause].filter(Boolean).join(' ');
 
-		return { constraintString, statement };
+		return {
+			constraintString,
+			statement: statement && ` ${statement}`,
+		};
 	};
 
 	return {

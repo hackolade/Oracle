@@ -206,7 +206,7 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 		if (isUDTRef && schemaName) {
 			return ` "${schemaName}"."${type}"`;
 		}
-		if (canDecorateVector(type)) {
+		if (canDecorateVector(type, dimension, subtype)) {
 			return decorateVector(type, dimension, subtype);
 		}
 
