@@ -4,16 +4,18 @@ module.exports = ({ _, assignTemplates, templates, getNamePrefixedWithSchemaName
 	const getPlainUdt = (udt, getColumnDefinition) => {
 		const udtName = getNamePrefixedWithSchemaName(udt.name, udt.schemaName);
 		switch (udt.type) {
-			case 'OBJECT_UDT':
+			case 'OBJECT_UDT': {
 				return assignTemplates(templates.createObjectType, {
 					name: udtName,
 					properties: _.map(udt.properties, prop =>
 						getColumnDefinition(prop, templates.objectTypeColumnDefinition),
 					).join(',\n\t'),
 				});
+			}
 			case 'VARRAY':
-			case 'TABLE':
+			case 'TABLE': {
 				const defaultSize = udt.type === 'VARRAY' ? '(64)' : '';
+
 				return assignTemplates(templates.createCollectionType, {
 					name: udtName,
 					collectionType: udt.type,
@@ -21,8 +23,10 @@ module.exports = ({ _, assignTemplates, templates, getNamePrefixedWithSchemaName
 					datatype: `${udt.ofType}${udt.nullable ? '' : ' NOT NULL'}`,
 					notPersistable: `${udt.notPersistable ? ' NOT PERSISTABLE' : ''}`,
 				});
-			default:
+			}
+			default: {
 				return '';
+			}
 		}
 	};
 

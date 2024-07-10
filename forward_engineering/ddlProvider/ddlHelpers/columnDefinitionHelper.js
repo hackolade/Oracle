@@ -82,7 +82,11 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 	const getColumnEncrypt = ({ encryption }) => {
 		if (_.isPlainObject(encryption) && !_.isEmpty(_.omit(encryption, 'id'))) {
 			const { ENCRYPTION_ALGORITHM, INTEGRITY_ALGORITHM, noSalt } = encryption;
-			return ` ENCRYPT${ENCRYPTION_ALGORITHM ? ` USING '${ENCRYPTION_ALGORITHM}'` : ''}${INTEGRITY_ALGORITHM ? ` '${INTEGRITY_ALGORITHM}'` : ''}${noSalt ? ' NO SALT' : ''}`;
+			const encryptionAlgorithm = ENCRYPTION_ALGORITHM ? ` USING '${ENCRYPTION_ALGORITHM}'` : '';
+			const integrityAlgorithm = INTEGRITY_ALGORITHM ? ` '${INTEGRITY_ALGORITHM}'` : '';
+			const salt = noSalt ? ' NO SALT' : '';
+
+			return ` ENCRYPT${encryptionAlgorithm}${integrityAlgorithm}${salt}`;
 		}
 		return '';
 	};
@@ -97,7 +101,7 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 
 	const addScalePrecision = (type, precision, scale) => {
 		if (_.isNumber(scale)) {
-			return ` ${type}(${precision ? precision : '*'},${scale})`;
+			return ` ${type}(${precision || '*'},${scale})`;
 		} else if (_.isNumber(precision)) {
 			return ` ${type}(${precision})`;
 		} else {
@@ -113,15 +117,23 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 	};
 
 	const timestamp = (fractSecPrecision, withTimeZone, localTimeZone) => {
-		return ` TIMESTAMP${_.isNumber(fractSecPrecision) ? `(${fractSecPrecision})` : ''}${withTimeZone ? ` WITH${localTimeZone ? ' LOCAL' : ''} TIME ZONE` : ''}`;
+		const fractSecPrecisionPart = _.isNumber(fractSecPrecision) ? `(${fractSecPrecision})` : '';
+		const localPart = localTimeZone ? ' LOCAL' : '';
+		const timeZonePart = withTimeZone ? ` WITH${localPart} TIME ZONE` : '';
+
+		return ` TIMESTAMP${fractSecPrecisionPart}${timeZonePart}`;
 	};
 
 	const intervalYear = yearPrecision => {
-		return ` INTERVAL YEAR${_.isNumber(yearPrecision) ? `(${yearPrecision})` : ''} TO MONTH`;
+		const yearPrecisionPart = _.isNumber(yearPrecision) ? `(${yearPrecision})` : '';
+		return ` INTERVAL YEAR${yearPrecisionPart} TO MONTH`;
 	};
 
 	const intervalDay = (dayPrecision, fractSecPrecision) => {
-		return ` INTERVAL DAY${_.isNumber(dayPrecision) ? `(${dayPrecision})` : ''} TO SECOND${_.isNumber(fractSecPrecision) ? `(${fractSecPrecision})` : ''}`;
+		const dayPrecisionPart = _.isNumber(dayPrecision) ? `(${dayPrecision})` : '';
+		const fractSecPrecisionPart = _.isNumber(fractSecPrecision) ? `(${fractSecPrecision})` : '';
+
+		return ` INTERVAL DAY${dayPrecisionPart} TO SECOND${fractSecPrecisionPart}`;
 	};
 
 	const decorateVector = (type, dimensionNumber, subtype) => {
@@ -150,7 +162,7 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 	const isIntervalYear = type => type === 'INTERVAL YEAR';
 	const isIntervalDay = type => type === 'INTERVAL DAY';
 	const isTimezone = type => type === 'TIMESTAMP';
-	const isVector = type => type === 'VECTOR';
+	const canDecorateVector = (type, dimension, subtype) => type === 'VECTOR' && (dimension || subtype);
 	const isJson = type => type === 'JSON';
 
 	const decorateType = (type, columnDefinition) => {
@@ -194,7 +206,7 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 		if (isUDTRef && schemaName) {
 			return ` "${schemaName}"."${type}"`;
 		}
-		if (isVector(type) && (dimension || subtype)) {
+		if (canDecorateVector(type)) {
 			return decorateVector(type, dimension, subtype);
 		}
 

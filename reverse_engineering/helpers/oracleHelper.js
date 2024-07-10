@@ -149,7 +149,8 @@ const getSshConnectionString = async (data, sshService, logger) => {
 	} else {
 		connectionData.host = data.host;
 		connectionData.port = data.port;
-		(connectionData.service = data.serviceName), (connectionData.sid = data.sid);
+		connectionData.service = data.serviceName;
+		connectionData.sid = data.sid;
 	}
 
 	const { options } = await sshService.openTunnel({
@@ -518,26 +519,26 @@ const getDDL = async (tableName, schema, logger) => {
 			'indexDDLs' VALUE (
 				SELECT JSON_ARRAYAGG(DBMS_METADATA.GET_DDL('INDEX', INDEX_NAME, OWNER) RETURNING CLOB)
 				FROM ALL_INDEXES
-				WHERE TABLE_OWNER=T.OWNER 
+				WHERE TABLE_OWNER=T.OWNER
 					AND TABLE_NAME=T.TABLE_NAME
 					AND INDEX_NAME NOT IN (
-						SELECT CONSTRAINT_NAME 
-						FROM ALL_CONSTRAINTS 
-						WHERE CONSTRAINT_TYPE='P' 
-						AND OWNER=T.OWNER 
+						SELECT CONSTRAINT_NAME
+						FROM ALL_CONSTRAINTS
+						WHERE CONSTRAINT_TYPE='P'
+						AND OWNER=T.OWNER
 						AND TABLE_NAME=T.TABLE_NAME
 					)
 				),
 			'jsonColumns' VALUE (
 				SELECT JSON_ARRAYAGG(JSON_OBJECT('name' VALUE COLUMN_NAME, 'datatype' VALUE DATA_TYPE) RETURNING CLOB)
-				FROM ALL_TAB_COLUMNS 
-				WHERE TABLE_NAME=T.TABLE_NAME 
+				FROM ALL_TAB_COLUMNS
+				WHERE TABLE_NAME=T.TABLE_NAME
 				AND OWNER=T.OWNER
 				AND DATA_TYPE IN ('CLOB', 'BLOB', 'NVARCHAR2', 'JSON')
 			),
 			'tableComment' VALUE (
 				SELECT COMMENTS
-				FROM ALL_TAB_COMMENTS 
+				FROM ALL_TAB_COMMENTS
 				WHERE OWNER = T.OWNER AND TABLE_NAME = T.TABLE_NAME AND COMMENTS IS NOT NULL
 			),
 			'columnComments' VALUE (
@@ -751,13 +752,13 @@ const getViewDDL = async (viewName, schema, logger) => {
 					'indexDDLs' VALUE (
 						SELECT JSON_ARRAYAGG(DBMS_METADATA.GET_DDL('INDEX', INDEX_NAME, OWNER) RETURNING CLOB)
 						FROM ALL_INDEXES
-						WHERE TABLE_OWNER=MV.OWNER 
+						WHERE TABLE_OWNER=MV.OWNER
 							AND TABLE_NAME=MV.MVIEW_NAME
 							AND INDEX_NAME NOT IN (
-								SELECT CONSTRAINT_NAME 
-								FROM ALL_CONSTRAINTS 
-								WHERE CONSTRAINT_TYPE='P' 
-								AND OWNER=MV.OWNER 
+								SELECT CONSTRAINT_NAME
+								FROM ALL_CONSTRAINTS
+								WHERE CONSTRAINT_TYPE='P'
+								AND OWNER=MV.OWNER
 								AND TABLE_NAME=MV.MVIEW_NAME
 							)
 						)
@@ -886,7 +887,7 @@ const getSynonymsDDL = async () => {
 	const synonymsDDL = await Promise.all(
 		queryResult.map(async ([synonymName, synonymDDL]) => {
 			const synonymDDLString = await synonymDDL.getData();
-			return new Promise(resolve => resolve({ name: synonymName, ddl: synonymDDLString }));
+			return { name: synonymName, ddl: synonymDDLString };
 		}),
 	);
 

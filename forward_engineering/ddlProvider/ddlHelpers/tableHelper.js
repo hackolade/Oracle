@@ -103,7 +103,6 @@ module.exports = ({
 			opaque_format_spec,
 			clob_subquery,
 			reject_limit,
-			project_column,
 			location,
 		} = value;
 		const locationList = `(${_.map(

@@ -1,12 +1,12 @@
 const _ = require('lodash');
 
 module.exports = ({ wrapInQuotes, _ }) => {
-	const getOptionsString = ({ constraintName, deferClause, rely, validate, indexClause, exceptionClause }) => ({
-		constraintString: `${constraintName ? ` CONSTRAINT ${wrapInQuotes(_.trim(constraintName))}` : ''}`,
-		statement: `${deferClause ? ` ${deferClause}` : ''}${rely ? ` ${rely}` : ''}${
-			indexClause ? ` ${indexClause}` : ''
-		}${validate ? ` ${validate}` : ''}${exceptionClause ? ` ${exceptionClause}` : ''}`,
-	});
+	const getOptionsString = ({ constraintName, deferClause, rely, validate, indexClause, exceptionClause }) => {
+		const constraintString = constraintName ? ` CONSTRAINT ${wrapInQuotes(_.trim(constraintName))}` : '';
+		const statement = [deferClause, rely, indexClause, validate, exceptionClause].filter(Boolean).join(' ');
+
+		return { constraintString, statement };
+	};
 
 	return {
 		getOptionsString,
