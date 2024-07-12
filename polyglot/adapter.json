@@ -50,6 +50,15 @@
 					"synonym": "integer"
 				}
 			},
+			{
+				"from": {
+					"type": "integer",
+					"mode": "long"
+				},
+				"to": {
+					"synonym": ""
+				}
+			},
 			[
 				"renameBlockItemProperties",
 				{
