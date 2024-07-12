@@ -87,7 +87,7 @@ module.exports = (_, clean) => {
 		return jsonSchema.primaryKey
 			.filter(primaryKey => !_.isEmpty(primaryKey.compositePrimaryKey))
 			.map(primaryKey => ({
-				...hydratePrimaryKeyOptions(primaryKey, null, null, jsonSchema),
+				...hydratePrimaryKeyOptions(primaryKey, null, null),
 				columns: getKeys(primaryKey.compositePrimaryKey, jsonSchema),
 			}));
 	};
@@ -100,7 +100,7 @@ module.exports = (_, clean) => {
 		return jsonSchema.uniqueKey
 			.filter(uniqueKey => !_.isEmpty(uniqueKey.compositeUniqueKey))
 			.map(uniqueKey => ({
-				...hydrateUniqueOptions(uniqueKey, null, null, jsonSchema),
+				...hydrateUniqueOptions(uniqueKey, null, null),
 				columns: getKeys(uniqueKey.compositeUniqueKey, jsonSchema),
 			}));
 	};

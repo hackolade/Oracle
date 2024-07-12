@@ -17,7 +17,10 @@ function parseObject(lex, obj = {}) {
 
 	lex.expect(')');
 
-	return Object.assign({}, obj, { [id]: value });
+	return {
+		...obj,
+		[id]: value,
+	};
 }
 
 const parseConnection = lex => {

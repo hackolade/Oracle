@@ -37,10 +37,11 @@ module.exports = ({ _, wrapInQuotes }) => {
 		indxKey,
 		column_expression,
 	}) => {
-		let options =
-			`${logging_clause ? ` ${_.toUpper(logging_clause)}` : ''}` +
-			`${tablespace ? ` TABLESPACE ${tablespace}` : ''}` +
-			`${index_compression ? ` ${index_compression}` : ''}`;
+		const loggingClause = logging_clause ? ` ${_.toUpper(logging_clause)}` : '';
+		const tableSpacePart = tablespace ? ` TABLESPACE ${tablespace}` : '';
+		const indexCompression = index_compression ? ` ${index_compression}` : '';
+
+		let options = `${loggingClause}${tableSpacePart}${indexCompression}`;
 
 		if (index_properties) {
 			options = ` ${index_properties}`;

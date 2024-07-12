@@ -38,7 +38,7 @@ const mapRegularField = _ => (code, property, collectionRefsDefinitionsMap) => {
 	/**
 	 * @type {DeltaDualityViewCompModCollectionRefsDefinitionsMapValue}
 	 */
-	const refDefinition = (collectionRefsDefinitionsMap || {})[property.refId];
+	const refDefinition = collectionRefsDefinitionsMap?.[property.refId];
 	const columnDefinition = refDefinition?.definition || {};
 	const columnName = columnDefinition.code || columnDefinition.name || '';
 
