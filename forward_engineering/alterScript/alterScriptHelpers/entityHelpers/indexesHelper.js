@@ -123,7 +123,7 @@ const getDeletedIndexesScriptDtos =
 					newIndex,
 				}),
 			);
-			return !Boolean(correspondingNewIndex);
+			return !correspondingNewIndex;
 		});
 
 		return deletedIndexes.map(index => getDeleteIndexScriptDto({ ddlProvider })({ index, collection }));
@@ -157,7 +157,7 @@ const getAddedIndexesScriptDtos =
 					newIndex,
 				}),
 			);
-			return !Boolean(correspondingOldIndex);
+			return !correspondingOldIndex;
 		});
 
 		return addedIndexes.map(index => getAddIndexScriptDto({ ddlProvider })({ index, collection }));

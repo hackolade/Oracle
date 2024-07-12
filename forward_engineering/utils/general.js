@@ -27,50 +27,54 @@ module.exports = _ => {
 	};
 
 	const getDbData = containerData => {
-		return Object.assign({}, _.get(containerData, '[0]', {}), { name: getDbName(containerData) });
+		const dbData = _.get(containerData, '[0]', {});
+		return {
+			...dbData,
+			name: getDbName(containerData),
+		};
 	};
 
 	const getViewOn = viewData => _.get(viewData, '[0].viewOn');
 
+	const isRecursiveRelationship = foreignTableId => item =>
+		item.primaryTableId === foreignTableId && item.primaryTableId !== item.foreignTableId;
+
 	const rejectRecursiveRelationships = foreignTableToRelationshipData => {
 		return Object.keys(foreignTableToRelationshipData).reduce((result, foreignTableId) => {
-			const tables = foreignTableToRelationshipData[foreignTableId].filter(item => {
-				const tables = foreignTableToRelationshipData[item.primaryTableId];
+			const foreignRelatedTables = foreignTableToRelationshipData[foreignTableId].filter(table => {
+				const primaryRelatedTables = foreignTableToRelationshipData[table.primaryTableId];
 
-				if (!Array.isArray(tables)) {
+				if (!Array.isArray(primaryRelatedTables)) {
 					return true;
 				}
 
-				return !tables.some(
-					item => item.primaryTableId === foreignTableId && item.primaryTableId !== item.foreignTableId,
-				);
+				return !primaryRelatedTables.some(isRecursiveRelationship(foreignTableId));
 			});
 
-			if (_.isEmpty(tables)) {
+			if (_.isEmpty(foreignRelatedTables)) {
 				return result;
 			}
 
-			return Object.assign({}, result, {
-				[foreignTableId]: tables,
-			});
+			return {
+				...result,
+				[foreignTableId]: foreignRelatedTables,
+			};
 		}, {});
 	};
 
 	const filterRecursiveRelationships = foreignTableToRelationshipData => {
 		return Object.keys(foreignTableToRelationshipData).reduce((result, foreignTableId) => {
-			const tables = foreignTableToRelationshipData[foreignTableId].filter(item => {
-				const tables = foreignTableToRelationshipData[item.primaryTableId];
+			const foreignRelatedTables = foreignTableToRelationshipData[foreignTableId].filter(item => {
+				const primaryRelatedTables = foreignTableToRelationshipData[item.primaryTableId];
 
-				if (!Array.isArray(tables)) {
+				if (!Array.isArray(primaryRelatedTables)) {
 					return false;
 				}
 
-				return tables.some(
-					item => item.primaryTableId === foreignTableId && item.primaryTableId !== item.foreignTableId,
-				);
+				return primaryRelatedTables.some(isRecursiveRelationship(foreignTableId));
 			});
 
-			return result.concat(tables);
+			return result.concat(foreignRelatedTables);
 		}, []);
 	};
 

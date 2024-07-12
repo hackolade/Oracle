@@ -103,7 +103,6 @@ module.exports = ({
 			opaque_format_spec,
 			clob_subquery,
 			reject_limit,
-			project_column,
 			location,
 		} = value;
 		const locationList = `(${_.map(
@@ -145,7 +144,7 @@ module.exports = ({
 
 	const getPartitionClause = (value, isActivated) => {
 		switch (value.partitionBy) {
-			case 'range':
+			case 'range': {
 				const interval = value.interval ? `\nINTERVAL (${value.interval})` : '';
 
 				return (
@@ -153,24 +152,29 @@ module.exports = ({
 					getTablespaceList(value.store_in_tablespaces) +
 					partitionsToString(value.range_partitions, 'range_partition_clause')
 				);
-			case 'list':
+			}
+			case 'list': {
 				return (
 					`${value.automatic ? ` AUTOMATIC` : ''}` +
 					getTablespaceList(value.store_in_tablespaces) +
 					partitionsToString(value.list_partitions, 'list_partition_clause')
 				);
-			case 'hash':
+			}
+			case 'hash': {
 				return getHashPartition(value);
-			case 'reference':
+			}
+			case 'reference': {
 				return (
 					`${value.constraint ? ` (${value.constraint})` : ''}` +
 					partitionsToString(value.reference_partition_descs, 'reference_partition_desc')
 				);
-			case 'system':
+			}
+			case 'system': {
 				if (value.system_partitioning_quantity) {
 					return ` PARTITIONS ${value.system_partitioning_quantity}`;
 				}
 				return partitionsToString(value.system_partition_descs, 'system_partition_desc');
+			}
 			case 'composite range': {
 				const subpartition = getSubpartition(value, isActivated);
 				return (
@@ -193,8 +197,9 @@ module.exports = ({
 				const hashPartition = getHashPartition(value);
 				return `${subpartition}${hashPartition}`;
 			}
-			default:
+			default: {
 				return '';
+			}
 		}
 	};
 
