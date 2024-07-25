@@ -1,17 +1,17 @@
 {
 	"model": {
-		"modelName": "New model",
+		"modelName": "new_model",
 		"dbVersion": "21c",
 		"dbVendor": "Oracle"
 	},
 	"container": {
-		"name": "New schema"
+		"name": "new_schema"
 	},
 	"collection": {
-		"collectionName": "New table"
+		"collectionName": "new_table"
 	},
 	"field": {
-		"name": "New column",
+		"name": "new_column",
 		"primaryKey": false,
 		"unique": false
 	},
