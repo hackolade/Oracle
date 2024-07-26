@@ -36,7 +36,7 @@ module.exports = (baseProvider, options, app) => {
 
 	const prepareName = prepareNameForScriptFormat(options?.targetScriptOptions?.keyword);
 	const getNamePrefixedWithSchemaName = getNamePrefixedWithSchemaNameForScriptFormat(
-		options.targetScriptOptions.keyword,
+		options?.targetScriptOptions?.keyword,
 	);
 
 	const { assignTemplates } = require('../utils/assignTemplates')({ _ });
