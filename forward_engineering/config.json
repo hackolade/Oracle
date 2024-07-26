@@ -25,6 +25,16 @@
 		"entity": true,
 		"view": true
 	},
+	"options": [
+		{
+			"name": "quoted identifier",
+			"keyword": "quotedIdentifier"
+		},
+		{
+			"name": "nonquoted identifier",
+			"keyword": "nonquotedIdentifier"
+		}
+	],
 	"additionalOptions": [
 		{
 			"id": "applyDropStatements",
