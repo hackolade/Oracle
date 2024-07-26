@@ -34,7 +34,7 @@ module.exports = (baseProvider, options, app) => {
 		prepareNameForScriptFormat,
 	} = require('../utils/general')(_);
 
-	const prepareName = prepareNameForScriptFormat(options.targetScriptOptions.keyword);
+	const prepareName = prepareNameForScriptFormat(options?.targetScriptOptions?.keyword);
 	const getNamePrefixedWithSchemaName = getNamePrefixedWithSchemaNameForScriptFormat(
 		options.targetScriptOptions.keyword,
 	);

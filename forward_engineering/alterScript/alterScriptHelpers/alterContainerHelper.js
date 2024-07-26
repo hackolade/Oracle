@@ -3,9 +3,9 @@ const _ = require('lodash');
 /**
  * @return {(containerName: string) => AlterScriptDto | undefined}
  * */
-const getAddContainerScriptDto = app => containerName => {
-	const { wrapInQuotes } = require('../../utils/general')(_);
-	const ddlContainerName = wrapInQuotes(containerName);
+const getAddContainerScriptDto = (app, scriptFormat) => containerName => {
+	const { prepareNameForScriptFormat } = require('../../utils/general')(_);
+	const ddlContainerName = prepareNameForScriptFormat(scriptFormat)(containerName);
 
 	const createContainerStatement = `CREATE USER ${ddlContainerName} NO AUTHENTICATION;`;
 	return AlterScriptDto.getInstance([createContainerStatement], true, false);
@@ -14,9 +14,9 @@ const getAddContainerScriptDto = app => containerName => {
 /**
  * @return {(containerName: string) => AlterScriptDto | undefined}
  * */
-const getDeleteContainerScriptDto = app => containerName => {
-	const { wrapInQuotes } = require('../../utils/general')(_);
-	const ddlContainerName = wrapInQuotes(containerName);
+const getDeleteContainerScriptDto = (app, scriptFormat) => containerName => {
+	const { prepareNameForScriptFormat } = require('../../utils/general')(_);
+	const ddlContainerName = prepareNameForScriptFormat(scriptFormat)(containerName);
 
 	const dropContainerStatement = `DROP USER ${ddlContainerName};`;
 	return AlterScriptDto.getInstance([dropContainerStatement], true, true);
