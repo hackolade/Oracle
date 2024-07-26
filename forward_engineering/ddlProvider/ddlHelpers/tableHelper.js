@@ -139,7 +139,9 @@ module.exports = ({
 		if (_.isEmpty(value.partitionKey)) {
 			return '';
 		}
-		return getColumnsList(value.partitionKey, isAllColumnsDeactivated, isParentActivated);
+		return getColumnsList(value.partitionKey, isAllColumnsDeactivated, isParentActivated, ({ name }) =>
+			prepareName(name),
+		);
 	};
 
 	const getPartitionClause = (value, isActivated) => {
@@ -218,7 +220,7 @@ module.exports = ({
 			const isAllColumnsDeactivated = checkAllKeysDeactivated(compositePartitionKey);
 			const subpartitionDescriptionToUse = subpartitionDescription ? `\n${subpartitionDescription}` : '';
 
-			return ` SUBPARTITION BY ${_.toUpper(subpartitionType)} ${getColumnsList(compositePartitionKey, isAllColumnsDeactivated, isParentActivated)} ${subpartitionDescriptionToUse}`;
+			return ` SUBPARTITION BY ${_.toUpper(subpartitionType)} ${getColumnsList(compositePartitionKey, isAllColumnsDeactivated, isParentActivated, ({ name }) => prepareName(name))} ${subpartitionDescriptionToUse}`;
 		}
 
 		return '';
@@ -293,7 +295,9 @@ module.exports = ({
 
 	const createKeyConstraint = (templates, isParentActivated) => keyData => {
 		const isAllColumnsDeactivated = checkAllKeysDeactivated(keyData.columns);
-		const columns = getColumnsList(keyData.columns, isAllColumnsDeactivated, isParentActivated);
+		const columns = getColumnsList(keyData.columns, isAllColumnsDeactivated, isParentActivated, ({ name }) =>
+			prepareName(name),
+		);
 		const options = getOptionsString(keyData).statement;
 
 		return {
