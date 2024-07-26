@@ -4,10 +4,10 @@ module.exports = ({
 	getColumnsList,
 	checkAllKeysDeactivated,
 	commentIfDeactivated,
-	wrapInQuotes,
+	prepareName,
 	assignTemplates,
 }) => {
-	const { getOptionsString } = require('./constraintHelper')({ _, wrapInQuotes });
+	const { getOptionsString } = require('./constraintHelper')({ _, prepareName });
 
 	const getTableType = ({
 		duplicated,
@@ -87,7 +87,7 @@ module.exports = ({
 			}
 			return (
 				`ORGANIZATION ${_.toUpper(organization) || 'HEAP'}` +
-				`${tablespace ? ` TABLESPACE ${wrapInQuotes(tablespace)}` : ''}` +
+				`${tablespace ? ` TABLESPACE ${prepareName(tablespace)}` : ''}` +
 				` ${logging ? 'LOGGING' : 'NOLOGGING'}`
 			);
 		};
@@ -274,10 +274,10 @@ module.exports = ({
 		if (Array.isArray(keys)) {
 			const activatedKeys = keys
 				.filter(key => _.get(key, 'isActivated', true))
-				.map(key => wrapInQuotes(_.trim(key.name)));
+				.map(key => prepareName(_.trim(key.name)));
 			const deactivatedKeys = keys
 				.filter(key => !_.get(key, 'isActivated', true))
-				.map(key => wrapInQuotes(_.trim(key.name)));
+				.map(key => prepareName(_.trim(key.name)));
 			const deactivatedKeysAsString = deactivatedKeys.length
 				? commentIfDeactivated(deactivatedKeys, { isActivated: false, isPartOfLine: true })
 				: '';
@@ -298,7 +298,7 @@ module.exports = ({
 
 		return {
 			statement: assignTemplates(templates.createKeyConstraint, {
-				constraintName: keyData.constraintName ? `CONSTRAINT ${wrapInQuotes(keyData.constraintName)} ` : '',
+				constraintName: keyData.constraintName ? `CONSTRAINT ${prepareName(keyData.constraintName)} ` : '',
 				keyType: keyData.keyType,
 				columns,
 				options,

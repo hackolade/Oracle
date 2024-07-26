@@ -2,24 +2,12 @@ const { AbstractDualityViewFeDdlCreator } = require('./abstractDualityViewDdlCre
 
 class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
 	/**
-	 * @param ddlTemplates {Object}
-	 * @param lodash {any}
-	 * @param assignTemplates {(template: string, values: Object) => string}
-	 * @throws {Error}
-	 * */
-	constructor(ddlTemplates, assignTemplates, lodash) {
-		super(ddlTemplates, assignTemplates, lodash);
-	}
-
-	/**
 	 * @param view {DualityView}
 	 * @return {string}
 	 * */
 	_getFromRootTableAliasStatement(view) {
-		const { wrapInQuotes } = require('../../../utils/general')(this._lodash);
-
 		if (view.rootTableAlias) {
-			const ddlAlias = wrapInQuotes(view.rootTableAlias);
+			const ddlAlias = this._prepareName(view.rootTableAlias);
 			return AbstractDualityViewFeDdlCreator.padInFront(ddlAlias);
 		}
 		return '';
@@ -30,10 +18,8 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
 	 * @return {string}
 	 * */
 	_getFromChildTableAliasStatement(joinSubqueryJsonSchema) {
-		const { wrapInQuotes } = require('../../../utils/general')(this._lodash);
-
 		if (joinSubqueryJsonSchema.childTableAlias) {
-			const ddlAlias = wrapInQuotes(joinSubqueryJsonSchema.childTableAlias);
+			const ddlAlias = this._prepareName(joinSubqueryJsonSchema.childTableAlias);
 			return AbstractDualityViewFeDdlCreator.padInFront(ddlAlias);
 		}
 		return '';
@@ -143,8 +129,7 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
 	 * @return {string}
 	 * */
 	_getFromRootTableStatement(view) {
-		const { getNamePrefixedWithSchemaName } = require('../../../utils/general')(this._lodash);
-		const ddlTableName = getNamePrefixedWithSchemaName(view.tableName, view.schemaName);
+		const ddlTableName = this._getNamePrefixedWithSchemaName(view.tableName, view.schemaName);
 		const aliasStatement = this._getFromRootTableAliasStatement(view);
 		const tagsClauseStatement = this._getTableTagsStatement(view);
 
@@ -169,11 +154,11 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
 		}
 		const child = relatedSchemas[collectionId];
 
-		const { getEntityName, getNamePrefixedWithSchemaName } = require('../../../utils/general')(this._lodash);
+		const { getEntityName } = require('../../../utils/general')(this._lodash);
 		const tableName = getEntityName(child);
 		const schemaName = child.bucketName;
 
-		const ddlTableName = getNamePrefixedWithSchemaName(tableName, schemaName);
+		const ddlTableName = this._getNamePrefixedWithSchemaName(tableName, schemaName);
 		const aliasStatement = this._getFromChildTableAliasStatement(joinSubqueryJsonSchema);
 		const tagsClauseStatement = this._getTableTagsStatement(joinSubqueryJsonSchema);
 
@@ -198,21 +183,21 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
 	 * @return {string}
 	 * */
 	_getNameOfReferencedColumnForDdl(parentEntity, propertyName, relatedSchemas) {
-		const { getEntityName, getNamePrefixedWithSchemaName } = require('../../../utils/general')(this._lodash);
+		const { getEntityName } = require('../../../utils/general')(this._lodash);
 		if (AbstractDualityViewFeDdlCreator.isDualityView(parentEntity)) {
 			const parentName = parentEntity.rootTableAlias || parentEntity.tableName;
-			return getNamePrefixedWithSchemaName(propertyName, parentName);
+			return this._getNamePrefixedWithSchemaName(propertyName, parentName);
 		}
 		if (AbstractDualityViewFeDdlCreator.isJoinSubquery(parentEntity)) {
 			if (parentEntity.childTableAlias) {
 				const parentName = parentEntity.childTableAlias;
-				return getNamePrefixedWithSchemaName(propertyName, parentName);
+				return this._getNamePrefixedWithSchemaName(propertyName, parentName);
 			}
 			const collectionId = this._lodash.first(parentEntity.joinedCollectionRefIdPath);
 			if (collectionId) {
 				const collection = relatedSchemas[collectionId];
 				const parentName = getEntityName(collection);
-				return getNamePrefixedWithSchemaName(propertyName, parentName);
+				return this._getNamePrefixedWithSchemaName(propertyName, parentName);
 			}
 		}
 		return '';
