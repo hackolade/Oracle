@@ -11964,7 +11964,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Subquery type",
 				"propertyKeyword": "subtype",
-				"propertyTooltip": "Specify if joined table will be aggregated into an object or JSON array",
+				"propertyTooltip": "Specify if joined table will be aggregated into an object or JSON  ",
 				"propertyType": "select",
 				"options": [
 					{
@@ -12143,6 +12143,89 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "whereClause",
 				"propertyType": "text",
 				"propertyTooltip": "Specify condition for table join"
+			},
+			{
+				"propertyName": "Quantification",
+				"propertyKeyword": "quantification",
+				"propertyTooltip": "",
+				"propertyType": "block",
+				"structure": [
+					{
+						"propertyName": "Minimum",
+						"propertyKeyword": "minimum",
+						"propertyType": "numeric",
+						"valueType": "number",
+						"allowNegative": false,
+						"minValue": 0,
+						"step": 1
+					},
+					{
+						"propertyName": "Min unit",
+						"propertyKeyword": "minUnit",
+						"propertyTooltip": "Select from list of options",
+						"propertyType": "select",
+						"defaultValue": "single",
+						"options": ["single", "thousand", "million", "billion"]
+					},
+					{
+						"propertyName": "Likely",
+						"propertyKeyword": "likely",
+						"propertyType": "numeric",
+						"valueType": "number",
+						"allowNegative": false,
+						"minValue": 0,
+						"step": 1
+					},
+					{
+						"propertyName": "Likely unit",
+						"propertyKeyword": "likelyUnit",
+						"propertyTooltip": "Select from list of options",
+						"propertyType": "select",
+						"defaultValue": "single",
+						"options": ["single", "thousand", "million", "billion"]
+					},
+					{
+						"propertyName": "Maximum",
+						"propertyKeyword": "maximum",
+						"propertyType": "numeric",
+						"valueType": "number",
+						"allowNegative": false,
+						"minValue": 0,
+						"step": 1
+					},
+					{
+						"propertyName": "Max unit",
+						"propertyKeyword": "maxUnit",
+						"propertyTooltip": "Select from list of options",
+						"propertyType": "select",
+						"defaultValue": "single",
+						"options": ["single", "thousand", "million", "billion"]
+					}
+				],
+				"dependency": [
+					{
+						"type": "and",
+						"values": [
+							{
+								"type": "or",
+								"values": [
+									{
+										"key": "unnestSubquery",
+										"value": false
+									},
+									{
+										"key": "unnestSubquery",
+										"exist": false
+									}
+								]
+							},
+							{
+								"key": "subtype",
+								"value": "array"
+							}
+						]
+					}
+				]
 			},
 			{
 				"propertyName": "Remarks",
