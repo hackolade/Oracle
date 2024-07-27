@@ -11964,7 +11964,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Subquery type",
 				"propertyKeyword": "subtype",
-				"propertyTooltip": "Specify if joined table will be aggregated into an object or JSON  ",
+				"propertyTooltip": "Specify if joined table will be aggregated into an object or a JSON array",
 				"propertyType": "select",
 				"options": [
 					{
