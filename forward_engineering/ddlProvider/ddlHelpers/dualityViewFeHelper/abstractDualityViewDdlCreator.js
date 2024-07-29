@@ -8,15 +8,19 @@ class AbstractDualityViewFeDdlCreator {
 	 * @param ddlTemplates {Object}
 	 * @param assignTemplates {(template: string, values: Object) => string}
 	 * @param lodash {any}
+	 * @param prepareName {(name: string) => string}
+	 * @param getNamePrefixedWithSchemaName {(name: string, schemaName: string) => string
 	 * @throws {Error}
 	 * */
-	constructor(ddlTemplates, assignTemplates, lodash) {
+	constructor(ddlTemplates, assignTemplates, lodash, prepareName, getNamePrefixedWithSchemaName) {
 		if (this.constructor === AbstractDualityViewFeDdlCreator) {
 			throw new Error("Abstract classes can't be instantiated.");
 		}
 		this._ddlTemplates = ddlTemplates;
 		this._assignTemplates = assignTemplates;
 		this._lodash = lodash;
+		this._prepareName = prepareName;
+		this._getNamePrefixedWithSchemaName = getNamePrefixedWithSchemaName;
 	}
 
 	/**
@@ -177,14 +181,14 @@ class AbstractDualityViewFeDdlCreator {
 	 * */
 	getCreateJsonRelationalDualityViewHeadingDdl(createViewDto) {
 		const { jsonSchema, view } = createViewDto;
-		const { getViewName, getNamePrefixedWithSchemaName } = require('../../../utils/general')(this._lodash);
+		const { getViewName } = require('../../../utils/general')(this._lodash);
 		const template = this._ddlTemplates?.dualityView?.createJsonRelationalDualityViewHeading || '';
 
 		const orReplaceStatement = this._getOrReplaceStatement(view);
 		const forceStatement = this._getForceStatement(jsonSchema);
 		const editionableStatement = this._getEditionableStatement(jsonSchema);
 		const viewName = getViewName(view);
-		const ddlViewName = getNamePrefixedWithSchemaName(viewName, view.schemaName);
+		const ddlViewName = this._getNamePrefixedWithSchemaName(viewName, view.schemaName);
 
 		const params = {
 			orReplaceStatement,

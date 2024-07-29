@@ -4,10 +4,10 @@ module.exports = ({
 	getColumnsList,
 	checkAllKeysDeactivated,
 	commentIfDeactivated,
-	wrapInQuotes,
+	prepareName,
 	assignTemplates,
 }) => {
-	const { getOptionsString } = require('./constraintHelper')({ _, wrapInQuotes });
+	const { getOptionsString } = require('./constraintHelper')({ _, prepareName });
 
 	const getTableType = ({
 		duplicated,
@@ -87,7 +87,7 @@ module.exports = ({
 			}
 			return (
 				`ORGANIZATION ${_.toUpper(organization) || 'HEAP'}` +
-				`${tablespace ? ` TABLESPACE ${wrapInQuotes(tablespace)}` : ''}` +
+				`${tablespace ? ` TABLESPACE ${prepareName(tablespace)}` : ''}` +
 				` ${logging ? 'LOGGING' : 'NOLOGGING'}`
 			);
 		};
@@ -139,7 +139,9 @@ module.exports = ({
 		if (_.isEmpty(value.partitionKey)) {
 			return '';
 		}
-		return getColumnsList(value.partitionKey, isAllColumnsDeactivated, isParentActivated);
+		return getColumnsList(value.partitionKey, isAllColumnsDeactivated, isParentActivated, ({ name }) =>
+			prepareName(name),
+		);
 	};
 
 	const getPartitionClause = (value, isActivated) => {
@@ -218,7 +220,7 @@ module.exports = ({
 			const isAllColumnsDeactivated = checkAllKeysDeactivated(compositePartitionKey);
 			const subpartitionDescriptionToUse = subpartitionDescription ? `\n${subpartitionDescription}` : '';
 
-			return ` SUBPARTITION BY ${_.toUpper(subpartitionType)} ${getColumnsList(compositePartitionKey, isAllColumnsDeactivated, isParentActivated)} ${subpartitionDescriptionToUse}`;
+			return ` SUBPARTITION BY ${_.toUpper(subpartitionType)} ${getColumnsList(compositePartitionKey, isAllColumnsDeactivated, isParentActivated, ({ name }) => prepareName(name))} ${subpartitionDescriptionToUse}`;
 		}
 
 		return '';
@@ -274,10 +276,10 @@ module.exports = ({
 		if (Array.isArray(keys)) {
 			const activatedKeys = keys
 				.filter(key => _.get(key, 'isActivated', true))
-				.map(key => wrapInQuotes(_.trim(key.name)));
+				.map(key => prepareName(_.trim(key.name)));
 			const deactivatedKeys = keys
 				.filter(key => !_.get(key, 'isActivated', true))
-				.map(key => wrapInQuotes(_.trim(key.name)));
+				.map(key => prepareName(_.trim(key.name)));
 			const deactivatedKeysAsString = deactivatedKeys.length
 				? commentIfDeactivated(deactivatedKeys, { isActivated: false, isPartOfLine: true })
 				: '';
@@ -293,12 +295,14 @@ module.exports = ({
 
 	const createKeyConstraint = (templates, isParentActivated) => keyData => {
 		const isAllColumnsDeactivated = checkAllKeysDeactivated(keyData.columns);
-		const columns = getColumnsList(keyData.columns, isAllColumnsDeactivated, isParentActivated);
+		const columns = getColumnsList(keyData.columns, isAllColumnsDeactivated, isParentActivated, ({ name }) =>
+			prepareName(name),
+		);
 		const options = getOptionsString(keyData).statement;
 
 		return {
 			statement: assignTemplates(templates.createKeyConstraint, {
-				constraintName: keyData.constraintName ? `CONSTRAINT ${wrapInQuotes(keyData.constraintName)} ` : '',
+				constraintName: keyData.constraintName ? `CONSTRAINT ${prepareName(keyData.constraintName)} ` : '',
 				keyType: keyData.keyType,
 				columns,
 				options,

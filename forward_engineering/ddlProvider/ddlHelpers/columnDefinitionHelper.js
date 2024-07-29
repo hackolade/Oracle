@@ -9,8 +9,8 @@ const shouldUseClobForJsonColumns = dbVersion => {
 	return dbVersionAsNumber < DbVersion.JSON_TYPE_SINCE;
 };
 
-module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, wrapComment, wrapInQuotes }) => {
-	const { getOptionsString } = require('./constraintHelper')({ _, wrapInQuotes });
+module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, wrapComment, prepareName }) => {
+	const { getOptionsString } = require('./constraintHelper')({ _, prepareName });
 
 	const getColumnComments = (tableName, columnDefinitions) => {
 		return _.chain(columnDefinitions)
@@ -18,7 +18,7 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 			.map(columnData => {
 				const comment = assignTemplates(templates.comment, {
 					object: 'COLUMN',
-					objectName: `${tableName}.${wrapInQuotes(columnData.name)}`,
+					objectName: `${tableName}.${prepareName(columnData.name)}`,
 					comment: wrapComment(columnData.comment),
 				});
 

@@ -7,10 +7,14 @@ const _ = require('lodash');
  * @return {(jsonSchema: Object) => AlterScriptDto |  undefined}
  * */
 const getCreateUdtScriptDto =
-	({ app, dbVersion, modelDefinitions, internalDefinitions, externalDefinitions }) =>
+	({ app, dbVersion, modelDefinitions, internalDefinitions, externalDefinitions, scriptFormat }) =>
 	jsonSchema => {
 		const { createColumnDefinitionBySchema } = require('./createColumnDefinition')(app);
-		const ddlProvider = require('../../ddlProvider/ddlProvider')(null, { dbVersion }, app);
+		const ddlProvider = require('../../ddlProvider/ddlProvider')(
+			null,
+			{ dbVersion, targetScriptOptions: { keyword: scriptFormat } },
+			app,
+		);
 		const { getDefinitionByReference } = app.require('@hackolade/ddl-fe-utils');
 
 		const schemaData = { dbVersion };
@@ -50,10 +54,10 @@ const getCreateUdtScriptDto =
 /**
  * @return {(udt: Object) => AlterScriptDto | undefined}
  * */
-const getDeleteUdtScriptDto = app => udt => {
-	const { wrapInQuotes } = require('../../utils/general')(_);
+const getDeleteUdtScriptDto = (app, scriptFormat) => udt => {
+	const { prepareNameForScriptFormat } = require('../../utils/general')(_);
 
-	const ddlUdtName = wrapInQuotes(udt.code || udt.name);
+	const ddlUdtName = prepareNameForScriptFormat(scriptFormat)(udt.code || udt.name);
 	const dropUdtScript = `DROP TYPE ${ddlUdtName};`;
 	return AlterScriptDto.getInstance([dropUdtScript], true, true);
 };
@@ -62,14 +66,18 @@ const getDeleteUdtScriptDto = app => udt => {
  * @return {(udt: Object) => AlterScriptDto[]}
  * */
 const getAddColumnToTypeScriptDtos =
-	({ app, dbVersion, modelDefinitions, internalDefinitions, externalDefinitions }) =>
+	({ app, dbVersion, modelDefinitions, internalDefinitions, externalDefinitions, scriptFormat }) =>
 	udt => {
 		const { createColumnDefinitionBySchema } = require('./createColumnDefinition')(app);
-		const { wrapInQuotes } = require('../../utils/general')(_);
-		const ddlProvider = require('../../ddlProvider/ddlProvider')(null, { dbVersion }, app);
+		const { prepareNameForScriptFormat } = require('../../utils/general')(_);
+		const ddlProvider = require('../../ddlProvider/ddlProvider')(
+			null,
+			{ dbVersion, targetScriptOptions: { keyword: scriptFormat } },
+			app,
+		);
 		const { getDefinitionByReference } = app.require('@hackolade/ddl-fe-utils');
 
-		const fullName = wrapInQuotes(udt.code || udt.name);
+		const fullName = prepareNameForScriptFormat(scriptFormat)(udt.code || udt.name);
 		const schemaData = { dbVersion };
 
 		return _.toPairs(udt.properties)
@@ -99,24 +107,24 @@ const getAddColumnToTypeScriptDtos =
 /**
  * @return {(udt: Object) => AlterScriptDto[]}
  * */
-const getDeleteColumnFromTypeScriptDtos = app => udt => {
-	const { wrapInQuotes } = require('../../utils/general')(_);
+const getDeleteColumnFromTypeScriptDtos = (app, scriptFormat) => udt => {
+	const { prepareNameForScriptFormat } = require('../../utils/general')(_);
 
-	const fullName = wrapInQuotes(udt.code || udt.name);
+	const fullName = prepareNameForScriptFormat(scriptFormat)(udt.code || udt.name);
 
 	return _.toPairs(udt.properties)
 		.filter(([name, jsonSchema]) => !jsonSchema.compMod)
-		.map(([name]) => `ALTER TYPE ${fullName} DROP ATTRIBUTE ${wrapInQuotes(name)};`)
+		.map(([name]) => `ALTER TYPE ${fullName} DROP ATTRIBUTE ${prepareNameForScriptFormat(scriptFormat)(name)};`)
 		.map(script => AlterScriptDto.getInstance([script], true, true));
 };
 
 /**
  * @return {(udt: Object) => AlterScriptDto[]}
  * */
-const getModifyColumnOfTypeScriptDtos = app => udt => {
-	const { wrapInQuotes } = require('../../utils/general')(_);
+const getModifyColumnOfTypeScriptDtos = (app, scriptFormat) => udt => {
+	const { prepareNameForScriptFormat } = require('../../utils/general')(_);
 
-	const fullName = wrapInQuotes(udt.code || udt.name);
+	const fullName = prepareNameForScriptFormat(scriptFormat)(udt.code || udt.name);
 
 	/**
 	 * @type {AlterScriptDto[]}
@@ -124,10 +132,10 @@ const getModifyColumnOfTypeScriptDtos = app => udt => {
 	const renameColumnScripts = _.values(udt.properties)
 		.filter(jsonSchema => checkFieldPropertiesChanged(jsonSchema.compMod, ['name']))
 		.flatMap(jsonSchema => {
-			const oldDdlName = wrapInQuotes(jsonSchema.compMod.oldField.name);
+			const oldDdlName = prepareNameForScriptFormat(scriptFormat)(jsonSchema.compMod.oldField.name);
 			const dropAttributeScript = `ALTER TYPE ${fullName} DROP ATTRIBUTE ${oldDdlName};`;
 
-			const newDdlName = wrapInQuotes(jsonSchema.compMod.newField.name);
+			const newDdlName = prepareNameForScriptFormat(scriptFormat)(jsonSchema.compMod.newField.name);
 			const createAttributeScript = `ALTER TYPE ${fullName} ADD ATTRIBUTE ${newDdlName};`;
 
 			return [
@@ -142,7 +150,7 @@ const getModifyColumnOfTypeScriptDtos = app => udt => {
 	const changeTypeScripts = _.toPairs(udt.properties)
 		.filter(([name, jsonSchema]) => checkFieldPropertiesChanged(jsonSchema.compMod, ['type', 'mode']))
 		.map(([name, jsonSchema]) => {
-			const ddlAttributeName = wrapInQuotes(name);
+			const ddlAttributeName = prepareNameForScriptFormat(scriptFormat)(name);
 			const ddlType = _.toUpper(jsonSchema.compMod.newField.mode || jsonSchema.compMod.newField.type);
 			const script = `ALTER TYPE ${fullName} MODIFY ATTRIBUTE ${ddlAttributeName} ${ddlType};`;
 			return AlterScriptDto.getInstance([script], true, false);

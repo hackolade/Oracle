@@ -1,7 +1,7 @@
 const { AlterScriptDto } = require('../../types/AlterScriptDto.js');
 const { AlterCollectionDto } = require('../../types/AlterCollectionDto');
 const { AlterIndexDto } = require('../../types/AlterIndexDto');
-const { wrapInQuotes } = require('../../../utils/general.js')();
+const { prepareNameForScriptFormat } = require('../../../utils/general.js')();
 
 /**
  * @typedef {{
@@ -111,7 +111,7 @@ const addNameToIndexKey = ({ index, collection }) => {
  * @returns {GetAlterScriptDtosFunction}
  */
 const getDeletedIndexesScriptDtos =
-	({ _, ddlProvider }) =>
+	({ _, ddlProvider, scriptFormat }) =>
 	({ collection }) => {
 		const newIndexes = collection?.role?.compMod?.Indxs?.new || [];
 		const oldIndexes = collection?.role?.compMod?.Indxs?.old || [];
@@ -126,16 +126,18 @@ const getDeletedIndexesScriptDtos =
 			return !correspondingNewIndex;
 		});
 
-		return deletedIndexes.map(index => getDeleteIndexScriptDto({ ddlProvider })({ index, collection }));
+		return deletedIndexes.map(index =>
+			getDeleteIndexScriptDto({ ddlProvider, scriptFormat })({ index, collection }),
+		);
 	};
 
 /**
  * @returns {GetAlterScriptDtoFunction}
  */
 const getDeleteIndexScriptDto =
-	({ ddlProvider }) =>
+	({ ddlProvider, scriptFormat }) =>
 	({ index }) => {
-		const name = wrapInQuotes(index.indxName);
+		const name = prepareNameForScriptFormat(scriptFormat)(index.indxName);
 		const script = ddlProvider.dropIndex({ name });
 
 		return AlterScriptDto.getInstance([script], index.isActivated, true);
@@ -183,7 +185,7 @@ const getAddIndexScriptDto =
  * @returns {GetAlterScriptDtosFunction}
  */
 const getModifiedIndexesScriptDtos =
-	({ _, ddlProvider }) =>
+	({ _, ddlProvider, scriptFormat }) =>
 	({ collection }) => {
 		const newIndexes = collection?.role?.compMod?.Indxs?.new || [];
 		const oldIndexes = collection?.role?.compMod?.Indxs?.old || [];
@@ -207,7 +209,7 @@ const getModifiedIndexesScriptDtos =
 			.filter(Boolean);
 
 		return modifiedIndexes.flatMap(modifiedIndex =>
-			getModifyIndexScriptDto({ _, ddlProvider })({ modifiedIndex, collection }),
+			getModifyIndexScriptDto({ _, ddlProvider, scriptFormat })({ modifiedIndex, collection }),
 		);
 	};
 
@@ -215,10 +217,10 @@ const getModifiedIndexesScriptDtos =
  * @returns {GetAlterScriptDtoFunctionForModifiedIndex}
  */
 const getModifyIndexScriptDto =
-	({ _, ddlProvider }) =>
+	({ _, ddlProvider, scriptFormat }) =>
 	({ modifiedIndex: { oldIndex, newIndex }, collection }) => {
-		const oldName = wrapInQuotes(oldIndex.indxName);
-		const newName = wrapInQuotes(newIndex.indxName);
+		const oldName = prepareNameForScriptFormat(scriptFormat)(oldIndex.indxName);
+		const newName = prepareNameForScriptFormat(scriptFormat)(newIndex.indxName);
 
 		let alterScriptDtos = [];
 
@@ -270,11 +272,11 @@ const getModifyIndexScriptDto =
  * @returns {GetAlterScriptDtosFunction}
  * */
 const getModifyIndexesScriptDtos =
-	({ _, ddlProvider }) =>
+	({ _, ddlProvider, scriptFormat }) =>
 	({ collection }) => {
-		const removedIndexScriptDtos = getDeletedIndexesScriptDtos({ _, ddlProvider })({ collection });
+		const removedIndexScriptDtos = getDeletedIndexesScriptDtos({ _, ddlProvider, scriptFormat })({ collection });
 		const addedIndexScriptDtos = getAddedIndexesScriptDtos({ _, ddlProvider })({ collection });
-		const modifiedIndexScriptDtos = getModifiedIndexesScriptDtos({ _, ddlProvider })({ collection });
+		const modifiedIndexScriptDtos = getModifiedIndexesScriptDtos({ _, ddlProvider, scriptFormat })({ collection });
 
 		return [...removedIndexScriptDtos, ...addedIndexScriptDtos, ...modifiedIndexScriptDtos].filter(Boolean);
 	};
