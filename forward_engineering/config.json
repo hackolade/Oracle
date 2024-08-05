@@ -1,13 +1,4 @@
 {
-	"type": "ddl",
-	"ddlType": "plugin",
-	"mode": "sql",
-	"fileExtensions": [
-		{
-			"value": "sql",
-			"label": "SQL"
-		}
-	],
 	"hasUpdateScript": false,
 	"applyScriptToInstance": true,
 	"combinedContainers": true,
@@ -25,6 +16,36 @@
 		"entity": true,
 		"view": true
 	},
+	"options": [
+		{
+			"name": "quoted identifier",
+			"keyword": "quotedIdentifier",
+			"supportsDeltaModel": true,
+			"type": "ddl",
+			"ddlType": "plugin",
+			"mode": "sql",
+			"fileExtensions": [
+				{
+					"value": "sql",
+					"label": "SQL"
+				}
+			]
+		},
+		{
+			"name": "nonquoted identifier",
+			"keyword": "nonquotedIdentifier",
+			"supportsDeltaModel": true,
+			"type": "ddl",
+			"ddlType": "plugin",
+			"mode": "sql",
+			"fileExtensions": [
+				{
+					"value": "sql",
+					"label": "SQL"
+				}
+			]
+		}
+	],
 	"additionalOptions": [
 		{
 			"id": "applyDropStatements",

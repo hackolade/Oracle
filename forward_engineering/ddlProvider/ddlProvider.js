@@ -28,11 +28,16 @@ module.exports = (baseProvider, options, app) => {
 		hasType,
 		wrap,
 		clean,
-		wrapInQuotes,
-		getNamePrefixedWithSchemaName,
+		getNamePrefixedWithSchemaNameForScriptFormat,
 		wrapComment,
 		getColumnsList,
+		prepareNameForScriptFormat,
 	} = require('../utils/general')(_);
+
+	const prepareName = prepareNameForScriptFormat(options?.targetScriptOptions?.keyword);
+	const getNamePrefixedWithSchemaName = getNamePrefixedWithSchemaNameForScriptFormat(
+		options?.targetScriptOptions?.keyword,
+	);
 
 	const { assignTemplates } = require('../utils/assignTemplates')({ _ });
 
@@ -52,8 +57,8 @@ module.exports = (baseProvider, options, app) => {
 		assignTemplates,
 		templates,
 		commentIfDeactivated,
-		wrapInQuotes,
 		wrapComment,
+		prepareName,
 	});
 
 	const {
@@ -69,7 +74,7 @@ module.exports = (baseProvider, options, app) => {
 		checkAllKeysDeactivated,
 		getColumnsList,
 		commentIfDeactivated,
-		wrapInQuotes,
+		prepareName,
 		assignTemplates,
 	});
 
@@ -79,17 +84,16 @@ module.exports = (baseProvider, options, app) => {
 		assignTemplates,
 		templates,
 		getNamePrefixedWithSchemaName,
-		wrapInQuotes,
 	});
 
 	const { getViewType, getViewData } = require('./ddlHelpers/viewHelper')({
 		_,
-		wrapInQuotes,
+		prepareName,
 	});
 
 	const { getIndexType, getIndexKeys, getIndexOptions, getIndexName } = require('./ddlHelpers/indexHelper')({
 		_,
-		wrapInQuotes,
+		prepareName,
 	});
 
 	const wrapIfNotExists = (statement, ifNotExist, errorCode = 955) => {
@@ -104,7 +108,7 @@ module.exports = (baseProvider, options, app) => {
 	};
 
 	const { generateSynonymStatements } = require('./ddlHelpers/synonymHelper')({
-		wrapInQuotes,
+		prepareName,
 		templates,
 		assignTemplates,
 		getNamePrefixedWithSchemaName,
@@ -116,7 +120,6 @@ module.exports = (baseProvider, options, app) => {
 			templates,
 			assignTemplates,
 			getNamePrefixedWithSchemaName,
-			wrapInQuotes,
 			wrapIfNotExists,
 		});
 
@@ -147,7 +150,7 @@ module.exports = (baseProvider, options, app) => {
 		createSchema({ schemaName, ifNotExist, dbVersion, sequences }) {
 			const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
 			const schemaStatement = assignTemplates(templates.createSchema, {
-				schemaName: wrapInQuotes(schemaName),
+				schemaName: prepareName(schemaName),
 				ifNotExists: !usingTryCatchWrapper && ifNotExist ? ' IF NOT EXISTS' : '',
 			});
 			const sequencesStatement = getSequencesScript({ schemaName, sequences, usingTryCatchWrapper });
@@ -215,7 +218,7 @@ module.exports = (baseProvider, options, app) => {
 
 			return commentIfDeactivated(
 				assignTemplates(template, {
-					name: wrapInQuotes(columnDefinition.name),
+					name: prepareName(columnDefinition.name),
 					type: decorateType(type, columnDefinition),
 					default: getColumnDefault(columnDefinition),
 					encrypt: getColumnEncrypt(columnDefinition),
@@ -238,7 +241,7 @@ module.exports = (baseProvider, options, app) => {
 
 		createCheckConstraint({ name, expression, comments, description }) {
 			return assignTemplates(templates.checkConstraint, {
-				name: name ? `CONSTRAINT ${wrapInQuotes(name)} ` : '',
+				name: name ? `CONSTRAINT ${prepareName(name)} ` : '',
 				expression: _.trim(expression).replace(/^\(([\s\S]*)\)$/, '$1'),
 			});
 		},
@@ -273,7 +276,7 @@ module.exports = (baseProvider, options, app) => {
 
 			const foreignKeyStatement = assignTemplates(templates.createForeignKeyConstraint, {
 				primaryTable: getNamePrefixedWithSchemaName(primaryTable, primarySchemaName || schemaData.schemaName),
-				name: name ? `CONSTRAINT ${wrapInQuotes(name)}` : '',
+				name: name ? `CONSTRAINT ${prepareName(name)}` : '',
 				foreignKey: isActivated ? foreignKeysToString(foreignKeys) : foreignActiveKeysToString(foreignKeys),
 				primaryKey: isActivated ? foreignKeysToString(primaryKeys) : foreignActiveKeysToString(primaryKeys),
 				onDelete: foreignOnDelete ? ` ON DELETE ${foreignOnDelete}` : '',
@@ -317,7 +320,7 @@ module.exports = (baseProvider, options, app) => {
 			const foreignKeyStatement = assignTemplates(templates.createForeignKey, {
 				primaryTable: getNamePrefixedWithSchemaName(primaryTable, primarySchemaName || schemaData.schemaName),
 				foreignTable: getNamePrefixedWithSchemaName(foreignTable, foreignSchemaName || schemaData.schemaName),
-				name: name ? wrapInQuotes(name) : '',
+				name: name ? prepareName(name) : '',
 				foreignKey: isActivated ? foreignKeysToString(foreignKeys) : foreignActiveKeysToString(foreignKeys),
 				primaryKey: isActivated ? foreignKeysToString(primaryKeys) : foreignActiveKeysToString(primaryKeys),
 				onDelete: foreignOnDelete ? ` ON DELETE ${foreignOnDelete}` : '',
@@ -651,6 +654,8 @@ module.exports = (baseProvider, options, app) => {
 				ddlTemplates: templates,
 				assignTemplates,
 				lodash: _,
+				prepareName,
+				getNamePrefixedWithSchemaName,
 			});
 			return ddlCreator.convertDualityViewToDdl({
 				view,

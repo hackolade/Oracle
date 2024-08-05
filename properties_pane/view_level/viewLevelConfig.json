@@ -485,6 +485,142 @@
 				}
 			},
 			{
+				"propertyName": "Workload analysis",
+				"propertyKeyword": "analysis",
+				"propertyTooltip": "",
+				"propertyType": "block",
+				"dependency": {
+					"key": "duality",
+					"value": true
+				},
+				"structure": [
+					{
+						"propertyName": "Actor",
+						"propertyKeyword": "actor",
+						"propertyType": "text"
+					},
+					{
+						"propertyName": "Description",
+						"propertyKeyword": "queryDescription",
+						"propertyTooltip": "Popup for multi-line text entry",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": true
+					},
+					{
+						"propertyName": "Number of documents",
+						"propertyKeyword": "nbrDocs",
+						"propertyType": "numeric",
+						"valueType": "number",
+						"allowNegative": false,
+						"minValue": 0,
+						"step": 1
+					},
+					{
+						"propertyName": "Avg document size (Bytes)",
+						"propertyKeyword": "docSize",
+						"propertyType": "numeric",
+						"valueType": "number",
+						"allowNegative": false,
+						"minValue": 0,
+						"step": 1
+					},
+					{
+						"propertyName": "Read-to-Write ratio",
+						"propertyKeyword": "RtWratio",
+						"propertyType": "text"
+					},
+					{
+						"propertyName": "Write operations",
+						"propertyKeyword": "writeOps",
+						"propertyTooltip": "",
+						"propertyType": "group",
+						"structure": [
+							{
+								"propertyName": "Write ops name",
+								"propertyKeyword": "writeOpsName",
+								"propertyType": "text"
+							},
+							{
+								"propertyName": "Write type",
+								"propertyKeyword": "writeType",
+								"propertyTooltip": "Select from list of options",
+								"propertyType": "select",
+								"defaultValue": "insert",
+								"options": ["check", "insert", "update", "delete"]
+							},
+							{
+								"propertyName": "Update predicates",
+								"propertyKeyword": "updatePredicates",
+								"propertyTooltip": "Popup for multi-line text entry",
+								"propertyType": "details",
+								"template": "textarea",
+								"markdown": false,
+								"dependency": {
+									"key": "writeType",
+									"value": "update"
+								}
+							},
+							{
+								"propertyName": "Write rate",
+								"propertyKeyword": "writeRate",
+								"propertyType": "numeric",
+								"valueType": "number",
+								"allowNegative": false,
+								"minValue": 0,
+								"step": 1
+							},
+							{
+								"propertyName": "Write frequency",
+								"propertyKeyword": "writeFrequency",
+								"propertyTooltip": "Select from list of options",
+								"propertyType": "select",
+								"defaultValue": "per hour",
+								"options": ["per second", "per minute", "per hour"]
+							}
+						]
+					},
+					{
+						"propertyName": "Read operations",
+						"propertyKeyword": "readOperations",
+						"propertyTooltip": "Click the + sign to add new query description",
+						"propertyType": "group",
+						"structure": [
+							{
+								"propertyName": "Read ops name",
+								"propertyKeyword": "readOpsName",
+								"propertyType": "text"
+							},
+							{
+								"propertyName": "Query predicates",
+								"propertyKeyword": "queryPredicates",
+								"propertyTooltip": "Popup for multi-line text entry",
+								"propertyType": "details",
+								"template": "textarea",
+								"markdown": false
+							},
+							{
+								"propertyName": "Read rate",
+								"propertyKeyword": "readRate",
+								"propertyType": "numeric",
+								"valueType": "number",
+								"allowNegative": false,
+								"minValue": 0,
+								"step": 1
+							},
+							{
+								"propertyName": "Read frequency",
+								"propertyKeyword": "readFrequency",
+								"propertyTooltip": "Select from list of options",
+								"propertyType": "select",
+								"defaultValue": "per hour",
+								"options": ["per second", "per minute", "per hour"]
+							}
+						]
+					}
+				]
+			},
+			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
 				"shouldValidate": false,

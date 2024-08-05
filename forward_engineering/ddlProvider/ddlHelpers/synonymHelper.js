@@ -1,8 +1,8 @@
-module.exports = ({ wrapInQuotes, templates, assignTemplates, getNamePrefixedWithSchemaName }) => {
+module.exports = ({ prepareName, templates, assignTemplates, getNamePrefixedWithSchemaName }) => {
 	const generateSynonymCreateStatement = synonym => {
 		const namePrefixedWithSchemaName = getNamePrefixedWithSchemaName(synonym.synonymName, synonym.schemaName);
 		return assignTemplates(templates.createSynonym, {
-			name: synonym.synonymPublic ? wrapInQuotes(synonym.synonymName) : namePrefixedWithSchemaName,
+			name: synonym.synonymPublic ? prepareName(synonym.synonymName) : namePrefixedWithSchemaName,
 			orReplace: synonym.synonymOrReplace ? ' OR REPLACE' : '',
 			editionable: synonym.synonymEditionable ? ' ' + synonym.synonymEditionable : '',
 			public: synonym.synonymPublic ? ' PUBLIC' : '',

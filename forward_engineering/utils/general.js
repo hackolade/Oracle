@@ -141,14 +141,18 @@ module.exports = _ => {
 
 	const wrapInQuotes = name => `"${name}"`;
 
+	const prepareNameForScriptFormat = scriptFormat => name => {
+		return scriptFormat === 'nonquotedIdentifier' ? name : wrapInQuotes(name);
+	};
+
 	const wrapComment = comment => `'${comment}'`;
 
-	const getNamePrefixedWithSchemaName = (name, schemaName) => {
+	const getNamePrefixedWithSchemaNameForScriptFormat = scriptFormat => (name, schemaName) => {
 		if (schemaName) {
-			return `${wrapInQuotes(schemaName)}.${wrapInQuotes(name)}`;
+			return `${prepareNameForScriptFormat(scriptFormat)(schemaName)}.${prepareNameForScriptFormat(scriptFormat)(name)}`;
 		}
 
-		return wrapInQuotes(name);
+		return prepareNameForScriptFormat(scriptFormat)(name);
 	};
 
 	const checkFieldPropertiesChanged = (compMod, propertiesToCheck) => {
@@ -220,10 +224,11 @@ module.exports = _ => {
 		wrap,
 		wrapComment,
 		wrapInQuotes,
-		getNamePrefixedWithSchemaName,
+		getNamePrefixedWithSchemaNameForScriptFormat,
 		checkFieldPropertiesChanged,
 		getColumnsList,
 		escapeSingleQuote,
 		getGroupItemsByCompMode,
+		prepareNameForScriptFormat,
 	};
 };

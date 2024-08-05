@@ -1,5 +1,5 @@
 const _ = require('lodash');
-module.exports = ({ _, wrapInQuotes }) => {
+module.exports = ({ _, prepareName }) => {
 	const getIndexType = indexType => {
 		return indexType ? ` ${_.toUpper(indexType)}` : '';
 	};
@@ -19,7 +19,7 @@ module.exports = ({ _, wrapInQuotes }) => {
 		if (_.isArray(indxKey) && !_.isEmpty(indxKey)) {
 			const indexedColumnsClause = _.map(
 				indxKey,
-				({ name, type }) => `${wrapInQuotes(name)} ${_.toUpper(type)}`,
+				({ name, type }) => `${prepareName(name)} ${_.toUpper(type)}`,
 			).join(',\n\t');
 			return `\n(\n\t${indexedColumnsClause}\n)\n\t`;
 		}
@@ -57,7 +57,7 @@ module.exports = ({ _, wrapInQuotes }) => {
 		return options;
 	};
 
-	const getIndexName = name => (name ? ` ${wrapInQuotes(name)}` : '');
+	const getIndexName = name => (name ? ` ${prepareName(name)}` : '');
 
 	return {
 		getIndexType,

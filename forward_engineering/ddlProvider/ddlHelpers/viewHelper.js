@@ -1,4 +1,4 @@
-module.exports = ({ _, wrapInQuotes }) => {
+module.exports = ({ _, prepareName }) => {
 	const getViewType = ({ editioning, editionable }) => {
 		return `${editionable ? ' EDITIONABLE' : ''}${editioning ? ' EDITIONING' : ''}`;
 	};
@@ -9,9 +9,9 @@ module.exports = ({ _, wrapInQuotes }) => {
 		}
 
 		if (key.alias) {
-			return `${wrapInQuotes(key.name)} as ${wrapInQuotes(key.alias)}`;
+			return `${prepareName(key.name)} as ${prepareName(key.alias)}`;
 		} else {
-			return wrapInQuotes(key.name);
+			return prepareName(key.name);
 		}
 	};
 
@@ -28,7 +28,7 @@ module.exports = ({ _, wrapInQuotes }) => {
 					return result;
 				}
 
-				const tableName = `${wrapInQuotes(key.dbName)}.${wrapInQuotes(key.tableName)}`;
+				const tableName = `${prepareName(key.dbName)}.${prepareName(key.tableName)}`;
 
 				if (!result.tables.includes(tableName)) {
 					result.tables.push(tableName);

@@ -5,8 +5,12 @@ const _ = require('lodash');
 /**
  * @return {(view: Object) => AlterScriptDto | undefined}
  * */
-const getAddRegularViewScriptDto = app => view => {
-	const ddlProvider = require('../../ddlProvider/ddlProvider')(null, null, app);
+const getAddRegularViewScriptDto = (app, scriptFormat) => view => {
+	const ddlProvider = require('../../ddlProvider/ddlProvider')(
+		null,
+		{ targetScriptOptions: { keyword: scriptFormat } },
+		app,
+	);
 	const viewData = {
 		name: view.code || view.name,
 		keys: [],
@@ -20,8 +24,12 @@ const getAddRegularViewScriptDto = app => view => {
 /**
  * @return {(view: Object) => AlterScriptDto | undefined}
  * */
-const getDualityViewScriptDto = app => view => {
-	const ddlProvider = require('../../ddlProvider/ddlProvider')(null, null, app);
+const getDualityViewScriptDto = (app, scriptFormat) => view => {
+	const ddlProvider = require('../../ddlProvider/ddlProvider')(
+		null,
+		{ targetScriptOptions: { keyword: scriptFormat } },
+		app,
+	);
 
 	const createDualityViewDto = mapDeltaDualityViewToFeDualityView(_)(view);
 	const script = ddlProvider.createDualityView(createDualityViewDto);
@@ -31,12 +39,12 @@ const getDualityViewScriptDto = app => view => {
 /**
  * @return {(view: Object) => AlterScriptDto | undefined}
  * */
-const getAddViewScriptDto = app => view => {
+const getAddViewScriptDto = (app, scriptFormat) => view => {
 	if (view.duality) {
-		return getDualityViewScriptDto(app)(view);
+		return getDualityViewScriptDto(app, scriptFormat)(view);
 	}
 	if (view.selectStatement) {
-		return getAddRegularViewScriptDto(app)(view);
+		return getAddRegularViewScriptDto(app, scriptFormat)(view);
 	}
 	return undefined;
 };
@@ -44,9 +52,9 @@ const getAddViewScriptDto = app => view => {
 /**
  * @return {(view: Object) => AlterScriptDto | undefined}
  * */
-const getDeleteViewScriptDto = app => view => {
-	const { wrapInQuotes } = require('../../utils/general')(_);
-	const ddlViewName = wrapInQuotes(view.code || view.name);
+const getDeleteViewScriptDto = (app, scriptFormat) => view => {
+	const { prepareNameForScriptFormat } = require('../../utils/general')(_);
+	const ddlViewName = prepareNameForScriptFormat(scriptFormat)(view.code || view.name);
 
 	const dropViewScript = `DROP VIEW ${ddlViewName};`;
 	return AlterScriptDto.getInstance([dropViewScript], true, true);
