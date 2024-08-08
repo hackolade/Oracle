@@ -11795,6 +11795,7 @@ making sure that you maintain a proper JSON format.
 		"joinSubquery": [
 			{
 				"fieldKeyword": "name",
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "not",
 					"values": [
@@ -11812,25 +11813,6 @@ making sure that you maintain a proper JSON format.
 									"value": true
 								}
 							]
-						}
-					]
-				}
-			},
-			{
-				"fieldKeyword": "name",
-				"hidden": true,
-				"dependency": {
-					"type": "or",
-					"values": [
-						{
-							"level": "root",
-							"key": "viewOn",
-							"exist": true
-						},
-						{
-							"level": "root",
-							"key": "duality",
-							"value": true
 						}
 					]
 				}
@@ -11893,6 +11875,7 @@ making sure that you maintain a proper JSON format.
 			},
 			{
 				"fieldKeyword": "type",
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "not",
 					"values": [
@@ -11910,25 +11893,6 @@ making sure that you maintain a proper JSON format.
 									"value": true
 								}
 							]
-						}
-					]
-				}
-			},
-			{
-				"fieldKeyword": "type",
-				"hidden": true,
-				"dependency": {
-					"type": "or",
-					"values": [
-						{
-							"level": "root",
-							"key": "viewOn",
-							"exist": true
-						},
-						{
-							"level": "root",
-							"key": "duality",
-							"value": true
 						}
 					]
 				}
