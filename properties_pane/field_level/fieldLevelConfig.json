@@ -12001,6 +12001,7 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "select",
 				"options": ["", "JSON_OBJECT"],
 				"defaultValue": "",
+				"preserveOnCleanDependencies": true,
 				"dependency": [
 					{
 						"type": "and",
