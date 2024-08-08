@@ -59,6 +59,24 @@
 					"synonym": ""
 				}
 			},
+			{
+				"from": {
+					"type": "vector",
+					"subtype": "vector<int>"
+				},
+				"to": {
+					"subtype": "vector<int8>"
+				}
+			},
+			{
+				"from": {
+					"type": "vector",
+					"subtype": "vector<float>"
+				},
+				"to": {
+					"subtype": "vector<float32>"
+				}
+			},
 			[
 				"renameBlockItemProperties",
 				{
