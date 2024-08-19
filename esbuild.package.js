@@ -4,6 +4,7 @@ const path = require('path');
 const { copyFolderFiles, addReleaseFlag } = require('@hackolade/hck-esbuild-plugins-pack');
 const esbuild = require('esbuild');
 const { clean } = require('esbuild-plugin-clean');
+const { copy } = require('esbuild-plugin-copy');
 
 const { EXCLUDED_EXTENSIONS, EXCLUDED_FILES, DEFAULT_RELEASE_FOLDER_PATH } = require('./buildConstants');
 
@@ -24,9 +25,16 @@ esbuild
 		outdir: RELEASE_FOLDER_PATH,
 		minify: true,
 		logLevel: 'info',
+		external: ['lodash'],
 		plugins: [
 			clean({
 				patterns: [DEFAULT_RELEASE_FOLDER_PATH],
+			}),
+			copy({
+				assets: {
+					from: [path.join('node_modules', 'lodash', '**', '*')],
+					to: [path.join('node_modules', 'lodash')],
+				},
 			}),
 			copyFolderFiles({
 				fromPath: __dirname,
