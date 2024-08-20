@@ -1042,6 +1042,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -1869,6 +1870,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
 				"defaultValue": false,
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -2790,6 +2792,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -3759,6 +3762,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
 				"defaultValue": false,
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -4590,6 +4594,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -5306,6 +5311,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
 				"defaultValue": false,
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -6020,6 +6026,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
 				"defaultValue": false,
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -7060,6 +7067,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
 				"defaultValue": false,
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -7765,6 +7773,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -8339,6 +8348,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
 				"defaultValue": false,
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -8981,6 +8991,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -9809,6 +9820,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
 				"defaultValue": false,
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -10086,6 +10098,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -11077,6 +11090,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
 				"defaultValue": false,
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -11722,6 +11736,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
 				"defaultValue": false,
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -11795,6 +11810,7 @@ making sure that you maintain a proper JSON format.
 		"joinSubquery": [
 			{
 				"fieldKeyword": "name",
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "not",
 					"values": [
@@ -11874,6 +11890,7 @@ making sure that you maintain a proper JSON format.
 			},
 			{
 				"fieldKeyword": "type",
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "not",
 					"values": [
@@ -11977,6 +11994,7 @@ making sure that you maintain a proper JSON format.
 					}
 				],
 				"defaultValue": "object",
+				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "or",
 					"values": [
@@ -11998,6 +12016,7 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "select",
 				"options": ["", "JSON_OBJECT"],
 				"defaultValue": "",
+				"preserveOnCleanDependencies": true,
 				"dependency": [
 					{
 						"type": "and",
@@ -12030,6 +12049,7 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "select",
 				"options": ["", "JSON_ARRAYAGG"],
 				"defaultValue": "",
+				"preserveOnCleanDependencies": true,
 				"dependency": [
 					{
 						"type": "and",
