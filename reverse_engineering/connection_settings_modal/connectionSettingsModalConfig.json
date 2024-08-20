@@ -21,17 +21,7 @@
 					},
 					{
 						"value": "thick",
-						"label": "Thick mode",
-						"dependency": {
-							"type": "not",
-							"values": [
-								{
-									"dependantOnOS": true,
-									"platform": "macOS",
-									"architecture": "arm"
-								}
-							]
-						}
+						"label": "Thick mode"
 					}
 				]
 			},
