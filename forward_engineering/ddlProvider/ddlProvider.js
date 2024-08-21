@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const defaultTypes = require('../configs/defaultTypes');
 const descriptors = require('../configs/descriptors');
 const templates = require('./templates');
@@ -6,7 +7,6 @@ const { DualityViewSyntaxType } = require('../enums/DualityViewSyntaxType');
 const { DbVersion } = require('../enums/DbVersion');
 const { AlterIndexDto } = require('../alterScript/types/AlterIndexDto.js');
 const { Sequence } = require('../types/schemaSequenceTypes');
-const _ = require('lodash');
 
 /**
  * @param dbVersion {string} DB version in "21ai" format
@@ -148,16 +148,30 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		createSchema({ schemaName, ifNotExist, dbVersion, sequences }) {
+			const emptyLineSeparator = '\n\n';
+			const statementTerminator = ';';
+
+			const preparedSchemaName = prepareName(schemaName);
 			const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
 			const schemaStatement = assignTemplates(templates.createSchema, {
-				schemaName: prepareName(schemaName),
+				schemaName: preparedSchemaName,
 				ifNotExists: !usingTryCatchWrapper && ifNotExist ? ' IF NOT EXISTS' : '',
 			});
 			const sequencesStatement = getSequencesScript({ schemaName, sequences, usingTryCatchWrapper });
-			const schemaSequencesStatement = sequencesStatement ? '\n\n' + sequencesStatement : '';
+			const schemaSequencesStatement = sequencesStatement ? emptyLineSeparator + sequencesStatement : '';
+
+			const alterSessionStatement = assignTemplates(templates.alterSession, {
+				schemaName: preparedSchemaName,
+			});
 
 			if (!usingTryCatchWrapper) {
-				return schemaStatement + ';' + schemaSequencesStatement;
+				return (
+					schemaStatement +
+					statementTerminator +
+					emptyLineSeparator +
+					alterSessionStatement +
+					schemaSequencesStatement
+				);
 			}
 
 			const wrappedSchemaStatement = wrapIfNotExists(schemaStatement, ifNotExist, 1920);
