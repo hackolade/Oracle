@@ -66,7 +66,7 @@ module.exports = {
 
 			columnTagsStatement: 'WITH${checkStatement}${etagStatement}${updateStatement}',
 
-			fromTableStatement: 'FROM ${tableName}${tableAlias}${tableTagsStatement}',
+			fromTableStatement: 'FROM ${tableName}${tableAlias}${tableTagsStatement}${whereClauseStatement}',
 		},
 	},
 
