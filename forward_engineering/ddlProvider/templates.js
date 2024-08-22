@@ -3,10 +3,7 @@ module.exports = {
 
 	comment: '\nCOMMENT ON ${object} ${objectName} IS ${comment};\n',
 
-	createTable:
-		'CREATE${tableType} TABLE${ifNotExists} ${name}\
-        ${tableProps}\
-        \n${options}',
+	createTable: 'CREATE${tableType} TABLE${ifNotExists} ${name}${tableProps}\n${options}',
 
 	createTableProps: '${columnDefinitions}${keyConstraints}${checkConstraints}${foreignKeyConstraints}',
 
@@ -72,4 +69,6 @@ module.exports = {
 			fromTableStatement: 'FROM ${tableName}${tableAlias}${tableTagsStatement}',
 		},
 	},
+
+	alterSession: 'ALTER SESSION SET CURRENT_SCHEMA=${schemaName};\n',
 };
