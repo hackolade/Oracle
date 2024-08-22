@@ -373,6 +373,7 @@ making sure that you maintain a proper JSON format.
 				"options": ["nvarchar2", "nchar", "varchar2", "char"],
 				"data": "options",
 				"valueType": "string",
+				"cleanDependency": true,
 				"dependency": [
 					{
 						"type": "not",
@@ -5715,6 +5716,7 @@ making sure that you maintain a proper JSON format.
 				"options": ["blob", "clob", "nclob", "bfile"],
 				"data": "options",
 				"valueType": "string",
+				"cleanDependency": true,
 				"dependency": {
 					"type": "not",
 					"values": [
@@ -11417,6 +11419,7 @@ making sure that you maintain a proper JSON format.
 				"options": ["varray", "table"],
 				"data": "options",
 				"valueType": "string",
+				"cleanDependency": true,
 				"dependency": {
 					"type": "not",
 					"values": [
