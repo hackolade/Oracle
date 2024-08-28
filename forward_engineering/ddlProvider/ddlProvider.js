@@ -581,6 +581,7 @@ module.exports = (baseProvider, options, app) => {
 				modelInfo: {
 					dbVersion: _.get(viewData, 'schemaData.dbVersion'),
 				},
+				whereClause: detailsTab.whereClause,
 			};
 		},
 
