@@ -132,7 +132,8 @@ class SqlDualityViewDdlCreator extends AbstractDualityViewFeDdlCreator {
 		const tableName = this._getNamePrefixedWithSchemaName(view.tableName, view.schemaName);
 		const tableAlias = this._getFromRootTableAliasStatement(view);
 		const tableTagsStatement = this._getTableTagsStatement(view);
-		const whereClauseStatement = view.whereClause?.trim() ? `\nWHERE ${view.whereClause.trim()}` : '';
+		const whereClause = view.whereClause?.trim();
+		const whereClauseStatement = whereClause ? `\nWHERE ${whereClause} WITH CHECK OPTION` : '';
 
 		const template = this._ddlTemplates.dualityView.sql.fromTableStatement;
 		return this._assignTemplates(template, {
