@@ -370,7 +370,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Subtype",
 				"propertyKeyword": "mode",
 				"propertyType": "select",
-				"options": ["nvarchar2", "nchar", "varchar2", "char"],
+				"options": ["varchar2", "nvarchar2", "char", "nchar"],
 				"data": "options",
 				"valueType": "string",
 				"cleanDependency": true,

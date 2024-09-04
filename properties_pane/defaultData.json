@@ -30,6 +30,7 @@
 	},
 	"user": {},
 	"view": {
+		"name": "new_view",
 		"viewOn": "",
 		"pipeline": ""
 	}
