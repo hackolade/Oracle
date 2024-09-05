@@ -29,7 +29,7 @@
 		"enum": [],
 		"sample": "",
 		"comments": "",
-		"mode": "nvarchar2",
+		"mode": "varchar2",
 		"length": 20,
 		"subtype": "string"
 	},
