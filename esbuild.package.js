@@ -25,7 +25,15 @@ esbuild
 		outdir: RELEASE_FOLDER_PATH,
 		minify: true,
 		logLevel: 'info',
-		external: ['lodash'],
+		external: [
+			'lodash',
+			'@azure/app-configuration',
+			'@azure/identity',
+			'@azure/keyvault-secrets',
+			'oci-common',
+			'oci-objectstorage',
+			'oci-secrets',
+		],
 		plugins: [
 			clean({
 				patterns: [DEFAULT_RELEASE_FOLDER_PATH],
