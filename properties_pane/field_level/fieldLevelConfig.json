@@ -2545,25 +2545,56 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox",
 				"dependency": {
-					"type": "not",
+					"key": "primaryKey",
+					"value": true
+				},
+				"disabled": true,
+				"defaultValue": true
+			},
+			{
+				"propertyName": "Not null",
+				"propertyKeyword": "required",
+				"enableForReference": true,
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "and",
 					"values": [
 						{
-							"type": "and",
+							"type": "or",
 							"values": [
 								{
-									"level": "root",
-									"key": "viewOn",
-									"exist": true
+									"key": "primaryKey",
+									"value": false
 								},
 								{
-									"level": "root",
-									"key": "duality",
-									"value": true
+									"key": "primaryKey",
+									"exists": false
+								}
+							]
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
 								}
 							]
 						}
 					]
-				}
+				},
+				"defaultValue": false
 			},
 			{
 				"propertyName": "Identity",
@@ -4441,25 +4472,56 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox",
 				"dependency": {
-					"type": "not",
+					"key": "primaryKey",
+					"value": true
+				},
+				"disabled": true,
+				"defaultValue": true
+			},
+			{
+				"propertyName": "Not null",
+				"propertyKeyword": "required",
+				"enableForReference": true,
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "and",
 					"values": [
 						{
-							"type": "and",
+							"type": "or",
 							"values": [
 								{
-									"level": "root",
-									"key": "viewOn",
-									"exist": true
+									"key": "primaryKey",
+									"value": false
 								},
 								{
-									"level": "root",
-									"key": "duality",
-									"value": true
+									"key": "primaryKey",
+									"exists": false
+								}
+							]
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
 								}
 							]
 						}
 					]
-				}
+				},
+				"defaultValue": false
 			},
 			{
 				"propertyName": "Masked with function",
@@ -7655,25 +7717,31 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox",
 				"dependency": {
-					"type": "not",
+					"key": "primaryKey",
+					"value": true
+				},
+				"disabled": true,
+				"defaultValue": true
+			},
+			{
+				"propertyName": "Not null",
+				"propertyKeyword": "required",
+				"enableForReference": true,
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "or",
 					"values": [
 						{
-							"type": "and",
-							"values": [
-								{
-									"level": "root",
-									"key": "viewOn",
-									"exist": true
-								},
-								{
-									"level": "root",
-									"key": "duality",
-									"value": true
-								}
-							]
+							"key": "primaryKey",
+							"value": false
+						},
+						{
+							"key": "primaryKey",
+							"exists": false
 						}
 					]
-				}
+				},
+				"defaultValue": false
 			},
 			{
 				"propertyName": "Masked with function",
@@ -8876,25 +8944,31 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox",
 				"dependency": {
-					"type": "not",
+					"key": "primaryKey",
+					"value": true
+				},
+				"disabled": true,
+				"defaultValue": true
+			},
+			{
+				"propertyName": "Not null",
+				"propertyKeyword": "required",
+				"enableForReference": true,
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "or",
 					"values": [
 						{
-							"type": "and",
-							"values": [
-								{
-									"level": "root",
-									"key": "viewOn",
-									"exist": true
-								},
-								{
-									"level": "root",
-									"key": "duality",
-									"value": true
-								}
-							]
+							"key": "primaryKey",
+							"value": false
+						},
+						{
+							"key": "primaryKey",
+							"exists": false
 						}
 					]
-				}
+				},
+				"defaultValue": false
 			},
 			{
 				"propertyName": "Row GUID Column",
