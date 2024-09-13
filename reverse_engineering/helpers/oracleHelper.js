@@ -222,6 +222,7 @@ const connect = async (
 
 	if (connectionMethod === 'Wallet') {
 		configDir = await extractWallet({ walletFile, tempFolder, name });
+		process.env.TNS_ADMIN = configDir;
 	}
 
 	if (connectionMethod === 'TNS') {
