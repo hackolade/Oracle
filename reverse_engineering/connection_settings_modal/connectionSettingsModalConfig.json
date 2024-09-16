@@ -158,7 +158,7 @@
 				"inputLabel": "Wallet Password",
 				"inputKeyword": "walletPassword",
 				"description": "Specify the password used to protect the wallet",
-				"inputType": "text",
+				"inputType": "password",
 				"isHiddenKey": true,
 				"dependency": {
 					"key": "connectionMethod",
