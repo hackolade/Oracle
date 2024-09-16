@@ -150,17 +150,19 @@
 				"description": "Specify the service name of the Oracle Instance",
 				"inputType": "text",
 				"dependency": {
-					"type": "or",
-					"values": [
-						{
-							"key": "identifierType",
-							"value": "serviceName"
-						},
-						{
-							"key": "connectionMethod",
-							"value": ["Wallet", "TNS"]
-						}
-					]
+					"key": "connectionMethod",
+					"value": ["TNS"]
+				}
+			},
+			{
+				"inputLabel": "Wallet Password",
+				"inputKeyword": "walletPassword",
+				"description": "Specify the password used to protect the wallet",
+				"inputType": "text",
+				"isHiddenKey": true,
+				"dependency": {
+					"key": "connectionMethod",
+					"value": ["Wallet"]
 				}
 			},
 			{
