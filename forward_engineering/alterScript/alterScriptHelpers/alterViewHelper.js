@@ -43,10 +43,7 @@ const getAddViewScriptDto = (app, scriptFormat) => view => {
 	if (view.duality) {
 		return getDualityViewScriptDto(app, scriptFormat)(view);
 	}
-	if (view.selectStatement) {
-		return getAddRegularViewScriptDto(app, scriptFormat)(view);
-	}
-	return undefined;
+	return getAddRegularViewScriptDto(app, scriptFormat)(view);
 };
 
 /**
