@@ -68,11 +68,11 @@ const getConnectionStringByTnsNames = (configDir, serviceName, proxy, logger) =>
 	const tnsServicesNames = Object.keys(tnsData);
 
 	if (!tnsData[serviceName] && tnsServicesNames.length === 0) {
-		logger({ message: `Cannot find '${serviceName}' in tnsnames.ora: ${tnsData} and no fallback found` });
+		logger({ message: `Cannot find '${serviceName}' in tnsnames.ora and no fallback found` });
 		return serviceName;
 	}
 
-	const [firstTnsServiceName, ...otherServices] = tnsServicesNames;
+	const [firstTnsServiceName] = tnsServicesNames;
 	const tnsService = tnsData[serviceName] || tnsData[firstTnsServiceName];
 	if (!tnsData[serviceName]) {
 		logger({
