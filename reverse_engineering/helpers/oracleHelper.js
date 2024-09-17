@@ -78,6 +78,10 @@ const getConnectionStringByTnsNames = (configDir, serviceName, proxy, logger) =>
 		logger({
 			message: `Connect using first TNS service ${firstTnsServiceName}' from ${path.join(configDir, 'tnsnames.ora')}.`,
 		});
+	} else {
+		logger({
+			message: `Connect using TNS service ${serviceName}' from ${path.join(configDir, 'tnsnames.ora')}.`,
+		});
 	}
 
 	const address = tnsService?.data?.description?.address;

@@ -21,17 +21,7 @@
 					},
 					{
 						"value": "thick",
-						"label": "Thick mode",
-						"dependency": {
-							"type": "not",
-							"values": [
-								{
-									"dependantOnOS": true,
-									"platform": "macOS",
-									"architecture": "arm"
-								}
-							]
-						}
+						"label": "Thick mode"
 					}
 				]
 			},
@@ -161,8 +151,17 @@
 				"inputType": "password",
 				"isHiddenKey": true,
 				"dependency": {
-					"key": "connectionMethod",
-					"value": ["Wallet"]
+					"type": "and",
+					"values": [
+						{
+							"key": "connectionMethod",
+							"value": ["Wallet"]
+						},
+						{
+							"key": "mode",
+							"value": ["thin"]
+						}
+					]
 				}
 			},
 			{
