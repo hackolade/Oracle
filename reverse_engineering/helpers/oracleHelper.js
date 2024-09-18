@@ -25,7 +25,7 @@ const parseProxyOptions = (proxyString = '') => {
 };
 
 const getTnsNamesOraFile = configDir => {
-	return [
+	const tnsNamesOraFile = [
 		configDir,
 		process.env.TNS_ADMIN,
 		path.join(process.env.ORACLE_HOME || '', 'network', 'admin'),
@@ -43,6 +43,8 @@ const getTnsNamesOraFile = configDir => {
 			return filePath;
 		}
 	}, '');
+
+	return tnsNamesOraFile;
 };
 
 const parseTnsNamesOra = filePath => {
@@ -63,16 +65,28 @@ const getConnectionStringByTnsNames = (configDir, serviceName, proxy, logger) =>
 	const tnsData = parseTnsNamesOra(filePath);
 
 	logger({ message: 'tnsnames.ora successfully parsed' });
+	const tnsServicesNames = Object.keys(tnsData);
 
-	if (!tnsData[serviceName]) {
-		logger({ message: 'Cannot find "' + serviceName + '" in tnsnames.ora' });
-
+	if (!tnsData[serviceName] && tnsServicesNames.length === 0) {
+		logger({ message: `Cannot find '${serviceName}' in tnsnames.ora and no fallback found` });
 		return serviceName;
 	}
 
-	const address = tnsData[serviceName]?.data?.description?.address;
-	const service = tnsData[serviceName]?.data?.description?.connect_data?.service_name;
-	const sid = tnsData[serviceName]?.data?.description?.connect_data?.sid;
+	const [firstTnsServiceName] = tnsServicesNames;
+	const tnsService = tnsData[serviceName] || tnsData[firstTnsServiceName];
+	if (!tnsData[serviceName]) {
+		logger({
+			message: `Connect using first TNS service ${firstTnsServiceName}' from ${path.join(configDir, 'tnsnames.ora')}.`,
+		});
+	} else {
+		logger({
+			message: `Connect using TNS service ${serviceName}' from ${path.join(configDir, 'tnsnames.ora')}.`,
+		});
+	}
+
+	const address = tnsService?.data?.description?.address;
+	const service = tnsService?.data?.description?.connect_data?.service_name;
+	const sid = tnsService?.data?.description?.connect_data?.sid;
 
 	logger({ message: 'tnsnames.ora', address, service });
 
@@ -178,6 +192,7 @@ const getSshConnectionString = async (data, sshService, logger) => {
 const connect = async (
 	{
 		walletFile,
+		walletPassword,
 		tempFolder,
 		name,
 		connectionMethod,
@@ -244,11 +259,7 @@ const connect = async (
 	let connectString = '';
 
 	if (['Wallet', 'TNS'].includes(connectionMethod)) {
-		if (proxy) {
-			connectString = getConnectionStringByTnsNames(configDir, serviceName, proxy, logger);
-		} else {
-			connectString = serviceName;
-		}
+		connectString = getConnectionStringByTnsNames(configDir, serviceName, proxy, logger);
 	} else {
 		connectString = getConnectionDescription(
 			{
@@ -303,6 +314,8 @@ const connect = async (
 		password: userPassword,
 		queryRequestTimeout,
 		authRole,
+		walletLocation: configDir,
+		walletPassword,
 	});
 };
 
@@ -327,29 +340,37 @@ const disconnect = async sshService => {
 	});
 };
 
-const authByCredentials = ({ connectString, username, password, queryRequestTimeout, authRole }) => {
+const authByCredentials = ({
+	connectString,
+	username,
+	password,
+	queryRequestTimeout,
+	authRole,
+	walletPassword,
+	walletLocation,
+}) => {
 	return new Promise((resolve, reject) => {
-		oracleDB.getConnection(
-			{
-				username,
-				password,
-				connectString,
-				privilege: authRole === 'default' ? undefined : oracleDB[authRole],
-			},
-			(err, conn) => {
-				if (err) {
-					connection = null;
-					return reject(err);
-				}
-				try {
-					conn.callTimeout = Number(queryRequestTimeout || 0);
-					connection = conn;
-					resolve();
-				} catch (err) {
-					reject(err);
-				}
-			},
-		);
+		const connectionConfig = {
+			username,
+			password,
+			connectString,
+			privilege: authRole === 'default' ? undefined : oracleDB[authRole],
+			walletLocation,
+			walletPassword,
+		};
+		oracleDB.getConnection(connectionConfig, (err, conn) => {
+			if (err) {
+				connection = null;
+				return reject(err);
+			}
+			try {
+				conn.callTimeout = Number(queryRequestTimeout || 0);
+				connection = conn;
+				resolve();
+			} catch (err) {
+				reject(err);
+			}
+		});
 	});
 };
 
