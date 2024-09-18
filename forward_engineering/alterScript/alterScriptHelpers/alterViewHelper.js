@@ -13,7 +13,12 @@ const getAddRegularViewScriptDto = (app, scriptFormat) => view => {
 	);
 	const viewData = {
 		name: view.code || view.name,
-		keys: [],
+		keys: getKeys({
+			view,
+			collectionRefsDefinitionsMap: view.compMod?.collectionData?.collectionRefsDefinitionsMap ?? {},
+			ddlProvider,
+			app,
+		}),
 		schemaData: { schemaName: '' },
 	};
 	const hydratedView = ddlProvider.hydrateView({ viewData, entityData: [view] });
@@ -43,10 +48,7 @@ const getAddViewScriptDto = (app, scriptFormat) => view => {
 	if (view.duality) {
 		return getDualityViewScriptDto(app, scriptFormat)(view);
 	}
-	if (view.selectStatement) {
-		return getAddRegularViewScriptDto(app, scriptFormat)(view);
-	}
-	return undefined;
+	return getAddRegularViewScriptDto(app, scriptFormat)(view);
 };
 
 /**
@@ -58,6 +60,45 @@ const getDeleteViewScriptDto = (app, scriptFormat) => view => {
 
 	const dropViewScript = `DROP VIEW ${ddlViewName};`;
 	return AlterScriptDto.getInstance([dropViewScript], true, true);
+};
+
+const getKeys = ({ view, collectionRefsDefinitionsMap, ddlProvider, app }) => {
+	const { mapProperties } = app.require('@hackolade/ddl-fe-utils');
+
+	return mapProperties(view, (propertyName, schema) => {
+		const definition = collectionRefsDefinitionsMap[schema.refId];
+
+		if (!definition) {
+			return ddlProvider.hydrateViewColumn({
+				name: propertyName,
+				isActivated: schema.isActivated,
+			});
+		}
+
+		const entityName =
+			_.get(definition.collection, '[0].code', '') ||
+			_.get(definition.collection, '[0].collectionName', '') ||
+			'';
+		const dbName = _.get(definition.bucket, '[0].code') || _.get(definition.bucket, '[0].name', '');
+		const name = definition.name;
+
+		if (name === propertyName) {
+			return ddlProvider.hydrateViewColumn({
+				name,
+				dbName,
+				entityName,
+				isActivated: schema.isActivated,
+			});
+		}
+
+		return ddlProvider.hydrateViewColumn({
+			name,
+			dbName,
+			entityName,
+			alias: propertyName,
+			isActivated: schema.isActivated,
+		});
+	});
 };
 
 module.exports = {
