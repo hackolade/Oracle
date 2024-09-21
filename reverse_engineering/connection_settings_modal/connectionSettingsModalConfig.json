@@ -143,12 +143,21 @@
 					"type": "or",
 					"values": [
 						{
-							"key": "identifierType",
-							"value": ["serviceName"]
-						},
-						{
 							"key": "connectionMethod",
 							"value": ["TNS"]
+						},
+						{
+							"type": "and",
+							"values": [
+								{
+									"key": "connectionMethod",
+									"value": ["Basic"]
+								},
+								{
+									"key": "identifierType",
+									"value": ["serviceName"]
+								}
+							]
 						}
 					]
 				}
