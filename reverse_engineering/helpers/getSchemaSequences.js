@@ -78,6 +78,7 @@ const SEQUENCE_OPTION_MAP = {
  */
 const getSchemaSequenceDtos = async ({ schema, execute, logger }) => {
 	try {
+		logger.log('info', { message: 'Start getting sequences' }, 'Getting sequences');
 		const rawSequenceDtos = await execute(
 			`
       SELECT JSON_OBJECT(
@@ -104,6 +105,12 @@ const getSchemaSequenceDtos = async ({ schema, execute, logger }) => {
       `,
 		);
 
+		logger.log(
+			'info',
+			{ message: 'Finish getting sequences', count: rawSequenceDtos?.length || 0 },
+			'Getting sequences',
+		);
+
 		if (!rawSequenceDtos?.length) {
 			return [];
 		}
@@ -124,6 +131,12 @@ const getSchemaSequenceDtos = async ({ schema, execute, logger }) => {
 			};
 		});
 	} catch (error) {
+		logger.progress({
+			message: `Warning: Getting sequences failed: sequences are not reverse-engineered.`,
+			containerName: schema,
+			entityName: '',
+		});
+
 		const { message, stack, ...err } = error;
 		logger.log('error', { message: 'Cannot get sequences', error: { message, stack, err } }, 'Getting sequences');
 
@@ -137,7 +150,9 @@ const getSchemaSequenceDtos = async ({ schema, execute, logger }) => {
  */
 const getSchemaSequenceDdl = async ({ schema, execute, logger }) => {
 	try {
-		const sequenceDdlScripts = await execute(
+		logger.log('info', { message: 'Start getting sequences DDL' }, 'Getting sequences');
+
+		const sequenceDdlScriptsPromise = execute(
 			`
       SELECT JSON_OBJECT(
           'sequenceName' VALUE OBJECT_NAME,
@@ -147,6 +162,17 @@ const getSchemaSequenceDdl = async ({ schema, execute, logger }) => {
       WHERE OBJECT_TYPE = 'SEQUENCE'
       AND OWNER = '${schema}'
       `,
+		);
+
+		const sequenceDdlScripts = await Promise.race([
+			sequenceDdlScriptsPromise,
+			throwErrorOnTimeout(30000, 'Timeout error on getting sequences DDL.'),
+		]);
+
+		logger.log(
+			'info',
+			{ message: 'Finish getting sequences DDL', count: sequenceDdlScripts?.length || 0 },
+			'Getting sequences',
 		);
 
 		if (!sequenceDdlScripts?.length) {
@@ -162,8 +188,13 @@ const getSchemaSequenceDdl = async ({ schema, execute, logger }) => {
 			};
 		}, {});
 	} catch (error) {
-		const { message, stack, ...err } = error;
+		logger.progress({
+			message: `Warning: Getting DDL of sequences failed: sequences are created but the “start with” property is defaulted to its “min/max” value.`,
+			containerName: schema,
+			entityName: '',
+		});
 
+		const { message, stack, ...err } = error;
 		logger.log(
 			'error',
 			{ message: 'Cannot get sequences DDL', error: { message, stack, err } },
@@ -270,6 +301,11 @@ const getStartOptionFromDdl = ({ sequenceDto }) => {
 
 	return !isNaN(Number(start)) ? Number(start) : start;
 };
+
+const throwErrorOnTimeout = (timeout, errorMessage) =>
+	new Promise((resolve, reject) =>
+		setTimeout(() => reject(new Error(errorMessage + ' TIMEOUT: ' + timeout)), timeout),
+	);
 
 module.exports = {
 	getSchemaSequences,
