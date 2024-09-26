@@ -862,34 +862,39 @@ const logEnvironment = logger => {
 	);
 };
 
-const getDbSynonyms = async logger => {
+const getSchemaSynonyms = async ({ schema, allDDLs, logger }) => {
 	try {
+		logger.log('info', { message: 'Start getting synonyms' }, 'Getting synonyms');
+
 		const queryResult = await execute(
-			'SELECT OWNER, SYNONYM_NAME, TABLE_OWNER, TABLE_NAME, DB_LINK FROM ALL_SYNONYMS WHERE ORIGIN_CON_ID > 1',
+			`
+			SELECT ALL_SYNONYMS.OWNER,
+			    ALL_SYNONYMS.SYNONYM_NAME,
+			    ALL_SYNONYMS.TABLE_NAME,
+			    ALL_OBJECTS.EDITIONABLE 
+			  FROM ALL_SYNONYMS
+			  LEFT JOIN ALL_OBJECTS
+			    ON ALL_OBJECTS.OWNER = ALL_SYNONYMS.OWNER
+			    AND ALL_OBJECTS.OBJECT_NAME = ALL_SYNONYMS.SYNONYM_NAME
+			  WHERE ORIGIN_CON_ID > 1 AND (ALL_SYNONYMS.OWNER = '${schema}' OR ALL_SYNONYMS.OWNER = 'PUBLIC')
+			`,
 		);
+
+		logger.log('info', { message: 'Finish getting synonyms', count: queryResult?.length || 0 }, 'Getting synonyms');
 
 		if (_.isEmpty(queryResult)) {
 			return [];
 		}
-		const synonyms = queryResult.map(([owner, synonymName, synonymSchemaName, synonymEntityId]) => {
+		const synonyms = queryResult.map(([owner, synonymName, synonymEntityId, editionable]) => {
 			return {
-				synonymSchemaName,
 				synonymPublic: owner === 'PUBLIC',
 				synonymName,
 				synonymEntityId,
+				synonymEditionable: editionable === null || editionable === 'N' ? 'NONEDITIONABLE' : 'EDITIONABLE',
 			};
 		});
-		logger.log('info', synonyms, 'Getting synonyms');
-		const synonymsDDL = await getSynonymsDDL();
-		const synonymsWithEditionable = synonyms.map(synonym => {
-			const synonymDDL = synonymsDDL.find(({ name }) => name === synonym.synonymName);
-			const isEditionable = !synonymDDL?.ddl?.toUpperCase().includes('NONEDITIONABLE');
 
-			return { ...synonym, synonymEditionable: isEditionable ? 'EDITIONABLE' : 'NONEDITIONABLE' };
-		});
-		const groupedSynonyms = _.groupBy(synonymsWithEditionable, 'synonymSchemaName');
-
-		return groupedSynonyms;
+		return filterUsedSequences({ synonyms, allDDLs });
 	} catch (err) {
 		logger.log(
 			'error',
@@ -902,18 +907,21 @@ const getDbSynonyms = async logger => {
 	}
 };
 
-const getSynonymsDDL = async () => {
-	const queryResult = await execute(
-		"SELECT SYNONYM_NAME, DBMS_METADATA.GET_DDL('SYNONYM', SYNONYM_NAME, OWNER) FROM ALL_SYNONYMS WHERE ORIGIN_CON_ID > 1",
-	);
-	const synonymsDDL = await Promise.all(
-		queryResult.map(async ([synonymName, synonymDDL]) => {
-			const synonymDDLString = await synonymDDL.getData();
-			return { name: synonymName, ddl: synonymDDLString };
-		}),
-	);
+/**
+ *
+ * @param {{ synonyms: Array<{ synonymName: string }>, allDDLs: string[] }}
+ * @returns {Array}
+ */
+const filterUsedSequences = ({ synonyms, allDDLs }) => {
+	const usedSynonyms = [];
 
-	return synonymsDDL;
+	for (const synonym of synonyms) {
+		if (allDDLs.includes(synonym.synonymName.toLowerCase())) {
+			usedSynonyms.push(synonym);
+		}
+	}
+
+	return usedSynonyms;
 };
 
 module.exports = {
@@ -929,6 +937,6 @@ module.exports = {
 	selectRecords,
 	logEnvironment,
 	execute,
-	getDbSynonyms,
+	getSchemaSynonyms,
 	getSchemaSequences: getSchemaSequences({ execute }),
 };

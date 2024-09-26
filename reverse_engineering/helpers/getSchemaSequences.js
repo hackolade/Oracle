@@ -4,6 +4,7 @@
  */
 
 const { Sequence, SequenceDto } = require('../../forward_engineering/types/schemaSequenceTypes');
+const mapLimit = require('async/mapLimit');
 
 const START_VALUE_REGEX = /(?<=START WITH)(\s+)([\w]+)(?=\s+)?/;
 const SHARING_LINK_REGEX = /\s+LINK$/;
@@ -73,37 +74,43 @@ const SEQUENCE_OPTION_MAP = {
 };
 
 /**
- * @param {{ schema: string, execute: Execute, logger: object }}
+ * @param {{ schema: string, execute: Execute, logger: object, allDDLs: string }}
  * @returns {Promise<SequenceDto[]>}
  */
-const getSchemaSequenceDtos = async ({ schema, execute, logger }) => {
+const getSchemaSequenceDtos = async ({ schema, allDDLs, execute, logger }) => {
 	try {
 		logger.log('info', { message: 'Start getting sequences' }, 'Getting sequences');
-		const rawSequenceDtos = await execute(
-			`
-      SELECT JSON_OBJECT(
-          'sharing'      VALUE SHARING,
-          'sequenceName' VALUE SEQUENCE_NAME,
-          'minValue'     VALUE MIN_VALUE,
-          'maxValue'     VALUE MAX_VALUE,
-          'increment'    VALUE INCREMENT_BY,
-          'cycle'        VALUE CYCLE_FLAG,
-          'order'        VALUE ORDER_FLAG,
-          'cacheValue'   VALUE CACHE_SIZE,
-          'scale'        VALUE SCALE_FLAG,
-          'extend'       VALUE EXTEND_FLAG,
-          'shard'        VALUE SHARDED_FLAG,
-          'type'         VALUE SESSION_FLAG,
-          'keep'         VALUE KEEP_VALUE
-      )
-      FROM ALL_OBJECTS
-      LEFT JOIN ALL_SEQUENCES
-                ON ALL_SEQUENCES.SEQUENCE_OWNER = ALL_OBJECTS.OWNER
-                AND ALL_SEQUENCES.SEQUENCE_NAME = ALL_OBJECTS.OBJECT_NAME
-      WHERE OBJECT_TYPE = 'SEQUENCE'
-      AND OWNER = '${schema}'
-      `,
-		);
+		const rawSequenceDtos = (
+			await execute(
+				`
+				SELECT JSON_OBJECT(
+				    'sharing'      VALUE ALL_OBJECTS.SHARING,
+				    'sequenceName' VALUE ALL_SEQUENCES.SEQUENCE_NAME,
+				    'minValue'     VALUE ALL_SEQUENCES.MIN_VALUE,
+				    'maxValue'     VALUE ALL_SEQUENCES.MAX_VALUE,
+				    'increment'    VALUE ALL_SEQUENCES.INCREMENT_BY,
+				    'cycle'        VALUE ALL_SEQUENCES.CYCLE_FLAG,
+				    'order'        VALUE ALL_SEQUENCES.ORDER_FLAG,
+				    'cacheValue'   VALUE ALL_SEQUENCES.CACHE_SIZE,
+				    'scale'        VALUE ALL_SEQUENCES.SCALE_FLAG,
+				    'extend'       VALUE ALL_SEQUENCES.EXTEND_FLAG,
+				    'shard'        VALUE ALL_SEQUENCES.SHARDED_FLAG,
+				    'type'         VALUE ALL_SEQUENCES.SESSION_FLAG,
+				    'keep'         VALUE ALL_SEQUENCES.KEEP_VALUE
+				)
+				FROM ALL_OBJECTS
+				LEFT JOIN ALL_SEQUENCES
+				  ON ALL_SEQUENCES.SEQUENCE_OWNER = ALL_OBJECTS.OWNER
+				  AND ALL_SEQUENCES.SEQUENCE_NAME = ALL_OBJECTS.OBJECT_NAME
+				LEFT JOIN ALL_TAB_IDENTITY_COLS
+				  ON ALL_TAB_IDENTITY_COLS.SEQUENCE_NAME = ALL_SEQUENCES.SEQUENCE_NAME
+				  AND ALL_TAB_IDENTITY_COLS.OWNER = ALL_OBJECTS.OWNER
+				-- take only sequences that are not associated with identity columns
+				WHERE ALL_OBJECTS.OBJECT_TYPE = 'SEQUENCE' AND ALL_TAB_IDENTITY_COLS.COLUMN_NAME IS NULL
+				AND ALL_OBJECTS.OWNER = '${schema}'
+     		 `,
+			)
+		).map(([rawSequence]) => JSON.parse(rawSequence));
 
 		logger.log(
 			'info',
@@ -115,14 +122,22 @@ const getSchemaSequenceDtos = async ({ schema, execute, logger }) => {
 			return [];
 		}
 
+		const usedSequences = filterUsedSequences({ sequenceDtos: rawSequenceDtos, allDDLs });
+
+		logger.log(
+			'info',
+			{ message: 'Filter sequences finished', usedSequencesCount: usedSequences?.length || 0 },
+			'Getting sequences',
+		);
+
 		const ddlScriptMap = await getSchemaSequenceDdl({
 			schema,
+			namesOfSequences: usedSequences.map(sequenceDto => sequenceDto.sequenceName),
 			execute,
 			logger,
 		});
 
-		return rawSequenceDtos.map(([rawSequence]) => {
-			const sequenceDto = JSON.parse(rawSequence);
+		return usedSequences.map(sequenceDto => {
 			const ddlScript = ddlScriptMap[sequenceDto.sequenceName] || '';
 
 			return {
@@ -145,24 +160,27 @@ const getSchemaSequenceDtos = async ({ schema, execute, logger }) => {
 };
 
 /**
- * @param {{ schema: string, execute: Execute, logger: object }}
+ * @param {{ schema: string, namesOfSequences: string[], execute: Execute, logger: object }}
  * @returns {Promise<{ [sequenceName: string]: string }>}
  */
-const getSchemaSequenceDdl = async ({ schema, execute, logger }) => {
+const getSchemaSequenceDdl = async ({ schema, namesOfSequences, execute, logger }) => {
 	try {
 		logger.log('info', { message: 'Start getting sequences DDL' }, 'Getting sequences');
 
-		const sequenceDdlScriptsPromise = execute(
-			`
-      SELECT JSON_OBJECT(
-          'sequenceName' VALUE OBJECT_NAME,
-          'ddlScript'    VALUE DBMS_METADATA.GET_DDL(OBJECT_TYPE, OBJECT_NAME, OWNER)
-      )
-      FROM ALL_OBJECTS
-      WHERE OBJECT_TYPE = 'SEQUENCE'
-      AND OWNER = '${schema}'
-      `,
-		);
+		const sequenceDdlScriptsPromise = mapLimit(namesOfSequences, 50, async sequenceName => {
+			try {
+				const sequenceDdlScript = await execute(
+					`SELECT JSON_OBJECT('ddl' VALUE DBMS_METADATA.GET_DDL('SEQUENCE', '${sequenceName}', '${schema}')) FROM DUAL`,
+				);
+
+				return [sequenceName, JSON.parse(sequenceDdlScript?.[0]?.[0] || '{}')?.ddl || ''];
+			} catch (error) {
+				const { message, stack, ...err } = error;
+				logger.log('error', { sequenceName, schema, message, stack, err }, 'Getting sequences DDL ERROR');
+
+				return [sequenceName, ''];
+			}
+		});
 
 		const sequenceDdlScripts = await Promise.race([
 			sequenceDdlScriptsPromise,
@@ -179,14 +197,7 @@ const getSchemaSequenceDdl = async ({ schema, execute, logger }) => {
 			return {};
 		}
 
-		return sequenceDdlScripts.reduce((result, [rawDdlScript]) => {
-			const { sequenceName, ddlScript } = JSON.parse(rawDdlScript);
-
-			return {
-				...result,
-				[sequenceName]: ddlScript,
-			};
-		}, {});
+		return Object.fromEntries(sequenceDdlScripts);
 	} catch (error) {
 		logger.progress({
 			message: `Warning: Getting DDL of sequences failed: sequences are created but the “start with” property is defaulted to its “min/max” value.`,
@@ -206,12 +217,12 @@ const getSchemaSequenceDdl = async ({ schema, execute, logger }) => {
 };
 /**
  * @param {{ execute: Execute }}
- * @returns {({ schema, logger }: { schema: string, logger: object }) => Promise<Sequence[]>}
+ * @returns {({ schema, logger }: { schema: string, allDDLs: string, logger: object }) => Promise<Sequence[]>}
  */
 const getSchemaSequences =
 	({ execute }) =>
-	async ({ schema, logger }) => {
-		const sequenceDtos = await getSchemaSequenceDtos({ schema, execute, logger });
+	async ({ schema, allDDLs, logger }) => {
+		const sequenceDtos = await getSchemaSequenceDtos({ schema, allDDLs, execute, logger });
 
 		return sequenceDtos.map(sequenceDto => {
 			const sharing = getSequenceSharing({ sequenceDto });
@@ -306,6 +317,21 @@ const throwErrorOnTimeout = (timeout, errorMessage) =>
 	new Promise((resolve, reject) =>
 		setTimeout(() => reject(new Error(errorMessage + ' TIMEOUT: ' + timeout)), timeout),
 	);
+
+/**
+ * @param {{ sequenceDtos: SequenceDto[], allDDLs: string }}
+ */
+const filterUsedSequences = ({ sequenceDtos, allDDLs }) => {
+	const usedSequences = [];
+
+	for (const sequence of sequenceDtos) {
+		if (allDDLs.includes(sequence.sequenceName.toLowerCase())) {
+			usedSequences.push(sequence);
+		}
+	}
+
+	return usedSequences;
+};
 
 module.exports = {
 	getSchemaSequences,
