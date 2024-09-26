@@ -126,7 +126,10 @@ const getSchemaSequenceDtos = async ({ schema, allDDLs, execute, logger }) => {
 
 		logger.log(
 			'info',
-			{ message: 'Filter sequences finished', usedSequencesCount: usedSequences?.length || 0 },
+			{
+				message: 'Filtering of sequences used in tables and views finished',
+				usedSequencesCount: usedSequences?.length || 0,
+			},
 			'Getting sequences',
 		);
 
@@ -165,7 +168,7 @@ const getSchemaSequenceDtos = async ({ schema, allDDLs, execute, logger }) => {
  */
 const getSchemaSequenceDdl = async ({ schema, namesOfSequences, execute, logger }) => {
 	try {
-		logger.log('info', { message: 'Start getting sequences DDL' }, 'Getting sequences');
+		logger.log('info', { message: 'Start getting sequences DDL' }, 'Getting DDL of sequences');
 
 		const sequenceDdlScriptsPromise = mapLimit(namesOfSequences, 50, async sequenceName => {
 			try {
@@ -176,7 +179,7 @@ const getSchemaSequenceDdl = async ({ schema, namesOfSequences, execute, logger 
 				return [sequenceName, JSON.parse(sequenceDdlScript?.[0]?.[0] || '{}')?.ddl || ''];
 			} catch (error) {
 				const { message, stack, ...err } = error;
-				logger.log('error', { sequenceName, schema, message, stack, err }, 'Getting sequences DDL ERROR');
+				logger.log('error', { sequenceName, schema, message, stack, err }, 'Getting sequence DDL ERROR');
 
 				return [sequenceName, ''];
 			}
@@ -190,7 +193,7 @@ const getSchemaSequenceDdl = async ({ schema, namesOfSequences, execute, logger 
 		logger.log(
 			'info',
 			{ message: 'Finish getting sequences DDL', count: sequenceDdlScripts?.length || 0 },
-			'Getting sequences',
+			'Getting DDL of sequences',
 		);
 
 		if (!sequenceDdlScripts?.length) {
@@ -209,7 +212,7 @@ const getSchemaSequenceDdl = async ({ schema, namesOfSequences, execute, logger 
 		logger.log(
 			'error',
 			{ message: 'Cannot get sequences DDL', error: { message, stack, err } },
-			'Getting sequences',
+			'Getting DDL of sequences',
 		);
 
 		return {};
