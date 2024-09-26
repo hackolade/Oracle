@@ -876,7 +876,7 @@ const getSchemaSynonyms = async ({ schema, allDDLs, logger }) => {
 			  LEFT JOIN ALL_OBJECTS
 			    ON ALL_OBJECTS.OWNER = ALL_SYNONYMS.OWNER
 			    AND ALL_OBJECTS.OBJECT_NAME = ALL_SYNONYMS.SYNONYM_NAME
-			  WHERE ORIGIN_CON_ID > 1 AND (ALL_SYNONYMS.OWNER = '${schema}' OR ALL_SYNONYMS.OWNER = 'PUBLIC')
+			  WHERE ORIGIN_CON_ID > 1 AND ALL_SYNONYMS.TABLE_OWNER = '${schema}'
 			`,
 		);
 
@@ -894,7 +894,7 @@ const getSchemaSynonyms = async ({ schema, allDDLs, logger }) => {
 			};
 		});
 
-		return filterUsedSequences({ synonyms, allDDLs });
+		return filterUsedSynonyms({ synonyms, allDDLs });
 	} catch (err) {
 		logger.log(
 			'error',
@@ -912,7 +912,7 @@ const getSchemaSynonyms = async ({ schema, allDDLs, logger }) => {
  * @param {{ synonyms: Array<{ synonymName: string }>, allDDLs: string[] }}
  * @returns {Array}
  */
-const filterUsedSequences = ({ synonyms, allDDLs }) => {
+const filterUsedSynonyms = ({ synonyms, allDDLs }) => {
 	const usedSynonyms = [];
 
 	for (const synonym of synonyms) {
