@@ -140,8 +140,26 @@
 				"description": "Specify the service name of the Oracle Instance",
 				"inputType": "text",
 				"dependency": {
-					"key": "connectionMethod",
-					"value": ["TNS"]
+					"type": "or",
+					"values": [
+						{
+							"key": "connectionMethod",
+							"value": ["TNS"]
+						},
+						{
+							"type": "and",
+							"values": [
+								{
+									"key": "connectionMethod",
+									"value": ["Basic"]
+								},
+								{
+									"key": "identifierType",
+									"value": ["serviceName"]
+								}
+							]
+						}
+					]
 				}
 			},
 			{
