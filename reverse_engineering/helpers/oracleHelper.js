@@ -916,7 +916,9 @@ const filterUsedSynonyms = ({ synonyms, allDDLs }) => {
 	const usedSynonyms = [];
 
 	for (const synonym of synonyms) {
-		if (allDDLs.includes(synonym.synonymName.toLowerCase())) {
+		const synonymRegexp = new RegExp('\\b' + synonym.synonymName + '\\b', 'i');
+
+		if (synonymRegexp.test(allDDLs)) {
 			usedSynonyms.push(synonym);
 		}
 	}

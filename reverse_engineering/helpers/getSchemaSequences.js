@@ -325,7 +325,9 @@ const filterUsedSequences = ({ sequenceDtos, allDDLs }) => {
 	const usedSequences = [];
 
 	for (const sequence of sequenceDtos) {
-		if (allDDLs.includes(sequence.sequenceName.toLowerCase())) {
+		const sequenceRegexp = new RegExp('\\b' + sequence.sequenceName + '\\b', 'i');
+
+		if (sequenceRegexp.test(allDDLs)) {
 			usedSequences.push(sequence);
 		}
 	}
