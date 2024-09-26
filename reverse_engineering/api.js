@@ -92,11 +92,9 @@ module.exports = {
 			const collections = data.collections;
 			const dataBaseNames = data.dataBaseNames;
 			const dbVersion = await oracleHelper.getDbVersion(logger);
-			const synonyms = await oracleHelper.getDbSynonyms(logger);
 			const packages = await dataBaseNames.reduce(async (packagesPromise, schema) => {
 				const packages = await packagesPromise;
 				const entities = oracleHelper.splitEntityNames(collections[schema]);
-				const sequences = await oracleHelper.getSchemaSequences({ schema, logger });
 
 				const tablesPackages = await entities.tables.reduce(async (next, table) => {
 					const result = await next;
@@ -143,8 +141,6 @@ module.exports = {
 						},
 						bucketInfo: {
 							database: schema,
-							synonyms: synonyms?.[schema] || [],
-							sequences,
 						},
 					});
 				}, Promise.resolve([]));
@@ -172,6 +168,12 @@ module.exports = {
 					return [...packages, ...tablesPackages];
 				}
 
+				const combinedTablesDDLs = tablesPackages.map(tablePackage => tablePackage.ddl.script).join('');
+				const combinedViewsDDLs = views.map(view => view.ddl.script).join('');
+				const allDDLs = [combinedTablesDDLs, combinedViewsDDLs].join('').toLowerCase();
+				const sequences = await oracleHelper.getSchemaSequences({ schema, allDDLs, logger });
+				const synonyms = await oracleHelper.getSchemaSynonyms({ schema, allDDLs, logger });
+
 				const viewPackage = {
 					dbName: schema,
 					entityLevel: {},
@@ -180,11 +182,18 @@ module.exports = {
 					bucketInfo: {
 						indexes: [],
 						database: schema,
-						synonyms: synonyms?.[schema] || [],
+						synonyms,
 						sequences,
 					},
 				};
-				return [...packages, ...tablesPackages, viewPackage];
+				return [
+					...packages,
+					...tablesPackages.map(tablePackage => ({
+						...tablePackage,
+						bucketInfo: { ...tablePackage.bucketInfo, synonyms, sequences },
+					})),
+					viewPackage,
+				];
 			}, Promise.resolve([]));
 
 			progress({ message: 'Start processing the retrieved data in the application ...' });
