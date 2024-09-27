@@ -783,6 +783,40 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "On null",
+				"propertyKeyword": "defaultOnNull",
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "default",
+							"pattern": "^[\\s\\S]+$"
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Comments",
 				"propertyKeyword": "description",
 				"propertyTooltip": "comments",
@@ -2487,6 +2521,40 @@ making sure that you maintain a proper JSON format.
 									"exist": false
 								}
 							]
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"propertyName": "On null",
+				"propertyKeyword": "defaultOnNull",
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "default",
+							"pattern": "^[\\s\\S]+$"
 						},
 						{
 							"type": "not",
@@ -5140,6 +5208,53 @@ making sure that you maintain a proper JSON format.
 				"dependency": {
 					"type": "and",
 					"values": [
+						{
+							"type": "or",
+							"values": [
+								{
+									"key": "now",
+									"value": false
+								},
+								{
+									"key": "now",
+									"exist": false
+								}
+							]
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"propertyName": "On null",
+				"propertyKeyword": "defaultOnNull",
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "default",
+							"pattern": "^[\\s\\S]+$"
+						},
 						{
 							"type": "or",
 							"values": [
@@ -9707,6 +9822,40 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "On null",
+				"propertyKeyword": "defaultOnNull",
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "default",
+							"pattern": "^[\\s\\S]+$"
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"fieldKeyword": "enum",
 				"dependency": {
 					"type": "not",
@@ -10757,6 +10906,40 @@ making sure that you maintain a proper JSON format.
 				"template": "textarea"
 			},
 			"default",
+			{
+				"propertyName": "On null",
+				"propertyKeyword": "defaultOnNull",
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "default",
+							"pattern": "^[\\s\\S]+$"
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
 			"sample",
 			{
 				"propertyName": "Remarks",
