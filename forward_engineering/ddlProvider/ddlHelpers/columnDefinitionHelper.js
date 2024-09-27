@@ -55,7 +55,7 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 		return type;
 	};
 
-	const getColumnDefault = ({ default: defaultValue, identity }) => {
+	const getColumnDefault = ({ default: defaultValue, defaultOnNull, identity }) => {
 		if (!_.isEmpty(identity) && identity.generated) {
 			const getGenerated = ({ generated, generatedOnNull }) => {
 				if (generated === 'BY DEFAULT') {
@@ -73,8 +73,10 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 			};
 
 			return ` GENERATED${getGenerated(identity)} AS IDENTITY (${_.trim(getOptions(identity))})`;
-		} else if (defaultValue) {
-			return ` DEFAULT ${defaultValue}`;
+		} else if (defaultValue || defaultValue === 0) {
+			const onNull = defaultOnNull ? ' ON NULL' : '';
+
+			return ` DEFAULT${onNull} ${defaultValue}`;
 		}
 		return '';
 	};

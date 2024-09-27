@@ -214,6 +214,7 @@ module.exports = (baseProvider, options, app) => {
 				isUDTRef,
 				dimension: jsonSchema.dimension,
 				subtype: jsonSchema.subtype,
+				defaultOnNull: jsonSchema.defaultOnNull,
 				...(canHaveIdentity(jsonSchema.mode) && { identity: jsonSchema.identity }),
 			};
 		},
