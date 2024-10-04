@@ -1,6 +1,6 @@
 {
     "name": "Oracle",
-    "version": "0.2.16",
+    "version": "0.2.17",
     "author": "hackolade",
     "engines": {
         "hackolade": "7.7.10",
@@ -47,7 +47,8 @@
                 }
             },
             "enableFetchSystemEntitiesCheckbox": true,
-            "discoverRelationships": true
+            "discoverRelationships": true,
+            "enableKeysMultipleAbrr": true
         }
     },
     "description": "Hackolade plugin for Oracle and Autonomous databases",
