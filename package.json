@@ -47,7 +47,8 @@
                 }
             },
             "enableFetchSystemEntitiesCheckbox": true,
-            "discoverRelationships": true
+            "discoverRelationships": true,
+            "enableKeysMultipleAbrr": true
         }
     },
     "description": "Hackolade plugin for Oracle and Autonomous databases",
