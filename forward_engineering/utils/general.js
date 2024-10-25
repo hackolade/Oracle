@@ -145,7 +145,7 @@ module.exports = _ => {
 		return scriptFormat === 'nonquotedIdentifier' ? name : wrapInQuotes(name);
 	};
 
-	const wrapComment = comment => `'${comment}'`;
+	const wrapComment = comment => `'${comment.replace(/'/g, "''")}'`;
 
 	const getNamePrefixedWithSchemaNameForScriptFormat = scriptFormat => (name, schemaName) => {
 		if (schemaName) {
