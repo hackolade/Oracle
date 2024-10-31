@@ -123,9 +123,9 @@ module.exports = _ => {
 			return '/* ' + statement + ' */';
 		} else if (statement.includes('\n')) {
 			return '/*\n' + statement + ' */\n';
-		} else {
-			return inlineComment + ' ' + statement;
 		}
+
+		return inlineComment + ' ' + statement;
 	};
 
 	const wrap = (str, start = "'", end = "'") => {
@@ -134,9 +134,9 @@ module.exports = _ => {
 
 		if (lastChar === start && firstChar === end) {
 			return str;
-		} else {
-			return `${start}${str}${end}`;
 		}
+
+		return `${start}${str}${end}`;
 	};
 
 	const wrapInQuotes = name => `"${name}"`;

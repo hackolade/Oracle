@@ -614,6 +614,12 @@ module.exports = (baseProvider, options, app) => {
 			);
 		},
 
+		constructViewObjectForComment({ viewData }) {
+			const object = 'VIEW';
+
+			return viewData.materialized ? 'MATERIALIZED ' + object : object;
+		},
+
 		createView(viewData, dbData, isActivated) {
 			const viewName = getNamePrefixedWithSchemaName(viewData.name, viewData.schemaName);
 
@@ -623,7 +629,7 @@ module.exports = (baseProvider, options, app) => {
 			const comment = viewData.description
 				? '\n' +
 					assignTemplates(templates.comment, {
-						object: 'TABLE',
+						object: this.constructViewObjectForComment({ viewData }),
 						objectName: viewName,
 						comment: wrapComment(viewData.description),
 					}) +
