@@ -615,9 +615,7 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		constructViewObjectForComment({ viewData }) {
-			const object = 'VIEW';
-
-			return viewData.materialized ? 'MATERIALIZED ' + object : object;
+			return viewData.materialized ? 'MATERIALIZED VIEW' : 'TABLE';
 		},
 
 		createView(viewData, dbData, isActivated) {
