@@ -5,9 +5,7 @@ module.exports = (_, clean) => {
 	};
 
 	const isUniqueKey = column => {
-		if (column.compositeUniqueKey) {
-			return false;
-		} else if (!column.unique) {
+		if (column.compositeUniqueKey || !column.unique) {
 			return false;
 		}
 
@@ -19,11 +17,7 @@ module.exports = (_, clean) => {
 	};
 
 	const isPrimaryKey = column => {
-		if (column.compositeUniqueKey) {
-			return false;
-		} else if (column.compositePrimaryKey) {
-			return false;
-		} else if (!column.primaryKey) {
+		if (column.compositeUniqueKey || column.compositePrimaryKey || !column.primaryKey) {
 			return false;
 		}
 
