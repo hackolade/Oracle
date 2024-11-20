@@ -4,25 +4,13 @@ module.exports = (_, clean) => {
 		return Object.entries(jsonSchema.properties).map(iteratee);
 	};
 
-	const isUniqueKey = column => {
-		if (column.compositeUniqueKey || !column.unique) {
-			return false;
-		}
-
-		return true;
-	};
+	const isUniqueKey = column => column.unique && !column.compositeUniqueKey;
 
 	const isInlineUnique = column => {
 		return isUniqueKey(column) && !column.uniqueKeyOptions?.constraintName;
 	};
 
-	const isPrimaryKey = column => {
-		if (column.compositeUniqueKey || column.compositePrimaryKey || !column.primaryKey) {
-			return false;
-		}
-
-		return true;
-	};
+	const isPrimaryKey = column => column.primaryKey && !column.compositePrimaryKey && !column.compositeUniqueKey;
 
 	const isInlinePrimaryKey = column => {
 		return isPrimaryKey(column) && !column.primaryKeyOptions?.constraintName;
