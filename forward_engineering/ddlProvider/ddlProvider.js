@@ -31,7 +31,7 @@ module.exports = (baseProvider, options, app) => {
 		getNamePrefixedWithSchemaNameForScriptFormat,
 		wrapComment,
 		getColumnsList,
-		wrapInSingleQuotes,
+		wrapInSingleQuotesIfRequired,
 		prepareNameForScriptFormat,
 	} = require('../utils/general')(_);
 
@@ -59,7 +59,7 @@ module.exports = (baseProvider, options, app) => {
 		templates,
 		commentIfDeactivated,
 		wrapComment,
-		wrapInSingleQuotes,
+		wrapInSingleQuotesIfRequired,
 		prepareName,
 	});
 

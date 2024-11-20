@@ -9,6 +9,35 @@ const shouldUseClobForJsonColumns = dbVersion => {
 	return dbVersionAsNumber < DbVersion.JSON_TYPE_SINCE;
 };
 
+const systemFunctions = [
+	'SYSDATE',
+	'CURRENT_DATE',
+	'CURRENT_TIMESTAMP',
+	'SYSTIMESTAMP',
+	'LOCALTIMESTAMP',
+	'DBTIMEZONE',
+	'SESSIONTIMEZONE',
+	'USER',
+	'UID',
+	'SYS_GUID',
+	'NEXTVAL',
+	'CURRVAL',
+	'ABS',
+	'MOD',
+	'FLOOR',
+	'CEIL',
+	'ROUND',
+	'TRUNC',
+	'UPPER',
+	'LOWER',
+	'LTRIM',
+	'RTRIM',
+	'SUBSTR',
+	'REPLACE',
+	'INITCAP',
+	'NVL',
+];
+
 module.exports = ({
 	_,
 	wrap,
@@ -16,7 +45,7 @@ module.exports = ({
 	templates,
 	commentIfDeactivated,
 	wrapComment,
-	wrapInSingleQuotes,
+	wrapInSingleQuotesIfRequired,
 	prepareName,
 }) => {
 	const { getOptionsString } = require('./constraintHelper')({ _, prepareName });
@@ -64,14 +93,30 @@ module.exports = ({
 		return type;
 	};
 
+	const processDefaultValue = (defaultValue = '') => {
+		if (!isNaN(defaultValue)) {
+			return defaultValue;
+		}
+
+		if (defaultValue.startsWith(`defaultValue`.toUpperCase())) {
+			return defaultValue;
+		}
+
+		if (!defaultValue.startsWith("'") || !defaultValue.endsWith("'")) {
+			return wrapInSingleQuotesIfRequired(defaultValue);
+		}
+
+		return defaultValue;
+	};
+
 	const getColumnDefault = ({ default: defaultValue, defaultOnNull, identity }) => {
 		if (!_.isEmpty(identity) && identity.generated) {
 			const getGenerated = ({ generated, generatedOnNull }) => {
 				if (generated === 'BY DEFAULT') {
 					return ` ${generated} ${generatedOnNull ? ' ON NULL' : ''}`;
-				} else {
-					return ` ALWAYS`;
 				}
+
+				return ` ALWAYS`;
 			};
 
 			const getOptions = ({ identityStart, identityIncrement, numberToCache }) => {
@@ -84,9 +129,7 @@ module.exports = ({
 			return ` GENERATED${getGenerated(identity)} AS IDENTITY (${_.trim(getOptions(identity))})`;
 		} else if (defaultValue || defaultValue === 0) {
 			const onNull = defaultOnNull ? ' ON NULL' : '';
-			const value = typeof defaultValue === 'string' ? wrapInSingleQuotes(defaultValue) : defaultValue;
-
-			return ` DEFAULT${onNull} ${value}`;
+			return ` DEFAULT${onNull} ${processDefaultValue(defaultValue)}`;
 		}
 		return '';
 	};
