@@ -98,7 +98,7 @@ module.exports = ({
 			return defaultValue;
 		}
 
-		if (defaultValue.startsWith(`defaultValue`.toUpperCase())) {
+		if (systemFunctions.find(it => it.startsWith(defaultValue.toUpperCase()))) {
 			return defaultValue;
 		}
 
