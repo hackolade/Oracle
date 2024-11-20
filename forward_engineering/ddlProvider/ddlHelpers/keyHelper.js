@@ -9,9 +9,9 @@ module.exports = (_, clean) => {
 			return false;
 		} else if (!column.unique) {
 			return false;
-		} else {
-			return true;
 		}
+
+		return true;
 	};
 
 	const isInlineUnique = column => {
@@ -25,9 +25,9 @@ module.exports = (_, clean) => {
 			return false;
 		} else if (!column.primaryKey) {
 			return false;
-		} else {
-			return true;
 		}
+
+		return true;
 	};
 
 	const isInlinePrimaryKey = column => {
@@ -113,17 +113,17 @@ module.exports = (_, clean) => {
 		const uniqueConstraints = mapProperties(jsonSchema, ([name, columnSchema]) => {
 			if (!isUniqueKey(columnSchema) || isInlineUnique(columnSchema)) {
 				return;
-			} else {
-				return hydrateUniqueOptions(columnSchema.uniqueKeyOptions, name, columnSchema.isActivated);
 			}
+
+			return hydrateUniqueOptions(columnSchema.uniqueKeyOptions, name, columnSchema.isActivated);
 		}).filter(Boolean);
 
 		const primaryKeyConstraints = mapProperties(jsonSchema, ([name, columnSchema]) => {
 			if (!isPrimaryKey(columnSchema) || isInlinePrimaryKey(columnSchema)) {
 				return;
-			} else {
-				return hydratePrimaryKeyOptions(columnSchema.primaryKeyOptions, name, columnSchema.isActivated);
 			}
+
+			return hydratePrimaryKeyOptions(columnSchema.primaryKeyOptions, name, columnSchema.isActivated);
 		}).filter(Boolean);
 
 		return [

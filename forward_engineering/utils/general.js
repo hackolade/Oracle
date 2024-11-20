@@ -141,11 +141,11 @@ module.exports = _ => {
 
 	const wrapInQuotes = name => `"${name}"`;
 
+	const wrapInSingleQuotes = name => `'${name}'`;
+
 	const prepareNameForScriptFormat = scriptFormat => name => {
 		return scriptFormat === 'nonquotedIdentifier' ? name : wrapInQuotes(name);
 	};
-
-	const wrapComment = comment => `'${comment.replace(/'/g, "''")}'`;
 
 	const getNamePrefixedWithSchemaNameForScriptFormat = scriptFormat => (name, schemaName) => {
 		if (schemaName) {
@@ -182,6 +182,8 @@ module.exports = _ => {
 	const escapeSingleQuote = str => {
 		return str.replaceAll("'", "''");
 	};
+
+	const wrapComment = comment => wrapInSingleQuotes(escapeSingleQuote(comment));
 
 	const getGroupItemsByCompMode = ({ newItems = [], oldItems = [] }) => {
 		const addedItems = newItems.filter(newItem => !oldItems.some(item => item.id === newItem.id));
@@ -224,6 +226,7 @@ module.exports = _ => {
 		wrap,
 		wrapComment,
 		wrapInQuotes,
+		wrapInSingleQuotes,
 		getNamePrefixedWithSchemaNameForScriptFormat,
 		checkFieldPropertiesChanged,
 		getColumnsList,

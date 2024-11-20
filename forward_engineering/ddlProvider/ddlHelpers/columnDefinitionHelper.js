@@ -9,7 +9,16 @@ const shouldUseClobForJsonColumns = dbVersion => {
 	return dbVersionAsNumber < DbVersion.JSON_TYPE_SINCE;
 };
 
-module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, wrapComment, prepareName }) => {
+module.exports = ({
+	_,
+	wrap,
+	assignTemplates,
+	templates,
+	commentIfDeactivated,
+	wrapComment,
+	wrapInSingleQuotes,
+	prepareName,
+}) => {
 	const { getOptionsString } = require('./constraintHelper')({ _, prepareName });
 
 	const getColumnComments = (tableName, columnDefinitions) => {
@@ -43,9 +52,9 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 			return primaryKeyOptions || {};
 		} else if (unique) {
 			return uniqueKeyOptions || {};
-		} else {
-			return {};
 		}
+
+		return {};
 	};
 
 	const replaceTypeByVersion = (type, version) => {
@@ -75,8 +84,9 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 			return ` GENERATED${getGenerated(identity)} AS IDENTITY (${_.trim(getOptions(identity))})`;
 		} else if (defaultValue || defaultValue === 0) {
 			const onNull = defaultOnNull ? ' ON NULL' : '';
+			const value = typeof defaultValue === 'string' ? wrapInSingleQuotes(defaultValue) : defaultValue;
 
-			return ` DEFAULT${onNull} ${defaultValue}`;
+			return ` DEFAULT${onNull} ${value}`;
 		}
 		return '';
 	};
@@ -106,9 +116,9 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 			return ` ${type}(${precision || '*'},${scale})`;
 		} else if (_.isNumber(precision)) {
 			return ` ${type}(${precision})`;
-		} else {
-			return ` ${type}`;
 		}
+
+		return ` ${type}`;
 	};
 
 	const addPrecision = (type, precision) => {
