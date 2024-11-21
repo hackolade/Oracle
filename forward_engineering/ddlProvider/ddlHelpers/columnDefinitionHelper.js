@@ -102,11 +102,7 @@ module.exports = ({
 			return defaultValue;
 		}
 
-		if (!defaultValue.startsWith("'") || !defaultValue.endsWith("'")) {
-			return wrapInSingleQuotesIfRequired(defaultValue);
-		}
-
-		return defaultValue;
+		return wrapInSingleQuotesIfRequired(defaultValue);
 	};
 
 	const getColumnDefault = ({ default: defaultValue, defaultOnNull, identity }) => {
