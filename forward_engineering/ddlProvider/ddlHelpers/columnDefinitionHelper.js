@@ -9,7 +9,45 @@ const shouldUseClobForJsonColumns = dbVersion => {
 	return dbVersionAsNumber < DbVersion.JSON_TYPE_SINCE;
 };
 
-module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, wrapComment, prepareName }) => {
+const systemFunctions = [
+	'SYSDATE',
+	'CURRENT_DATE',
+	'CURRENT_TIMESTAMP',
+	'SYSTIMESTAMP',
+	'LOCALTIMESTAMP',
+	'DBTIMEZONE',
+	'SESSIONTIMEZONE',
+	'USER',
+	'UID',
+	'SYS_GUID',
+	'NEXTVAL',
+	'CURRVAL',
+	'ABS',
+	'MOD',
+	'FLOOR',
+	'CEIL',
+	'ROUND',
+	'TRUNC',
+	'UPPER',
+	'LOWER',
+	'LTRIM',
+	'RTRIM',
+	'SUBSTR',
+	'REPLACE',
+	'INITCAP',
+	'NVL',
+];
+
+module.exports = ({
+	_,
+	wrap,
+	assignTemplates,
+	templates,
+	commentIfDeactivated,
+	wrapComment,
+	wrapInSingleQuotesIfRequired,
+	prepareName,
+}) => {
 	const { getOptionsString } = require('./constraintHelper')({ _, prepareName });
 
 	const getColumnComments = (tableName, columnDefinitions) => {
@@ -43,9 +81,9 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 			return primaryKeyOptions || {};
 		} else if (unique) {
 			return uniqueKeyOptions || {};
-		} else {
-			return {};
 		}
+
+		return {};
 	};
 
 	const replaceTypeByVersion = (type, version) => {
@@ -55,14 +93,26 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 		return type;
 	};
 
+	const processDefaultValue = (defaultValue = '') => {
+		if (!isNaN(defaultValue)) {
+			return defaultValue;
+		}
+
+		if (systemFunctions.find(it => it.startsWith(defaultValue.toUpperCase()))) {
+			return defaultValue;
+		}
+
+		return wrapInSingleQuotesIfRequired(defaultValue);
+	};
+
 	const getColumnDefault = ({ default: defaultValue, defaultOnNull, identity }) => {
 		if (!_.isEmpty(identity) && identity.generated) {
 			const getGenerated = ({ generated, generatedOnNull }) => {
 				if (generated === 'BY DEFAULT') {
 					return ` ${generated} ${generatedOnNull ? ' ON NULL' : ''}`;
-				} else {
-					return ` ALWAYS`;
 				}
+
+				return ` ALWAYS`;
 			};
 
 			const getOptions = ({ identityStart, identityIncrement, numberToCache }) => {
@@ -75,8 +125,7 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 			return ` GENERATED${getGenerated(identity)} AS IDENTITY (${_.trim(getOptions(identity))})`;
 		} else if (defaultValue || defaultValue === 0) {
 			const onNull = defaultOnNull ? ' ON NULL' : '';
-
-			return ` DEFAULT${onNull} ${defaultValue}`;
+			return ` DEFAULT${onNull} ${processDefaultValue(defaultValue)}`;
 		}
 		return '';
 	};
@@ -106,9 +155,9 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 			return ` ${type}(${precision || '*'},${scale})`;
 		} else if (_.isNumber(precision)) {
 			return ` ${type}(${precision})`;
-		} else {
-			return ` ${type}`;
 		}
+
+		return ` ${type}`;
 	};
 
 	const addPrecision = (type, precision) => {
