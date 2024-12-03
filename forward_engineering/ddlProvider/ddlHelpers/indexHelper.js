@@ -57,12 +57,9 @@ module.exports = ({ _, prepareName }) => {
 		return options;
 	};
 
-	const getIndexName = name => (name ? ` ${prepareName(name)}` : '');
-
 	return {
 		getIndexType,
 		getIndexKeys,
 		getIndexOptions,
-		getIndexName,
 	};
 };

@@ -91,7 +91,7 @@ module.exports = (baseProvider, options, app) => {
 		prepareName,
 	});
 
-	const { getIndexType, getIndexKeys, getIndexOptions, getIndexName } = require('./ddlHelpers/indexHelper')({
+	const { getIndexType, getIndexKeys, getIndexOptions } = require('./ddlHelpers/indexHelper')({
 		_,
 		prepareName,
 	});
@@ -490,7 +490,7 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		createIndex(tableName, index, dbData, isParentActivated = true) {
-			const name = getIndexName(index.indxName);
+			const name = getNamePrefixedWithSchemaName(index.indxName, index.schemaName);
 			const indexType = getIndexType(index.indxType);
 			const keys = getIndexKeys(index);
 			const indexOptions = getIndexOptions(index);
@@ -502,7 +502,7 @@ module.exports = (baseProvider, options, app) => {
 			let statement = assignTemplates(templates.createIndex, {
 				indexType,
 				ifNotExists: shouldInsertIfNotExistsStatement ? ' IF NOT EXISTS' : '',
-				name,
+				name: name ? ` ${name}` : '',
 				keys,
 				options: indexOptions,
 				tableName: getNamePrefixedWithSchemaName(tableName, index.schemaName),
@@ -591,7 +591,7 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		createViewIndex(viewName, index, dbData, isParentActivated) {
-			const name = getIndexName(index.indxName);
+			const name = getNamePrefixedWithSchemaName(index.indxName, index.schemaName);
 			const indexType = getIndexType(index.indxType);
 			const keys = getIndexKeys(index);
 			const options = getIndexOptions(index, isParentActivated);
@@ -603,7 +603,7 @@ module.exports = (baseProvider, options, app) => {
 			return commentIfDeactivated(
 				assignTemplates(templates.createIndex, {
 					indexType,
-					name,
+					name: name ? ` ${name}` : '',
 					keys,
 					options,
 					tableName: getNamePrefixedWithSchemaName(viewName, index.schemaName),
