@@ -490,7 +490,7 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		createIndex(tableName, index, dbData, isParentActivated = true) {
-			const name = getNamePrefixedWithSchemaName(index.indxName, index.schemaName);
+			const name = index.indxName ? getNamePrefixedWithSchemaName(index.indxName, index.schemaName) : '';
 			const indexType = getIndexType(index.indxType);
 			const keys = getIndexKeys(index);
 			const indexOptions = getIndexOptions(index);
@@ -591,7 +591,7 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		createViewIndex(viewName, index, dbData, isParentActivated) {
-			const name = getNamePrefixedWithSchemaName(index.indxName, index.schemaName);
+			const name = index.indxName ? getNamePrefixedWithSchemaName(index.indxName, index.schemaName) : '';
 			const indexType = getIndexType(index.indxType);
 			const keys = getIndexKeys(index);
 			const options = getIndexOptions(index, isParentActivated);
