@@ -1,11 +1,7 @@
 const _ = require('lodash');
-module.exports = ({ _, prepareName, getNamePrefixedWithSchemaName }) => {
+module.exports = ({ _, prepareName }) => {
 	const getIndexType = indexType => {
 		return indexType ? ` ${_.toUpper(indexType)}` : '';
-	};
-
-	const getIndexName = ({ index }) => {
-		return index.indxName ? ` ${getNamePrefixedWithSchemaName(index.indxName, index.schemaName)}` : '';
 	};
 
 	/**
@@ -61,10 +57,12 @@ module.exports = ({ _, prepareName, getNamePrefixedWithSchemaName }) => {
 		return options;
 	};
 
+	const getIndexName = name => (name ? ` ${prepareName(name)}` : '');
+
 	return {
-		getIndexName,
 		getIndexType,
 		getIndexKeys,
 		getIndexOptions,
+		getIndexName,
 	};
 };
