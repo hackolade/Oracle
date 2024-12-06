@@ -94,6 +94,7 @@ module.exports = (baseProvider, options, app) => {
 	const { getIndexType, getIndexKeys, getIndexOptions, getIndexName } = require('./ddlHelpers/indexHelper')({
 		_,
 		prepareName,
+		getNamePrefixedWithSchemaName,
 	});
 
 	const wrapIfNotExists = (statement, ifNotExist, errorCode = 955) => {
