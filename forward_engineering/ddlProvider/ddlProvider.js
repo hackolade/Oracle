@@ -94,6 +94,7 @@ module.exports = (baseProvider, options, app) => {
 	const { getIndexType, getIndexKeys, getIndexOptions, getIndexName } = require('./ddlHelpers/indexHelper')({
 		_,
 		prepareName,
+		getNamePrefixedWithSchemaName,
 	});
 
 	const wrapIfNotExists = (statement, ifNotExist, errorCode = 955) => {
@@ -490,7 +491,7 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		createIndex(tableName, index, dbData, isParentActivated = true) {
-			const name = getIndexName(index.indxName);
+			const name = getIndexName({ index });
 			const indexType = getIndexType(index.indxType);
 			const keys = getIndexKeys(index);
 			const indexOptions = getIndexOptions(index);
@@ -591,7 +592,7 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		createViewIndex(viewName, index, dbData, isParentActivated) {
-			const name = getIndexName(index.indxName);
+			const name = getIndexName({ index });
 			const indexType = getIndexType(index.indxType);
 			const keys = getIndexKeys(index);
 			const options = getIndexOptions(index, isParentActivated);
