@@ -18,6 +18,7 @@ const GENERATED_TYPE = {
  * @typedef {{
  * generatedType: GENERATED_TYPE | '';
  * asIdentity?: boolean;
+ * generatedOnNull?: boolean;
  * expression?: string;
  * identity?: Identity;
  * }} GeneratedDefaultValue
@@ -76,8 +77,8 @@ const getIdentityOptions = ({ identityStart, identityIncrement, numberToCache })
  * @returns {string}
  */
 const getColumnDefault = ({ type, default: defaultValue, defaultOnNull, generatedDefaultValue = {} }) => {
-	const { generatedType, asIdentity, identity, expression } = generatedDefaultValue;
-	const generatedClause = getGeneratedClause({ generatedType, generatedOnNull: identity?.generatedOnNull });
+	const { generatedType, generatedOnNull, asIdentity, identity, expression } = generatedDefaultValue;
+	const generatedClause = getGeneratedClause({ generatedType, generatedOnNull });
 	const expressionValue = trim(expression);
 
 	if (generatedType && asIdentity && canHaveIdentity({ type }) && !isEmpty(identity)) {
