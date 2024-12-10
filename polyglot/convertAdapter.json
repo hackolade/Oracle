@@ -67,6 +67,13 @@
 				}
 			},
 			[
+				"movePropertyByPath",
+				{
+					"from": "generatedDefaultValue.identity",
+					"to": "identity"
+				}
+			],
+			[
 				"removePropertiesByKeyPath",
 				[
 					{
@@ -107,5 +114,6 @@
 				}
 			]
 		}
-	}
+	},
+	"delete": ["generatedDefaultValue"]
 }

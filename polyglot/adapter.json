@@ -90,12 +90,37 @@
 				}
 			],
 			[
+				"movePropertyByPath",
+				{
+					"from": "identity",
+					"to": "generatedDefaultValue.identity"
+				}
+			],
+			[
+				"addMissingIdByPath",
+				{
+					"from": "generatedDefaultValue",
+					"path": "generatedDefaultValue.id"
+				}
+			],
+			[
 				"addPropertiesByPath",
 				[
 					{
-						"keyPath": "identity",
+						"keyPath": "generatedDefaultValue",
 						"subProperties": {
-							"generated": "ALWAYS",
+							"generatedType": "ALWAYS",
+							"asIdentity": true
+						}
+					}
+				]
+			],
+			[
+				"addPropertiesByPath",
+				[
+					{
+						"keyPath": "generatedDefaultValue.identity",
+						"subProperties": {
 							"numberToCache": 1
 						}
 					}
