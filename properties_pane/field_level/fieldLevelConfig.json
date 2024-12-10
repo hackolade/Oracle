@@ -2786,6 +2786,16 @@ making sure that you maintain a proper JSON format.
 						"propertyType": "checkbox"
 					},
 					{
+						"propertyName": "On null",
+						"propertyKeyword": "generatedOnNull",
+						"propertyTooltip": "Generate a value for the identity column only if a NULL value provided",
+						"propertyType": "checkbox",
+						"dependency": {
+							"key": "generatedType",
+							"value": "BY DEFAULT"
+						}
+					},
+					{
 						"propertyName": "Identity",
 						"propertyType": "block",
 						"propertyKeyword": "identity",
@@ -2841,53 +2851,20 @@ making sure that you maintain a proper JSON format.
 							}
 						],
 						"dependency": {
-							"key": "generatedType",
-							"value": "ALWAYS"
-						}
-					},
-					{
-						"propertyName": "Identity",
-						"propertyType": "block",
-						"propertyKeyword": "identity",
-						"propertyTooltip": "Creates an identity column in a table",
-						"structure": [
-							{
-								"propertyName": "On null",
-								"propertyKeyword": "generatedOnNull",
-								"propertyTooltip": "Generate a value for the identity column only if a NULL value provided",
-								"propertyType": "checkbox"
-							},
-							{
-								"propertyName": "Start",
-								"propertyKeyword": "identityStart",
-								"propertyTooltip": "Is the value that is used for the very first row loaded into the table",
-								"propertyType": "numeric",
-								"valueType": "number",
-								"minValue": 1,
-								"step": 1
-							},
-							{
-								"propertyName": "Increment",
-								"propertyKeyword": "identityIncrement",
-								"propertyTooltip": "Is the incremental value that is added to the identity value of the previous row that was loaded.",
-								"propertyType": "numeric",
-								"valueType": "number",
-								"minValue": 1,
-								"step": 1
-							},
-							{
-								"propertyName": "Cache",
-								"propertyKeyword": "numberToCache",
-								"propertyTooltip": "Is a number of values that Oracle should generate beforehand to improve the performance.",
-								"propertyType": "numeric",
-								"valueType": "number",
-								"minValue": 1,
-								"step": 1
+							"type": "not",
+							"values": {
+								"type": "or",
+								"values": [
+									{
+										"key": "generatedType",
+										"exist": false
+									},
+									{
+										"key": "generatedType",
+										"value": ""
+									}
+								]
 							}
-						],
-						"dependency": {
-							"key": "generatedType",
-							"value": "BY DEFAULT"
 						}
 					}
 				],
