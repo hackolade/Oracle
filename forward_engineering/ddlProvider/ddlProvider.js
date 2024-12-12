@@ -492,6 +492,11 @@ module.exports = (baseProvider, options, app) => {
 
 		createIndex(tableName, index, dbData, isParentActivated = true) {
 			const name = getIndexName({ index });
+
+			if (!name.trim()) {
+				return '';
+			}
+
 			const indexType = getIndexType(index.indxType);
 			const keys = getIndexKeys(index);
 			const indexOptions = getIndexOptions(index);
