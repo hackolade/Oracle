@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const { DbVersion } = require('../../enums/DbVersion');
+const { getColumnDefault } = require('../ddlHelpers/columnDefinitionHelpers/getColumnDefault');
 /**
  * @param dbVersion {string} DB version in "21&i" format
  * @return {boolean}
@@ -53,32 +54,6 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 			return 'CLOB';
 		}
 		return type;
-	};
-
-	const getColumnDefault = ({ default: defaultValue, defaultOnNull, identity }) => {
-		if (!_.isEmpty(identity) && identity.generated) {
-			const getGenerated = ({ generated, generatedOnNull }) => {
-				if (generated === 'BY DEFAULT') {
-					return ` ${generated} ${generatedOnNull ? ' ON NULL' : ''}`;
-				} else {
-					return ` ALWAYS`;
-				}
-			};
-
-			const getOptions = ({ identityStart, identityIncrement, numberToCache }) => {
-				const startWith = identityStart ? ` START WITH ${identityStart}` : '';
-				const incrementBy = identityIncrement ? ` INCREMENT BY ${identityIncrement}` : '';
-				const cache = numberToCache ? ` CACHE ${numberToCache}` : ' NOCACHE';
-				return `${startWith}${incrementBy}${cache}`;
-			};
-
-			return ` GENERATED${getGenerated(identity)} AS IDENTITY (${_.trim(getOptions(identity))})`;
-		} else if (defaultValue || defaultValue === 0) {
-			const onNull = defaultOnNull ? ' ON NULL' : '';
-
-			return ` DEFAULT${onNull} ${defaultValue}`;
-		}
-		return '';
 	};
 
 	const getColumnEncrypt = ({ encryption }) => {
@@ -219,16 +194,6 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 		return ` ${type}`;
 	};
 
-	/**
-	 *
-	 * @param {string} type
-	 * @returns {boolean}
-	 */
-	const canHaveIdentity = type => {
-		const typesAllowedToHaveAutoIncrement = ['number'];
-		return typesAllowedToHaveAutoIncrement.includes(type);
-	};
-
 	return {
 		getColumnComments,
 		getColumnConstraints,
@@ -236,6 +201,5 @@ module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, w
 		getColumnDefault,
 		getColumnEncrypt,
 		decorateType,
-		canHaveIdentity,
 	};
 };

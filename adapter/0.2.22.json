@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016-2022 by IntegrIT S.A. dba Hackolade.  All rights reserved.
+ * Copyright © 2016-2018 by IntegrIT S.A. dba Hackolade.  All rights reserved.
  *
  * The copyright to the computer software herein is the property of IntegrIT S.A.
  * The software may be used and/or copied only with the written permission of
@@ -40,80 +40,60 @@
  * }
  */
 {
+	"add": {},
 	"modify": {
 		"field": [
-			{
-				"from": {
-					"synonym": "integer"
+			[
+				"assignProperties",
+				{
+					"key": "identity",
+					"valueType": "object"
 				},
-				"to": {
-					"mode": "integer"
+				{
+					"generatedDefaultValue": {
+						"asIdentity": true,
+						"generatedType": ""
+					}
 				}
-			},
-			{
-				"from": {
-					"synonym": "int"
-				},
-				"to": {
-					"mode": "integer"
-				}
-			},
-			{
-				"from": {
-					"synonym": "smallint"
-				},
-				"to": {
-					"mode": "integer"
-				}
-			},
+			],
 			[
 				"movePropertyByPath",
 				{
-					"from": "generatedDefaultValue.identity",
-					"to": "identity"
+					"from": "identity",
+					"to": "generatedDefaultValue.identity"
 				}
 			],
 			[
-				"removePropertiesByKeyPath",
-				[
-					{
-						"keyPath": "identity",
-						"propertiesNames": ["generated", "numberToCache"]
-					}
-				]
+				"movePropertyByPath",
+				{
+					"from": "generatedDefaultValue.identity.generated",
+					"to": "generatedDefaultValue.generatedType"
+				}
 			],
 			[
-				"renameBlockItemProperties",
+				"movePropertyByPath",
 				{
-					"identity": {
-						"self": "autoincrement",
-						"subProps": {
-							"identityStart": "start_num",
-							"identityIncrement": "step_num"
-						}
-					}
+					"from": "generatedDefaultValue.identity.generatedOnNull",
+					"to": "generatedDefaultValue.generatedOnNull"
+				}
+			],
+			[
+				"addMissingIdByPath",
+				{
+					"from": "generatedDefaultValue",
+					"path": "generatedDefaultValue.GUID"
 				}
 			]
 		]
 	},
-	"add": {
-		"field": {
-			"number": [
-				{
-					"name": "defaultOption",
-					"value": "Autoincrement",
-					"dependency": {
-						"type": "and",
-						"values": [
-							{
-								"key": "autoincrement",
-								"exist": true
-							}
-						]
-					}
-				}
-			]
-		}
-	},
-	"delete": ["generatedDefaultValue"]
+	"delete": {
+		"number": [
+			{
+				"path": "generatedDefaultValue.identity.generated"
+			},
+			{
+				"path": "generatedDefaultValue.identity.generatedOnNull"
+			}
+		]
+	}
 }
