@@ -1021,6 +1021,10 @@ making sure that you maintain a proper JSON format.
 									"value": ""
 								}
 							]
+						},
+						"validation": {
+							"required": true,
+							"minLength": 1
 						}
 					},
 					{
