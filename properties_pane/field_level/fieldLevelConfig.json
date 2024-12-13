@@ -851,13 +851,6 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "block",
 				"structure": [
 					{
-						"propertyName": "Type",
-						"propertyKeyword": "generatedType",
-						"propertyType": "select",
-						"options": ["", "ALWAYS"],
-						"defaultValue": ""
-					},
-					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
@@ -2674,13 +2667,6 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "block",
 				"structure": [
 					{
-						"propertyName": "Type",
-						"propertyKeyword": "generatedType",
-						"propertyType": "select",
-						"options": ["", "ALWAYS"],
-						"defaultValue": ""
-					},
-					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
@@ -2718,13 +2704,6 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
 				"structure": [
-					{
-						"propertyName": "Type",
-						"propertyKeyword": "generatedType",
-						"propertyType": "select",
-						"options": ["", "ALWAYS"],
-						"defaultValue": ""
-					},
 					{
 						"propertyName": "As identity",
 						"propertyKeyword": "asIdentity",
@@ -2774,16 +2753,16 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "block",
 				"structure": [
 					{
-						"propertyName": "Type",
-						"propertyKeyword": "generatedType",
-						"propertyType": "select",
-						"options": ["", "ALWAYS", "BY DEFAULT"],
-						"defaultValue": ""
-					},
-					{
 						"propertyName": "As identity",
 						"propertyKeyword": "asIdentity",
 						"propertyType": "checkbox"
+					},
+					{
+						"propertyName": "Type",
+						"propertyKeyword": "generatedType",
+						"propertyType": "select",
+						"options": ["ALWAYS", "BY DEFAULT"],
+						"defaultValue": "ALWAYS"
 					},
 					{
 						"propertyName": "On null",
@@ -4720,13 +4699,6 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "block",
 				"structure": [
 					{
-						"propertyName": "Type",
-						"propertyKeyword": "generatedType",
-						"propertyType": "select",
-						"options": ["", "ALWAYS"],
-						"defaultValue": ""
-					},
-					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
@@ -6304,13 +6276,6 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "block",
 				"structure": [
 					{
-						"propertyName": "Type",
-						"propertyKeyword": "generatedType",
-						"propertyType": "select",
-						"options": ["", "ALWAYS"],
-						"defaultValue": ""
-					},
-					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
@@ -7197,13 +7162,6 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
 				"structure": [
-					{
-						"propertyName": "Type",
-						"propertyKeyword": "generatedType",
-						"propertyType": "select",
-						"options": ["", "ALWAYS"],
-						"defaultValue": ""
-					},
 					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
@@ -8155,13 +8113,6 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
 				"structure": [
-					{
-						"propertyName": "Type",
-						"propertyKeyword": "generatedType",
-						"propertyType": "select",
-						"options": ["", "ALWAYS"],
-						"defaultValue": ""
-					},
 					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
@@ -9443,13 +9394,6 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "block",
 				"structure": [
 					{
-						"propertyName": "Type",
-						"propertyKeyword": "generatedType",
-						"propertyType": "select",
-						"options": ["", "ALWAYS"],
-						"defaultValue": ""
-					},
-					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
@@ -10632,13 +10576,6 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "block",
 				"structure": [
 					{
-						"propertyName": "Type",
-						"propertyKeyword": "generatedType",
-						"propertyType": "select",
-						"options": ["", "ALWAYS"],
-						"defaultValue": ""
-					},
-					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
@@ -11401,13 +11338,6 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
 				"structure": [
-					{
-						"propertyName": "Type",
-						"propertyKeyword": "generatedType",
-						"propertyType": "select",
-						"options": ["", "ALWAYS"],
-						"defaultValue": ""
-					},
 					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
@@ -12346,13 +12276,6 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "block",
 				"structure": [
 					{
-						"propertyName": "Type",
-						"propertyKeyword": "generatedType",
-						"propertyType": "select",
-						"options": ["", "ALWAYS"],
-						"defaultValue": ""
-					},
-					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
@@ -12998,13 +12921,6 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
 				"structure": [
-					{
-						"propertyName": "Type",
-						"propertyKeyword": "generatedType",
-						"propertyType": "select",
-						"options": ["", "ALWAYS"],
-						"defaultValue": ""
-					},
 					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",

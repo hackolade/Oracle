@@ -52,7 +52,7 @@
 				{
 					"generatedDefaultValue": {
 						"asIdentity": true,
-						"generatedType": ""
+						"generatedType": "ALWAYS"
 					}
 				}
 			],
