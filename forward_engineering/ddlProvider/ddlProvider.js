@@ -492,7 +492,7 @@ module.exports = (baseProvider, options, app) => {
 		createIndex(tableName, index, dbData, isParentActivated = true) {
 			const name = getIndexName({ index });
 
-			if (!name.trim() || !index.indxKey.length) {
+			if (!index.indxName || !index.indxKey.length) {
 				return '';
 			}
 
