@@ -845,6 +845,41 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Generated as",
+				"propertyTooltip": "",
+				"propertyKeyword": "generatedDefaultValue",
+				"propertyType": "block",
+				"structure": [
+					{
+						"propertyName": "Expression",
+						"propertyKeyword": "expression",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"type": "and",
+							"values": [
+								{
+									"level": "root",
+									"key": "viewOn",
+									"exist": true
+								},
+								{
+									"level": "root",
+									"key": "duality",
+									"value": true
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Not null",
 				"propertyKeyword": "required",
 				"enableForReference": true,
@@ -2626,6 +2661,222 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Generated as",
+				"propertyTooltip": "",
+				"propertyKeyword": "generatedDefaultValue",
+				"propertyType": "block",
+				"structure": [
+					{
+						"propertyName": "Expression",
+						"propertyKeyword": "expression",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"key": "mode",
+							"value": "number"
+						},
+						{
+							"key": "generatedDefaultValue.asIdentity",
+							"value": true
+						},
+						{
+							"level": "root",
+							"key": "viewOn",
+							"exist": true
+						},
+						{
+							"level": "root",
+							"key": "duality",
+							"value": true
+						}
+					]
+				}
+			},
+			{
+				"propertyName": "Generated as",
+				"propertyTooltip": "",
+				"propertyKeyword": "generatedDefaultValue",
+				"propertyType": "block",
+				"structure": [
+					{
+						"propertyName": "As identity",
+						"propertyKeyword": "asIdentity",
+						"propertyType": "checkbox"
+					},
+					{
+						"propertyName": "Expression",
+						"propertyKeyword": "expression",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					}
+				],
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "mode",
+							"value": "number"
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"key": "generatedDefaultValue.asIdentity",
+									"value": true
+								},
+								{
+									"level": "root",
+									"key": "viewOn",
+									"exist": true
+								},
+								{
+									"level": "root",
+									"key": "duality",
+									"value": true
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"propertyName": "Generated as",
+				"propertyTooltip": "",
+				"propertyKeyword": "generatedDefaultValue",
+				"propertyType": "block",
+				"structure": [
+					{
+						"propertyName": "As identity",
+						"propertyKeyword": "asIdentity",
+						"propertyType": "checkbox"
+					},
+					{
+						"propertyName": "Type",
+						"propertyKeyword": "generatedType",
+						"propertyType": "select",
+						"options": ["ALWAYS", "BY DEFAULT"],
+						"defaultValue": "ALWAYS"
+					},
+					{
+						"propertyName": "On null",
+						"propertyKeyword": "generatedOnNull",
+						"propertyTooltip": "Generate a value for the identity column only if a NULL value provided",
+						"propertyType": "checkbox",
+						"dependency": {
+							"key": "generatedType",
+							"value": "BY DEFAULT"
+						}
+					},
+					{
+						"propertyName": "Identity",
+						"propertyType": "block",
+						"propertyKeyword": "identity",
+						"propertyTooltip": "Creates an identity column in a table",
+						"structure": [],
+						"dependency": {
+							"type": "or",
+							"values": [
+								{
+									"key": "generatedType",
+									"exist": false
+								},
+								{
+									"key": "generatedType",
+									"value": ""
+								}
+							]
+						}
+					},
+
+					{
+						"propertyName": "Identity",
+						"propertyType": "block",
+						"propertyKeyword": "identity",
+						"propertyTooltip": "Creates an identity column in a table",
+						"structure": [
+							{
+								"propertyName": "Start",
+								"propertyKeyword": "identityStart",
+								"propertyTooltip": "Is the value that is used for the very first row loaded into the table",
+								"propertyType": "numeric",
+								"valueType": "number",
+								"minValue": 1,
+								"step": 1
+							},
+							{
+								"propertyName": "Increment",
+								"propertyKeyword": "identityIncrement",
+								"propertyTooltip": "Is the incremental value that is added to the identity value of the previous row that was loaded.",
+								"propertyType": "numeric",
+								"valueType": "number",
+								"minValue": 1,
+								"step": 1
+							},
+							{
+								"propertyName": "Cache",
+								"propertyKeyword": "numberToCache",
+								"propertyTooltip": "Is a number of values that Oracle should generate beforehand to improve the performance.",
+								"propertyType": "numeric",
+								"valueType": "number",
+								"minValue": 1,
+								"step": 1
+							}
+						],
+						"dependency": {
+							"type": "not",
+							"values": {
+								"type": "or",
+								"values": [
+									{
+										"key": "generatedType",
+										"exist": false
+									},
+									{
+										"key": "generatedType",
+										"value": ""
+									}
+								]
+							}
+						}
+					}
+				],
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "mode",
+							"value": "number"
+						},
+						{
+							"key": "generatedDefaultValue.asIdentity",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"level": "root",
+									"key": "viewOn",
+									"exist": true
+								},
+								{
+									"level": "root",
+									"key": "duality",
+									"value": true
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Not null",
 				"propertyKeyword": "required",
 				"enableForReference": true,
@@ -2681,135 +2932,6 @@ making sure that you maintain a proper JSON format.
 					]
 				},
 				"defaultValue": false
-			},
-			{
-				"propertyName": "Identity",
-				"propertyType": "block",
-				"propertyKeyword": "identity",
-				"propertyTooltip": "Creates an identity column in a table",
-				"structure": [
-					{
-						"propertyName": "Generated",
-						"propertyKeyword": "generated",
-						"propertyTooltip": "Select type of value generation",
-						"propertyType": "select",
-						"options": ["", "ALWAYS", "BY DEFAULT"]
-					},
-					{
-						"propertyName": "On null",
-						"propertyKeyword": "generatedOnNull",
-						"propertyTooltip": "Generate a value for the identity column only if a NULL value provided",
-						"propertyType": "checkbox",
-						"dependency": {
-							"key": "generated",
-							"value": "BY DEFAULT"
-						}
-					},
-					{
-						"propertyName": "Start",
-						"propertyKeyword": "identityStart",
-						"propertyTooltip": "Is the value that is used for the very first row loaded into the table",
-						"propertyType": "numeric",
-						"valueType": "number",
-						"minValue": 1,
-						"step": 1,
-						"dependency": {
-							"type": "not",
-							"values": {
-								"type": "or",
-								"values": [
-									{
-										"key": "generated",
-										"exist": false
-									},
-									{
-										"key": "generated",
-										"value": ""
-									}
-								]
-							}
-						}
-					},
-					{
-						"propertyName": "Increment",
-						"propertyKeyword": "identityIncrement",
-						"propertyTooltip": "Is the incremental value that is added to the identity value of the previous row that was loaded.",
-						"propertyType": "numeric",
-						"valueType": "number",
-						"minValue": 1,
-						"step": 1,
-						"dependency": {
-							"type": "not",
-							"values": {
-								"type": "or",
-								"values": [
-									{
-										"key": "generated",
-										"exist": false
-									},
-									{
-										"key": "generated",
-										"value": ""
-									}
-								]
-							}
-						}
-					},
-					{
-						"propertyName": "Cache",
-						"propertyKeyword": "numberToCache",
-						"propertyTooltip": "Is a number of values that Oracle should generate beforehand to improve the performance.",
-						"propertyType": "numeric",
-						"valueType": "number",
-						"minValue": 1,
-						"step": 1,
-						"dependency": {
-							"type": "not",
-							"values": {
-								"type": "or",
-								"values": [
-									{
-										"key": "generated",
-										"exist": false
-									},
-									{
-										"key": "generated",
-										"value": ""
-									}
-								]
-							}
-						}
-					}
-				],
-				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"key": "mode",
-							"value": "number"
-						},
-						{
-							"type": "not",
-							"values": [
-								{
-									"type": "and",
-									"values": [
-										{
-											"level": "root",
-											"key": "viewOn",
-											"exist": true
-										},
-										{
-											"level": "root",
-											"key": "duality",
-											"value": true
-										}
-									]
-								}
-							]
-						}
-					]
-				}
 			},
 			{
 				"propertyName": "Masked with function",
@@ -4571,6 +4693,41 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Generated as",
+				"propertyTooltip": "",
+				"propertyKeyword": "generatedDefaultValue",
+				"propertyType": "block",
+				"structure": [
+					{
+						"propertyName": "Expression",
+						"propertyKeyword": "expression",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"type": "and",
+							"values": [
+								{
+									"level": "root",
+									"key": "viewOn",
+									"exist": true
+								},
+								{
+									"level": "root",
+									"key": "duality",
+									"value": true
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Not null",
 				"propertyKeyword": "required",
 				"enableForReference": true,
@@ -6113,6 +6270,41 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Generated as",
+				"propertyTooltip": "",
+				"propertyKeyword": "generatedDefaultValue",
+				"propertyType": "block",
+				"structure": [
+					{
+						"propertyName": "Expression",
+						"propertyKeyword": "expression",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"type": "and",
+							"values": [
+								{
+									"level": "root",
+									"key": "viewOn",
+									"exist": true
+								},
+								{
+									"level": "root",
+									"key": "duality",
+									"value": true
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Not null",
 				"propertyKeyword": "required",
 				"enableForReference": true,
@@ -6943,6 +7135,41 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "physicalType",
 				"propertyType": "select",
 				"hidden": true,
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"type": "and",
+							"values": [
+								{
+									"level": "root",
+									"key": "viewOn",
+									"exist": true
+								},
+								{
+									"level": "root",
+									"key": "duality",
+									"value": true
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"propertyName": "Generated as",
+				"propertyTooltip": "",
+				"propertyKeyword": "generatedDefaultValue",
+				"propertyType": "block",
+				"structure": [
+					{
+						"propertyName": "Expression",
+						"propertyKeyword": "expression",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					}
+				],
 				"dependency": {
 					"type": "not",
 					"values": [
@@ -7859,6 +8086,41 @@ making sure that you maintain a proper JSON format.
 				"addTimestampButton": false,
 				"propertyType": "details",
 				"template": "textarea",
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"type": "and",
+							"values": [
+								{
+									"level": "root",
+									"key": "viewOn",
+									"exist": true
+								},
+								{
+									"level": "root",
+									"key": "duality",
+									"value": true
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"propertyName": "Generated as",
+				"propertyTooltip": "",
+				"propertyKeyword": "generatedDefaultValue",
+				"propertyType": "block",
+				"structure": [
+					{
+						"propertyName": "Expression",
+						"propertyKeyword": "expression",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					}
+				],
 				"dependency": {
 					"type": "not",
 					"values": [
@@ -9126,6 +9388,41 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Generated as",
+				"propertyTooltip": "",
+				"propertyKeyword": "generatedDefaultValue",
+				"propertyType": "block",
+				"structure": [
+					{
+						"propertyName": "Expression",
+						"propertyKeyword": "expression",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"type": "and",
+							"values": [
+								{
+									"level": "root",
+									"key": "viewOn",
+									"exist": true
+								},
+								{
+									"level": "root",
+									"key": "duality",
+									"value": true
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Not null",
 				"propertyKeyword": "required",
 				"enableForReference": true,
@@ -10273,6 +10570,41 @@ making sure that you maintain a proper JSON format.
 				]
 			},
 			{
+				"propertyName": "Generated as",
+				"propertyTooltip": "",
+				"propertyKeyword": "generatedDefaultValue",
+				"propertyType": "block",
+				"structure": [
+					{
+						"propertyName": "Expression",
+						"propertyKeyword": "expression",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"type": "and",
+							"values": [
+								{
+									"level": "root",
+									"key": "viewOn",
+									"exist": true
+								},
+								{
+									"level": "root",
+									"key": "duality",
+									"value": true
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Not null",
 				"propertyKeyword": "required",
 				"propertyType": "checkbox"
@@ -10979,6 +11311,41 @@ making sure that you maintain a proper JSON format.
 			},
 			{
 				"fieldKeyword": "cardinality",
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"type": "and",
+							"values": [
+								{
+									"level": "root",
+									"key": "viewOn",
+									"exist": true
+								},
+								{
+									"level": "root",
+									"key": "duality",
+									"value": true
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"propertyName": "Generated as",
+				"propertyTooltip": "",
+				"propertyKeyword": "generatedDefaultValue",
+				"propertyType": "block",
+				"structure": [
+					{
+						"propertyName": "Expression",
+						"propertyKeyword": "expression",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					}
+				],
 				"dependency": {
 					"type": "not",
 					"values": [
@@ -11903,6 +12270,41 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Generated as",
+				"propertyTooltip": "",
+				"propertyKeyword": "generatedDefaultValue",
+				"propertyType": "block",
+				"structure": [
+					{
+						"propertyName": "Expression",
+						"propertyKeyword": "expression",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"type": "and",
+							"values": [
+								{
+									"level": "root",
+									"key": "viewOn",
+									"exist": true
+								},
+								{
+									"level": "root",
+									"key": "duality",
+									"value": true
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Not null",
 				"propertyKeyword": "required",
 				"enableForReference": true,
@@ -12507,6 +12909,41 @@ making sure that you maintain a proper JSON format.
 								{
 									"key": "sqlJsonFunction",
 									"value": "JSON_ARRAYAGG"
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"propertyName": "Generated as",
+				"propertyTooltip": "",
+				"propertyKeyword": "generatedDefaultValue",
+				"propertyType": "block",
+				"structure": [
+					{
+						"propertyName": "Expression",
+						"propertyKeyword": "expression",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"type": "and",
+							"values": [
+								{
+									"level": "root",
+									"key": "viewOn",
+									"exist": true
+								},
+								{
+									"level": "root",
+									"key": "duality",
+									"value": true
 								}
 							]
 						}

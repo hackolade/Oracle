@@ -50,7 +50,6 @@ module.exports = (baseProvider, options, app) => {
 		getColumnDefault,
 		getColumnEncrypt,
 		decorateType,
-		canHaveIdentity,
 	} = require('./ddlHelpers/columnDefinitionHelper.js')({
 		_,
 		wrap,
@@ -216,7 +215,7 @@ module.exports = (baseProvider, options, app) => {
 				dimension: jsonSchema.dimension,
 				subtype: jsonSchema.subtype,
 				defaultOnNull: jsonSchema.defaultOnNull,
-				...(canHaveIdentity(jsonSchema.mode) && { identity: jsonSchema.identity }),
+				generatedDefaultValue: jsonSchema.generatedDefaultValue,
 			};
 		},
 
