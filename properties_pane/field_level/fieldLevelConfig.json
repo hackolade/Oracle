@@ -2707,7 +2707,12 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "As identity",
 						"propertyKeyword": "asIdentity",
-						"propertyType": "checkbox"
+						"propertyType": "checkbox",
+						"disabledOnCondition": {
+							"level": "siblings",
+							"key": "generatedDefaultValue.asIdentity",
+							"value": true
+						}
 					},
 					{
 						"propertyName": "Expression",
@@ -2755,7 +2760,12 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "As identity",
 						"propertyKeyword": "asIdentity",
-						"propertyType": "checkbox"
+						"propertyType": "checkbox",
+						"disabledOnCondition": {
+							"level": "siblings",
+							"key": "generatedDefaultValue.asIdentity",
+							"value": true
+						}
 					},
 					{
 						"propertyName": "Type",
