@@ -144,10 +144,11 @@ module.exports = (baseProvider, options, app) => {
 				dbVersion,
 				synonyms: data.synonyms,
 				sequences: data.sequences,
+				isActivated: containerData.isActivated,
 			};
 		},
 
-		createSchema({ schemaName, ifNotExist, dbVersion, sequences }) {
+		createSchema({ schemaName, ifNotExist, dbVersion, sequences, isActivated = true }) {
 			const emptyLineSeparator = '\n\n';
 			const statementTerminator = ';';
 
@@ -165,18 +166,19 @@ module.exports = (baseProvider, options, app) => {
 			});
 
 			if (!usingTryCatchWrapper) {
-				return (
+				return commentIfDeactivated(
 					schemaStatement +
-					statementTerminator +
-					emptyLineSeparator +
-					alterSessionStatement +
-					schemaSequencesStatement
+						statementTerminator +
+						emptyLineSeparator +
+						alterSessionStatement +
+						schemaSequencesStatement,
+					{ isActivated },
 				);
 			}
 
 			const wrappedSchemaStatement = wrapIfNotExists(schemaStatement, ifNotExist, 1920);
 
-			return wrappedSchemaStatement + schemaSequencesStatement;
+			return commentIfDeactivated(wrappedSchemaStatement + schemaSequencesStatement, { isActivated });
 		},
 
 		hydrateColumn({ columnDefinition, jsonSchema, schemaData, definitionJsonSchema = {} }) {
