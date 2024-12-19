@@ -148,7 +148,7 @@ module.exports = (baseProvider, options, app) => {
 			};
 		},
 
-		createSchema({ schemaName, ifNotExist, dbVersion, sequences, isActivated }) {
+		createSchema({ schemaName, ifNotExist, dbVersion, sequences, isActivated = true }) {
 			const emptyLineSeparator = '\n\n';
 			const statementTerminator = ';';
 
