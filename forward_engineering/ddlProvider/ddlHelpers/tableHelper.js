@@ -1,12 +1,5 @@
 const _ = require('lodash');
-module.exports = ({
-	_,
-	getColumnsList,
-	checkAllKeysDeactivated,
-	commentIfDeactivated,
-	prepareName,
-	assignTemplates,
-}) => {
+module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivated, prepareName, assignTemplates }) => {
 	const { getOptionsString } = require('./constraintHelper')({ _, prepareName });
 
 	const getTableType = ({
@@ -49,7 +42,7 @@ module.exports = ({
 			.filter(Boolean)
 			.join('');
 
-		return _.trim(statements) ? ` ${_.trim(statements)}` : '';
+		return _.trim(statements) ? `\n ${_.trim(statements)}` : '';
 	};
 
 	const getBlockChainClause =
@@ -78,7 +71,7 @@ module.exports = ({
 	const getStorage =
 		textTableProperties =>
 		({ organization, tablespace, logging }) => {
-			if (_.includes(textTableProperties, 'TABLESPACE')) {
+			if (!organization || _.includes(textTableProperties, 'TABLESPACE')) {
 				return '';
 			}
 

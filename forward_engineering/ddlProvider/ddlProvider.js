@@ -69,7 +69,6 @@ module.exports = (baseProvider, options, app) => {
 		createKeyConstraint,
 		customPropertiesForForeignKey,
 	} = require('./ddlHelpers/tableHelper')({
-		_,
 		checkAllKeysDeactivated,
 		getColumnsList,
 		commentIfDeactivated,
