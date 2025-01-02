@@ -3,7 +3,7 @@ module.exports = {
 
 	comment: '\nCOMMENT ON ${object} ${objectName} IS ${comment};\n',
 
-	createTable: 'CREATE${tableType} TABLE${ifNotExists} ${name}${tableProps}\n${options}',
+	createTable: 'CREATE${tableType} TABLE${ifNotExists} ${name}${tableProps}${options}',
 
 	createTableProps: '${columnDefinitions}${keyConstraints}${checkConstraints}${foreignKeyConstraints}',
 
