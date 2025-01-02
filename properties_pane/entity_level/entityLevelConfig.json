@@ -187,7 +187,7 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "Select from list of options",
 						"propertyType": "select",
 						"defaultValue": "heap",
-						"options": ["heap", "index", "external"]
+						"options": ["", "heap", "index", "external"]
 					},
 					{
 						"propertyName": "Tablespace",
@@ -199,15 +199,13 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "Logging",
 						"propertyKeyword": "logging",
 						"propertyTooltip": "Specify whether the creation of the table and of any indexes required because of constraints, partition, or LOB storage characteristics will be logged in the redo log file (LOGGING) or not (NOLOGGING).",
-						"propertyType": "checkbox",
-						"defaultValue": true
+						"propertyType": "checkbox"
 					},
 					{
 						"propertyName": "Row archival",
 						"propertyKeyword": "row_archival",
 						"propertyTooltip": "This clause lets you implement In-Database Archiving, which allows you to designate table rows as active or archived. You can then perform queries on only the active rows within the table.  When you specify this clause, a hidden column ORA_ARCHIVE_STATE is created in the table.",
-						"propertyType": "checkbox",
-						"defaultValue": false
+						"propertyType": "checkbox"
 					}
 				]
 			},
