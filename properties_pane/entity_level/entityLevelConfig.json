@@ -199,7 +199,20 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "Logging",
 						"propertyKeyword": "logging",
 						"propertyTooltip": "Specify whether the creation of the table and of any indexes required because of constraints, partition, or LOB storage characteristics will be logged in the redo log file (LOGGING) or not (NOLOGGING).",
-						"propertyType": "checkbox"
+						"propertyType": "checkbox",
+						"dependency": {
+							"type": "or",
+							"values": [
+								{
+									"key": "organization",
+									"value": "heap"
+								},
+								{
+									"key": "organization",
+									"value": "index"
+								}
+							]
+						}
 					},
 					{
 						"propertyName": "Row archival",
