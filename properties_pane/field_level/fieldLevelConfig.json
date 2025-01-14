@@ -2712,6 +2712,18 @@ making sure that you maintain a proper JSON format.
 							"level": "siblings",
 							"key": "generatedDefaultValue.asIdentity",
 							"value": true
+						},
+						"propertyTooltip": {
+							"disabled": [
+								{
+									"tooltip": "Another column has already been selected as identity. You must unselect it prior to selecting this column.",
+									"dependency": {
+										"level": "siblings",
+										"key": "generatedDefaultValue.asIdentity",
+										"value": true
+									}
+								}
+							]
 						}
 					},
 					{
@@ -2762,9 +2774,18 @@ making sure that you maintain a proper JSON format.
 						"propertyKeyword": "asIdentity",
 						"propertyType": "checkbox",
 						"disabledOnCondition": {
-							"level": "siblings",
-							"key": "generatedDefaultValue.asIdentity",
-							"value": true
+							"type": "and",
+							"values": [
+								{
+									"level": "siblings",
+									"key": "generatedDefaultValue.asIdentity",
+									"value": true
+								},
+								{
+									"key": "generatedDefaultValue.asIdentity",
+									"value": false
+								}
+							]
 						}
 					},
 					{
