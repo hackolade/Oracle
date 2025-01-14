@@ -2782,8 +2782,11 @@ making sure that you maintain a proper JSON format.
 									"value": true
 								},
 								{
-									"key": "generatedDefaultValue.asIdentity",
-									"value": false
+									"type": "not",
+									"values": {
+										"key": "generatedDefaultValue.asIdentity",
+										"value": true
+									}
 								}
 							]
 						}
