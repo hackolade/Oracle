@@ -2772,24 +2772,7 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "As identity",
 						"propertyKeyword": "asIdentity",
-						"propertyType": "checkbox",
-						"disabledOnCondition": {
-							"type": "and",
-							"values": [
-								{
-									"level": "siblings",
-									"key": "generatedDefaultValue.asIdentity",
-									"value": true
-								},
-								{
-									"type": "not",
-									"values": {
-										"key": "generatedDefaultValue.asIdentity",
-										"value": true
-									}
-								}
-							]
-						}
+						"propertyType": "checkbox"
 					},
 					{
 						"propertyName": "Type",
