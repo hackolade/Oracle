@@ -58,7 +58,7 @@ const getGeneratedClause = ({ generatedType, generatedOnNull }) => {
  * @param {{ identityStart?: number; identityIncrement?: number; numberToCache?: number; }}
  * @returns {string}
  */
-const getIdentityOptions = ({ identityStart, identityIncrement, numberToCache }) => {
+const getIdentityOptions = ({ identityStart, identityIncrement, numberToCache } = {}) => {
 	const startWith = isNumber(identityStart) ? ` START WITH ${identityStart}` : '';
 	const incrementBy = isNumber(identityIncrement) ? ` INCREMENT BY ${identityIncrement}` : '';
 	const cache = isNumber(numberToCache) ? ` CACHE ${numberToCache}` : ' NOCACHE';
@@ -75,7 +75,7 @@ const getColumnDefault = ({ type, default: defaultValue, defaultOnNull, generate
 	const generatedClause = getGeneratedClause({ generatedType, generatedOnNull });
 	const expressionValue = trim(expression);
 
-	if (asIdentity && canHaveIdentity({ type }) && !isEmpty(identity)) {
+	if (asIdentity && canHaveIdentity({ type })) {
 		const identityOptions = getIdentityOptions(identity);
 
 		return `${generatedClause} AS IDENTITY (${identityOptions})`;
