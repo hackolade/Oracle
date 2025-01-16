@@ -2667,47 +2667,14 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "block",
 				"structure": [
 					{
-						"propertyName": "Expression",
-						"propertyKeyword": "expression",
-						"propertyType": "details",
-						"template": "textarea",
-						"markdown": false
-					}
-				],
-				"dependency": {
-					"type": "not",
-					"values": [
-						{
-							"key": "mode",
-							"value": "number"
-						},
-						{
-							"key": "generatedDefaultValue.asIdentity",
-							"value": true
-						},
-						{
-							"level": "root",
-							"key": "viewOn",
-							"exist": true
-						},
-						{
-							"level": "root",
-							"key": "duality",
-							"value": true
-						}
-					]
-				}
-			},
-			{
-				"propertyName": "Generated as",
-				"propertyTooltip": "",
-				"propertyKeyword": "generatedDefaultValue",
-				"propertyType": "block",
-				"structure": [
-					{
 						"propertyName": "As identity",
 						"propertyKeyword": "asIdentity",
 						"propertyType": "checkbox",
+						"dependency": {
+							"level": "objectRoot",
+							"key": "mode",
+							"value": "number"
+						},
 						"disabledOnCondition": {
 							"level": "siblings",
 							"key": "generatedDefaultValue.asIdentity",
@@ -2731,55 +2698,25 @@ making sure that you maintain a proper JSON format.
 						"propertyKeyword": "expression",
 						"propertyType": "details",
 						"template": "textarea",
-						"markdown": false
-					}
-				],
-				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"key": "mode",
-							"value": "number"
-						},
-						{
+						"markdown": false,
+						"dependency": {
 							"type": "not",
-							"values": [
-								{
-									"key": "generatedDefaultValue.asIdentity",
-									"value": true
-								},
-								{
-									"level": "root",
-									"key": "viewOn",
-									"exist": true
-								},
-								{
-									"level": "root",
-									"key": "duality",
-									"value": true
-								}
-							]
+							"values": {
+								"key": "asIdentity",
+								"value": true
+							}
 						}
-					]
-				}
-			},
-			{
-				"propertyName": "Generated as",
-				"propertyTooltip": "",
-				"propertyKeyword": "generatedDefaultValue",
-				"propertyType": "block",
-				"structure": [
-					{
-						"propertyName": "As identity",
-						"propertyKeyword": "asIdentity",
-						"propertyType": "checkbox"
 					},
 					{
 						"propertyName": "Type",
 						"propertyKeyword": "generatedType",
 						"propertyType": "select",
 						"options": ["ALWAYS", "BY DEFAULT"],
-						"defaultValue": "ALWAYS"
+						"defaultValue": "ALWAYS",
+						"dependency": {
+							"key": "asIdentity",
+							"value": true
+						}
 					},
 					{
 						"propertyName": "On null",
@@ -2796,27 +2733,10 @@ making sure that you maintain a proper JSON format.
 						"propertyType": "block",
 						"propertyKeyword": "identity",
 						"propertyTooltip": "Creates an identity column in a table",
-						"structure": [],
 						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"key": "generatedType",
-									"exist": false
-								},
-								{
-									"key": "generatedType",
-									"value": ""
-								}
-							]
-						}
-					},
-
-					{
-						"propertyName": "Identity",
-						"propertyType": "block",
-						"propertyKeyword": "identity",
-						"propertyTooltip": "Creates an identity column in a table",
+							"key": "asIdentity",
+							"value": true
+						},
 						"structure": [
 							{
 								"propertyName": "Start",
@@ -2845,50 +2765,21 @@ making sure that you maintain a proper JSON format.
 								"minValue": 1,
 								"step": 1
 							}
-						],
-						"dependency": {
-							"type": "not",
-							"values": {
-								"type": "or",
-								"values": [
-									{
-										"key": "generatedType",
-										"exist": false
-									},
-									{
-										"key": "generatedType",
-										"value": ""
-									}
-								]
-							}
-						}
+						]
 					}
 				],
 				"dependency": {
-					"type": "and",
+					"type": "not",
 					"values": [
 						{
-							"key": "mode",
-							"value": "number"
+							"level": "root",
+							"key": "viewOn",
+							"exist": true
 						},
 						{
-							"key": "generatedDefaultValue.asIdentity",
+							"level": "root",
+							"key": "duality",
 							"value": true
-						},
-						{
-							"type": "not",
-							"values": [
-								{
-									"level": "root",
-									"key": "viewOn",
-									"exist": true
-								},
-								{
-									"level": "root",
-									"key": "duality",
-									"value": true
-								}
-							]
 						}
 					]
 				}
