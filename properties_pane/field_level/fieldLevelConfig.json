@@ -7126,6 +7126,11 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Default",
+				"propertyKeyword": "default",
+				"propertyType": "text"
+			},
+			{
 				"propertyName": "Comments",
 				"propertyKeyword": "description",
 				"propertyTooltip": "comments",
