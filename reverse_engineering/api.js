@@ -1,5 +1,3 @@
-'use strict';
-
 const _ = require('lodash');
 const logInfo = require('./helpers/logInfo');
 const oracleHelper = require('./helpers/oracleHelper');

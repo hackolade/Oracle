@@ -9,7 +9,7 @@
 const _ = require('lodash');
 const { Sequence } = require('../../types/schemaSequenceTypes');
 
-module.exports = ({ _, templates, assignTemplates, getNamePrefixedWithSchemaName, wrapIfNotExists }) => {
+module.exports = ({ templates, assignTemplates, getNamePrefixedWithSchemaName, wrapIfNotExists }) => {
 	/**
 	 * @param {{ schemaName: string, sequences: Sequence[], usingTryCatchWrapper: boolean }}
 	 * @returns {string}

@@ -1,17 +1,17 @@
+const _ = require('lodash');
 const { AlterScriptDto } = require('../../types/AlterScriptDto');
+const {
+	checkFieldPropertiesChanged,
+	prepareNameForScriptFormat,
+	getNamePrefixedWithSchemaNameForScriptFormat,
+	getEntityName,
+} = require('../../../utils/general');
 
 // TODO: THIS WILL BE CHANGED TO SUPPORT LENGTH, PRECISION, SCALE TYPE ATTRIBUTES
 /**
  * @return {(collection: Object) => AlterScriptDto[]}
  * */
-const getUpdateTypesScriptDtos = (_, ddlProvider, scriptFormat) => collection => {
-	const {
-		checkFieldPropertiesChanged,
-		prepareNameForScriptFormat,
-		getNamePrefixedWithSchemaNameForScriptFormat,
-		getEntityName,
-	} = require('../../../utils/general')(_);
-
+const getUpdateTypesScriptDtos = (ddlProvider, scriptFormat) => collection => {
 	const collectionSchema = { ...collection, ...(_.omit(collection?.role, 'properties') || {}) };
 	const tableName = getEntityName(collectionSchema);
 	const schemaName = collectionSchema.compMod?.keyspaceName;

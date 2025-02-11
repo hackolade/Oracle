@@ -1,13 +1,11 @@
 const { getAlterScriptDtos } = require('./alterScriptFromDeltaHelper');
-
 const { AlterScriptDto } = require('./types/AlterScriptDto');
-const _ = require('lodash');
+const { commentIfDeactivated } = require('../utils/general');
 
 /**
  * @return {(dtos: AlterScriptDto[], shouldApplyDropStatements: boolean) => string}
  * */
-const joinAlterScriptDtosIntoScript = _ => (dtos, shouldApplyDropStatements) => {
-	const { commentIfDeactivated } = require('../utils/general')(_);
+const joinAlterScriptDtosIntoScript = (dtos, shouldApplyDropStatements) => {
 	return dtos
 		.map(dto => {
 			if (dto.isActivated === false) {
@@ -46,7 +44,7 @@ const buildEntityLevelAlterScript = (data, app) => {
 		option => option.id === 'applyDropStatements' && option.value,
 	);
 
-	return joinAlterScriptDtosIntoScript(_)(alterScriptDtos, shouldApplyDropStatements);
+	return joinAlterScriptDtosIntoScript(alterScriptDtos, shouldApplyDropStatements);
 };
 
 /**
@@ -83,7 +81,7 @@ const buildContainerLevelAlterScript = (data, app) => {
 		option => option.id === 'applyDropStatements' && option.value,
 	);
 
-	return joinAlterScriptDtosIntoScript(_)(alterScriptDtos, shouldApplyDropStatements);
+	return joinAlterScriptDtosIntoScript(alterScriptDtos, shouldApplyDropStatements);
 };
 
 /**

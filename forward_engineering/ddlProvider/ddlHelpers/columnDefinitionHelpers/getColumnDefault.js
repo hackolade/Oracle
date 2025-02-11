@@ -1,4 +1,4 @@
-const { isEmpty, isNumber, trim } = require('lodash');
+const { isNumber, trim } = require('lodash');
 
 /**
  * @enum

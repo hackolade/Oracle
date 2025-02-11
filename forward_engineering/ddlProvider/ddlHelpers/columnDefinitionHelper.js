@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const { DbVersion } = require('../../enums/DbVersion');
 const { getColumnDefault } = require('../ddlHelpers/columnDefinitionHelpers/getColumnDefault');
+
 /**
  * @param dbVersion {string} DB version in "21&i" format
  * @return {boolean}
@@ -10,8 +11,8 @@ const shouldUseClobForJsonColumns = dbVersion => {
 	return dbVersionAsNumber < DbVersion.JSON_TYPE_SINCE;
 };
 
-module.exports = ({ _, wrap, assignTemplates, templates, commentIfDeactivated, wrapComment, prepareName }) => {
-	const { getOptionsString } = require('./constraintHelper')({ _, prepareName });
+module.exports = ({ assignTemplates, templates, commentIfDeactivated, wrapComment, prepareName }) => {
+	const { getOptionsString } = require('./constraintHelper')({ prepareName });
 
 	const getColumnComments = (tableName, columnDefinitions) => {
 		return _.chain(columnDefinitions)

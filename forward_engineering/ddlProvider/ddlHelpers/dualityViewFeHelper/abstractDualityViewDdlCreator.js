@@ -1,3 +1,4 @@
+const { getViewName } = require('../../../utils/general');
 const { DualityViewPropertiesType } = require('../../../enums/DualityViewPropertiesType');
 
 /**
@@ -7,18 +8,16 @@ class AbstractDualityViewFeDdlCreator {
 	/**
 	 * @param ddlTemplates {Object}
 	 * @param assignTemplates {(template: string, values: Object) => string}
-	 * @param lodash {any}
 	 * @param prepareName {(name: string) => string}
 	 * @param getNamePrefixedWithSchemaName {(name: string, schemaName: string) => string
 	 * @throws {Error}
 	 * */
-	constructor(ddlTemplates, assignTemplates, lodash, prepareName, getNamePrefixedWithSchemaName) {
+	constructor(ddlTemplates, assignTemplates, prepareName, getNamePrefixedWithSchemaName) {
 		if (this.constructor === AbstractDualityViewFeDdlCreator) {
 			throw new Error("Abstract classes can't be instantiated.");
 		}
 		this._ddlTemplates = ddlTemplates;
 		this._assignTemplates = assignTemplates;
-		this._lodash = lodash;
 		this._prepareName = prepareName;
 		this._getNamePrefixedWithSchemaName = getNamePrefixedWithSchemaName;
 	}
@@ -181,7 +180,6 @@ class AbstractDualityViewFeDdlCreator {
 	 * */
 	getCreateJsonRelationalDualityViewHeadingDdl(createViewDto) {
 		const { jsonSchema, view } = createViewDto;
-		const { getViewName } = require('../../../utils/general')(this._lodash);
 		const template = this._ddlTemplates?.dualityView?.createJsonRelationalDualityViewHeading || '';
 
 		const orReplaceStatement = this._getOrReplaceStatement(view);

@@ -7,6 +7,20 @@ const { DualityViewSyntaxType } = require('../enums/DualityViewSyntaxType');
 const { DbVersion } = require('../enums/DbVersion');
 const { AlterIndexDto } = require('../alterScript/types/AlterIndexDto.js');
 const { Sequence } = require('../types/schemaSequenceTypes');
+const {
+	tab,
+	commentIfDeactivated,
+	checkAllKeysDeactivated,
+	divideIntoActivatedAndDeactivated,
+	hasType,
+	wrap,
+	clean,
+	getNamePrefixedWithSchemaNameForScriptFormat,
+	wrapComment,
+	getColumnsList,
+	prepareNameForScriptFormat,
+} = require('../utils/general');
+const { assignTemplates } = require('../utils/assignTemplates');
 
 /**
  * @param dbVersion {string} DB version in "21ai" format
@@ -20,28 +34,12 @@ const shouldUseTryCatchIfNotExistsWrapper = dbVersion => {
 module.exports = (baseProvider, options, app) => {
 	const toArray = val => (_.isArray(val) ? val : [val]);
 
-	const {
-		tab,
-		commentIfDeactivated,
-		checkAllKeysDeactivated,
-		divideIntoActivatedAndDeactivated,
-		hasType,
-		wrap,
-		clean,
-		getNamePrefixedWithSchemaNameForScriptFormat,
-		wrapComment,
-		getColumnsList,
-		prepareNameForScriptFormat,
-	} = require('../utils/general')(_);
-
 	const prepareName = prepareNameForScriptFormat(options?.targetScriptOptions?.keyword);
 	const getNamePrefixedWithSchemaName = getNamePrefixedWithSchemaNameForScriptFormat(
 		options?.targetScriptOptions?.keyword,
 	);
 
-	const { assignTemplates } = require('../utils/assignTemplates')({ _ });
-
-	const keyHelper = require('./ddlHelpers/keyHelper')(_, clean);
+	const keyHelper = require('./ddlHelpers/keyHelper')(clean);
 
 	const {
 		getColumnComments,
@@ -51,7 +49,6 @@ module.exports = (baseProvider, options, app) => {
 		getColumnEncrypt,
 		decorateType,
 	} = require('./ddlHelpers/columnDefinitionHelper.js')({
-		_,
 		wrap,
 		assignTemplates,
 		templates,
@@ -77,7 +74,6 @@ module.exports = (baseProvider, options, app) => {
 	});
 
 	const { getUserDefinedType, isNotPlainType } = require('./ddlHelpers/udtHelper')({
-		_,
 		commentIfDeactivated,
 		assignTemplates,
 		templates,
@@ -85,12 +81,10 @@ module.exports = (baseProvider, options, app) => {
 	});
 
 	const { getViewType, getViewData } = require('./ddlHelpers/viewHelper')({
-		_,
 		prepareName,
 	});
 
 	const { getIndexType, getIndexKeys, getIndexOptions, getIndexName } = require('./ddlHelpers/indexHelper')({
-		_,
 		prepareName,
 		getNamePrefixedWithSchemaName,
 	});
@@ -115,7 +109,6 @@ module.exports = (baseProvider, options, app) => {
 
 	const { getSequencesScript, createSequenceScript, dropSequenceScript, alterSequenceScript } =
 		require('./ddlHelpers/sequenceHelper')({
-			_,
 			templates,
 			assignTemplates,
 			getNamePrefixedWithSchemaName,

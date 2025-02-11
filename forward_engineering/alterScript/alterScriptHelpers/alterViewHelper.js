@@ -1,6 +1,7 @@
+const _ = require('lodash');
 const { AlterScriptDto } = require('../types/AlterScriptDto');
 const { mapDeltaDualityViewToFeDualityView } = require('./dualityViewHelpers/deltaDualityViewToFeDualityViewMapper');
-const _ = require('lodash');
+const { prepareNameForScriptFormat } = require('../../utils/general');
 
 /**
  * @return {(view: Object) => AlterScriptDto | undefined}
@@ -36,7 +37,7 @@ const getDualityViewScriptDto = (app, scriptFormat) => view => {
 		app,
 	);
 
-	const createDualityViewDto = mapDeltaDualityViewToFeDualityView(_)(view);
+	const createDualityViewDto = mapDeltaDualityViewToFeDualityView(view);
 	const script = ddlProvider.createDualityView(createDualityViewDto);
 	return AlterScriptDto.getInstance([script], true, false);
 };
@@ -55,7 +56,6 @@ const getAddViewScriptDto = (app, scriptFormat) => view => {
  * @return {(view: Object) => AlterScriptDto | undefined}
  * */
 const getDeleteViewScriptDto = (app, scriptFormat) => view => {
-	const { prepareNameForScriptFormat } = require('../../utils/general')(_);
 	const ddlViewName = prepareNameForScriptFormat(scriptFormat)(view.code || view.name);
 
 	const dropViewScript = `DROP VIEW ${ddlViewName};`;

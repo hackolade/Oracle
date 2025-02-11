@@ -1,5 +1,6 @@
 const _ = require('lodash');
-module.exports = ({ _, assignTemplates, templates, getNamePrefixedWithSchemaName }) => {
+
+module.exports = ({ assignTemplates, templates, getNamePrefixedWithSchemaName }) => {
 	const notPlainTypes = ['OBJECT_UDT', 'VARRAY', 'TABLE', 'COLLECTION_UDT'];
 	const getPlainUdt = (udt, getColumnDefinition) => {
 		const udtName = getNamePrefixedWithSchemaName(udt.name, udt.schemaName);

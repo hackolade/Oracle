@@ -3,7 +3,7 @@
  * @typedef {{ [optionName: string]: string | number | undefined }} Options
  */
 
-const { Sequence, SequenceDto } = require('../../forward_engineering/types/schemaSequenceTypes');
+const { SequenceDto } = require('../../forward_engineering/types/schemaSequenceTypes');
 const mapLimit = require('async/mapLimit');
 
 const START_VALUE_REGEX = /(?<=START WITH)(\s+)([\w]+)(?=\s+)?/;

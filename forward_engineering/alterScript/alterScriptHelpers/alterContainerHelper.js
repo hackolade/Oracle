@@ -1,10 +1,10 @@
+const { prepareNameForScriptFormat } = require('../../utils/general');
 const { AlterScriptDto } = require('../types/AlterScriptDto');
-const _ = require('lodash');
+
 /**
  * @return {(containerName: string) => AlterScriptDto | undefined}
  * */
 const getAddContainerScriptDto = (app, scriptFormat) => containerName => {
-	const { prepareNameForScriptFormat } = require('../../utils/general')(_);
 	const ddlContainerName = prepareNameForScriptFormat(scriptFormat)(containerName);
 
 	const createContainerStatement = `CREATE USER ${ddlContainerName} NO AUTHENTICATION;`;
@@ -15,7 +15,6 @@ const getAddContainerScriptDto = (app, scriptFormat) => containerName => {
  * @return {(containerName: string) => AlterScriptDto | undefined}
  * */
 const getDeleteContainerScriptDto = (app, scriptFormat) => containerName => {
-	const { prepareNameForScriptFormat } = require('../../utils/general')(_);
 	const ddlContainerName = prepareNameForScriptFormat(scriptFormat)(containerName);
 
 	const dropContainerStatement = `DROP USER ${ddlContainerName};`;
