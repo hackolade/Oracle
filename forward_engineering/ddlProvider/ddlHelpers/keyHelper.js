@@ -1,5 +1,6 @@
 const _ = require('lodash');
-module.exports = (_, clean) => {
+
+module.exports = clean => {
 	const mapProperties = (jsonSchema, iteratee) => {
 		return Object.entries(jsonSchema.properties).map(iteratee);
 	};

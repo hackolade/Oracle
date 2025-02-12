@@ -71,4 +71,6 @@ module.exports = {
 	},
 
 	alterSession: 'ALTER SESSION SET CURRENT_SCHEMA=${schemaName};\n',
+
+	alterColumn: 'ALTER TABLE ${tableName} MODIFY (${columnName}${dataType});',
 };

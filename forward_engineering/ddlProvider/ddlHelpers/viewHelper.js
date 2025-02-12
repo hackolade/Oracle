@@ -1,4 +1,6 @@
-module.exports = ({ _, prepareName }) => {
+const _ = require('lodash');
+
+module.exports = ({ prepareName }) => {
 	const getViewType = ({ editioning, editionable }) => {
 		return `${editionable ? ' EDITIONABLE' : ''}${editioning ? ' EDITIONING' : ''}`;
 	};

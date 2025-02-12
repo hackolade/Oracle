@@ -1,8 +1,8 @@
-const oracleHelper = require('../reverse_engineering/helpers/oracleHelper');
 const _ = require('lodash');
+const async = require('async');
+const oracleHelper = require('../reverse_engineering/helpers/oracleHelper');
 
 const applyToInstance = async (connectionInfo, logger, app) => {
-	const async = app.require('async');
 	const sshService = app.require('@hackolade/ssh-service');
 
 	oracleHelper.logEnvironment(logger);

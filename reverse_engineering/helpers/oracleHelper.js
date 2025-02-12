@@ -1,10 +1,10 @@
+const _ = require('lodash');
+const fs = require('fs');
+const path = require('path');
 const oracleDB = require('oracledb');
 const extractWallet = require('./extractWallet');
-const path = require('path');
-const fs = require('fs');
 const parseTns = require('./parseTns');
 const { getSchemaSequences } = require('./getSchemaSequences');
-const _ = require('lodash');
 
 const noConnectionError = { message: 'Connection error' };
 
@@ -871,7 +871,7 @@ const getSchemaSynonyms = async ({ schema, allDDLs, logger }) => {
 			SELECT ALL_SYNONYMS.OWNER,
 			    ALL_SYNONYMS.SYNONYM_NAME,
 			    ALL_SYNONYMS.TABLE_NAME,
-			    ALL_OBJECTS.EDITIONABLE 
+			    ALL_OBJECTS.EDITIONABLE
 			  FROM ALL_SYNONYMS
 			  LEFT JOIN ALL_OBJECTS
 			    ON ALL_OBJECTS.OWNER = ALL_SYNONYMS.OWNER

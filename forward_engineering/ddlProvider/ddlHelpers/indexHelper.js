@@ -1,5 +1,7 @@
 const _ = require('lodash');
-module.exports = ({ _, prepareName, getNamePrefixedWithSchemaName }) => {
+const { escapeSingleQuote } = require('../../utils/general');
+
+module.exports = ({ prepareName, getNamePrefixedWithSchemaName }) => {
 	const getIndexType = indexType => {
 		return indexType ? ` ${_.toUpper(indexType)}` : '';
 	};
@@ -14,8 +16,6 @@ module.exports = ({ _, prepareName, getNamePrefixedWithSchemaName }) => {
 	 * @return {string}
 	 * */
 	const getIndexKeys = ({ indxKey, column_expression }) => {
-		const { escapeSingleQuote } = require('../../utils/general')();
-
 		if (column_expression) {
 			const ddlColumnExpression = escapeSingleQuote(column_expression);
 			return `\n(\n\t${ddlColumnExpression}\n)\n\t`;

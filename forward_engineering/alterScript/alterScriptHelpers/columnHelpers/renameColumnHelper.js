@@ -1,15 +1,16 @@
+const _ = require('lodash');
 const { AlterScriptDto } = require('../../types/AlterScriptDto');
+const {
+	checkFieldPropertiesChanged,
+	getEntityName,
+	getNamePrefixedWithSchemaNameForScriptFormat,
+	prepareNameForScriptFormat,
+} = require('../../../utils/general');
 
 /**
  * @return {(collection: Object) => AlterScriptDto[]}
  * */
-const getRenameColumnScriptDtos = (_, ddlProvider, scriptFormat) => collection => {
-	const {
-		checkFieldPropertiesChanged,
-		getEntityName,
-		getNamePrefixedWithSchemaNameForScriptFormat,
-		prepareNameForScriptFormat,
-	} = require('../../../utils/general')(_);
+const getRenameColumnScriptDtos = (ddlProvider, scriptFormat) => collection => {
 	const collectionSchema = { ...collection, ...(_.omit(collection?.role, 'properties') || {}) };
 	const tableName = getEntityName(collectionSchema);
 	const schemaName = collectionSchema.compMod?.keyspaceName;

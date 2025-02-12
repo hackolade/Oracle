@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const { getAddContainerScriptDto, getDeleteContainerScriptDto } = require('./alterScriptHelpers/alterContainerHelper');
 const {
 	getAddCollectionScriptDto,
@@ -28,7 +29,6 @@ const {
 	getDeleteContainerSequencesScriptDtos,
 	getAddContainerSequencesScriptDtos,
 } = require('./alterScriptHelpers/containerHelpers/alterSequenceHelper');
-const _ = require('lodash');
 
 /**
  * @param dto {{
@@ -276,9 +276,9 @@ const getAlterRelationshipsScriptDtos = ({ collection, app, scriptFormat }) => {
 		.map(item => Object.values(item.properties)[0])
 		.filter(relationship => relationship?.role?.compMod?.modified);
 
-	const deleteFkScriptDtos = getDeleteForeignKeyScriptDtos(ddlProvider, _, scriptFormat)(deletedRelationships);
-	const addFkScriptDtos = getAddForeignKeyScriptDtos(ddlProvider, _)(addedRelationships);
-	const modifiedFkScriptDtos = getModifyForeignKeyScriptDtos(ddlProvider, _, scriptFormat)(modifiedRelationships);
+	const deleteFkScriptDtos = getDeleteForeignKeyScriptDtos(ddlProvider, scriptFormat)(deletedRelationships);
+	const addFkScriptDtos = getAddForeignKeyScriptDtos(ddlProvider)(addedRelationships);
+	const modifiedFkScriptDtos = getModifyForeignKeyScriptDtos(ddlProvider, scriptFormat)(modifiedRelationships);
 
 	return [...deleteFkScriptDtos, ...addFkScriptDtos, ...modifiedFkScriptDtos].filter(Boolean);
 };

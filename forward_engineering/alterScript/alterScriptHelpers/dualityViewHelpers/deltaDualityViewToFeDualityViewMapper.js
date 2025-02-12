@@ -1,11 +1,11 @@
+const _ = require('lodash');
 const { DualityViewPropertiesType } = require('../../../enums/DualityViewPropertiesType');
+const { getEntityName, getBucketName } = require('../../../utils/general');
 
 /**
  * @return {(view: DeltaDualityView) => DualityView}
  * */
-const mapToFeView = _ => view => {
-	const { getEntityName, getBucketName } = require('../../../utils/general')(_);
-
+const mapToFeView = view => {
 	/**
 	 * @type {DeltaDualityViewRole}
 	 * */
@@ -34,7 +34,7 @@ const mapToFeView = _ => view => {
  *     collectionRefsDefinitionsMap: DeltaDualityViewCompModCollectionRefsDefinitionsMap,
  * ) => RegularDualityViewField}
  * */
-const mapRegularField = _ => (code, property, collectionRefsDefinitionsMap) => {
+const mapRegularField = (code, property, collectionRefsDefinitionsMap) => {
 	/**
 	 * @type {DeltaDualityViewCompModCollectionRefsDefinitionsMapValue}
 	 */
@@ -79,7 +79,7 @@ const assertSubqueryIsValid = (code, subquery, collectionRefsDefinitionsMap) => 
  *     collectionRefsDefinitionsMap: DeltaDualityViewCompModCollectionRefsDefinitionsMap,
  * ) => JoinSubquery}
  * */
-const mapSubquery = _ => (code, subquery, collectionRefsDefinitionsMap) => {
+const mapSubquery = (code, subquery, collectionRefsDefinitionsMap) => {
 	assertSubqueryIsValid(code, subquery, collectionRefsDefinitionsMap);
 
 	/**
@@ -103,12 +103,12 @@ const mapSubquery = _ => (code, subquery, collectionRefsDefinitionsMap) => {
 	if (subquery.subtype === 'array') {
 		const childProperties = _.get(subquery, 'items.properties', {});
 		result.items = {
-			properties: recursivelyParseProperties(_)(childProperties, collectionRefsDefinitionsMap),
+			properties: recursivelyParseProperties(childProperties, collectionRefsDefinitionsMap),
 		};
 	} else if (subquery.subtype === 'object') {
 		result.unnestSubquery = subquery.unnestSubquery;
 		const childProperties = _.get(subquery, 'properties', {});
-		result.properties = recursivelyParseProperties(_)(childProperties, collectionRefsDefinitionsMap);
+		result.properties = recursivelyParseProperties(childProperties, collectionRefsDefinitionsMap);
 	}
 
 	return result;
@@ -120,7 +120,7 @@ const mapSubquery = _ => (code, subquery, collectionRefsDefinitionsMap) => {
  *  collectionRefsDefinitionsMap: DeltaDualityViewCompModCollectionRefsDefinitionsMap
  * ) => DualityViewJsonSchemaProperties}
  * */
-const recursivelyParseProperties = _ => (properties, collectionRefsDefinitionsMap) => {
+const recursivelyParseProperties = (properties, collectionRefsDefinitionsMap) => {
 	/**
 	 * @type {Array<[string, DeltaDualityViewRoleProperty]>}
 	 * */
@@ -128,10 +128,10 @@ const recursivelyParseProperties = _ => (properties, collectionRefsDefinitionsMa
 
 	const arrayOfCodesAndFeJsonSchemas = arrayOfCodesAndJsonSchemas.map(([code, jsonSchema]) => {
 		if (jsonSchema.type === DualityViewPropertiesType.JOIN_SUBQUERY_TYPE) {
-			const mappedJsonSchema = mapSubquery(_)(code, jsonSchema, collectionRefsDefinitionsMap);
+			const mappedJsonSchema = mapSubquery(code, jsonSchema, collectionRefsDefinitionsMap);
 			return [code, mappedJsonSchema];
 		}
-		const mappedJsonSchema = mapRegularField(_)(code, jsonSchema, collectionRefsDefinitionsMap);
+		const mappedJsonSchema = mapRegularField(code, jsonSchema, collectionRefsDefinitionsMap);
 		return [code, mappedJsonSchema];
 	});
 
@@ -141,18 +141,16 @@ const recursivelyParseProperties = _ => (properties, collectionRefsDefinitionsMa
 /**
  * @return {(view: DeltaDualityView) => DualityViewJsonSchemaProperties}
  * */
-const parseProperties = _ => view => {
+const parseProperties = view => {
 	const properties = _.get(view, 'role.properties', {});
 	const collectionRefsDefinitionsMap = _.get(view, 'role.compMod.collectionData.collectionRefsDefinitionsMap', {});
-	return recursivelyParseProperties(_)(properties, collectionRefsDefinitionsMap);
+	return recursivelyParseProperties(properties, collectionRefsDefinitionsMap);
 };
 
 /**
  * @return {(view: DeltaDualityView) => DualityViewJsonSchema}
  * */
-const mapToFeJsonSchema = _ => view => {
-	const { getEntityName } = require('../../../utils/general')(_);
-
+const mapToFeJsonSchema = view => {
 	/**
 	 * @type {DeltaDualityViewRole}
 	 * */
@@ -160,7 +158,7 @@ const mapToFeJsonSchema = _ => view => {
 	const entityProperties = _.get(role, 'compMod.collectionData.entityData[0]', {});
 
 	const tableName = getEntityName(entityProperties);
-	const properties = parseProperties(_)(view);
+	const properties = parseProperties(view);
 
 	return {
 		rootTableAlias: role.rootTableAlias,
@@ -176,7 +174,7 @@ const mapToFeJsonSchema = _ => view => {
 /**
  * @return {(view: DeltaDualityView) => DualityViewRelatedSchemas}
  * */
-const mapToFeRelatedSchemas = _ => view => {
+const mapToFeRelatedSchemas = view => {
 	/**
 	 * @type {DeltaDualityViewCompModCollectionRefsDefinitionsMap}
 	 * */
@@ -224,10 +222,10 @@ const mapToFeRelatedSchemas = _ => view => {
 /**
  * @return {(view: DeltaDualityView) => CreateDualityViewDto}
  * */
-const mapDeltaDualityViewToFeDualityView = _ => view => {
-	const feView = mapToFeView(_)(view);
-	const feJsonSchema = mapToFeJsonSchema(_)(view);
-	const feRelatedSchemas = mapToFeRelatedSchemas(_)(view);
+const mapDeltaDualityViewToFeDualityView = view => {
+	const feView = mapToFeView(view);
+	const feJsonSchema = mapToFeJsonSchema(view);
+	const feRelatedSchemas = mapToFeRelatedSchemas(view);
 
 	return {
 		view: feView,

@@ -1,7 +1,7 @@
-const { checkFieldPropertiesChanged } = require('../../utils/general')();
+const _ = require('lodash');
+const { checkFieldPropertiesChanged, prepareNameForScriptFormat } = require('../../utils/general');
 const templates = require('../../ddlProvider/templates');
 const { AlterScriptDto } = require('../types/AlterScriptDto');
-const _ = require('lodash');
 
 /**
  * @return {(jsonSchema: Object) => AlterScriptDto |  undefined}
@@ -55,8 +55,6 @@ const getCreateUdtScriptDto =
  * @return {(udt: Object) => AlterScriptDto | undefined}
  * */
 const getDeleteUdtScriptDto = (app, scriptFormat) => udt => {
-	const { prepareNameForScriptFormat } = require('../../utils/general')(_);
-
 	const ddlUdtName = prepareNameForScriptFormat(scriptFormat)(udt.code || udt.name);
 	const dropUdtScript = `DROP TYPE ${ddlUdtName};`;
 	return AlterScriptDto.getInstance([dropUdtScript], true, true);
@@ -69,7 +67,6 @@ const getAddColumnToTypeScriptDtos =
 	({ app, dbVersion, modelDefinitions, internalDefinitions, externalDefinitions, scriptFormat }) =>
 	udt => {
 		const { createColumnDefinitionBySchema } = require('./createColumnDefinition')(app);
-		const { prepareNameForScriptFormat } = require('../../utils/general')(_);
 		const ddlProvider = require('../../ddlProvider/ddlProvider')(
 			null,
 			{ dbVersion, targetScriptOptions: { keyword: scriptFormat } },
@@ -108,8 +105,6 @@ const getAddColumnToTypeScriptDtos =
  * @return {(udt: Object) => AlterScriptDto[]}
  * */
 const getDeleteColumnFromTypeScriptDtos = (app, scriptFormat) => udt => {
-	const { prepareNameForScriptFormat } = require('../../utils/general')(_);
-
 	const fullName = prepareNameForScriptFormat(scriptFormat)(udt.code || udt.name);
 
 	return _.toPairs(udt.properties)
@@ -122,8 +117,6 @@ const getDeleteColumnFromTypeScriptDtos = (app, scriptFormat) => udt => {
  * @return {(udt: Object) => AlterScriptDto[]}
  * */
 const getModifyColumnOfTypeScriptDtos = (app, scriptFormat) => udt => {
-	const { prepareNameForScriptFormat } = require('../../utils/general')(_);
-
 	const fullName = prepareNameForScriptFormat(scriptFormat)(udt.code || udt.name);
 
 	/**

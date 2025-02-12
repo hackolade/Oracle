@@ -1,7 +1,8 @@
+const _ = require('lodash');
 const { AlterScriptDto } = require('../../types/AlterScriptDto.js');
 const { AlterCollectionDto } = require('../../types/AlterCollectionDto');
 const { AlterIndexDto } = require('../../types/AlterIndexDto');
-const { prepareNameForScriptFormat } = require('../../../utils/general.js')();
+const { prepareNameForScriptFormat } = require('../../../utils/general.js');
 
 /**
  * @typedef {{
@@ -41,11 +42,9 @@ const dropAndRecreateIndexProperties = [
  * @param {{oldIndex: AlterIndexDto, newIndex: AlterIndexDto}} param0
  * @returns {boolean}
  */
-const shouldDropAndRecreateIndex =
-	({ _ }) =>
-	({ oldIndex, newIndex }) => {
-		return dropAndRecreateIndexProperties.some(property => !_.isEqual(oldIndex[property], newIndex[property]));
-	};
+const shouldDropAndRecreateIndex = ({ oldIndex, newIndex }) => {
+	return dropAndRecreateIndexProperties.some(property => !_.isEqual(oldIndex[property], newIndex[property]));
+};
 
 /**
  * @param {{oldIndex: AlterIndexDto, newIndex: AlterIndexDto}} param0
@@ -111,7 +110,7 @@ const addNameToIndexKey = ({ index, collection }) => {
  * @returns {GetAlterScriptDtosFunction}
  */
 const getDeletedIndexesScriptDtos =
-	({ _, ddlProvider, scriptFormat }) =>
+	({ ddlProvider, scriptFormat }) =>
 	({ collection }) => {
 		const newIndexes = collection?.role?.compMod?.Indxs?.new || [];
 		const oldIndexes = collection?.role?.compMod?.Indxs?.old || [];
@@ -147,7 +146,7 @@ const getDeleteIndexScriptDto =
  * @returns {GetAlterScriptDtosFunction}
  */
 const getAddedIndexesScriptDtos =
-	({ _, ddlProvider }) =>
+	({ ddlProvider }) =>
 	({ collection }) => {
 		const newIndexes = collection?.role?.Indxs || [];
 		const oldIndexes = collection?.role?.compMod?.Indxs?.old || [];
@@ -185,7 +184,7 @@ const getAddIndexScriptDto =
  * @returns {GetAlterScriptDtosFunction}
  */
 const getModifiedIndexesScriptDtos =
-	({ _, ddlProvider, scriptFormat }) =>
+	({ ddlProvider, scriptFormat }) =>
 	({ collection }) => {
 		const newIndexes = collection?.role?.compMod?.Indxs?.new || [];
 		const oldIndexes = collection?.role?.compMod?.Indxs?.old || [];
@@ -209,7 +208,7 @@ const getModifiedIndexesScriptDtos =
 			.filter(Boolean);
 
 		return modifiedIndexes.flatMap(modifiedIndex =>
-			getModifyIndexScriptDto({ _, ddlProvider, scriptFormat })({ modifiedIndex, collection }),
+			getModifyIndexScriptDto({ ddlProvider, scriptFormat })({ modifiedIndex, collection }),
 		);
 	};
 
@@ -217,14 +216,14 @@ const getModifiedIndexesScriptDtos =
  * @returns {GetAlterScriptDtoFunctionForModifiedIndex}
  */
 const getModifyIndexScriptDto =
-	({ _, ddlProvider, scriptFormat }) =>
+	({ ddlProvider, scriptFormat }) =>
 	({ modifiedIndex: { oldIndex, newIndex }, collection }) => {
 		const oldName = prepareNameForScriptFormat(scriptFormat)(oldIndex.indxName);
 		const newName = prepareNameForScriptFormat(scriptFormat)(newIndex.indxName);
 
 		let alterScriptDtos = [];
 
-		if (shouldDropAndRecreateIndex({ _ })({ oldIndex, newIndex })) {
+		if (shouldDropAndRecreateIndex({ oldIndex, newIndex })) {
 			const dropIndexDto = AlterScriptDto.getInstance(
 				[ddlProvider.dropIndex({ name: oldName })],
 				newIndex.isActivated,
@@ -272,11 +271,11 @@ const getModifyIndexScriptDto =
  * @returns {GetAlterScriptDtosFunction}
  * */
 const getModifyIndexesScriptDtos =
-	({ _, ddlProvider, scriptFormat }) =>
+	({ ddlProvider, scriptFormat }) =>
 	({ collection }) => {
-		const removedIndexScriptDtos = getDeletedIndexesScriptDtos({ _, ddlProvider, scriptFormat })({ collection });
-		const addedIndexScriptDtos = getAddedIndexesScriptDtos({ _, ddlProvider })({ collection });
-		const modifiedIndexScriptDtos = getModifiedIndexesScriptDtos({ _, ddlProvider, scriptFormat })({ collection });
+		const removedIndexScriptDtos = getDeletedIndexesScriptDtos({ ddlProvider, scriptFormat })({ collection });
+		const addedIndexScriptDtos = getAddedIndexesScriptDtos({ ddlProvider })({ collection });
+		const modifiedIndexScriptDtos = getModifiedIndexesScriptDtos({ ddlProvider, scriptFormat })({ collection });
 
 		return [...removedIndexScriptDtos, ...addedIndexScriptDtos, ...modifiedIndexScriptDtos].filter(Boolean);
 	};
