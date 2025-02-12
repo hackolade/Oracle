@@ -8,32 +8,22 @@ const {
 } = require('../../../utils/general');
 const { assignTemplates } = require('../../../utils/assignTemplates');
 const templates = require('../../../ddlProvider/templates');
+const { decorateType } = require('../../../ddlProvider/ddlHelpers/columnDefinitionHelpers/decorateType');
 
 /**
  * @param {string} tableName
  * @param {string} columnName
- * @param {string} dataType
- * @param {{
- *     length?: number,
- *     scale?: number,
- *     precision?: number
- * }} dataTypeProperties
+ * @param {string} type
+ * @param {object} columnDefinition
  * @return string
  * */
-const alterColumnType = (tableName, columnName, dataType, dataTypeProperties) => {
-	let dataTypeString = dataType;
-	if (dataTypeProperties.length) {
-		dataTypeString += `(${dataTypeProperties.length})`;
-	} else if (dataTypeProperties.precision && dataTypeProperties.scale) {
-		dataTypeString += `(${dataTypeProperties.precision},${dataTypeProperties.scale})`;
-	} else if (dataTypeProperties.precision) {
-		dataTypeString += `(${dataTypeProperties.precision})`;
-	}
+const alterColumnType = (tableName, columnName, type, columnDefinition) => {
+	const decoratedType = decorateType(type, columnDefinition);
 
 	return assignTemplates(templates.alterColumn, {
 		tableName,
 		columnName,
-		dataType: dataTypeString,
+		dataType: decoratedType,
 	});
 };
 
@@ -85,10 +75,9 @@ const getUpdateTypesScriptDtos = (ddlProvider, scriptFormat) => collection => {
 			return hasTypeChanged;
 		})
 		.map(([name, jsonSchema]) => {
-			const typeName = jsonSchema.compMod.newField.mode || jsonSchema.compMod.newField.type;
+			const type = _.toUpper(jsonSchema.compMod.newField.mode || jsonSchema.compMod.newField.type);
 			const columnName = prepareNameForScriptFormat(scriptFormat)(name);
-			const typeConfig = _.pick(jsonSchema, ['length', 'precision', 'scale']);
-			return alterColumnType(fullName, columnName, typeName, typeConfig);
+			return alterColumnType(fullName, columnName, type, jsonSchema);
 		})
 		.map(script => AlterScriptDto.getInstance([script], true, false));
 };

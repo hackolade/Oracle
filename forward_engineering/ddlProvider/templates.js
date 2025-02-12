@@ -72,5 +72,5 @@ module.exports = {
 
 	alterSession: 'ALTER SESSION SET CURRENT_SCHEMA=${schemaName};\n',
 
-	alterColumn: 'ALTER TABLE IF EXISTS ${tableName} MODIFY (${columnName} ${dataType});',
+	alterColumn: 'ALTER TABLE IF EXISTS ${tableName} MODIFY (${columnName}${dataType});',
 };

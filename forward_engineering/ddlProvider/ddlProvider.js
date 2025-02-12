@@ -21,6 +21,7 @@ const {
 	prepareNameForScriptFormat,
 } = require('../utils/general');
 const { assignTemplates } = require('../utils/assignTemplates');
+const { decorateType } = require('./ddlHelpers/columnDefinitionHelpers/decorateType');
 
 /**
  * @param dbVersion {string} DB version in "21ai" format
@@ -41,21 +42,15 @@ module.exports = (baseProvider, options, app) => {
 
 	const keyHelper = require('./ddlHelpers/keyHelper')(clean);
 
-	const {
-		getColumnComments,
-		getColumnConstraints,
-		replaceTypeByVersion,
-		getColumnDefault,
-		getColumnEncrypt,
-		decorateType,
-	} = require('./ddlHelpers/columnDefinitionHelper.js')({
-		wrap,
-		assignTemplates,
-		templates,
-		commentIfDeactivated,
-		wrapComment,
-		prepareName,
-	});
+	const { getColumnComments, getColumnConstraints, replaceTypeByVersion, getColumnDefault, getColumnEncrypt } =
+		require('./ddlHelpers/columnDefinitionHelper.js')({
+			wrap,
+			assignTemplates,
+			templates,
+			commentIfDeactivated,
+			wrapComment,
+			prepareName,
+		});
 
 	const {
 		getTableType,
