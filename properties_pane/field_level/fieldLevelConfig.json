@@ -2461,7 +2461,7 @@ making sure that you maintain a proper JSON format.
 				"valueType": "number",
 				"propertyTooltip": "Setting for Precision must be between 1 and 39",
 				"minValue": 1,
-				"maxValue": 39,
+				"maxValue": 38,
 				"typeDecorator": true,
 				"dependency": {
 					"type": "and",
