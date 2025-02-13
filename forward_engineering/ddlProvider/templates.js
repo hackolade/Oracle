@@ -73,4 +73,8 @@ module.exports = {
 	alterSession: 'ALTER SESSION SET CURRENT_SCHEMA=${schemaName};\n',
 
 	alterColumn: 'ALTER TABLE ${tableName} MODIFY (${columnName}${dataType});',
+
+	addCheckConstraint: 'ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintName} CHECK (${expression});',
+
+	dropConstraint: 'ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName};',
 };

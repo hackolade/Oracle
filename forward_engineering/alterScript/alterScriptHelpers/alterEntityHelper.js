@@ -8,6 +8,7 @@ const {
 	getNamePrefixedWithSchemaNameForScriptFormat,
 	prepareNameForScriptFormat,
 } = require('../../utils/general');
+const { getModifyCheckConstraintScriptDtos } = require('./entityHelpers/checkConstraintHelper');
 
 /**
  * @return {(collection: AlterCollectionDto) => AlterScriptDto | undefined}
@@ -90,8 +91,9 @@ const getModifyCollectionScriptDtos =
 			app,
 		);
 
+		const modifyCheckConstraintScriptDtos = getModifyCheckConstraintScriptDtos({ scriptFormat })(collection);
 		const modifyIndexesScriptDtos = getModifyIndexesScriptDtos({ ddlProvider, scriptFormat })({ collection });
-		return [...modifyIndexesScriptDtos].filter(Boolean);
+		return [...modifyIndexesScriptDtos, ...modifyCheckConstraintScriptDtos].filter(Boolean);
 	};
 
 /**
