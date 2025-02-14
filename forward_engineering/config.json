@@ -51,7 +51,7 @@
 			"id": "applyDropStatements",
 			"value": false,
 			"forUpdate": true,
-			"name": "Apply Drop Statements",
+			"name": "Apply potentially destructive changes",
 			"isDropInStatements": true
 		}
 	]
