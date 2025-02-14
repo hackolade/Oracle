@@ -79,7 +79,7 @@ const getUpdateTypesScriptDtos = (ddlProvider, scriptFormat) => collection => {
 			const columnName = prepareNameForScriptFormat(scriptFormat)(name);
 			return alterColumnType(fullName, columnName, type, jsonSchema);
 		})
-		.map(script => AlterScriptDto.getInstance([script], true, false));
+		.map(script => AlterScriptDto.getInstance([script], true, true));
 };
 
 module.exports = {
