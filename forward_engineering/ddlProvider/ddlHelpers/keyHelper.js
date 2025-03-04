@@ -38,6 +38,7 @@ module.exports = clean => {
 	const hydrateUniqueOptions = (options, columnName, isActivated) =>
 		clean({
 			keyType: 'UNIQUE',
+			name: options.constraintName,
 			columns: [
 				{
 					name: columnName,
@@ -50,6 +51,7 @@ module.exports = clean => {
 	const hydratePrimaryKeyOptions = (options, columnName, isActivated) =>
 		clean({
 			keyType: 'PRIMARY KEY',
+			name: options.constraintName,
 			columns: [
 				{
 					name: columnName,
@@ -135,10 +137,66 @@ module.exports = clean => {
 		];
 	};
 
+	/**
+	 * @param {{ jsonSchema: JsonSchema }}
+	 * @returns {ConstraintDto[]}
+	 */
+	const getCompositeKeyConstraints = ({ jsonSchema }) => {
+		const compositePrimaryKeys = getCompositePrimaryKeys(jsonSchema);
+		const compositeUniqueKeys = getCompositeUniqueKeys(jsonSchema);
+
+		return [...compositePrimaryKeys, ...compositeUniqueKeys];
+	};
+
+	/**
+	 * @param {{ columnDefinition: ColumnDefinition }}
+	 * @returns {ConstraintDto | undefined}
+	 */
+	const getPrimaryKeyConstraint = ({ columnDefinition }) => {
+		if (!isPrimaryKey(columnDefinition)) {
+			return;
+		}
+
+		return hydratePrimaryKeyOptions(
+			_.get(columnDefinition, 'primaryKeyOptions.[0]', {}),
+			'',
+			columnDefinition.isActivated,
+		);
+	};
+
+	/**
+	 * @param {{ columnDefinition: ColumnDefinition }}
+	 * @returns {ConstraintDto | undefined}
+	 */
+	const getUniqueKeyConstraint = ({ columnDefinition }) => {
+		if (!isUniqueKey(columnDefinition)) {
+			return;
+		}
+
+		return hydrateUniqueOptions(
+			_.get(columnDefinition, 'uniqueKeyOptions.[0]', {}),
+			'',
+			columnDefinition.isActivated,
+		);
+	};
+
+	/**
+	 * @param {{ columnDefinition: ColumnDefinition; jsonSchema: JsonSchema }}
+	 * @returns {ConstraintDto[]}
+	 */
+	const getColumnConstraints = ({ columnDefinition, jsonSchema }) => {
+		const primaryKeyConstraint = getPrimaryKeyConstraint({ columnDefinition, jsonSchema });
+		const uniqueKeyConstraint = getUniqueKeyConstraint({ columnDefinition, jsonSchema });
+
+		return [primaryKeyConstraint, uniqueKeyConstraint].filter(Boolean);
+	};
+
 	return {
 		getTableKeyConstraints,
 		isInlineUnique,
 		isInlinePrimaryKey,
 		getKeys,
+		getCompositeKeyConstraints,
+		getColumnConstraints,
 	};
 };
