@@ -77,6 +77,33 @@
 					"subtype": "vector<float32>"
 				}
 			},
+			{
+				"from": {
+					"type": "varchar",
+					"hasMaxLength": true
+				},
+				"to": {
+					"length": 32767
+				}
+			},
+			{
+				"from": {
+					"type": "nvarchar",
+					"hasMaxLength": true
+				},
+				"to": {
+					"length": 32767
+				}
+			},
+			{
+				"from": {
+					"type": "binary",
+					"hasMaxLength": true
+				},
+				"to": {
+					"length": 8000
+				}
+			},
 			[
 				"renameBlockItemProperties",
 				{

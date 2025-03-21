@@ -66,6 +66,30 @@
 					"mode": "integer"
 				}
 			},
+			{
+				"from": {
+					"length": 32767
+				},
+				"to": {
+					"hasMaxLength": true
+				}
+			},
+			{
+				"from": {
+					"length": 32767
+				},
+				"to": {
+					"hasMaxLength": true
+				}
+			},
+			{
+				"from": {
+					"length": 8000
+				},
+				"to": {
+					"hasMaxLength": true
+				}
+			},
 			[
 				"movePropertyByPath",
 				{
