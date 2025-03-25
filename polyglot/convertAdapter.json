@@ -66,6 +66,33 @@
 					"mode": "integer"
 				}
 			},
+			{
+				"from": {
+					"mode": "varchar2",
+					"length": 32767
+				},
+				"to": {
+					"hasMaxLength": true
+				}
+			},
+			{
+				"from": {
+					"mode": "nvarchar2",
+					"length": 32767
+				},
+				"to": {
+					"hasMaxLength": true
+				}
+			},
+			{
+				"from": {
+					"type": "binary",
+					"length": 8000
+				},
+				"to": {
+					"hasMaxLength": true
+				}
+			},
 			[
 				"movePropertyByPath",
 				{
