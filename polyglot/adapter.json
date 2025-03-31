@@ -88,11 +88,31 @@
 			},
 			{
 				"from": {
+					"type": "varchar",
+					"mode": "char",
+					"hasMaxLength": true
+				},
+				"to": {
+					"length": 2000
+				}
+			},
+			{
+				"from": {
 					"type": "nvarchar",
 					"hasMaxLength": true
 				},
 				"to": {
 					"length": 32767
+				}
+			},
+			{
+				"from": {
+					"type": "nvarchar",
+					"mode": "nchar",
+					"hasMaxLength": true
+				},
+				"to": {
+					"length": 2000
 				}
 			},
 			{
