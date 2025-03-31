@@ -86,6 +86,24 @@
 			},
 			{
 				"from": {
+					"mode": "char",
+					"length": 2000
+				},
+				"to": {
+					"hasMaxLength": true
+				}
+			},
+			{
+				"from": {
+					"mode": "nchar",
+					"length": 2000
+				},
+				"to": {
+					"hasMaxLength": true
+				}
+			},
+			{
+				"from": {
 					"type": "binary",
 					"length": 8000
 				},
