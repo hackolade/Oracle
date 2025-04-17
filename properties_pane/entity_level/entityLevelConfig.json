@@ -973,6 +973,13 @@ making sure that you maintain a proper JSON format.
 						"template": "collectiontree",
 						"isCompositeKey": true,
 						"abbr": " "
+					},
+					{
+						"propertyName": "Alternate key",
+						"propertyKeyword": "alternateKey",
+						"propertyTooltip": "",
+						"propertyType": "checkbox",
+						"setFieldPropertyBy": "compositeUniqueKey"
 					}
 				]
 			}
