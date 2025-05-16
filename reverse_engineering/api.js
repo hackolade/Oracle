@@ -1,9 +1,11 @@
 const _ = require('lodash');
+const logInfo = require('./helpers/logInfo');
 const oracleHelper = require('./helpers/oracleHelper');
 
 module.exports = {
 	async connect(connectionInfo, logger, callback, app) {
 		const sshService = app.require('@hackolade/ssh-service');
+		logInfo('Connect to instance', connectionInfo, logger);
 		oracleHelper.logEnvironment(logger);
 		try {
 			await oracleHelper.connect(connectionInfo, sshService, message => {
@@ -38,6 +40,7 @@ module.exports = {
 
 	async getSchemaNames(connectionInfo, logger, callback, app) {
 		try {
+			logInfo('Get schemas', connectionInfo, logger);
 			await this.connect(connectionInfo, logger, () => {}, app);
 			const schemas = await oracleHelper.getSchemaNames();
 			logger.log('info', schemas, 'All schemas list', connectionInfo.hiddenKeys);
@@ -81,6 +84,7 @@ module.exports = {
 				logger.log('info', { message, schema: containerName, table: entityName }, 'Retrieving schema');
 				logger.progress({ message, containerName, entityName });
 			};
+			logger.log('info', collectionsInfo, 'Retrieving schema', collectionsInfo.hiddenKeys);
 			progress({ message: 'Start reverse-engineering process', containerName: '', entityName: '' });
 			const data = collectionsInfo.collectionData;
 			const collections = data.collections;

@@ -40,6 +40,9 @@ module.exports = {
 	},
 
 	applyToInstance(connectionInfo, logger, callback, app) {
+		logger.clear();
+		logger.log('info', connectionInfo, 'connectionInfo', connectionInfo.hiddenKeys);
+
 		applyToInstanceHelper
 			.applyToInstance(connectionInfo, logger, app)
 			.then(result => {
