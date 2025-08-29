@@ -140,8 +140,7 @@ const getAddColumnScriptDtos =
 			.map(script => AlterScriptDto.getInstance([script], true, false))
 			.filter(Boolean);
 
-		const indexesOnNewlyCreatedColumns = getNewlyCreatedIndexesScripts({ ddlProvider, collection });
-		return scripts.concat(indexesOnNewlyCreatedColumns).filter(Boolean);
+		return scripts.filter(Boolean);
 	};
 
 /**
