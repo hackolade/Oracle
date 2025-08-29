@@ -128,8 +128,8 @@ const getAlterCollectionsScriptDtos = ({
 	return [
 		...createCollectionsScriptDtos,
 		...deleteCollectionScriptDtos,
-		...modifyCollectionScriptDtos,
 		...addColumnScriptDtos,
+		...modifyCollectionScriptDtos,
 		...deleteColumnScriptDtos,
 		...modifyColumnScriptDtos,
 	].filter(Boolean);
