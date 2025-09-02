@@ -7,7 +7,7 @@ const {
 	AlterCollectionColumnKeyOptionDto,
 	AlterCollectionRoleCompModPrimaryKey,
 } = require('../../types/AlterCollectionDto');
-const { PrimaryKeyTransitionDto, KeyScriptModificationDto, AlterPrimaryKeyDto } = require('../../types/AlterKeyDto');
+const { PrimaryKeyTransitionDto, KeyScriptModificationDto, AlterKeyDto } = require('../../types/AlterKeyDto');
 const {
 	getFullCollectionName,
 	getSchemaOfAlterCollection,
@@ -16,6 +16,7 @@ const {
 	prepareNameForScriptFormat,
 } = require('../../../utils/general');
 const { areConstraintOptionsEqual } = require('./areConstraintOptionsEqual');
+const { sortModifyKeyConstraints } = require('./sortModifyKeyConstraints');
 
 const amountOfColumnsInRegularPk = 1;
 
@@ -37,12 +38,12 @@ const extractOptionsForComparisonWithRegularPkOptions = optionHolder => {
 /**
  * @param {AlterCollectionRoleCompModPKDto} primaryKey
  * @param {AlterCollectionDto} entity
- * @return {AlterPrimaryKeyDto}
+ * @return {AlterKeyDto}
  * */
 const getCreateCompositePKDDLProviderConfig = (primaryKey, entity) => {
 	const columns = _.toPairs(entity.role.properties)
 		.filter(([name, jsonSchema]) =>
-			Boolean(primaryKey.compositePrimaryKey.find(keyDto => keyDto.keyId === jsonSchema.GUID)),
+			Boolean(primaryKey.compositePrimaryKey?.find(keyDto => keyDto.keyId === jsonSchema.GUID)),
 		)
 		.map(([name, jsonSchema]) => ({
 			name,
@@ -109,7 +110,7 @@ const getModifyCompositePkScriptDtos = ({ scriptFormat, collection }) => {
 /**
  * @param {string} columnName
  * @param {AlterCollectionColumnDto} columnJsonSchema
- * @return {AlterPrimaryKeyDto}
+ * @return {AlterKeyDto}
  * */
 const getCreateRegularPKDDLProviderConfig = (columnName, columnJsonSchema) => {
 	const columns = [
@@ -291,23 +292,6 @@ const getModifyPkScriptDtos = ({ scriptFormat, collection }) => {
 };
 
 /**
- * @param {KeyScriptModificationDto[]} constraintDtos
- * @return {KeyScriptModificationDto[]}
- * */
-const sortModifyPkConstraints = constraintDtos => {
-	return constraintDtos.sort((c1, c2) => {
-		if (c1.fullTableName === c2.fullTableName) {
-			// Number(true) = 1, Number(false) = 0;
-			// This ensures that DROP script appears before CREATE script
-			// if the same table has 2 scripts that drop and recreate PK
-			return Number(c2.isDropScript) - Number(c1.isDropScript);
-		}
-		// This sorts all statements based on full table name, ASC
-		return c1.fullTableName < c2.fullTableName ? 0 : 1;
-	});
-};
-
-/**
  * @param {object} params
  * @property {string} [scriptFormat]
  * @property {AlterCollectionDto} collection
@@ -318,7 +302,7 @@ const getModifyPkConstraintsScriptDtos = ({ scriptFormat, collection }) => {
 	const modifyPkScriptDtos = getModifyPkScriptDtos({ scriptFormat, collection });
 
 	const allDtos = [...modifyCompositePkScriptDtos, ...modifyPkScriptDtos];
-	const sortedAllDtos = sortModifyPkConstraints(allDtos);
+	const sortedAllDtos = sortModifyKeyConstraints(allDtos);
 
 	return sortedAllDtos
 		.map(dto => AlterScriptDto.getInstance([dto.script], dto.isActivated, dto.isDropScript))

@@ -112,9 +112,7 @@ class AlterKeyDto {
 	 * @type {Array<{ name: string; isActivated: boolean; }>}
 	 */
 	columns;
-}
 
-class AlterPrimaryKeyDto extends AlterKeyDto {
 	/**
 	 * @type {string | undefined}
 	 */
@@ -142,7 +140,7 @@ class AlterPrimaryKeyDto extends AlterKeyDto {
 }
 
 module.exports = {
-	AlterPrimaryKeyDto,
+	AlterKeyDto,
 	KeyScriptModificationDto,
 	PrimaryKeyTransitionDto,
 	UniqueKeyTransitionDto,

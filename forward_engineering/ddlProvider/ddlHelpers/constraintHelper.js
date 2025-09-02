@@ -2,7 +2,7 @@ const _ = require('lodash');
 const templates = require('../templates');
 const { checkAllKeysDeactivated, getColumnsList } = require('../../utils/general');
 const { assignTemplates } = require('../../utils/assignTemplates');
-const { AlterPrimaryKeyDto } = require('../../alterScript/types/AlterKeyDto');
+const { AlterKeyDto } = require('../../alterScript/types/AlterKeyDto');
 
 module.exports = ({ prepareName }) => {
 	/**
@@ -22,7 +22,7 @@ module.exports = ({ prepareName }) => {
 	/**
 	 * @param {Record<string, string>} templates
 	 * @param {boolean} isParentActivated
-	 * @returns {(keyData: AlterPrimaryKeyDto) => ({ statement: string; isActivated: boolean; })}
+	 * @returns {(keyData: AlterKeyDto) => ({ statement: string; isActivated: boolean; })}
 	 */
 	const createKeyConstraint = (templates, isParentActivated) => keyData => {
 		const isAllColumnsDeactivated = checkAllKeysDeactivated(keyData.columns);
@@ -45,7 +45,7 @@ module.exports = ({ prepareName }) => {
 	/**
 	 * @param {string} tableName
 	 * @param {boolean} isParentActivated
-	 * @param {AlterPrimaryKeyDto} keyData
+	 * @param {AlterKeyDto} keyData
 	 *
 	 * @return {{ statement: string; isActivated: boolean }}
 	 * */
