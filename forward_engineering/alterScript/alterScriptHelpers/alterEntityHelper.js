@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const { AlterScriptDto } = require('../types/AlterScriptDto');
+const { AlterCollectionDto } = require('../types/AlterCollectionDto');
 const { getUpdateTypesScriptDtos } = require('./columnHelpers/alterTypeHelper');
 const { getRenameColumnScriptDtos } = require('./columnHelpers/renameColumnHelper');
 const { getModifyIndexesScriptDtos, getAddedIndexesScriptDtos } = require('./entityHelpers/indexesHelper');
@@ -12,6 +13,7 @@ const { getModifyCheckConstraintScriptDtos } = require('./entityHelpers/checkCon
 const { getModifyPkConstraintsScriptDtos } = require('./entityHelpers/primaryKeyHelper');
 const { getModifyUniqueKeyConstraintsScriptDtos } = require('./entityHelpers/uniqueKeyHelper');
 const { getModifyNonNullColumnsScriptDtos } = require('./columnHelpers/nonNullConstraintHelper');
+const { getModifiedDefaultColumnValueScriptDtos } = require('./columnHelpers/defaultValueHelper');
 
 /**
  * @return {(collection: AlterCollectionDto) => AlterScriptDto | undefined}
@@ -207,8 +209,14 @@ const getModifyColumnScriptDtos = (app, dbVersion, scriptFormat) => collection =
 	const renameColumnScriptDtos = getRenameColumnScriptDtos(ddlProvider, scriptFormat)(collection);
 	const updateTypeScriptDtos = getUpdateTypesScriptDtos(ddlProvider, scriptFormat)(collection);
 	const modifyNotNullScriptDtos = getModifyNonNullColumnsScriptDtos({ scriptFormat, collection });
+	const modifyDefaultColumnValueScriptDtos = getModifiedDefaultColumnValueScriptDtos({ scriptFormat, collection });
 
-	return [...renameColumnScriptDtos, ...updateTypeScriptDtos, ...modifyNotNullScriptDtos].filter(Boolean);
+	return [
+		...renameColumnScriptDtos,
+		...updateTypeScriptDtos,
+		...modifyDefaultColumnValueScriptDtos,
+		...modifyNotNullScriptDtos,
+	].filter(Boolean);
 };
 
 module.exports = {
