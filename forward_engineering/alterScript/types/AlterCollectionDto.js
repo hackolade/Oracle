@@ -1,4 +1,4 @@
-const { AlterIndexDto } = require('../types/AlterIndexDto');
+const { AlterIndexDto } = require('./AlterIndexDto');
 
 class ColumnCompModField {
 	/**
@@ -29,7 +29,7 @@ class AlterCollectionColumnCompModDto {
 	newField;
 }
 
-class AlterCollectionColumnPrimaryKeyOptionDto {
+class AlterCollectionColumnKeyOptionDto {
 	/**
 	 * @type {string}
 	 * */
@@ -116,7 +116,7 @@ class AlterCollectionColumnDto {
 	compositeUniqueKey;
 
 	/**
-	 * @type {Array<AlterCollectionColumnPrimaryKeyOptionDto> | undefined}
+	 * @type {Array<AlterCollectionColumnKeyOptionDto> | undefined}
 	 * */
 	primaryKeyOptions;
 
@@ -153,7 +153,7 @@ class AlterCollectionRoleDefinitionDto {
 	properties;
 }
 
-class AlterCollectionRoleCompModPKDto extends AlterCollectionColumnPrimaryKeyOptionDto {
+class AlterCollectionRoleCompModPKDto extends AlterCollectionColumnKeyOptionDto {
 	/**
 	 * @type {Array<{
 	 *   type: string,
@@ -163,6 +163,16 @@ class AlterCollectionRoleCompModPKDto extends AlterCollectionColumnPrimaryKeyOpt
 	compositePrimaryKey;
 }
 
+class AlterCollectionRoleCompModUniqueKeyDto extends AlterCollectionColumnKeyOptionDto {
+	/**
+	 * @type {Array<{
+	 *   type: string,
+	 *   keyId: string,
+	 * }>}
+	 * */
+	compositeUniqueKey;
+}
+
 class AlterCollectionRoleCompModPrimaryKey {
 	/**
 	 * @type {AlterCollectionRoleCompModPKDto[] | undefined}
@@ -170,6 +180,17 @@ class AlterCollectionRoleCompModPrimaryKey {
 	new;
 	/**
 	 * @type {AlterCollectionRoleCompModPKDto[] | undefined}
+	 * */
+	old;
+}
+
+class AlterCollectionRoleCompModUniqueKey {
+	/**
+	 * @type {AlterCollectionRoleCompModUniqueKeyDto[] | undefined}
+	 * */
+	new;
+	/**
+	 * @type {AlterCollectionRoleCompModUniqueKeyDto[] | undefined}
 	 * */
 	old;
 }
@@ -370,7 +391,7 @@ class AlterCollectionDto {
 
 	/**
 	 * @type {{
-	 *     [preopertyName: string]: AlterCollectionColumnDto
+	 *     [propertyName: string]: AlterCollectionColumnDto
 	 * }}
 	 * */
 	properties;
@@ -420,6 +441,9 @@ module.exports = {
 	AlterCollectionDto,
 	AlterCollectionRoleDto,
 	AlterCollectionColumnDto,
+	AlterCollectionColumnKeyOptionDto,
 	AlterCollectionRoleCompModPrimaryKey,
 	AlterCollectionRoleCompModPKDto,
+	AlterCollectionRoleCompModUniqueKeyDto,
+	AlterCollectionRoleCompModUniqueKey,
 };

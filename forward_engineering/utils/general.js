@@ -203,6 +203,24 @@ const getGroupItemsByCompMode = ({ newItems = [], oldItems = [] }) => {
 	};
 };
 
+/**
+ * @param {string} scriptFormat
+ * @returns {(collectionSchema: AlterCollectionDto) => string}
+ */
+const getFullCollectionName = scriptFormat => collectionSchema => {
+	const collectionName = getEntityName(collectionSchema);
+	const bucketName = collectionSchema.compMod?.keyspaceName;
+	return getNamePrefixedWithSchemaNameForScriptFormat(scriptFormat)(collectionName, bucketName);
+};
+
+/**
+ * @param {AlterCollectionDto} collection
+ * @return {AlterCollectionDto & AlterCollectionRoleDto}
+ * */
+const getSchemaOfAlterCollection = collection => {
+	return { ...collection, ...(_.omit(collection?.role, 'properties') || {}) };
+};
+
 module.exports = {
 	getDbName,
 	getBucketName,
@@ -228,4 +246,6 @@ module.exports = {
 	escapeSingleQuote,
 	getGroupItemsByCompMode,
 	prepareNameForScriptFormat,
+	getFullCollectionName,
+	getSchemaOfAlterCollection,
 };

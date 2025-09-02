@@ -287,24 +287,6 @@ module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivate
 		return keys.map(key => _.trim(key.name)).join(', ');
 	};
 
-	const createKeyConstraint = (templates, isParentActivated) => keyData => {
-		const isAllColumnsDeactivated = checkAllKeysDeactivated(keyData.columns);
-		const columns = getColumnsList(keyData.columns, isAllColumnsDeactivated, isParentActivated, ({ name }) =>
-			prepareName(name),
-		);
-		const options = getOptionsString(keyData).statement;
-
-		return {
-			statement: assignTemplates(templates.createKeyConstraint, {
-				constraintName: keyData.constraintName ? `CONSTRAINT ${prepareName(keyData.constraintName)} ` : '',
-				keyType: keyData.keyType,
-				columns,
-				options,
-			}),
-			isActivated: !isAllColumnsDeactivated,
-		};
-	};
-
 	const customPropertiesForForeignKey = relationship => {
 		const foreignOnDelete = _.get(relationship, 'relationshipOnDelete', '');
 		return { foreignOnDelete };
@@ -316,7 +298,6 @@ module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivate
 		generateConstraintsString,
 		foreignKeysToString,
 		foreignActiveKeysToString,
-		createKeyConstraint,
 		customPropertiesForForeignKey,
 	};
 };
