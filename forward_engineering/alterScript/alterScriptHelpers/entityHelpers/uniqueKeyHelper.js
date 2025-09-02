@@ -16,6 +16,7 @@ const {
 	prepareNameForScriptFormat,
 } = require('../../../utils/general');
 const { areConstraintOptionsEqual } = require('./areConstraintOptionsEqual');
+const { sortModifyKeyConstraints } = require('./sortModifyKeyConstraints');
 
 const amountOfColumnsInRegularUniqueKey = 1;
 
@@ -113,7 +114,7 @@ const wasCompositeUniqueKeyChangedInTransitionFromRegularToComposite = collectio
 	 * @type {AlterCollectionRoleCompModUniqueKeyDto[]}
 	 * */
 	const newUniqueKeys = uniqueDto.new || [];
-	const idsOfColumns = newUniqueKeys.flatMap(unique => unique.compositeUniqueKey.map(dto => dto.keyId));
+	const idsOfColumns = newUniqueKeys.flatMap(unique => unique.compositeUniqueKey?.map(dto => dto.keyId));
 	if (idsOfColumns.length !== amountOfColumnsInRegularUniqueKey) {
 		// We return false, because it wouldn't count as transition between regular UniqueKey and composite UniqueKey
 		// if composite UniqueKey does not constraint exactly 1 column
@@ -153,7 +154,7 @@ const wasCompositeUniqueKeyChangedInTransitionFromRegularToComposite = collectio
 const getCreateCompositeUniqueKeyDDLProviderConfig = (uniqueKey, entity) => {
 	const uniqueColumns = _.toPairs(entity.role.properties)
 		.filter(([name, jsonSchema]) =>
-			Boolean(uniqueKey.compositeUniqueKey.find(keyDto => keyDto.keyId === jsonSchema.GUID)),
+			Boolean(uniqueKey.compositeUniqueKey?.find(keyDto => keyDto.keyId === jsonSchema.GUID)),
 		)
 		.map(([name, jsonSchema]) => ({
 			name,
@@ -465,24 +466,6 @@ const getModifyUniqueKeyScriptDtos = ({ scriptFormat, collection }) => {
 };
 
 /**
- * @param {KeyScriptModificationDto[]} constraintDtos
- * @return {KeyScriptModificationDto[]}
- * */
-const sortModifyUniqueKeyConstraints = constraintDtos => {
-	// TODO: move to separate function
-	return constraintDtos.sort((c1, c2) => {
-		if (c1.fullTableName === c2.fullTableName) {
-			// Number(true) = 1, Number(false) = 0;
-			// This ensures that DROP script appears before CREATE script
-			// if the same table has 2 scripts that drop and recreate UniqueKey
-			return Number(c2.isDropScript) - Number(c1.isDropScript);
-		}
-		// This sorts all statements based on full table name, ASC
-		return c1.fullTableName < c2.fullTableName;
-	});
-};
-
-/**
  * @param {AlterCollectionDto} collection
  * @param {string} dbVersion
  * @return {Array<AlterScriptDto>}
@@ -492,7 +475,7 @@ const getModifyUniqueKeyConstraintsScriptDtos = ({ scriptFormat, collection }) =
 	const modifyUniqueKeyScriptDtos = getModifyUniqueKeyScriptDtos({ scriptFormat, collection });
 
 	const allDtos = [...modifyCompositeUniqueKeyScriptDtos, ...modifyUniqueKeyScriptDtos];
-	const sortedAllDtos = sortModifyUniqueKeyConstraints(allDtos);
+	const sortedAllDtos = sortModifyKeyConstraints(allDtos);
 
 	return sortedAllDtos
 		.map(dto => AlterScriptDto.getInstance([dto.script], dto.isActivated, dto.isDropScript))
