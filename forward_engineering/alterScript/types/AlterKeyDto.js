@@ -1,3 +1,6 @@
+/**
+ * @typedef {import("forward_engineering/types").KeyType} KeyType
+ */
 class KeyTransitionDto {
 	/**
 	 * @type {boolean}
@@ -101,7 +104,7 @@ class AlterKeyDto {
 	constraintName;
 
 	/**
-	 * @type {'PRIMARY KEY'}
+	 * @type {KeyType}
 	 */
 	keyType;
 
