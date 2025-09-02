@@ -7,7 +7,7 @@ const {
 	AlterCollectionColumnKeyOptionDto,
 	AlterCollectionRoleCompModPrimaryKey,
 } = require('../../types/AlterCollectionDto');
-const { PrimaryKeyTransitionDto, KeyScriptModificationDto, AlterPrimaryKeyDto } = require('../../types/AlterKeyDto');
+const { PrimaryKeyTransitionDto, KeyScriptModificationDto, AlterKeyDto } = require('../../types/AlterKeyDto');
 const {
 	getFullCollectionName,
 	getSchemaOfAlterCollection,
@@ -37,7 +37,7 @@ const extractOptionsForComparisonWithRegularPkOptions = optionHolder => {
 /**
  * @param {AlterCollectionRoleCompModPKDto} primaryKey
  * @param {AlterCollectionDto} entity
- * @return {AlterPrimaryKeyDto}
+ * @return {AlterKeyDto}
  * */
 const getCreateCompositePKDDLProviderConfig = (primaryKey, entity) => {
 	const columns = _.toPairs(entity.role.properties)
@@ -109,7 +109,7 @@ const getModifyCompositePkScriptDtos = ({ scriptFormat, collection }) => {
 /**
  * @param {string} columnName
  * @param {AlterCollectionColumnDto} columnJsonSchema
- * @return {AlterPrimaryKeyDto}
+ * @return {AlterKeyDto}
  * */
 const getCreateRegularPKDDLProviderConfig = (columnName, columnJsonSchema) => {
 	const columns = [
