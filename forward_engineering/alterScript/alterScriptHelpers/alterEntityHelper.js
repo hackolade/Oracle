@@ -11,6 +11,7 @@ const {
 const { getModifyCheckConstraintScriptDtos } = require('./entityHelpers/checkConstraintHelper');
 const { getModifyPkConstraintsScriptDtos } = require('./entityHelpers/primaryKeyHelper');
 const { getModifyUniqueKeyConstraintsScriptDtos } = require('./entityHelpers/uniqueKeyHelper');
+const { getModifyNonNullColumnsScriptDtos } = require('./columnHelpers/nonNullConstraintHelper');
 
 /**
  * @return {(collection: AlterCollectionDto) => AlterScriptDto | undefined}
@@ -205,8 +206,9 @@ const getModifyColumnScriptDtos = (app, dbVersion, scriptFormat) => collection =
 
 	const renameColumnScriptDtos = getRenameColumnScriptDtos(ddlProvider, scriptFormat)(collection);
 	const updateTypeScriptDtos = getUpdateTypesScriptDtos(ddlProvider, scriptFormat)(collection);
+	const modifyNotNullScriptDtos = getModifyNonNullColumnsScriptDtos({ scriptFormat, collection });
 
-	return [...renameColumnScriptDtos, ...updateTypeScriptDtos].filter(Boolean);
+	return [...renameColumnScriptDtos, ...updateTypeScriptDtos, ...modifyNotNullScriptDtos].filter(Boolean);
 };
 
 module.exports = {

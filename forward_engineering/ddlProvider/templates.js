@@ -79,4 +79,6 @@ module.exports = {
 	dropConstraint: 'ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName};',
 
 	addPkConstraint: 'ALTER TABLE ${tableName} ADD ${constraintStatement};',
+
+	addNotNullConstraint: 'ALTER TABLE ${tableName} MODIFY ${columnName} NOT NULL;',
 };
