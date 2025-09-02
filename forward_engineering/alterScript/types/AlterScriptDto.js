@@ -69,13 +69,13 @@ class AlterScriptDto {
 		 * @type {ModificationScript[]}
 		 * */
 		const scriptModificationDtos = [];
-		if (Boolean(dropScript)) {
+		if (dropScript) {
 			scriptModificationDtos.push({
 				isDropScript: true,
 				script: dropScript,
 			});
 		}
-		if (Boolean(createScript)) {
+		if (createScript) {
 			scriptModificationDtos.push({
 				isDropScript: false,
 				script: createScript,

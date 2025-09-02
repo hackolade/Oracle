@@ -83,7 +83,6 @@ const getAddCompositePkScriptDtos = ({ scriptFormat, collection }) => {
 
 	const collectionSchema = getSchemaOfAlterCollection(collection);
 	const fullTableName = getFullCollectionName(scriptFormat)(collectionSchema);
-	const entityName = getEntityName(collectionSchema);
 
 	return newPrimaryKeys
 		.map(newPk => {
@@ -256,7 +255,6 @@ const getAddPkScriptDtos = ({ scriptFormat, collection }) => {
 
 	const collectionSchema = getSchemaOfAlterCollection(collection);
 	const fullTableName = getFullCollectionName(scriptFormat)(collectionSchema);
-	const entityName = getEntityName(collectionSchema);
 
 	return _.toPairs(collection.properties)
 		.filter(([name, jsonSchema]) => {
@@ -305,7 +303,7 @@ const sortModifyPkConstraints = constraintDtos => {
 			return Number(c2.isDropScript) - Number(c1.isDropScript);
 		}
 		// This sorts all statements based on full table name, ASC
-		return c1.fullTableName < c2.fullTableName;
+		return c1.fullTableName < c2.fullTableName ? 0 : 1;
 	});
 };
 
