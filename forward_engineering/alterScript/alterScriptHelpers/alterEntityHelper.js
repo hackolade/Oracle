@@ -14,6 +14,8 @@ const { getModifyPkConstraintsScriptDtos } = require('./entityHelpers/primaryKey
 const { getModifyUniqueKeyConstraintsScriptDtos } = require('./entityHelpers/uniqueKeyHelper');
 const { getModifyNonNullColumnsScriptDtos } = require('./columnHelpers/nonNullConstraintHelper');
 const { getModifiedDefaultColumnValueScriptDtos } = require('./columnHelpers/defaultValueHelper');
+const { getModifyEntityCommentsScriptDtos } = require('./entityHelpers/commentsHelper');
+const { getModifiedCommentOnColumnScriptDtos } = require('./columnHelpers/commentsHelper');
 
 /**
  * @return {(collection: AlterCollectionDto) => AlterScriptDto | undefined}
@@ -97,12 +99,14 @@ const getModifyCollectionScriptDtos =
 		);
 
 		const modifyPKConstraintDtos = getModifyPkConstraintsScriptDtos({ scriptFormat, collection });
+		const modifyCommentScriptDtos = getModifyEntityCommentsScriptDtos({ scriptFormat, collection });
 		const modifyUniqueKeyConstraintDtos = getModifyUniqueKeyConstraintsScriptDtos({ scriptFormat, collection });
 		const modifyCheckConstraintScriptDtos = getModifyCheckConstraintScriptDtos({ scriptFormat })(collection);
 		const modifyIndexesScriptDtos = getModifyIndexesScriptDtos({ ddlProvider, scriptFormat })({ collection });
 
 		return [
 			...modifyPKConstraintDtos,
+			...modifyCommentScriptDtos,
 			...modifyUniqueKeyConstraintDtos,
 			...modifyIndexesScriptDtos,
 			...modifyCheckConstraintScriptDtos,
@@ -209,11 +213,13 @@ const getModifyColumnScriptDtos = (app, dbVersion, scriptFormat) => collection =
 	const renameColumnScriptDtos = getRenameColumnScriptDtos(ddlProvider, scriptFormat)(collection);
 	const updateTypeScriptDtos = getUpdateTypesScriptDtos(ddlProvider, scriptFormat)(collection);
 	const modifyNotNullScriptDtos = getModifyNonNullColumnsScriptDtos({ scriptFormat, collection });
+	const modifyCommentScriptDtos = getModifiedCommentOnColumnScriptDtos({ scriptFormat, collection });
 	const modifyDefaultColumnValueScriptDtos = getModifiedDefaultColumnValueScriptDtos({ scriptFormat, collection });
 
 	return [
 		...renameColumnScriptDtos,
 		...updateTypeScriptDtos,
+		...modifyCommentScriptDtos,
 		...modifyDefaultColumnValueScriptDtos,
 		...modifyNotNullScriptDtos,
 	].filter(Boolean);
