@@ -1,8 +1,6 @@
 const _ = require('lodash');
 
 module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivated, prepareName, assignTemplates }) => {
-	const { getOptionsString } = require('./constraintHelper')({ prepareName });
-
 	const getTableType = ({
 		duplicated,
 		external,
