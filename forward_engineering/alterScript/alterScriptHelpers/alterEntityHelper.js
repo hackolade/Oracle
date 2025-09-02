@@ -9,6 +9,7 @@ const {
 	prepareNameForScriptFormat,
 } = require('../../utils/general');
 const { getModifyCheckConstraintScriptDtos } = require('./entityHelpers/checkConstraintHelper');
+const { getModifyPkConstraintsScriptDtos } = require('./entityHelpers/primaryKeyHelper');
 
 /**
  * @return {(collection: AlterCollectionDto) => AlterScriptDto | undefined}
@@ -91,9 +92,12 @@ const getModifyCollectionScriptDtos =
 			app,
 		);
 
+		const modifyPKConstraintDtos = getModifyPkConstraintsScriptDtos({ scriptFormat, collection });
 		const modifyCheckConstraintScriptDtos = getModifyCheckConstraintScriptDtos({ scriptFormat })(collection);
 		const modifyIndexesScriptDtos = getModifyIndexesScriptDtos({ ddlProvider, scriptFormat })({ collection });
-		return [...modifyIndexesScriptDtos, ...modifyCheckConstraintScriptDtos].filter(Boolean);
+		return [...modifyPKConstraintDtos, ...modifyIndexesScriptDtos, ...modifyCheckConstraintScriptDtos].filter(
+			Boolean,
+		);
 	};
 
 /**

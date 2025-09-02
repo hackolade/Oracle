@@ -1,11 +1,11 @@
 class ModificationScript {
 	/**
-	 * @type string
+	 * @type {string}
 	 * */
 	script;
 
 	/**
-	 * @type boolean
+	 * @type {boolean}
 	 * */
 	isDropScript;
 }
@@ -22,9 +22,9 @@ class AlterScriptDto {
 	scripts;
 
 	/**
-	 * @param scripts {Array<string>}
-	 * @param isActivated {boolean}
-	 * @param isDropScripts {boolean}
+	 * @param {Array<string>} scripts
+	 * @param {boolean} isActivated
+	 * @param {boolean} isDropScripts
 	 * @return {Array<AlterScriptDto>}
 	 * */
 	static getInstances(scripts, isActivated, isDropScripts) {
@@ -40,9 +40,9 @@ class AlterScriptDto {
 	}
 
 	/**
-	 * @param scripts {Array<string>}
-	 * @param isActivated {boolean}
-	 * @param isDropScripts {boolean}
+	 * @param {Array<string>} scripts
+	 * @param {boolean} isActivated
+	 * @param {boolean} isDropScripts
 	 * @return {AlterScriptDto | undefined}
 	 * */
 	static getInstance(scripts, isActivated, isDropScripts) {
@@ -59,9 +59,9 @@ class AlterScriptDto {
 	}
 
 	/**
-	 * @param dropScript {string | undefined}
-	 * @param createScript {string | undefined}
-	 * @param isActivated {boolean}
+	 * @param {string | undefined} dropScript
+	 * @param {string | undefined} createScript
+	 * @param {boolean} isActivated
 	 * @return {AlterScriptDto | undefined}
 	 * */
 	static getDropAndRecreateInstance(dropScript, createScript, isActivated) {
@@ -69,13 +69,13 @@ class AlterScriptDto {
 		 * @type {ModificationScript[]}
 		 * */
 		const scriptModificationDtos = [];
-		if (dropScript) {
+		if (Boolean(dropScript)) {
 			scriptModificationDtos.push({
 				isDropScript: true,
 				script: dropScript,
 			});
 		}
-		if (createScript) {
+		if (Boolean(createScript)) {
 			scriptModificationDtos.push({
 				isDropScript: false,
 				script: createScript,
