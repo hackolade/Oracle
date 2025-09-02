@@ -15,7 +15,11 @@ const {
 	getDeleteColumnFromTypeScriptDtos,
 	getModifyColumnOfTypeScriptDtos,
 } = require('./alterScriptHelpers/alterUdtHelper');
-const { getAddViewScriptDto, getDeleteViewScriptDto } = require('./alterScriptHelpers/alterViewHelper');
+const {
+	getAddViewScriptDto,
+	getDeleteViewScriptDto,
+	getModifyViewScriptDtos,
+} = require('./alterScriptHelpers/alterViewHelper');
 const {
 	getModifyForeignKeyScriptDtos,
 	getDeleteForeignKeyScriptDtos,
@@ -156,7 +160,14 @@ const getAlterViewScriptDtos = (collection, app, dbVersion, scriptFormat) => {
 		.map(view => ({ ...view, ...(view.role || {}) }))
 		.map(getDeleteViewScriptDto(app, scriptFormat));
 
-	return [...deleteViewsScriptDtos, ...createViewsScriptDtos].filter(Boolean);
+	const modifyViewsScriptDtos = []
+		.concat(collection.properties?.views?.properties?.modified?.items)
+		.filter(Boolean)
+		.map(viewWrapper => Object.values(viewWrapper.properties)[0])
+		.map(view => ({ ...view, ...(view.role || {}) }))
+		.flatMap(getModifyViewScriptDtos({ scriptFormat }));
+
+	return [...deleteViewsScriptDtos, ...createViewsScriptDtos, ...modifyViewsScriptDtos].filter(Boolean);
 };
 
 /**
