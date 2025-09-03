@@ -10,7 +10,7 @@ module.exports = ({ prepareName }) => {
 	 * @returns {{ constraintString: string; statement: string; }}
 	 */
 	const getOptionsString = ({ constraintName, deferClause, rely, validate, indexClause, exceptionClause }) => {
-		const constraintString = constraintName ? ` CONSTRAINT ${prepareName(_.trim(constraintName))} ` : '';
+		const constraintString = constraintName ? `CONSTRAINT ${prepareName(_.trim(constraintName))} ` : '';
 		const statement = [deferClause, rely, indexClause, validate, exceptionClause].filter(Boolean).join(' ');
 
 		return {
