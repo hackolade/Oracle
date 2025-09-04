@@ -1,7 +1,12 @@
 const _ = require('lodash');
 const { AlterCollectionDto } = require('../../types/AlterCollectionDto');
 const { AlterScriptDto } = require('../../types/AlterScriptDto');
-const { wrapInQuotes, getNamePrefixedWithSchemaNameForScriptFormat } = require('../../../utils/general');
+const {
+	wrapInQuotes,
+	getNamePrefixedWithSchemaNameForScriptFormat,
+	getSchemaOfAlterCollection,
+	getFullCollectionName,
+} = require('../../../utils/general');
 const { assignTemplates } = require('../../../utils/assignTemplates');
 const templates = require('../../../ddlProvider/templates');
 
@@ -141,9 +146,8 @@ const getUpdateCheckConstraintScriptDtos = (constraintHistory, fullTableName) =>
 const getModifyCheckConstraintScriptDtos =
 	({ scriptFormat }) =>
 	collection => {
-		const tableName = collection.compMod?.collectionName?.new;
-		const schemaName = collection.compMod?.keyspaceName;
-		const fullName = getNamePrefixedWithSchemaNameForScriptFormat(scriptFormat)(tableName, schemaName);
+		const collectionSchema = getSchemaOfAlterCollection(collection);
+		const fullName = getFullCollectionName(scriptFormat)(collectionSchema);
 
 		const constraintHistory = mapCheckConstraintNamesToChangeHistory(collection);
 
