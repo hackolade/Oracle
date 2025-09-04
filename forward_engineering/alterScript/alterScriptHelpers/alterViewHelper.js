@@ -2,6 +2,7 @@ const _ = require('lodash');
 const { AlterScriptDto } = require('../types/AlterScriptDto');
 const { mapDeltaDualityViewToFeDualityView } = require('./dualityViewHelpers/deltaDualityViewToFeDualityViewMapper');
 const { prepareNameForScriptFormat } = require('../../utils/general');
+const { getModifyViewCommentsScriptDtos } = require('./viewHelpers/commentsHelper');
 
 /**
  * @return {(view: Object) => AlterScriptDto | undefined}
@@ -62,6 +63,19 @@ const getDeleteViewScriptDto = (app, scriptFormat) => view => {
 	return AlterScriptDto.getInstance([dropViewScript], true, true);
 };
 
+/**
+ * @param {object} params
+ * @property {string} [scriptFormat]
+ * @return {(view: AlterCollectionDto) => AlterScriptDto[]}
+ * */
+const getModifyViewScriptDtos =
+	({ scriptFormat }) =>
+	view => {
+		const modifyCommentsScriptDtos = getModifyViewCommentsScriptDtos({ scriptFormat, view });
+
+		return [...modifyCommentsScriptDtos].filter(Boolean);
+	};
+
 const getKeys = ({ view, collectionRefsDefinitionsMap, ddlProvider, app }) => {
 	const { mapProperties } = app.require('@hackolade/ddl-fe-utils');
 
@@ -104,4 +118,5 @@ const getKeys = ({ view, collectionRefsDefinitionsMap, ddlProvider, app }) => {
 module.exports = {
 	getAddViewScriptDto,
 	getDeleteViewScriptDto,
+	getModifyViewScriptDtos,
 };

@@ -58,7 +58,6 @@ module.exports = (baseProvider, options, app) => {
 		generateConstraintsString,
 		foreignKeysToString,
 		foreignActiveKeysToString,
-		createKeyConstraint,
 		customPropertiesForForeignKey,
 	} = require('./ddlHelpers/tableHelper')({
 		checkAllKeysDeactivated,
@@ -109,6 +108,8 @@ module.exports = (baseProvider, options, app) => {
 			getNamePrefixedWithSchemaName,
 			wrapIfNotExists,
 		});
+
+	const { createKeyConstraint } = require('./ddlHelpers/constraintHelper')({ prepareName });
 
 	return {
 		getDefaultType(type) {
