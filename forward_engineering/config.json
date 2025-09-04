@@ -423,7 +423,7 @@
 					"disabledLabel": ""
 				},
 				"separate": {
-					"default": false,
+					"default": true,
 					"disabled": false,
 					"disabledLabel": ""
 				},
