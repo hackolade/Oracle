@@ -15,7 +15,11 @@ const {
 	getDeleteColumnFromTypeScriptDtos,
 	getModifyColumnOfTypeScriptDtos,
 } = require('./alterScriptHelpers/alterUdtHelper');
-const { getAddViewScriptDto, getDeleteViewScriptDto } = require('./alterScriptHelpers/alterViewHelper');
+const {
+	getAddViewScriptDto,
+	getDeleteViewScriptDto,
+	getModifyViewScriptDtos,
+} = require('./alterScriptHelpers/alterViewHelper');
 const {
 	getModifyForeignKeyScriptDtos,
 	getDeleteForeignKeyScriptDtos,
@@ -105,9 +109,9 @@ const getAlterCollectionsScriptDtos = ({
 	const deleteCollectionScriptDtos = deleteScriptsData
 		.filter(collection => collection.compMod?.deleted)
 		.map(getDeleteCollectionScriptDto(app, scriptFormat));
-	const modifyCollectionScriptDtos = modifyScriptsData
-		.filter(collection => collection.compMod?.modified)
-		.flatMap(getModifyCollectionScriptDtos({ app, dbVersion, scriptFormat }));
+	const modifyCollectionScriptDtos = modifyScriptsData.flatMap(
+		getModifyCollectionScriptDtos({ app, dbVersion, scriptFormat }),
+	);
 	const addColumnScriptDtos = createScriptsData
 		.filter(item => !item?.compMod?.created)
 		.flatMap(
@@ -129,9 +133,9 @@ const getAlterCollectionsScriptDtos = ({
 		...createCollectionsScriptDtos,
 		...deleteCollectionScriptDtos,
 		...addColumnScriptDtos,
-		...modifyCollectionScriptDtos,
 		...deleteColumnScriptDtos,
 		...modifyColumnScriptDtos,
+		...modifyCollectionScriptDtos,
 	].filter(Boolean);
 };
 
@@ -158,7 +162,14 @@ const getAlterViewScriptDtos = (collection, app, dbVersion, scriptFormat) => {
 		.map(view => ({ ...view, ...(view.role || {}) }))
 		.map(getDeleteViewScriptDto(app, scriptFormat));
 
-	return [...deleteViewsScriptDtos, ...createViewsScriptDtos].filter(Boolean);
+	const modifyViewsScriptDtos = []
+		.concat(collection.properties?.views?.properties?.modified?.items)
+		.filter(Boolean)
+		.map(viewWrapper => Object.values(viewWrapper.properties)[0])
+		.map(view => ({ ...view, ...(view.role || {}) }))
+		.flatMap(getModifyViewScriptDtos({ scriptFormat }));
+
+	return [...deleteViewsScriptDtos, ...createViewsScriptDtos, ...modifyViewsScriptDtos].filter(Boolean);
 };
 
 /**
