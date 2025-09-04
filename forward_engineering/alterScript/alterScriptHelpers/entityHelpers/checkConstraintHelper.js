@@ -1,12 +1,7 @@
 const _ = require('lodash');
 const { AlterCollectionDto } = require('../../types/AlterCollectionDto');
 const { AlterScriptDto } = require('../../types/AlterScriptDto');
-const {
-	wrapInQuotes,
-	getNamePrefixedWithSchemaNameForScriptFormat,
-	getSchemaOfAlterCollection,
-	getFullCollectionName,
-} = require('../../../utils/general');
+const { wrapInQuotes, getSchemaOfAlterCollection, getFullCollectionName } = require('../../../utils/general');
 const { assignTemplates } = require('../../../utils/assignTemplates');
 const templates = require('../../../ddlProvider/templates');
 
