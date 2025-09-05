@@ -220,8 +220,8 @@ const getModifyColumnScriptDtos = (app, dbVersion, scriptFormat) => collection =
 		...renameColumnScriptDtos,
 		...updateTypeScriptDtos,
 		...modifyCommentScriptDtos,
-		...modifyDefaultColumnValueScriptDtos,
 		...modifyNotNullScriptDtos,
+		...modifyDefaultColumnValueScriptDtos,
 	].filter(Boolean);
 };
 
