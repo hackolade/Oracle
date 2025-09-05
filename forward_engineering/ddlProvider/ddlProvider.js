@@ -280,7 +280,7 @@ module.exports = (baseProvider, options, app) => {
 			const { foreignOnDelete } = customPropertiesForForeignKey(customProperties);
 
 			const foreignKeyStatement = assignTemplates(templates.createForeignKeyConstraint, {
-				primaryTable: getNamePrefixedWithSchemaName(primaryTable, primarySchemaName || schemaData.schemaName),
+				primaryTable: getNamePrefixedWithSchemaName(primaryTable, primarySchemaName),
 				name: name ? `CONSTRAINT ${prepareName(name)}` : '',
 				foreignKey: isActivated ? foreignKeysToString(foreignKeys) : foreignActiveKeysToString(foreignKeys),
 				primaryKey: isActivated ? foreignKeysToString(primaryKeys) : foreignActiveKeysToString(primaryKeys),
@@ -323,8 +323,8 @@ module.exports = (baseProvider, options, app) => {
 			const { foreignOnDelete } = customPropertiesForForeignKey(customProperties);
 
 			const foreignKeyStatement = assignTemplates(templates.createForeignKey, {
-				primaryTable: getNamePrefixedWithSchemaName(primaryTable, primarySchemaName || schemaData?.schemaName),
-				foreignTable: getNamePrefixedWithSchemaName(foreignTable, foreignSchemaName || schemaData?.schemaName),
+				primaryTable: getNamePrefixedWithSchemaName(primaryTable, primarySchemaName),
+				foreignTable: getNamePrefixedWithSchemaName(foreignTable, foreignSchemaName || schemaData.schemaName),
 				name: name ? prepareName(name) : '',
 				foreignKey: isActivated ? foreignKeysToString(foreignKeys) : foreignActiveKeysToString(foreignKeys),
 				primaryKey: isActivated ? foreignKeysToString(primaryKeys) : foreignActiveKeysToString(primaryKeys),
