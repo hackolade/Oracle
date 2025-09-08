@@ -18,6 +18,7 @@ esbuild
 			path.resolve(__dirname, 'forward_engineering', 'ddlProvider.js'),
 			path.resolve(__dirname, 'forward_engineering', 'dbtProvider.js'),
 			path.resolve(__dirname, 'reverse_engineering', 'api.js'),
+			path.resolve(__dirname, 'api', 'fe.js'),
 		],
 		bundle: true,
 		keepNames: true,
