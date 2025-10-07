@@ -412,17 +412,79 @@ const selectEntities = (selectStatement, includeSystemCollection, schemaName) =>
 	}
 };
 
-const tableNamesByUser = ({ includeSystemCollection, schemaName }) =>
-	selectEntities(`SELECT T.OWNER, T.TABLE_NAME FROM ALL_TABLES T`, includeSystemCollection, schemaName);
-const externalTableNamesByUser = ({ includeSystemCollection, schemaName }) =>
-	selectEntities(`SELECT T.OWNER, T.TABLE_NAME FROM ALL_EXTERNAL_TABLES T`, includeSystemCollection, schemaName);
-const viewNamesByUser = ({ includeSystemCollection, schemaName }) =>
-	selectEntities(`SELECT T.OWNER, T.VIEW_NAME || \' (v)\' FROM ALL_VIEWS T`, includeSystemCollection, schemaName);
-const materializedViewNamesByUser = ({ includeSystemCollection, schemaName }) =>
-	selectEntities(`SELECT T.OWNER, T.MVIEW_NAME || \' (v)\' FROM ALL_MVIEWS T`, includeSystemCollection, schemaName);
+const selectEntitiesWithFallback = async ({
+	dbaSelectStatement,
+	allSelectStatement,
+	includeSystemCollection,
+	schemaName,
+	entityType,
+	logger,
+}) => {
+	try {
+		let stmt = '';
+		if (schemaName) {
+			stmt = `T.OWNER = '${schemaName}'`;
+		}
+		if (includeSystemCollection) {
+			const result = await execute(`${dbaSelectStatement}${stmt ? ` WHERE ${stmt}` : ''}`);
+			logger.info({ message: `Successfully retrieved ${entityType} using DBA_* tables` });
+			return result;
+		} else {
+			const result = await execute(
+				`${dbaSelectStatement} WHERE T.OWNER NOT IN ('SYS', 'SYSTEM', 'DBSNMP', 'SYSMAN', 'OUTLN', 'MGMT_VIEW', 'FLOWS_FILES', 'MDSYS', 'ORDSYS', 'EXFSYS', 'WMSYS', 'APPQOSSYS', 'APEX_030200', 'APEX_PUBLIC_USER', 'SPATIAL_CSW_ADMIN_USR', 'SPATIAL_WFS_ADMIN_USR', 'XS$NULL', 'ORACLE_OCM', 'XDB', 'ANONYMOUS', 'CTXSYS', 'ORDDATA', 'SI_INFORMTN_SCHEMA', 'DVF', 'DVSYS', 'DBSFWUSER', 'FLOWS_040100', 'APEX_040100', 'DIP', 'OWBSYS_AUDIT', 'OWBSYS', 'SYSDG', 'SYSBACKUP', 'SYSKM', 'LBACSYS', 'GSMADMIN_INTERNAL', 'MDDATA', 'SYSRAC', 'GGSYS', 'WKPROXY', 'WK_TEST', 'WKUSER', 'REMOTE_SCHEDULER_AGENT', 'SYS$UMF', 'GSMCATUSER', 'GSMUSER', 'SYSRMAN', 'EJBCA_USER', 'AUDSYS', 'SSOXDSDB', 'PDBADMIN', 'ORDS_PUBLIC_USER', 'ORDS_METADATA')${
+					stmt ? ` AND ${stmt}` : ''
+				}`,
+			);
+			logger.info({ message: `Successfully retrieved ${entityType} using DBA_* tables` });
+			return result;
+		}
+	} catch (e) {
+		logger.info({
+			message: `Failed to access DBA_* tables for ${entityType}, falling back to ALL_* tables: ${e.message}`,
+		});
+		return selectEntities(allSelectStatement, includeSystemCollection, schemaName);
+	}
+};
+
+const tableNamesByUser = ({ includeSystemCollection, schemaName }, logger) =>
+	selectEntitiesWithFallback({
+		dbaSelectStatement: `SELECT T.OWNER, T.TABLE_NAME FROM DBA_TABLES T`,
+		allSelectStatement: `SELECT T.OWNER, T.TABLE_NAME FROM ALL_TABLES T`,
+		includeSystemCollection,
+		schemaName,
+		entityType: 'tables',
+		logger,
+	});
+const externalTableNamesByUser = ({ includeSystemCollection, schemaName }, logger) =>
+	selectEntitiesWithFallback({
+		dbaSelectStatement: `SELECT T.OWNER, T.TABLE_NAME FROM DBA_EXTERNAL_TABLES T`,
+		allSelectStatement: `SELECT T.OWNER, T.TABLE_NAME FROM ALL_EXTERNAL_TABLES T`,
+		includeSystemCollection,
+		schemaName,
+		entityType: 'external tables',
+		logger,
+	});
+const viewNamesByUser = ({ includeSystemCollection, schemaName }, logger) =>
+	selectEntitiesWithFallback({
+		dbaSelectStatement: `SELECT T.OWNER, T.VIEW_NAME || ' (v)' FROM DBA_VIEWS T`,
+		allSelectStatement: `SELECT T.OWNER, T.VIEW_NAME || ' (v)' FROM ALL_VIEWS T`,
+		includeSystemCollection,
+		schemaName,
+		entityType: 'views',
+		logger,
+	});
+const materializedViewNamesByUser = ({ includeSystemCollection, schemaName }, logger) =>
+	selectEntitiesWithFallback({
+		dbaSelectStatement: `SELECT T.OWNER, T.MVIEW_NAME || ' (v)' FROM DBA_MVIEWS T`,
+		allSelectStatement: `SELECT T.OWNER, T.MVIEW_NAME || ' (v)' FROM ALL_MVIEWS T`,
+		includeSystemCollection,
+		schemaName,
+		entityType: 'materialized views',
+		logger,
+	});
 
 const getEntitiesNames = async (connectionInfo, logger) => {
-	const materializedViews = await materializedViewNamesByUser(connectionInfo).catch(e => {
+	const materializedViews = await materializedViewNamesByUser(connectionInfo, logger).catch(e => {
 		logger.info({ message: 'Cannot retrieve materialized views' });
 		logger.error(e);
 
@@ -433,7 +495,7 @@ const getEntitiesNames = async (connectionInfo, logger) => {
 
 	const materializedViewsNames = materializedViews.map(nameArray => _.join(nameArray, '.').slice(0, -' (v)'.length));
 
-	const tables = await tableNamesByUser(connectionInfo)
+	const tables = await tableNamesByUser(connectionInfo, logger)
 		.then(tables => {
 			return _.reject(tables, tableNameArray => materializedViewsNames.includes(_.join(tableNameArray, '.')));
 		})
@@ -445,7 +507,7 @@ const getEntitiesNames = async (connectionInfo, logger) => {
 
 	logger.info({ tables });
 
-	const externalTables = await externalTableNamesByUser(connectionInfo).catch(e => {
+	const externalTables = await externalTableNamesByUser(connectionInfo, logger).catch(e => {
 		logger.info({ message: 'Cannot retrieve external tables' });
 		logger.error(e);
 
@@ -454,7 +516,7 @@ const getEntitiesNames = async (connectionInfo, logger) => {
 
 	logger.info({ externalTables });
 
-	const views = await viewNamesByUser(connectionInfo).catch(e => {
+	const views = await viewNamesByUser(connectionInfo, logger).catch(e => {
 		logger.info({ message: 'Cannot retrieve views' });
 		logger.error(e);
 
