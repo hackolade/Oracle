@@ -593,6 +593,100 @@ const setSQLTerminator = () => {
 	END;`);
 };
 
+/**
+ * Generate table DDL if the user has limited access to ALL_* views
+ */
+const generateDDLFromDataDictionary = async (tableName, schema, logger) => {
+	try {
+		logger.log('info', { tableName, schema }, 'Generating DDL using individual DBMS_METADATA calls');
+
+		const tableDDLResult = await execute(
+			`SELECT DBMS_METADATA.GET_DDL('TABLE', '${tableName}', '${schema}') FROM DUAL`,
+		);
+		const tableDDL = tableDDLResult[0] ? await tableDDLResult[0][0].getData() : '';
+
+		// Get indexes (excluding constraint-backed indexes and system indexes)
+		const indexesResult = await execute(`
+			SELECT INDEX_NAME 
+			FROM DBA_INDEXES 
+			WHERE TABLE_OWNER = '${schema}' AND TABLE_NAME = '${tableName}'
+				AND INDEX_NAME NOT IN (
+					SELECT CONSTRAINT_NAME 
+					FROM DBA_CONSTRAINTS 
+					WHERE OWNER = '${schema}' AND TABLE_NAME = '${tableName}' AND CONSTRAINT_NAME IS NOT NULL
+				)
+				AND INDEX_NAME NOT LIKE 'SYS_%'
+				AND INDEX_NAME NOT LIKE 'BIN$%'
+				AND OWNER NOT IN ('SYS', 'SYSTEM', 'CTXSYS', 'MDSYS', 'XDB')
+		`);
+
+		const indexDDLs = [];
+		for (const [indexName] of indexesResult) {
+			try {
+				const indexDDLResult = await execute(
+					`SELECT DBMS_METADATA.GET_DDL('INDEX', '${indexName}', '${schema}') FROM DUAL`,
+				);
+				if (indexDDLResult[0]?.[0]) {
+					const indexDDL = await indexDDLResult[0][0].getData();
+					indexDDLs.push(indexDDL);
+				}
+			} catch (e) {
+				logger.log(
+					'info',
+					{ message: `Cannot get DDL for index ${indexName}: ${e.message}` },
+					'DDL Generation',
+				);
+			}
+		}
+
+		const tableComment = await execute(`
+			SELECT COMMENTS 
+			FROM DBA_TAB_COMMENTS 
+			WHERE OWNER = '${schema}' AND TABLE_NAME = '${tableName}' AND COMMENTS IS NOT NULL
+		`);
+
+		const columnComments = await execute(`
+			SELECT COLUMN_NAME, COMMENTS 
+			FROM DBA_COL_COMMENTS 
+			WHERE OWNER = '${schema}' AND TABLE_NAME = '${tableName}' AND COMMENTS IS NOT NULL
+		`);
+
+		let commentsSQL = '';
+		if (tableComment.length > 0) {
+			commentsSQL += `COMMENT ON TABLE ${escapeName(schema)}.${escapeName(tableName)} IS ${escapeComment(tableComment[0][0])};`;
+		}
+		if (columnComments.length > 0) {
+			const columnCommentsSQL = columnComments
+				.map(
+					([columnName, comment]) =>
+						`COMMENT ON COLUMN ${escapeName(schema)}.${escapeName(tableName)}.${escapeName(columnName)} IS ${escapeComment(comment)};`,
+				)
+				.join('\n');
+			commentsSQL += commentsSQL ? `\n${columnCommentsSQL}` : columnCommentsSQL;
+		}
+
+		return {
+			ddl: `${tableDDL}${indexDDLs.join('\n')}\n${commentsSQL}`,
+			jsonColumns: [],
+			countOfRecords: 0,
+		};
+	} catch (err) {
+		logger.log(
+			'error',
+			{
+				message: 'Cannot generate DDL using DBMS_METADATA calls: ' + tableName,
+				error: { message: err.message, stack: err.stack, err: _.omit(err, ['message', 'stack']) },
+			},
+			`Generating DDL using DBMS_METADATA for "${schema}"."${tableName}"`,
+		);
+		return {
+			ddl: '',
+			jsonColumns: [],
+			countOfRecords: 0,
+		};
+	}
+};
+
 const getDDL = async (tableName, schema, logger) => {
 	try {
 		await setSQLTerminator();
@@ -634,7 +728,17 @@ const getDDL = async (tableName, schema, logger) => {
 			FROM ALL_TABLES T
 			WHERE T.OWNER='${schema}' AND T.TABLE_NAME='${tableName}'
 		`);
+
 		const row = await _.first(_.first(queryResult))?.getData();
+		if (!row) {
+			logger.log(
+				'info',
+				{ message: 'DBMS_METADATA returned null data, using individual DBMS_METADATA calls fallback' },
+				`Getting DDL from "${schema}"."${tableName}"`,
+			);
+			return await generateDDLFromDataDictionary(tableName, schema, logger);
+		}
+
 		try {
 			const queryObj = JSON.parse(row);
 			logger.log('info', queryObj, `Getting DDL from "${schema}"."${tableName}"`);
@@ -822,9 +926,76 @@ const getJsonSchema = async (jsonColumns, records) => {
 	return { properties };
 };
 
+const generateViewDDLFromDataDictionary = async (viewName, schema, logger) => {
+	try {
+		logger.log('info', { viewName, schema }, 'Generating view DDL using individual DBMS_METADATA calls');
+
+		const isMaterializedView = await checkEntityMaterializedView(viewName, { useDbaViews: true });
+
+		if (!isMaterializedView) {
+			// Regular view
+			const viewDDLResult = await execute(
+				`SELECT DBMS_METADATA.GET_DDL('VIEW', '${viewName}', '${schema}') FROM DUAL`,
+			);
+			const viewDDL = viewDDLResult[0] ? await viewDDLResult[0][0].getData() : '';
+			return viewDDL;
+		}
+
+		const mvDDLResult = await execute(
+			`SELECT DBMS_METADATA.GET_DDL('MATERIALIZED_VIEW', '${viewName}', '${schema}') FROM DUAL`,
+		);
+		const mvDDL = mvDDLResult[0] ? await mvDDLResult[0][0].getData() : '';
+
+		const indexesResult = await execute(`
+				SELECT INDEX_NAME 
+				FROM DBA_INDEXES 
+				WHERE TABLE_OWNER = '${schema}' AND TABLE_NAME = '${viewName}'
+					AND INDEX_NAME NOT IN (
+						SELECT CONSTRAINT_NAME 
+						FROM DBA_CONSTRAINTS 
+						WHERE OWNER = '${schema}' AND TABLE_NAME = '${viewName}' AND CONSTRAINT_NAME IS NOT NULL
+					)
+					AND INDEX_NAME NOT LIKE 'SYS_%'
+					AND INDEX_NAME NOT LIKE 'BIN$%'
+					AND OWNER NOT IN ('SYS', 'SYSTEM', 'CTXSYS', 'MDSYS', 'XDB')
+			`);
+
+		const indexDDLs = [];
+		for (const [indexName] of indexesResult) {
+			try {
+				const indexDDLResult = await execute(
+					`SELECT DBMS_METADATA.GET_DDL('INDEX', '${indexName}', '${schema}') FROM DUAL`,
+				);
+				if (indexDDLResult[0]?.[0]) {
+					const indexDDL = await indexDDLResult[0][0].getData();
+					indexDDLs.push(indexDDL);
+				}
+			} catch (e) {
+				logger.log(
+					'info',
+					{ message: `Cannot get DDL for index ${indexName}: ${e.message}` },
+					'View DDL Generation',
+				);
+			}
+		}
+
+		return mvDDL + (indexDDLs.length > 0 ? `\n${indexDDLs.join('\n')}` : '');
+	} catch (err) {
+		logger.log(
+			'error',
+			{
+				message: 'Cannot generate view DDL using DBMS_METADATA calls: ' + viewName,
+				error: { message: err.message, stack: err.stack, err: _.omit(err, ['message', 'stack']) },
+			},
+			`Generating view DDL using DBMS_METADATA for "${schema}"."${viewName}"`,
+		);
+		return '';
+	}
+};
+
 const getViewDDL = async (viewName, schema, logger) => {
 	try {
-		const isMaterializedView = await checkEntityMaterializedView(viewName);
+		const isMaterializedView = await checkEntityMaterializedView(viewName, { useDbaViews: false });
 
 		await setSQLTerminator();
 		if (isMaterializedView) {
@@ -861,7 +1032,17 @@ const getViewDDL = async (viewName, schema, logger) => {
 			`SELECT DBMS_METADATA.GET_DDL('VIEW', VIEW_NAME, OWNER) FROM ALL_VIEWS WHERE VIEW_NAME='${viewName}'`,
 		);
 
-		const viewDDL = await _.first(_.first(queryResult)).getData();
+		const firstResult = _.first(_.first(queryResult));
+		if (!firstResult) {
+			logger.log(
+				'info',
+				{ message: 'DBMS_METADATA returned null data for view, using individual DBMS_METADATA calls fallback' },
+				`Getting DDL for view "${schema}"."${viewName}"`,
+			);
+			return await generateViewDDLFromDataDictionary(viewName, schema, logger);
+		}
+
+		const viewDDL = await firstResult.getData();
 
 		return viewDDL;
 	} catch (err) {
@@ -881,11 +1062,16 @@ const getViewDDL = async (viewName, schema, logger) => {
 	}
 };
 
-const checkEntityMaterializedView = async name => {
+const checkEntityMaterializedView = async (name, options = {}) => {
+	const { useDbaViews = false } = options;
 	await setSQLTerminator();
-	const queryResult = await execute(`SELECT * FROM ALL_MVIEWS WHERE MVIEW_NAME = '${name}'`);
-
-	return !_.isEmpty(queryResult);
+	const viewType = useDbaViews ? 'DBA_MVIEWS' : 'ALL_MVIEWS';
+	try {
+		const queryResult = await execute(`SELECT * FROM ${viewType} WHERE MVIEW_NAME = '${name}'`);
+		return !_.isEmpty(queryResult);
+	} catch {
+		return false;
+	}
 };
 
 const checkUserHaveRequiredRole = async logger => {
