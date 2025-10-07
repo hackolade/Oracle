@@ -426,7 +426,7 @@ const selectEntitiesWithFallback = async ({
 			stmt = `T.OWNER = '${schemaName}'`;
 		}
 		if (includeSystemCollection) {
-			const result = await execute(`${dbaSelectStatement}${stmt ? ` WHERE ${stmt}` : ''}`);
+			const result = await execute(dbaSelectStatement + (stmt ? ' WHERE ' + stmt : ''));
 			logger.info({ message: `Successfully retrieved ${entityType} using DBA_* tables` });
 			return result;
 		} else {
