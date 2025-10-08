@@ -75,7 +75,9 @@ const SEQUENCE_OPTION_MAP = {
 
 /**
  * Generates a SQL query to retrieve sequence information using ALL_* tables.
- * This approach works for most Oracle users who have standard access privileges.
+ * This approach is used as a fallback for users who don't have access to DBA_* tables.
+ * Works for most Oracle users who have standard access privileges.
+ * The query structure is identical to the DBA_* version but uses ALL_* views.
  *
  * @param {{ schema: string }} params
  * @param {string} params.schema - The Oracle schema name to query sequences from
@@ -113,8 +115,8 @@ const getSequencesQueryUsingAllTables = ({ schema }) => {
 
 /**
  * Generates a SQL query to retrieve sequence information using DBA_* tables.
- * This approach is used as a fallback for users with SELECT_CATALOG_ROLE who have
- * access to DBA_* tables but may not have access to ALL_* tables.
+ * This is the preferred approach as it provides richer results and access to all sequences
+ * in the database. Requires SELECT_CATALOG_ROLE or equivalent privileges.
  * The query structure is identical to the ALL_* version but uses DBA_* views.
  *
  * @param {{ schema: string }} params
@@ -155,8 +157,8 @@ const getSequencesQueryUsingDbaTables = ({ schema }) => {
  * Retrieves sequence data from an Oracle schema with automatic fallback capability.
  *
  * This function implements a two-tier approach:
- * 1. First attempts to use ALL_* tables (standard approach for most users)
- * 2. Falls back to DBA_* tables if ALL_* fails or returns empty results (for SELECT_CATALOG_ROLE users)
+ * 1. First attempts to use DBA_* tables (for users with SELECT_CATALOG_ROLE - provides richer results)
+ * 2. Falls back to ALL_* tables if DBA_* fails or returns empty results (standard approach for most users)
  *
  * The function filters out sequences associated with identity columns and only returns
  * sequences that are actually used in the schema (referenced in DDL scripts).
@@ -173,46 +175,41 @@ const getSchemaSequenceDtos = async ({ schema, allDDLs, execute, logger }) => {
 		logger.log('info', { message: 'Start getting sequences' }, 'Getting sequences');
 
 		let rawSequenceDtos;
-		let queryApproach = 'ALL_* tables';
-		let shouldTryDbaFallback = false;
+		let queryApproach = 'DBA_* tables';
+		let shouldTryAllFallback = false;
 
 		try {
-			const allTablesQuery = getSequencesQueryUsingAllTables({ schema });
-			const allTablesResult = await execute(allTablesQuery);
-			rawSequenceDtos = allTablesResult.map(([rawSequence]) => JSON.parse(rawSequence));
+			const dbaTablesQuery = getSequencesQueryUsingDbaTables({ schema });
+			const dbaTablesResult = await execute(dbaTablesQuery);
+			rawSequenceDtos = dbaTablesResult.map(([rawSequence]) => JSON.parse(rawSequence));
 
 			if (!rawSequenceDtos || rawSequenceDtos.length === 0) {
-				shouldTryDbaFallback = true;
+				shouldTryAllFallback = true;
 			}
-		} catch (allTablesError) {
+		} catch (dbaTablesError) {
 			logger.log(
 				'info',
 				{
-					message:
-						'ALL_* tables approach failed with exception, trying DBA_* tables for SELECT_CATALOG_ROLE users',
-					error: allTablesError.message,
+					message: 'DBA_* tables approach failed with exception, trying ALL_* tables fallback',
+					error: dbaTablesError.message,
 				},
 				'Getting sequences',
 			);
-			shouldTryDbaFallback = true;
+			shouldTryAllFallback = true;
 		}
 
-		if (shouldTryDbaFallback) {
-			logger.log(
-				'info',
-				{ message: 'Trying DBA_* tables approach for SELECT_CATALOG_ROLE users' },
-				'Getting sequences',
-			);
-			queryApproach = 'DBA_* tables';
+		if (shouldTryAllFallback) {
+			logger.log('info', { message: 'Trying ALL_* tables approach as fallback' }, 'Getting sequences');
+			queryApproach = 'ALL_* tables';
 
 			try {
-				const dbaTablesQuery = getSequencesQueryUsingDbaTables({ schema });
-				const dbaTablesResult = await execute(dbaTablesQuery);
-				rawSequenceDtos = dbaTablesResult.map(([rawSequence]) => JSON.parse(rawSequence));
-			} catch (dbaTablesError) {
+				const allTablesQuery = getSequencesQueryUsingAllTables({ schema });
+				const allTablesResult = await execute(allTablesQuery);
+				rawSequenceDtos = allTablesResult.map(([rawSequence]) => JSON.parse(rawSequence));
+			} catch (allTablesError) {
 				logger.log(
 					'info',
-					{ message: 'DBA_* tables approach also failed, using empty result' },
+					{ message: 'ALL_* tables approach also failed, using empty result', error: allTablesError.message },
 					'Getting sequences',
 				);
 				rawSequenceDtos = [];
