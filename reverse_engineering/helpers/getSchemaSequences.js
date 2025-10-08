@@ -74,47 +74,158 @@ const SEQUENCE_OPTION_MAP = {
 };
 
 /**
- * @param {{ schema: string, execute: Execute, logger: object, allDDLs: string }}
- * @returns {Promise<SequenceDto[]>}
+ * Generates a SQL query to retrieve sequence information using ALL_* tables.
+ * This approach works for most Oracle users who have standard access privileges.
+ *
+ * @param {{ schema: string }} params
+ * @param {string} params.schema - The Oracle schema name to query sequences from
+ * @returns {string} SQL query string for retrieving sequences from ALL_* tables
+ */
+const getSequencesQueryUsingAllTables = ({ schema }) => {
+	return `
+		SELECT JSON_OBJECT(
+		    'sharing'      VALUE ALL_OBJECTS.SHARING,
+		    'sequenceName' VALUE ALL_SEQUENCES.SEQUENCE_NAME,
+		    'minValue'     VALUE ALL_SEQUENCES.MIN_VALUE,
+		    'maxValue'     VALUE ALL_SEQUENCES.MAX_VALUE,
+		    'increment'    VALUE ALL_SEQUENCES.INCREMENT_BY,
+		    'cycle'        VALUE ALL_SEQUENCES.CYCLE_FLAG,
+		    'order'        VALUE ALL_SEQUENCES.ORDER_FLAG,
+		    'cacheValue'   VALUE ALL_SEQUENCES.CACHE_SIZE,
+		    'scale'        VALUE ALL_SEQUENCES.SCALE_FLAG,
+		    'extend'       VALUE ALL_SEQUENCES.EXTEND_FLAG,
+		    'shard'        VALUE ALL_SEQUENCES.SHARDED_FLAG,
+		    'type'         VALUE ALL_SEQUENCES.SESSION_FLAG,
+		    'keep'         VALUE ALL_SEQUENCES.KEEP_VALUE
+		)
+		FROM ALL_OBJECTS
+		LEFT JOIN ALL_SEQUENCES
+		  ON ALL_SEQUENCES.SEQUENCE_OWNER = ALL_OBJECTS.OWNER
+		  AND ALL_SEQUENCES.SEQUENCE_NAME = ALL_OBJECTS.OBJECT_NAME
+		LEFT JOIN ALL_TAB_IDENTITY_COLS
+		  ON ALL_TAB_IDENTITY_COLS.SEQUENCE_NAME = ALL_SEQUENCES.SEQUENCE_NAME
+		  AND ALL_TAB_IDENTITY_COLS.OWNER = ALL_OBJECTS.OWNER
+		-- take only sequences that are not associated with identity columns
+		WHERE ALL_OBJECTS.OBJECT_TYPE = 'SEQUENCE' AND ALL_TAB_IDENTITY_COLS.COLUMN_NAME IS NULL
+		AND ALL_OBJECTS.OWNER = '${schema}'
+	`;
+};
+
+/**
+ * Generates a SQL query to retrieve sequence information using DBA_* tables.
+ * This approach is used as a fallback for users with SELECT_CATALOG_ROLE who have
+ * access to DBA_* tables but may not have access to ALL_* tables.
+ * The query structure is identical to the ALL_* version but uses DBA_* views.
+ *
+ * @param {{ schema: string }} params
+ * @param {string} params.schema - The Oracle schema name to query sequences from
+ * @returns {string} SQL query string for retrieving sequences from DBA_* tables
+ */
+const getSequencesQueryUsingDbaTables = ({ schema }) => {
+	return `
+		SELECT JSON_OBJECT(
+		    'sharing'      VALUE DBA_OBJECTS.SHARING,
+		    'sequenceName' VALUE DBA_SEQUENCES.SEQUENCE_NAME,
+		    'minValue'     VALUE DBA_SEQUENCES.MIN_VALUE,
+		    'maxValue'     VALUE DBA_SEQUENCES.MAX_VALUE,
+		    'increment'    VALUE DBA_SEQUENCES.INCREMENT_BY,
+		    'cycle'        VALUE DBA_SEQUENCES.CYCLE_FLAG,
+		    'order'        VALUE DBA_SEQUENCES.ORDER_FLAG,
+		    'cacheValue'   VALUE DBA_SEQUENCES.CACHE_SIZE,
+		    'scale'        VALUE DBA_SEQUENCES.SCALE_FLAG,
+		    'extend'       VALUE DBA_SEQUENCES.EXTEND_FLAG,
+		    'shard'        VALUE DBA_SEQUENCES.SHARDED_FLAG,
+		    'type'         VALUE DBA_SEQUENCES.SESSION_FLAG,
+		    'keep'         VALUE DBA_SEQUENCES.KEEP_VALUE
+		)
+		FROM DBA_OBJECTS
+		LEFT JOIN DBA_SEQUENCES
+		  ON DBA_SEQUENCES.SEQUENCE_OWNER = DBA_OBJECTS.OWNER
+		  AND DBA_SEQUENCES.SEQUENCE_NAME = DBA_OBJECTS.OBJECT_NAME
+		LEFT JOIN DBA_TAB_IDENTITY_COLS
+		  ON DBA_TAB_IDENTITY_COLS.SEQUENCE_NAME = DBA_SEQUENCES.SEQUENCE_NAME
+		  AND DBA_TAB_IDENTITY_COLS.OWNER = DBA_OBJECTS.OWNER
+		-- take only sequences that are not associated with identity columns
+		WHERE DBA_OBJECTS.OBJECT_TYPE = 'SEQUENCE' AND DBA_TAB_IDENTITY_COLS.COLUMN_NAME IS NULL
+		AND DBA_OBJECTS.OWNER = '${schema}'
+	`;
+};
+
+/**
+ * Retrieves sequence data from an Oracle schema with automatic fallback capability.
+ *
+ * This function implements a two-tier approach:
+ * 1. First attempts to use ALL_* tables (standard approach for most users)
+ * 2. Falls back to DBA_* tables if ALL_* fails or returns empty results (for SELECT_CATALOG_ROLE users)
+ *
+ * The function filters out sequences associated with identity columns and only returns
+ * sequences that are actually used in the schema (referenced in DDL scripts).
+ *
+ * @param {{ schema: string, execute: Execute, logger: object, allDDLs: string }} params
+ * @param {string} params.schema - The Oracle schema name to retrieve sequences from
+ * @param {Execute} params.execute - Database execution function for running SQL queries
+ * @param {object} params.logger - Logger instance for tracking progress and errors
+ * @param {string} params.allDDLs - All DDL scripts from the schema used to filter sequences that are actually used
+ * @returns {Promise<SequenceDto[]>} Promise that resolves to an array of sequence DTOs with metadata and DDL scripts
  */
 const getSchemaSequenceDtos = async ({ schema, allDDLs, execute, logger }) => {
 	try {
 		logger.log('info', { message: 'Start getting sequences' }, 'Getting sequences');
-		const rawSequenceDtos = (
-			await execute(
-				`
-				SELECT JSON_OBJECT(
-				    'sharing'      VALUE ALL_OBJECTS.SHARING,
-				    'sequenceName' VALUE ALL_SEQUENCES.SEQUENCE_NAME,
-				    'minValue'     VALUE ALL_SEQUENCES.MIN_VALUE,
-				    'maxValue'     VALUE ALL_SEQUENCES.MAX_VALUE,
-				    'increment'    VALUE ALL_SEQUENCES.INCREMENT_BY,
-				    'cycle'        VALUE ALL_SEQUENCES.CYCLE_FLAG,
-				    'order'        VALUE ALL_SEQUENCES.ORDER_FLAG,
-				    'cacheValue'   VALUE ALL_SEQUENCES.CACHE_SIZE,
-				    'scale'        VALUE ALL_SEQUENCES.SCALE_FLAG,
-				    'extend'       VALUE ALL_SEQUENCES.EXTEND_FLAG,
-				    'shard'        VALUE ALL_SEQUENCES.SHARDED_FLAG,
-				    'type'         VALUE ALL_SEQUENCES.SESSION_FLAG,
-				    'keep'         VALUE ALL_SEQUENCES.KEEP_VALUE
-				)
-				FROM ALL_OBJECTS
-				LEFT JOIN ALL_SEQUENCES
-				  ON ALL_SEQUENCES.SEQUENCE_OWNER = ALL_OBJECTS.OWNER
-				  AND ALL_SEQUENCES.SEQUENCE_NAME = ALL_OBJECTS.OBJECT_NAME
-				LEFT JOIN ALL_TAB_IDENTITY_COLS
-				  ON ALL_TAB_IDENTITY_COLS.SEQUENCE_NAME = ALL_SEQUENCES.SEQUENCE_NAME
-				  AND ALL_TAB_IDENTITY_COLS.OWNER = ALL_OBJECTS.OWNER
-				-- take only sequences that are not associated with identity columns
-				WHERE ALL_OBJECTS.OBJECT_TYPE = 'SEQUENCE' AND ALL_TAB_IDENTITY_COLS.COLUMN_NAME IS NULL
-				AND ALL_OBJECTS.OWNER = '${schema}'
-     		 `,
-			)
-		).map(([rawSequence]) => JSON.parse(rawSequence));
+
+		let rawSequenceDtos;
+		let queryApproach = 'ALL_* tables';
+		let shouldTryDbaFallback = false;
+
+		try {
+			const allTablesQuery = getSequencesQueryUsingAllTables({ schema });
+			const allTablesResult = await execute(allTablesQuery);
+			rawSequenceDtos = allTablesResult.map(([rawSequence]) => JSON.parse(rawSequence));
+
+			if (!rawSequenceDtos || rawSequenceDtos.length === 0) {
+				shouldTryDbaFallback = true;
+			}
+		} catch (allTablesError) {
+			logger.log(
+				'info',
+				{
+					message:
+						'ALL_* tables approach failed with exception, trying DBA_* tables for SELECT_CATALOG_ROLE users',
+					error: allTablesError.message,
+				},
+				'Getting sequences',
+			);
+			shouldTryDbaFallback = true;
+		}
+
+		if (shouldTryDbaFallback) {
+			logger.log(
+				'info',
+				{ message: 'Trying DBA_* tables approach for SELECT_CATALOG_ROLE users' },
+				'Getting sequences',
+			);
+			queryApproach = 'DBA_* tables';
+
+			try {
+				const dbaTablesQuery = getSequencesQueryUsingDbaTables({ schema });
+				const dbaTablesResult = await execute(dbaTablesQuery);
+				rawSequenceDtos = dbaTablesResult.map(([rawSequence]) => JSON.parse(rawSequence));
+			} catch (dbaTablesError) {
+				logger.log(
+					'info',
+					{ message: 'DBA_* tables approach also failed, using empty result' },
+					'Getting sequences',
+				);
+				rawSequenceDtos = [];
+			}
+		}
 
 		logger.log(
 			'info',
-			{ message: 'Finish getting sequences', count: rawSequenceDtos?.length || 0 },
+			{
+				message: `Finish getting sequences using ${queryApproach}`,
+				count: rawSequenceDtos?.length || 0,
+				queryApproach,
+			},
 			'Getting sequences',
 		);
 
