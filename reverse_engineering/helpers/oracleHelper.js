@@ -595,7 +595,16 @@ const setSQLTerminator = () => {
 };
 
 /**
- * Generate table DDL if the user has limited access to ALL_* views
+ * Generates table DDL using individual DBMS_METADATA calls with DBA_* tables access.
+ *
+ * This function serves as a fallback mechanism when the primary getDDL function fails
+ * to retrieve data from ALL_* tables. It directly uses DBA_* tables which require
+ * elevated privileges such as SELECT_CATALOG_ROLE.
+ *
+ * @param {string} tableName - The name of the table to generate DDL for
+ * @param {string} schema - The Oracle schema name containing the table
+ * @param {object} logger - Logger instance for tracking progress and errors
+ * @returns {Promise<{ddl: string, jsonColumns: Array, countOfRecords: number}>} Promise that resolves to table DDL information
  */
 const generateDDLFromDataDictionary = async (tableName, schema, logger) => {
 	try {
@@ -688,6 +697,18 @@ const generateDDLFromDataDictionary = async (tableName, schema, logger) => {
 	}
 };
 
+/**
+ * Retrieves DDL (Data Definition Language) scripts for a table with automatic fallback capability.
+ *
+ * This function implements a two-tier approach for retrieving comprehensive table DDL:
+ * 1. First attempts to use ALL_* tables (ALL_TABLES, ALL_INDEXES, ALL_CONSTRAINTS, etc.) for most users
+ * 2. Falls back to DBA_* tables (via generateDDLFromDataDictionary) if ALL_* approach fails or returns null data
+ *
+ * @param {string} tableName - The name of the table to retrieve DDL for
+ * @param {string} schema - The Oracle schema name containing the table
+ * @param {object} logger - Logger instance for tracking progress and errors
+ * @returns {Promise<{ddl: string, jsonColumns: Array, countOfRecords: number}>} Promise that resolves to table DDL information
+ */
 const getDDL = async (tableName, schema, logger) => {
 	try {
 		await setSQLTerminator();
@@ -927,6 +948,18 @@ const getJsonSchema = async (jsonColumns, records) => {
 	return { properties };
 };
 
+/**
+ * Generates view DDL using individual DBMS_METADATA calls with DBA_* tables access.
+ *
+ * This function serves as a fallback mechanism when the primary getViewDDL function fails
+ * to retrieve data from ALL_* tables. It directly uses DBA_* tables which require
+ * elevated privileges such as SELECT_CATALOG_ROLE.
+ *
+ * @param {string} viewName - The name of the view or materialized view to generate DDL for
+ * @param {string} schema - The Oracle schema name containing the view
+ * @param {object} logger - Logger instance for tracking progress and errors
+ * @returns {Promise<string>} Promise that resolves to the view DDL script
+ */
 const generateViewDDLFromDataDictionary = async (viewName, schema, logger) => {
 	try {
 		logger.log('info', { viewName, schema }, 'Generating view DDL using individual DBMS_METADATA calls');
@@ -994,6 +1027,22 @@ const generateViewDDLFromDataDictionary = async (viewName, schema, logger) => {
 	}
 };
 
+/**
+ * Retrieves DDL (Data Definition Language) scripts for views and materialized views with automatic fallback capability.
+ *
+ * This function implements a two-tier approach for retrieving comprehensive view DDL:
+ * 1. First attempts to use ALL_* tables (ALL_VIEWS, ALL_MVIEWS, ALL_INDEXES) for most users
+ * 2. Falls back to DBA_* tables (via generateViewDDLFromDataDictionary) if ALL_* approach fails or returns null data
+ *
+ * The function handles both:
+ * - Regular views: Uses DBMS_METADATA.GET_DDL('VIEW', ...) from ALL_VIEWS
+ * - Materialized views: Uses DBMS_METADATA.GET_DDL('MATERIALIZED_VIEW', ...) from ALL_MVIEWS with associated indexes
+ *
+ * @param {string} viewName - The name of the view or materialized view to retrieve DDL for
+ * @param {string} schema - The Oracle schema name containing the view
+ * @param {object} logger - Logger instance for tracking progress and errors
+ * @returns {Promise<string>} Promise that resolves to the view DDL script
+ */
 const getViewDDL = async (viewName, schema, logger) => {
 	try {
 		const isMaterializedView = await checkEntityMaterializedView(viewName, { useDbaViews: false });
