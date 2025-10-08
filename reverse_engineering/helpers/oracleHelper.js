@@ -5,6 +5,7 @@ const oracleDB = require('oracledb');
 const extractWallet = require('./extractWallet');
 const parseTns = require('./parseTns');
 const { getSchemaSequences } = require('./getSchemaSequences');
+const { getSchemaSynonyms } = require('./getSchemaSynonyms');
 
 const noConnectionError = { message: 'Connection error' };
 
@@ -1110,70 +1111,6 @@ const logEnvironment = logger => {
 	);
 };
 
-const getSchemaSynonyms = async ({ schema, allDDLs, logger }) => {
-	try {
-		logger.log('info', { message: 'Start getting synonyms' }, 'Getting synonyms');
-
-		const queryResult = await execute(
-			`
-			SELECT ALL_SYNONYMS.OWNER,
-			    ALL_SYNONYMS.SYNONYM_NAME,
-			    ALL_SYNONYMS.TABLE_NAME,
-			    ALL_OBJECTS.EDITIONABLE
-			  FROM ALL_SYNONYMS
-			  LEFT JOIN ALL_OBJECTS
-			    ON ALL_OBJECTS.OWNER = ALL_SYNONYMS.OWNER
-			    AND ALL_OBJECTS.OBJECT_NAME = ALL_SYNONYMS.SYNONYM_NAME
-			  WHERE ORIGIN_CON_ID > 1 AND ALL_SYNONYMS.TABLE_OWNER = '${schema}'
-			`,
-		);
-
-		logger.log('info', { message: 'Finish getting synonyms', count: queryResult?.length || 0 }, 'Getting synonyms');
-
-		if (_.isEmpty(queryResult)) {
-			return [];
-		}
-		const synonyms = queryResult.map(([owner, synonymName, synonymEntityId, editionable]) => {
-			return {
-				synonymPublic: owner === 'PUBLIC',
-				synonymName,
-				synonymEntityId,
-				synonymEditionable: editionable === null || editionable === 'N' ? 'NONEDITIONABLE' : 'EDITIONABLE',
-			};
-		});
-
-		return filterUsedSynonyms({ synonyms, allDDLs });
-	} catch (err) {
-		logger.log(
-			'error',
-			{
-				message: 'Cannot get synonyms',
-				error: { message: err.message, stack: err.stack, err: _.omit(err, ['message', 'stack']) },
-			},
-			'Getting synonyms',
-		);
-	}
-};
-
-/**
- *
- * @param {{ synonyms: Array<{ synonymName: string }>, allDDLs: string[] }}
- * @returns {Array}
- */
-const filterUsedSynonyms = ({ synonyms, allDDLs }) => {
-	const usedSynonyms = [];
-
-	for (const synonym of synonyms) {
-		const synonymRegexp = new RegExp('\\b' + synonym.synonymName + '\\b', 'i');
-
-		if (synonymRegexp.test(allDDLs)) {
-			usedSynonyms.push(synonym);
-		}
-	}
-
-	return usedSynonyms;
-};
-
 module.exports = {
 	connect,
 	disconnect,
@@ -1187,6 +1124,6 @@ module.exports = {
 	selectRecords,
 	logEnvironment,
 	execute,
-	getSchemaSynonyms,
+	getSchemaSynonyms: getSchemaSynonyms({ execute }),
 	getSchemaSequences: getSchemaSequences({ execute }),
 };
