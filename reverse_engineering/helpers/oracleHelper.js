@@ -5,6 +5,7 @@ const oracleDB = require('oracledb');
 const extractWallet = require('./extractWallet');
 const parseTns = require('./parseTns');
 const { getSchemaSequences } = require('./getSchemaSequences');
+const { getSchemaSynonyms } = require('./getSchemaSynonyms');
 
 const noConnectionError = { message: 'Connection error' };
 
@@ -412,17 +413,79 @@ const selectEntities = (selectStatement, includeSystemCollection, schemaName) =>
 	}
 };
 
-const tableNamesByUser = ({ includeSystemCollection, schemaName }) =>
-	selectEntities(`SELECT T.OWNER, T.TABLE_NAME FROM ALL_TABLES T`, includeSystemCollection, schemaName);
-const externalTableNamesByUser = ({ includeSystemCollection, schemaName }) =>
-	selectEntities(`SELECT T.OWNER, T.TABLE_NAME FROM ALL_EXTERNAL_TABLES T`, includeSystemCollection, schemaName);
-const viewNamesByUser = ({ includeSystemCollection, schemaName }) =>
-	selectEntities(`SELECT T.OWNER, T.VIEW_NAME || \' (v)\' FROM ALL_VIEWS T`, includeSystemCollection, schemaName);
-const materializedViewNamesByUser = ({ includeSystemCollection, schemaName }) =>
-	selectEntities(`SELECT T.OWNER, T.MVIEW_NAME || \' (v)\' FROM ALL_MVIEWS T`, includeSystemCollection, schemaName);
+const selectEntitiesWithFallback = async ({
+	dbaSelectStatement,
+	allSelectStatement,
+	includeSystemCollection,
+	schemaName,
+	entityType,
+	logger,
+}) => {
+	try {
+		let stmt = '';
+		if (schemaName) {
+			stmt = `T.OWNER = '${schemaName}'`;
+		}
+		if (includeSystemCollection) {
+			const result = await execute(dbaSelectStatement + (stmt ? ' WHERE ' + stmt : ''));
+			logger.info({ message: `Successfully retrieved ${entityType} using DBA_* tables` });
+			return result;
+		} else {
+			const result = await execute(
+				`${dbaSelectStatement} WHERE T.OWNER NOT IN ('SYS', 'SYSTEM', 'DBSNMP', 'SYSMAN', 'OUTLN', 'MGMT_VIEW', 'FLOWS_FILES', 'MDSYS', 'ORDSYS', 'EXFSYS', 'WMSYS', 'APPQOSSYS', 'APEX_030200', 'APEX_PUBLIC_USER', 'SPATIAL_CSW_ADMIN_USR', 'SPATIAL_WFS_ADMIN_USR', 'XS$NULL', 'ORACLE_OCM', 'XDB', 'ANONYMOUS', 'CTXSYS', 'ORDDATA', 'SI_INFORMTN_SCHEMA', 'DVF', 'DVSYS', 'DBSFWUSER', 'FLOWS_040100', 'APEX_040100', 'DIP', 'OWBSYS_AUDIT', 'OWBSYS', 'SYSDG', 'SYSBACKUP', 'SYSKM', 'LBACSYS', 'GSMADMIN_INTERNAL', 'MDDATA', 'SYSRAC', 'GGSYS', 'WKPROXY', 'WK_TEST', 'WKUSER', 'REMOTE_SCHEDULER_AGENT', 'SYS$UMF', 'GSMCATUSER', 'GSMUSER', 'SYSRMAN', 'EJBCA_USER', 'AUDSYS', 'SSOXDSDB', 'PDBADMIN', 'ORDS_PUBLIC_USER', 'ORDS_METADATA')${
+					stmt ? ` AND ${stmt}` : ''
+				}`,
+			);
+			logger.info({ message: `Successfully retrieved ${entityType} using DBA_* tables` });
+			return result;
+		}
+	} catch (e) {
+		logger.info({
+			message: `Failed to access DBA_* tables for ${entityType}, falling back to ALL_* tables: ${e.message}`,
+		});
+		return selectEntities(allSelectStatement, includeSystemCollection, schemaName);
+	}
+};
+
+const tableNamesByUser = ({ includeSystemCollection, schemaName }, logger) =>
+	selectEntitiesWithFallback({
+		dbaSelectStatement: `SELECT T.OWNER, T.TABLE_NAME FROM DBA_TABLES T`,
+		allSelectStatement: `SELECT T.OWNER, T.TABLE_NAME FROM ALL_TABLES T`,
+		includeSystemCollection,
+		schemaName,
+		entityType: 'tables',
+		logger,
+	});
+const externalTableNamesByUser = ({ includeSystemCollection, schemaName }, logger) =>
+	selectEntitiesWithFallback({
+		dbaSelectStatement: `SELECT T.OWNER, T.TABLE_NAME FROM DBA_EXTERNAL_TABLES T`,
+		allSelectStatement: `SELECT T.OWNER, T.TABLE_NAME FROM ALL_EXTERNAL_TABLES T`,
+		includeSystemCollection,
+		schemaName,
+		entityType: 'external tables',
+		logger,
+	});
+const viewNamesByUser = ({ includeSystemCollection, schemaName }, logger) =>
+	selectEntitiesWithFallback({
+		dbaSelectStatement: `SELECT T.OWNER, T.VIEW_NAME || ' (v)' FROM DBA_VIEWS T`,
+		allSelectStatement: `SELECT T.OWNER, T.VIEW_NAME || ' (v)' FROM ALL_VIEWS T`,
+		includeSystemCollection,
+		schemaName,
+		entityType: 'views',
+		logger,
+	});
+const materializedViewNamesByUser = ({ includeSystemCollection, schemaName }, logger) =>
+	selectEntitiesWithFallback({
+		dbaSelectStatement: `SELECT T.OWNER, T.MVIEW_NAME || ' (v)' FROM DBA_MVIEWS T`,
+		allSelectStatement: `SELECT T.OWNER, T.MVIEW_NAME || ' (v)' FROM ALL_MVIEWS T`,
+		includeSystemCollection,
+		schemaName,
+		entityType: 'materialized views',
+		logger,
+	});
 
 const getEntitiesNames = async (connectionInfo, logger) => {
-	const materializedViews = await materializedViewNamesByUser(connectionInfo).catch(e => {
+	const materializedViews = await materializedViewNamesByUser(connectionInfo, logger).catch(e => {
 		logger.info({ message: 'Cannot retrieve materialized views' });
 		logger.error(e);
 
@@ -433,7 +496,7 @@ const getEntitiesNames = async (connectionInfo, logger) => {
 
 	const materializedViewsNames = materializedViews.map(nameArray => _.join(nameArray, '.').slice(0, -' (v)'.length));
 
-	const tables = await tableNamesByUser(connectionInfo)
+	const tables = await tableNamesByUser(connectionInfo, logger)
 		.then(tables => {
 			return _.reject(tables, tableNameArray => materializedViewsNames.includes(_.join(tableNameArray, '.')));
 		})
@@ -445,7 +508,7 @@ const getEntitiesNames = async (connectionInfo, logger) => {
 
 	logger.info({ tables });
 
-	const externalTables = await externalTableNamesByUser(connectionInfo).catch(e => {
+	const externalTables = await externalTableNamesByUser(connectionInfo, logger).catch(e => {
 		logger.info({ message: 'Cannot retrieve external tables' });
 		logger.error(e);
 
@@ -454,7 +517,7 @@ const getEntitiesNames = async (connectionInfo, logger) => {
 
 	logger.info({ externalTables });
 
-	const views = await viewNamesByUser(connectionInfo).catch(e => {
+	const views = await viewNamesByUser(connectionInfo, logger).catch(e => {
 		logger.info({ message: 'Cannot retrieve views' });
 		logger.error(e);
 
@@ -531,6 +594,121 @@ const setSQLTerminator = () => {
 	END;`);
 };
 
+/**
+ * Generates table DDL using individual DBMS_METADATA calls with DBA_* tables access.
+ *
+ * This function serves as a fallback mechanism when the primary getDDL function fails
+ * to retrieve data from ALL_* tables. It directly uses DBA_* tables which require
+ * elevated privileges such as SELECT_CATALOG_ROLE.
+ *
+ * @param {string} tableName - The name of the table to generate DDL for
+ * @param {string} schema - The Oracle schema name containing the table
+ * @param {object} logger - Logger instance for tracking progress and errors
+ * @returns {Promise<{ddl: string, jsonColumns: Array, countOfRecords: number}>} Promise that resolves to table DDL information
+ */
+const generateDDLFromDataDictionary = async (tableName, schema, logger) => {
+	try {
+		logger.log('info', { tableName, schema }, 'Generating DDL using individual DBMS_METADATA calls');
+
+		const tableDDLResult = await execute(
+			`SELECT DBMS_METADATA.GET_DDL('TABLE', '${tableName}', '${schema}') FROM DUAL`,
+		);
+		const tableDDL = tableDDLResult[0] ? await tableDDLResult[0][0].getData() : '';
+
+		// Get indexes (excluding constraint-backed indexes and system indexes)
+		const indexesResult = await execute(`
+			SELECT INDEX_NAME 
+			FROM DBA_INDEXES 
+			WHERE TABLE_OWNER = '${schema}' AND TABLE_NAME = '${tableName}'
+				AND INDEX_NAME NOT IN (
+					SELECT CONSTRAINT_NAME 
+					FROM DBA_CONSTRAINTS 
+					WHERE OWNER = '${schema}' AND TABLE_NAME = '${tableName}' AND CONSTRAINT_NAME IS NOT NULL
+				)
+				AND INDEX_NAME NOT LIKE 'SYS_%'
+				AND INDEX_NAME NOT LIKE 'BIN$%'
+				AND OWNER NOT IN ('SYS', 'SYSTEM', 'CTXSYS', 'MDSYS', 'XDB')
+		`);
+
+		const indexDDLs = [];
+		for (const [indexName] of indexesResult) {
+			try {
+				const indexDDLResult = await execute(
+					`SELECT DBMS_METADATA.GET_DDL('INDEX', '${indexName}', '${schema}') FROM DUAL`,
+				);
+				if (indexDDLResult[0]?.[0]) {
+					const indexDDL = await indexDDLResult[0][0].getData();
+					indexDDLs.push(indexDDL);
+				}
+			} catch (e) {
+				logger.log(
+					'info',
+					{ message: `Cannot get DDL for index ${indexName}: ${e.message}` },
+					'DDL Generation',
+				);
+			}
+		}
+
+		const tableComment = await execute(`
+			SELECT COMMENTS 
+			FROM DBA_TAB_COMMENTS 
+			WHERE OWNER = '${schema}' AND TABLE_NAME = '${tableName}' AND COMMENTS IS NOT NULL
+		`);
+
+		const columnComments = await execute(`
+			SELECT COLUMN_NAME, COMMENTS 
+			FROM DBA_COL_COMMENTS 
+			WHERE OWNER = '${schema}' AND TABLE_NAME = '${tableName}' AND COMMENTS IS NOT NULL
+		`);
+
+		let commentsSQL = '';
+		if (tableComment.length > 0) {
+			commentsSQL += `COMMENT ON TABLE ${escapeName(schema)}.${escapeName(tableName)} IS ${escapeComment(tableComment[0][0])};`;
+		}
+		if (columnComments.length > 0) {
+			const columnCommentsSQL = columnComments
+				.map(
+					([columnName, comment]) =>
+						`COMMENT ON COLUMN ${escapeName(schema)}.${escapeName(tableName)}.${escapeName(columnName)} IS ${escapeComment(comment)};`,
+				)
+				.join('\n');
+			commentsSQL += commentsSQL ? `\n${columnCommentsSQL}` : columnCommentsSQL;
+		}
+
+		return {
+			ddl: `${tableDDL}${indexDDLs.join('\n')}\n${commentsSQL}`,
+			jsonColumns: [],
+			countOfRecords: 0,
+		};
+	} catch (err) {
+		logger.log(
+			'error',
+			{
+				message: 'Cannot generate DDL using DBMS_METADATA calls: ' + tableName,
+				error: { message: err.message, stack: err.stack, err: _.omit(err, ['message', 'stack']) },
+			},
+			`Generating DDL using DBMS_METADATA for "${schema}"."${tableName}"`,
+		);
+		return {
+			ddl: '',
+			jsonColumns: [],
+			countOfRecords: 0,
+		};
+	}
+};
+
+/**
+ * Retrieves DDL (Data Definition Language) scripts for a table with automatic fallback capability.
+ *
+ * This function implements a two-tier approach for retrieving comprehensive table DDL:
+ * 1. First attempts to use ALL_* tables (ALL_TABLES, ALL_INDEXES, ALL_CONSTRAINTS, etc.) for most users
+ * 2. Falls back to DBA_* tables (via generateDDLFromDataDictionary) if ALL_* approach fails or returns null data
+ *
+ * @param {string} tableName - The name of the table to retrieve DDL for
+ * @param {string} schema - The Oracle schema name containing the table
+ * @param {object} logger - Logger instance for tracking progress and errors
+ * @returns {Promise<{ddl: string, jsonColumns: Array, countOfRecords: number}>} Promise that resolves to table DDL information
+ */
 const getDDL = async (tableName, schema, logger) => {
 	try {
 		await setSQLTerminator();
@@ -572,7 +750,17 @@ const getDDL = async (tableName, schema, logger) => {
 			FROM ALL_TABLES T
 			WHERE T.OWNER='${schema}' AND T.TABLE_NAME='${tableName}'
 		`);
+
 		const row = await _.first(_.first(queryResult))?.getData();
+		if (!row) {
+			logger.log(
+				'info',
+				{ message: 'DBMS_METADATA returned null data, using individual DBMS_METADATA calls fallback' },
+				`Getting DDL from "${schema}"."${tableName}"`,
+			);
+			return await generateDDLFromDataDictionary(tableName, schema, logger);
+		}
+
 		try {
 			const queryObj = JSON.parse(row);
 			logger.log('info', queryObj, `Getting DDL from "${schema}"."${tableName}"`);
@@ -760,9 +948,104 @@ const getJsonSchema = async (jsonColumns, records) => {
 	return { properties };
 };
 
+/**
+ * Generates view DDL using individual DBMS_METADATA calls with DBA_* tables access.
+ *
+ * This function serves as a fallback mechanism when the primary getViewDDL function fails
+ * to retrieve data from ALL_* tables. It directly uses DBA_* tables which require
+ * elevated privileges such as SELECT_CATALOG_ROLE.
+ *
+ * @param {string} viewName - The name of the view or materialized view to generate DDL for
+ * @param {string} schema - The Oracle schema name containing the view
+ * @param {object} logger - Logger instance for tracking progress and errors
+ * @returns {Promise<string>} Promise that resolves to the view DDL script
+ */
+const generateViewDDLFromDataDictionary = async (viewName, schema, logger) => {
+	try {
+		logger.log('info', { viewName, schema }, 'Generating view DDL using individual DBMS_METADATA calls');
+
+		const isMaterializedView = await checkEntityMaterializedView(viewName, { useDbaViews: true });
+
+		if (!isMaterializedView) {
+			// Regular view
+			const viewDDLResult = await execute(
+				`SELECT DBMS_METADATA.GET_DDL('VIEW', '${viewName}', '${schema}') FROM DUAL`,
+			);
+			const viewDDL = viewDDLResult[0] ? await viewDDLResult[0][0].getData() : '';
+			return viewDDL;
+		}
+
+		const mvDDLResult = await execute(
+			`SELECT DBMS_METADATA.GET_DDL('MATERIALIZED_VIEW', '${viewName}', '${schema}') FROM DUAL`,
+		);
+		const mvDDL = mvDDLResult[0] ? await mvDDLResult[0][0].getData() : '';
+
+		const indexesResult = await execute(`
+				SELECT INDEX_NAME 
+				FROM DBA_INDEXES 
+				WHERE TABLE_OWNER = '${schema}' AND TABLE_NAME = '${viewName}'
+					AND INDEX_NAME NOT IN (
+						SELECT CONSTRAINT_NAME 
+						FROM DBA_CONSTRAINTS 
+						WHERE OWNER = '${schema}' AND TABLE_NAME = '${viewName}' AND CONSTRAINT_NAME IS NOT NULL
+					)
+					AND INDEX_NAME NOT LIKE 'SYS_%'
+					AND INDEX_NAME NOT LIKE 'BIN$%'
+					AND OWNER NOT IN ('SYS', 'SYSTEM', 'CTXSYS', 'MDSYS', 'XDB')
+			`);
+
+		const indexDDLs = [];
+		for (const [indexName] of indexesResult) {
+			try {
+				const indexDDLResult = await execute(
+					`SELECT DBMS_METADATA.GET_DDL('INDEX', '${indexName}', '${schema}') FROM DUAL`,
+				);
+				if (indexDDLResult[0]?.[0]) {
+					const indexDDL = await indexDDLResult[0][0].getData();
+					indexDDLs.push(indexDDL);
+				}
+			} catch (e) {
+				logger.log(
+					'info',
+					{ message: `Cannot get DDL for index ${indexName}: ${e.message}` },
+					'View DDL Generation',
+				);
+			}
+		}
+
+		return mvDDL + (indexDDLs.length > 0 ? `\n${indexDDLs.join('\n')}` : '');
+	} catch (err) {
+		logger.log(
+			'error',
+			{
+				message: 'Cannot generate view DDL using DBMS_METADATA calls: ' + viewName,
+				error: { message: err.message, stack: err.stack, err: _.omit(err, ['message', 'stack']) },
+			},
+			`Generating view DDL using DBMS_METADATA for "${schema}"."${viewName}"`,
+		);
+		return '';
+	}
+};
+
+/**
+ * Retrieves DDL (Data Definition Language) scripts for views and materialized views with automatic fallback capability.
+ *
+ * This function implements a two-tier approach for retrieving comprehensive view DDL:
+ * 1. First attempts to use ALL_* tables (ALL_VIEWS, ALL_MVIEWS, ALL_INDEXES) for most users
+ * 2. Falls back to DBA_* tables (via generateViewDDLFromDataDictionary) if ALL_* approach fails or returns null data
+ *
+ * The function handles both:
+ * - Regular views: Uses DBMS_METADATA.GET_DDL('VIEW', ...) from ALL_VIEWS
+ * - Materialized views: Uses DBMS_METADATA.GET_DDL('MATERIALIZED_VIEW', ...) from ALL_MVIEWS with associated indexes
+ *
+ * @param {string} viewName - The name of the view or materialized view to retrieve DDL for
+ * @param {string} schema - The Oracle schema name containing the view
+ * @param {object} logger - Logger instance for tracking progress and errors
+ * @returns {Promise<string>} Promise that resolves to the view DDL script
+ */
 const getViewDDL = async (viewName, schema, logger) => {
 	try {
-		const isMaterializedView = await checkEntityMaterializedView(viewName);
+		const isMaterializedView = await checkEntityMaterializedView(viewName, { useDbaViews: false });
 
 		await setSQLTerminator();
 		if (isMaterializedView) {
@@ -799,7 +1082,17 @@ const getViewDDL = async (viewName, schema, logger) => {
 			`SELECT DBMS_METADATA.GET_DDL('VIEW', VIEW_NAME, OWNER) FROM ALL_VIEWS WHERE VIEW_NAME='${viewName}'`,
 		);
 
-		const viewDDL = await _.first(_.first(queryResult)).getData();
+		const firstResult = _.first(_.first(queryResult));
+		if (!firstResult) {
+			logger.log(
+				'info',
+				{ message: 'DBMS_METADATA returned null data for view, using individual DBMS_METADATA calls fallback' },
+				`Getting DDL for view "${schema}"."${viewName}"`,
+			);
+			return await generateViewDDLFromDataDictionary(viewName, schema, logger);
+		}
+
+		const viewDDL = await firstResult.getData();
 
 		return viewDDL;
 	} catch (err) {
@@ -819,11 +1112,16 @@ const getViewDDL = async (viewName, schema, logger) => {
 	}
 };
 
-const checkEntityMaterializedView = async name => {
+const checkEntityMaterializedView = async (name, options = {}) => {
+	const { useDbaViews = false } = options;
 	await setSQLTerminator();
-	const queryResult = await execute(`SELECT * FROM ALL_MVIEWS WHERE MVIEW_NAME = '${name}'`);
-
-	return !_.isEmpty(queryResult);
+	const viewType = useDbaViews ? 'DBA_MVIEWS' : 'ALL_MVIEWS';
+	try {
+		const queryResult = await execute(`SELECT * FROM ${viewType} WHERE MVIEW_NAME = '${name}'`);
+		return !_.isEmpty(queryResult);
+	} catch {
+		return false;
+	}
 };
 
 const checkUserHaveRequiredRole = async logger => {
@@ -862,70 +1160,6 @@ const logEnvironment = logger => {
 	);
 };
 
-const getSchemaSynonyms = async ({ schema, allDDLs, logger }) => {
-	try {
-		logger.log('info', { message: 'Start getting synonyms' }, 'Getting synonyms');
-
-		const queryResult = await execute(
-			`
-			SELECT ALL_SYNONYMS.OWNER,
-			    ALL_SYNONYMS.SYNONYM_NAME,
-			    ALL_SYNONYMS.TABLE_NAME,
-			    ALL_OBJECTS.EDITIONABLE
-			  FROM ALL_SYNONYMS
-			  LEFT JOIN ALL_OBJECTS
-			    ON ALL_OBJECTS.OWNER = ALL_SYNONYMS.OWNER
-			    AND ALL_OBJECTS.OBJECT_NAME = ALL_SYNONYMS.SYNONYM_NAME
-			  WHERE ORIGIN_CON_ID > 1 AND ALL_SYNONYMS.TABLE_OWNER = '${schema}'
-			`,
-		);
-
-		logger.log('info', { message: 'Finish getting synonyms', count: queryResult?.length || 0 }, 'Getting synonyms');
-
-		if (_.isEmpty(queryResult)) {
-			return [];
-		}
-		const synonyms = queryResult.map(([owner, synonymName, synonymEntityId, editionable]) => {
-			return {
-				synonymPublic: owner === 'PUBLIC',
-				synonymName,
-				synonymEntityId,
-				synonymEditionable: editionable === null || editionable === 'N' ? 'NONEDITIONABLE' : 'EDITIONABLE',
-			};
-		});
-
-		return filterUsedSynonyms({ synonyms, allDDLs });
-	} catch (err) {
-		logger.log(
-			'error',
-			{
-				message: 'Cannot get synonyms',
-				error: { message: err.message, stack: err.stack, err: _.omit(err, ['message', 'stack']) },
-			},
-			'Getting synonyms',
-		);
-	}
-};
-
-/**
- *
- * @param {{ synonyms: Array<{ synonymName: string }>, allDDLs: string[] }}
- * @returns {Array}
- */
-const filterUsedSynonyms = ({ synonyms, allDDLs }) => {
-	const usedSynonyms = [];
-
-	for (const synonym of synonyms) {
-		const synonymRegexp = new RegExp('\\b' + synonym.synonymName + '\\b', 'i');
-
-		if (synonymRegexp.test(allDDLs)) {
-			usedSynonyms.push(synonym);
-		}
-	}
-
-	return usedSynonyms;
-};
-
 module.exports = {
 	connect,
 	disconnect,
@@ -939,6 +1173,6 @@ module.exports = {
 	selectRecords,
 	logEnvironment,
 	execute,
-	getSchemaSynonyms,
+	getSchemaSynonyms: getSchemaSynonyms({ execute }),
 	getSchemaSequences: getSchemaSequences({ execute }),
 };
