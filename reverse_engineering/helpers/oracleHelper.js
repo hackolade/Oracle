@@ -394,8 +394,39 @@ const getSchemaNames = async ({ includeSystemCollection, schemaName }, logger) =
 	});
 };
 
-const pairToObj = pairs =>
-	_.reduce(pairs, (obj, pair) => ({ ...obj, [pair[0]]: [...(obj[pair[0]] || []), pair[1]] }), {});
+const pairToObj = pairs => {
+	return pairs.reduce((acc, pair) => {
+		const [key, value] = pair;
+		if (!acc[key]) {
+			acc[key] = [];
+		}
+		acc[key].push(value);
+
+		return acc;
+	}, {});
+};
+
+/**
+ * Logs an array with a limit to prevent excessive log output.
+ * If the array exceeds the limit, only logs the first items and a summary message.
+ *
+ * @param {object} params
+ * @param {Array} params.entities - The array to log
+ * @param {string} params.entityType - The type of entities being logged (e.g., 'tables', 'views')
+ * @param {object} params.logger - Logger instance
+ * @param {number} [params.limit=1000] - Maximum number of items to log
+ */
+const logEntitiesWithLimit = ({ entities, entityType, logger, limit = 1000 }) => {
+	if (entities.length <= limit) {
+		logger.info({ [entityType]: entities });
+	} else {
+		const limitedArray = entities.slice(0, limit);
+		logger.info({
+			[entityType]: limitedArray,
+			message: `Showing first ${limit} of ${entities.length} ${entityType}. ${entities.length - limit} additional ${entityType} not shown in log.`,
+		});
+	}
+};
 
 const selectEntities = (selectStatement, includeSystemCollection, schemaName) => {
 	let stmt = '';
@@ -492,7 +523,7 @@ const getEntitiesNames = async (connectionInfo, logger) => {
 		return [];
 	});
 
-	logger.info({ materializedViews });
+	logEntitiesWithLimit({ entities: materializedViews, entityType: 'materializedViews', logger });
 
 	const materializedViewsNames = materializedViews.map(nameArray => _.join(nameArray, '.').slice(0, -' (v)'.length));
 
@@ -506,7 +537,7 @@ const getEntitiesNames = async (connectionInfo, logger) => {
 			return [];
 		});
 
-	logger.info({ tables });
+	logEntitiesWithLimit({ entities: tables, entityType: 'tables', logger });
 
 	const externalTables = await externalTableNamesByUser(connectionInfo, logger).catch(e => {
 		logger.info({ message: 'Cannot retrieve external tables' });
@@ -515,7 +546,7 @@ const getEntitiesNames = async (connectionInfo, logger) => {
 		return [];
 	});
 
-	logger.info({ externalTables });
+	logEntitiesWithLimit({ entities: externalTables, entityType: 'externalTables', logger });
 
 	const views = await viewNamesByUser(connectionInfo, logger).catch(e => {
 		logger.info({ message: 'Cannot retrieve views' });
@@ -524,7 +555,7 @@ const getEntitiesNames = async (connectionInfo, logger) => {
 		return [];
 	});
 
-	logger.info({ views });
+	logEntitiesWithLimit({ entities: views, entityType: 'views', logger });
 
 	const entities = pairToObj([...tables, ...externalTables, ...views, ...materializedViews]);
 
