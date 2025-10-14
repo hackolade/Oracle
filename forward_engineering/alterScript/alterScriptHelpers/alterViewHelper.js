@@ -3,6 +3,7 @@ const { AlterScriptDto } = require('../types/AlterScriptDto');
 const { mapDeltaDualityViewToFeDualityView } = require('./dualityViewHelpers/deltaDualityViewToFeDualityViewMapper');
 const { prepareNameForScriptFormat } = require('../../utils/general');
 const { getModifyViewCommentsScriptDtos } = require('./viewHelpers/commentsHelper');
+const { getModifyEntityNameScriptDtos } = require('./viewHelpers/nameHelper');
 
 /**
  * @return {(view: Object) => AlterScriptDto | undefined}
@@ -66,14 +67,20 @@ const getDeleteViewScriptDto = (app, scriptFormat) => view => {
 /**
  * @param {object} params
  * @property {string} [scriptFormat]
- * @return {(view: AlterCollectionDto) => AlterScriptDto[]}
+ * @return {(view: AlterCollectionDto) => { regularScripts: AlterScriptDto[], prioritizedScripts: AlterScriptDto[] }}
  * */
 const getModifyViewScriptDtos =
 	({ scriptFormat }) =>
 	view => {
 		const modifyCommentsScriptDtos = getModifyViewCommentsScriptDtos({ scriptFormat, view });
 
-		return [...modifyCommentsScriptDtos].filter(Boolean);
+		// RENAME view statements must go *before* renaming table statements
+		const modifyEntityNameScriptDtos = getModifyEntityNameScriptDtos({ scriptFormat, entity: view });
+
+		const regularScripts = [...modifyCommentsScriptDtos].filter(Boolean);
+		const prioritizedScripts = [...modifyEntityNameScriptDtos].filter(Boolean);
+
+		return { regularScripts, prioritizedScripts };
 	};
 
 const getKeys = ({ view, collectionRefsDefinitionsMap, ddlProvider, app }) => {
