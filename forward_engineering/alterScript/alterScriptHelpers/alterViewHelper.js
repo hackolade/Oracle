@@ -67,7 +67,7 @@ const getDeleteViewScriptDto = (app, scriptFormat) => view => {
 /**
  * @param {object} params
  * @property {string} [scriptFormat]
- * @return {(view: AlterCollectionDto) => { regularScripts: AlterScriptDto[], prioritizedScripts: AlterScriptDto[] }}
+ * @return {(view: AlterCollectionDto) => { restViewScripts: AlterScriptDto[], renameViewScripts: AlterScriptDto[] }}
  * */
 const getModifyViewScriptDtos =
 	({ scriptFormat }) =>
@@ -77,10 +77,10 @@ const getModifyViewScriptDtos =
 		// RENAME view statements must go *before* renaming table statements
 		const modifyEntityNameScriptDtos = getModifyEntityNameScriptDtos({ scriptFormat, entity: view });
 
-		const regularScripts = [...modifyCommentsScriptDtos].filter(Boolean);
-		const prioritizedScripts = [...modifyEntityNameScriptDtos].filter(Boolean);
+		const restViewScripts = modifyCommentsScriptDtos.filter(Boolean);
+		const renameViewScripts = modifyEntityNameScriptDtos.filter(Boolean);
 
-		return { regularScripts, prioritizedScripts };
+		return { restViewScripts, renameViewScripts };
 	};
 
 const getKeys = ({ view, collectionRefsDefinitionsMap, ddlProvider, app }) => {

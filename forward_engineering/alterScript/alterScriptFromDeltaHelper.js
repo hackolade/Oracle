@@ -144,7 +144,7 @@ const getAlterCollectionsScriptDtos = ({
  * @param app {App}
  * @param dbVersion {string}
  * @param scriptFormat {string}
- * @return {{ regularScripts: AlterScriptDto[], prioritizedScripts: AlterScriptDto[]}}
+ * @return {{ restViewScripts: AlterScriptDto[], renameViewScripts: AlterScriptDto[]}}
  * */
 const getAlterViewScriptDtos = (collection, app, dbVersion, scriptFormat) => {
 	const properties = collection.properties?.views?.properties;
@@ -171,23 +171,23 @@ const getAlterViewScriptDtos = (collection, app, dbVersion, scriptFormat) => {
 
 	const preparedModifyViewsScriptDtos = prepareDtos(properties.modified).reduce(
 		(scripts, view) => {
-			const { regularScripts, prioritizedScripts } = getModifyViewScriptDtos({ scriptFormat })(view);
+			const { restViewScripts, renameViewScripts } = getModifyViewScriptDtos({ scriptFormat })(view);
 
-			regularScripts.length && scripts.regularScripts.push(...regularScripts);
-			prioritizedScripts.length && scripts.prioritizedScripts.push(...prioritizedScripts);
+			restViewScripts.length && scripts.restViewScripts.push(...restViewScripts);
+			renameViewScripts.length && scripts.renameViewScripts.push(...renameViewScripts);
 
 			return scripts;
 		},
-		{ regularScripts: [], prioritizedScripts: [] },
+		{ restViewScripts: [], renameViewScripts: [] },
 	);
 
 	return {
-		regularScripts: [
+		restViewScripts: [
 			...deleteViewsScriptDtos,
 			...createViewsScriptDtos,
-			...preparedModifyViewsScriptDtos.regularScripts,
+			...preparedModifyViewsScriptDtos.restViewScripts,
 		].filter(Boolean),
-		prioritizedScripts: preparedModifyViewsScriptDtos.prioritizedScripts,
+		renameViewScripts: preparedModifyViewsScriptDtos.renameViewScripts,
 	};
 };
 
@@ -426,9 +426,9 @@ const getAlterScriptDtos = (data, app) => {
 		...containersScriptDtos,
 		...containersSequencesScriptDtos,
 		...modelDefinitionsScriptDtos,
-		...viewScriptDtos.prioritizedScripts,
+		...viewScriptDtos.renameViewScripts,
 		...collectionsScriptDtos,
-		...viewScriptDtos.regularScripts,
+		...viewScriptDtos.restViewScripts,
 		...relationshipScriptDtos,
 	]
 		.filter(Boolean)
