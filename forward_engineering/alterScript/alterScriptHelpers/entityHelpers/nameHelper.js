@@ -49,7 +49,7 @@ const getRenameCollectionScriptDto = ({ scriptFormat, collection }) => {
 const getModifyCollectionNameScriptDtos = ({ scriptFormat, collection }) => {
 	const renameEntityScript = getRenameCollectionScriptDto({ scriptFormat, collection });
 
-	return [renameEntityScript].filter(Boolean);
+	return [renameEntityScript];
 };
 
 module.exports = {
