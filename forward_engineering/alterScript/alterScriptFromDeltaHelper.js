@@ -157,7 +157,7 @@ const getAlterViewScriptDtos = (collection, app, dbVersion, scriptFormat) => {
 			return [];
 		}
 
-		return [mutationType.items]
+		return mutationType.items
 			.filter(Boolean)
 			.map(item => Object.values(item.properties)[0])
 			.map(view => ({ ...view, ...(view.role || {}) }));
