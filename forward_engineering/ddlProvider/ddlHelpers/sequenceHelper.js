@@ -74,7 +74,7 @@ module.exports = ({ templates, assignTemplates, getNamePrefixedWithSchemaName, w
 		 */
 		const configs = [
 			{ key: 'options', value: options, name: fullName, template: templates.alterSequence },
-			{ key: 'newName', value: newName, name: wrappedSequenceName, template: templates.renameSequence },
+			{ key: 'newName', value: newName, name: wrappedSequenceName, template: templates.renameEntity },
 		];
 
 		return configs

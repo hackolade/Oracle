@@ -144,32 +144,51 @@ const getAlterCollectionsScriptDtos = ({
  * @param app {App}
  * @param dbVersion {string}
  * @param scriptFormat {string}
- * @return {AlterScriptDto[]}
+ * @return {{ restViewScripts: AlterScriptDto[], renameViewScripts: AlterScriptDto[]}}
  * */
 const getAlterViewScriptDtos = (collection, app, dbVersion, scriptFormat) => {
-	const createViewsScriptDtos = []
-		.concat(collection.properties?.views?.properties?.added?.items)
-		.filter(Boolean)
-		.map(item => Object.values(item.properties)[0])
-		.map(view => ({ ...view, ...(view.role || {}) }))
+	const properties = collection.properties?.views?.properties;
+	if (!properties) {
+		return [];
+	}
+
+	const prepareDtos = mutationType => {
+		if (!mutationType.items) {
+			return [];
+		}
+
+		return mutationType.items
+			.filter(Boolean)
+			.map(item => Object.values(item.properties)[0])
+			.map(view => ({ ...view, ...(view.role || {}) }));
+	};
+
+	const createViewsScriptDtos = prepareDtos(properties.added)
 		.filter(view => view.compMod?.created)
 		.map(getAddViewScriptDto(app, scriptFormat));
 
-	const deleteViewsScriptDtos = []
-		.concat(collection.properties?.views?.properties?.deleted?.items)
-		.filter(Boolean)
-		.map(item => Object.values(item.properties)[0])
-		.map(view => ({ ...view, ...(view.role || {}) }))
-		.map(getDeleteViewScriptDto(app, scriptFormat));
+	const deleteViewsScriptDtos = prepareDtos(properties.deleted).map(getDeleteViewScriptDto(app, scriptFormat));
 
-	const modifyViewsScriptDtos = []
-		.concat(collection.properties?.views?.properties?.modified?.items)
-		.filter(Boolean)
-		.map(viewWrapper => Object.values(viewWrapper.properties)[0])
-		.map(view => ({ ...view, ...(view.role || {}) }))
-		.flatMap(getModifyViewScriptDtos({ scriptFormat }));
+	const preparedModifyViewsScriptDtos = prepareDtos(properties.modified).reduce(
+		(scripts, view) => {
+			const { restViewScripts, renameViewScripts } = getModifyViewScriptDtos({ scriptFormat })(view);
 
-	return [...deleteViewsScriptDtos, ...createViewsScriptDtos, ...modifyViewsScriptDtos].filter(Boolean);
+			restViewScripts.length && scripts.restViewScripts.push(...restViewScripts);
+			renameViewScripts.length && scripts.renameViewScripts.push(...renameViewScripts);
+
+			return scripts;
+		},
+		{ restViewScripts: [], renameViewScripts: [] },
+	);
+
+	return {
+		restViewScripts: [
+			...deleteViewsScriptDtos,
+			...createViewsScriptDtos,
+			...preparedModifyViewsScriptDtos.restViewScripts,
+		].filter(Boolean),
+		renameViewScripts: preparedModifyViewsScriptDtos.renameViewScripts,
+	};
 };
 
 /**
@@ -372,8 +391,11 @@ const getAlterScriptDtos = (data, app) => {
 	const modelDefinitions = JSON.parse(data.modelDefinitions);
 	const internalDefinitions = JSON.parse(data.internalDefinitions);
 	const externalDefinitions = JSON.parse(data.externalDefinitions);
+
 	const dbVersion = data.modelData[0]?.dbVersion;
+
 	const containersScriptDtos = getAlterContainersScriptDtos({ collection, app, scriptFormat });
+
 	const collectionsScriptDtos = getAlterCollectionsScriptDtos({
 		collection,
 		app,
@@ -383,7 +405,9 @@ const getAlterScriptDtos = (data, app) => {
 		externalDefinitions,
 		scriptFormat,
 	});
+
 	const viewScriptDtos = getAlterViewScriptDtos(collection, app, dbVersion, scriptFormat);
+
 	const modelDefinitionsScriptDtos = getAlterModelDefinitionsScriptDtos({
 		collection,
 		app,
@@ -393,15 +417,18 @@ const getAlterScriptDtos = (data, app) => {
 		externalDefinitions,
 		scriptFormat,
 	});
+
 	const relationshipScriptDtos = getAlterRelationshipsScriptDtos({ collection, app, scriptFormat });
+
 	const containersSequencesScriptDtos = getAlterContainersSequencesScriptDtos({ collection, app, dbVersion });
 
 	return [
 		...containersScriptDtos,
 		...containersSequencesScriptDtos,
 		...modelDefinitionsScriptDtos,
+		...viewScriptDtos.renameViewScripts,
 		...collectionsScriptDtos,
-		...viewScriptDtos,
+		...viewScriptDtos.restViewScripts,
 		...relationshipScriptDtos,
 	]
 		.filter(Boolean)

@@ -52,7 +52,11 @@ module.exports = {
 
 	dropSequence: 'DROP SEQUENCE${ifExists} ${name};\n',
 
-	renameSequence: 'RENAME ${name} TO ${newName};\n',
+	// works for tables, views, sequences, synonyms, and private user-owned objects
+	// Note: can't have full path, prefixed with schema name. Only works on objects in your current schema.
+	renameEntity: 'RENAME ${name} TO ${newName};\n',
+
+	renameTable: 'ALTER TABLE ${tableName} RENAME TO ${newName};\n',
 
 	alterSequence: 'ALTER SEQUENCE${ifExists} ${name}' + '${options};\n',
 
