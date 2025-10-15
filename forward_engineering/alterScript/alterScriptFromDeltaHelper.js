@@ -157,10 +157,20 @@ const getAlterViewScriptDtos = (collection, app, dbVersion, scriptFormat) => {
 			return [];
 		}
 
-		return mutationType.items
-			.filter(Boolean)
-			.map(item => Object.values(item.properties)[0])
-			.map(view => ({ ...view, ...(view.role || {}) }));
+		const normalize = value => {
+			if (Array.isArray(value)) {
+				return value.filter(Boolean);
+			}
+			return [value].filter(Boolean);
+		};
+
+		const extractItem = item => Object.values(item.properties)[0];
+		const mergeRole = view => ({ ...view, ...view.role });
+
+		const rawItems = normalize(mutationType.items);
+		const extracted = rawItems.map(extractItem);
+
+		return normalize(extracted).map(mergeRole);
 	};
 
 	const createViewsScriptDtos = prepareDtos(properties.added)
