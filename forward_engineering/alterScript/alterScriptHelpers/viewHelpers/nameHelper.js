@@ -28,13 +28,7 @@ const getRenameEntityScriptDto = ({ scriptFormat, entity }) => {
 		newName: prepareNameForScriptFormat(scriptFormat)(newName),
 	});
 
-	const schemaName = prepareNameForScriptFormat(scriptFormat)(entity.role.compMod.keyspaceName);
-
-	const alterSessionScript = assignTemplates(templates.alterSession, {
-		schemaName,
-	});
-
-	return AlterScriptDto.getInstance([alterSessionScript, renameScript], true, false);
+	return AlterScriptDto.getInstance([renameScript], true, false);
 };
 
 /**
