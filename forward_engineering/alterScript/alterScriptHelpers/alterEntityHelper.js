@@ -17,12 +17,21 @@ const { getModifyNonNullColumnsScriptDtos } = require('./columnHelpers/nonNullCo
 const { getModifiedDefaultColumnValueScriptDtos } = require('./columnHelpers/defaultValueHelper');
 const { getModifyEntityCommentsScriptDtos } = require('./entityHelpers/commentsHelper');
 const { getModifiedCommentOnColumnScriptDtos } = require('./columnHelpers/commentsHelper');
+const { getRelationshipName } = require('./alterRelationshipsHelper');
 
 /**
  * @return {(collection: AlterCollectionDto) => AlterScriptDto | undefined}
  * */
 const getAddCollectionScriptDto =
-	({ app, dbVersion, modelDefinitions, internalDefinitions, externalDefinitions, scriptFormat }) =>
+	({
+		app,
+		dbVersion,
+		modelDefinitions,
+		internalDefinitions,
+		externalDefinitions,
+		scriptFormat,
+		inlineDeltaRelationships,
+	}) =>
 	collection => {
 		const { createColumnDefinitionBySchema } = require('./createColumnDefinition')(app);
 		const ddlProvider = require('../../ddlProvider/ddlProvider')(
@@ -55,11 +64,31 @@ const getAddCollectionScriptDto =
 		const checkConstraints = (jsonSchema.chkConstr || []).map(check =>
 			ddlProvider.createCheckConstraint(ddlProvider.hydrateCheckConstraint(check)),
 		);
+		const foreignKeyConstraints = inlineDeltaRelationships
+			.filter(relationship => relationship.role.childCollection === collection.role.id)
+			.map(relationship => {
+				const compMod = relationship.role.compMod;
+				const relationshipName =
+					compMod.code?.new || compMod.name?.new || getRelationshipName(relationship) || '';
+				return ddlProvider.createForeignKeyConstraint({
+					name: relationshipName,
+					foreignKey: compMod.child.collection.fkFields,
+					primaryKey: compMod.parent.collection.fkFields,
+					customProperties: compMod.customProperties?.new,
+					foreignTable: compMod.child.collection.name,
+					foreignSchemaName: compMod.child.bucket.name,
+					foreignTableActivated: compMod.child.collection.isActivated,
+					primaryTable: compMod.parent.collection.name,
+					primarySchemaName: compMod.parent.bucket.name,
+					primaryTableActivated: compMod.parent.collection.isActivated,
+					isActivated: Boolean(relationship.role?.compMod?.isActivated?.new),
+				});
+			});
 		const tableData = {
 			name: getEntityName(jsonSchema),
 			columns: columnDefinitions.map(data => ddlProvider.convertColumnDefinition(data)),
 			checkConstraints: checkConstraints,
-			foreignKeyConstraints: [],
+			foreignKeyConstraints,
 			schemaData,
 			columnDefinitions,
 		};

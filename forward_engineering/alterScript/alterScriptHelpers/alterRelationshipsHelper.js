@@ -157,4 +157,5 @@ module.exports = {
 	getDeleteForeignKeyScriptDtos,
 	getModifyForeignKeyScriptDtos,
 	getAddForeignKeyScriptDtos,
+	getRelationshipName,
 };
