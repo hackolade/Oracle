@@ -21,9 +21,19 @@
 				"type": "and",
 				"values": [
 					{
-						"level": "model",
-						"key": "dbVersion",
-						"value": "23ai"
+						"type": "or",
+						"values": [
+							{
+								"level": "model",
+								"key": "dbVersion",
+								"value": "23ai"
+							},
+							{
+								"level": "model",
+								"key": "dbVersion",
+								"value": "26ai"
+							}
+						]
 					},
 					{
 						"type": "or",
