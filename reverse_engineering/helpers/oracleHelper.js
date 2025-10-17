@@ -587,8 +587,8 @@ const execute = (command, options = {}, binds = []) => {
 };
 
 const getDbVersion = async logger => {
-	const versions = ['12c', '18c', '19c', '21c', '23ai'];
-	const defaultVersion = '21c';
+	const versions = ['12c', '18c', '19c', '21c', '23ai', '26ai'];
+	const fallbackDbVersion = '21c';
 
 	try {
 		const versionTable = await execute(
@@ -600,15 +600,15 @@ const getDbVersion = async logger => {
 		const majorVersion = versionTable?.[0]?.[0]?.split('.').shift();
 
 		if (!majorVersion) {
-			return defaultVersion;
+			return fallbackDbVersion;
 		}
 
-		const currentVersion = versions.find(version => version.startsWith(majorVersion));
+		const foundDbVersion = versions.find(version => version.startsWith(majorVersion));
 
-		return currentVersion || defaultVersion;
+		return foundDbVersion || fallbackDbVersion;
 	} catch (e) {
 		logger.log('error', { message: e.message, stack: e.stack }, 'Error of getting DB Version');
-		return defaultVersion;
+		return fallbackDbVersion;
 	}
 };
 
