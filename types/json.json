@@ -13,25 +13,25 @@
 		"type": "or",
 		"values": [
 			{
-				"level": "model",
-				"key": "dbVersion",
-				"value": "21c"
-			},
-			{
 				"type": "and",
 				"values": [
 					{
-						"type": "or",
+						"type": "not",
 						"values": [
 							{
 								"level": "model",
 								"key": "dbVersion",
-								"value": "23ai"
+								"value": "12c"
 							},
 							{
 								"level": "model",
 								"key": "dbVersion",
-								"value": "26ai"
+								"value": "18c"
+							},
+							{
+								"level": "model",
+								"key": "dbVersion",
+								"value": "19c"
 							}
 						]
 					},
