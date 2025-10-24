@@ -591,16 +591,29 @@ const getDbVersion = async logger => {
 	const fallbackDbVersion = '21c';
 
 	try {
-		const versionTable = await execute(
-			"SELECT VERSION FROM PRODUCT_COMPONENT_VERSION WHERE product LIKE 'Oracle Database%'",
+		const dbVersionResponse = await execute(
+			"SELECT version_full FROM product_component_version WHERE product LIKE 'Oracle Database%'",
 		);
-
-		logger.log('info', versionTable, 'DB Version');
-
-		const majorVersion = versionTable?.[0]?.[0]?.split('.').shift();
+		const dbVersion = dbVersionResponse?.[0]?.[0];
+		logger.log('info', dbVersion, 'DB Version');
+		const versionParts = dbVersion?.split('.');
+		const majorVersion = versionParts?.[0];
 
 		if (!majorVersion) {
 			return fallbackDbVersion;
+		}
+
+		const minorVersion = versionParts?.[1];
+
+		// For Oracle 23+, use the minor version to determine the target version
+		// e.g., 23.26.1.0.0 -> 26ai or 23ai (fallback)
+		if (majorVersion === '23' && minorVersion) {
+			const targetVersion = `${minorVersion}ai`;
+			if (versions.includes(targetVersion)) {
+				return targetVersion;
+			}
+
+			return versions.includes('23ai') ? '23ai' : fallbackDbVersion;
 		}
 
 		const foundDbVersion = versions.find(version => version.startsWith(majorVersion));
