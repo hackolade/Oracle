@@ -14,46 +14,29 @@ const {
 	getEntityName,
 	wrapInQuotes,
 	prepareNameForScriptFormat,
+	isParentContainerActivated,
+	isObjectInDeltaModelActivated,
 } = require('../../../utils/general');
-const { areConstraintOptionsEqual } = require('./areConstraintOptionsEqual');
 const { sortModifyKeyConstraints } = require('./sortModifyKeyConstraints');
+const { assignTemplates } = require('../../../utils/assignTemplates');
+const templates = require('../../../ddlProvider/templates');
+const { extractKeyConstraintOptions } = require('./extractKeyConstraintOptions');
 
 const amountOfColumnsInRegularUniqueKey = 1;
 
-/**
- * @param {AlterCollectionColumnKeyOptionDto} optionHolder
- * @return {Partial<AlterCollectionColumnKeyOptionDto>}
- * */
-const extractOptionsForComparisonWithRegularUniqueKeyOptions = optionHolder => {
-	return {
-		constraintName: optionHolder.constraintName,
-		deferClause: optionHolder.deferClause,
-		rely: optionHolder.rely,
-		validate: optionHolder.validate,
-		indexClause: optionHolder.indexClause,
-		exceptionClause: optionHolder.exceptionClause,
-	};
+const isCompositeEqualsToRegular = (compositeKeys, regularOptions) => {
+	return compositeKeys.some(compositeUK => {
+		if (compositeUK.compositeUniqueKey.length !== amountOfColumnsInRegularUniqueKey) {
+			return false;
+		}
+		const oldCompositeUniqueKeyAsRegularUniqueKeyOptions = extractKeyConstraintOptions(compositeUK);
+
+		return _.isEqual(oldCompositeUniqueKeyAsRegularUniqueKeyOptions, regularOptions);
+	});
 };
 
-/**
- * @param {AlterCollectionColumnDto} columnJsonSchema
- * @return {Array<Partial<AlterCollectionColumnKeyOptionDto>>}
- * */
-const getCustomPropertiesOfRegularUniqueKeyForComparisonWithRegularUniqueKeyOptions = columnJsonSchema => {
-	/**
-	 * @type {Array<AlterCollectionColumnKeyOptionDto>}
-	 * */
-	const constraintOptions = columnJsonSchema.uniqueKeyOptions || {};
-	return extractOptionsForComparisonWithRegularUniqueKeyOptions(constraintOptions);
-};
-
-/**
- * @param {AlterCollectionRoleCompModUniqueKeyDto} compositeUniqueKey
- * @return {Array<Partial<AlterCollectionColumnKeyOptionDto>>}
- * */
-const getCustomPropertiesOfCompositeUniqueKeyForComparisonWithRegularUniqueKeyOptions = compositeUniqueKey => {
-	const optionsForComparison = extractOptionsForComparisonWithRegularUniqueKeyOptions(compositeUniqueKey);
-	return [optionsForComparison].filter(o => Object.values(o).some(Boolean));
+const checkIsUniqueKeyRegular = columnJsonSchema => {
+	return Boolean(columnJsonSchema?.unique) && !columnJsonSchema?.compositeUniqueKey;
 };
 
 /**
@@ -82,21 +65,12 @@ const wasCompositeUniqueKeyChangedInTransitionFromCompositeToRegular = collectio
 	if (!newColumnJsonSchema) {
 		return UniqueKeyTransitionDto.noTransition();
 	}
-	const isNewColumnARegularUniqueKey = newColumnJsonSchema?.unique && !newColumnJsonSchema?.compositeUniqueKey;
+	const isNewColumnARegularUniqueKey = checkIsUniqueKeyRegular(newColumnJsonSchema);
 	if (!isNewColumnARegularUniqueKey) {
 		return UniqueKeyTransitionDto.noTransition();
 	}
-	const constraintOptions =
-		getCustomPropertiesOfRegularUniqueKeyForComparisonWithRegularUniqueKeyOptions(newColumnJsonSchema);
-	const areOptionsEqual = oldUniqueKeys.some(compositeUniqueKey => {
-		if (compositeUniqueKey.compositeUniqueKey.length !== amountOfColumnsInRegularUniqueKey) {
-			return false;
-		}
-		const oldCompositeUniqueKeyAsRegularUniqueKeyOptions =
-			getCustomPropertiesOfCompositeUniqueKeyForComparisonWithRegularUniqueKeyOptions(compositeUniqueKey);
-
-		return areConstraintOptionsEqual(oldCompositeUniqueKeyAsRegularUniqueKeyOptions, constraintOptions);
-	});
+	const constraintOptions = extractKeyConstraintOptions(newColumnJsonSchema.uniqueKeyOptions);
+	const areOptionsEqual = isCompositeEqualsToRegular(oldUniqueKeys, constraintOptions);
 
 	return UniqueKeyTransitionDto.transition(!areOptionsEqual);
 };
@@ -127,21 +101,12 @@ const wasCompositeUniqueKeyChangedInTransitionFromRegularToComposite = collectio
 	if (!oldColumnJsonSchema) {
 		return UniqueKeyTransitionDto.noTransition();
 	}
-	const isOldColumnARegularUniqueKey = oldColumnJsonSchema?.unique && !oldColumnJsonSchema?.compositeUniqueKey;
+	const isOldColumnARegularUniqueKey = checkIsUniqueKeyRegular(oldColumnJsonSchema);
 	if (!isOldColumnARegularUniqueKey) {
 		return UniqueKeyTransitionDto.noTransition();
 	}
-	const constraintOptions =
-		getCustomPropertiesOfRegularUniqueKeyForComparisonWithRegularUniqueKeyOptions(oldColumnJsonSchema);
-	const areOptionsEqual = newUniqueKeys.some(compositeUniqueKey => {
-		if (compositeUniqueKey.compositeUniqueKey.length !== amountOfColumnsInRegularUniqueKey) {
-			return false;
-		}
-		const oldCompositeUniqueKeyAsRegularUniqueKeyOptions =
-			getCustomPropertiesOfCompositeUniqueKeyForComparisonWithRegularUniqueKeyOptions(compositeUniqueKey);
-
-		return areConstraintOptionsEqual(oldCompositeUniqueKeyAsRegularUniqueKeyOptions, constraintOptions);
-	});
+	const constraintOptions = extractKeyConstraintOptions(oldColumnJsonSchema.uniqueKeyOptions);
+	const areOptionsEqual = isCompositeEqualsToRegular(newUniqueKeys, constraintOptions);
 
 	return UniqueKeyTransitionDto.transition(!areOptionsEqual);
 };
@@ -216,6 +181,41 @@ const getAddCompositeUniqueKeyScriptDtos = ({ scriptFormat, collection }) => {
 		.filter(scriptDto => Boolean(scriptDto.script));
 };
 
+const getDropCompositeUniqueKeyScriptDtos = ({ scriptFormat, collection }) => {
+	const uniqueDto = collection?.role?.compMod?.uniqueKey || {};
+	const newUniqueKeys = uniqueDto.new || [];
+	const oldUniqueKeys = uniqueDto.old || [];
+	if (newUniqueKeys.length === 0 && oldUniqueKeys.length === 0) {
+		return [];
+	}
+	const transitionToCompositeDto = wasCompositeUniqueKeyChangedInTransitionFromCompositeToRegular(collection);
+	if (transitionToCompositeDto.didTransitionHappen && !transitionToCompositeDto.wasUniqueKeyChangedInTransition) {
+		return [];
+	}
+	if (newUniqueKeys.length === oldUniqueKeys.length) {
+		const areKeyArraysEqual = _(oldUniqueKeys).differenceWith(newUniqueKeys, _.isEqual).isEmpty();
+		if (areKeyArraysEqual) {
+			return [];
+		}
+	}
+
+	const prepareName = prepareNameForScriptFormat(scriptFormat);
+	const { dropKeyConstraint } = require('../../../ddlProvider/ddlHelpers/constraintHelper')({ prepareName });
+
+	const collectionSchema = getSchemaOfAlterCollection(collection);
+	const fullTableName = getFullCollectionName(scriptFormat)(collectionSchema);
+
+	const isContainerActivated = isParentContainerActivated(collection);
+	const isCollectionActivated = isContainerActivated && isObjectInDeltaModelActivated(collection);
+
+	return oldUniqueKeys
+		.map(oldUniqueKey => {
+			const script = dropKeyConstraint(fullTableName, oldUniqueKey.constraintName);
+			return new KeyScriptModificationDto(script, fullTableName, true, isCollectionActivated);
+		})
+		.filter(scriptDto => Boolean(scriptDto.script));
+};
+
 /**
  * @param {object} params
  * @property {string} scriptFormat
@@ -223,9 +223,10 @@ const getAddCompositeUniqueKeyScriptDtos = ({ scriptFormat, collection }) => {
  * @return {Array<KeyScriptModificationDto>}
  * */
 const getModifyCompositeUniqueKeyScriptDtos = ({ scriptFormat, collection }) => {
+	const dropCompositeUniqueKeyScriptDtos = getDropCompositeUniqueKeyScriptDtos({ scriptFormat, collection });
 	const addCompositeUniqueKeyScriptDtos = getAddCompositeUniqueKeyScriptDtos({ scriptFormat, collection });
 
-	return addCompositeUniqueKeyScriptDtos.filter(Boolean);
+	return [...dropCompositeUniqueKeyScriptDtos, ...addCompositeUniqueKeyScriptDtos].filter(Boolean);
 };
 
 /**
@@ -263,7 +264,7 @@ const wasFieldChangedToBeARegularUniqueKey = (columnJsonSchema, collection) => {
 	const oldName = columnJsonSchema.compMod.oldField.name;
 	const oldColumnJsonSchema = collection.role.properties[oldName];
 
-	const isRegularUniqueKey = columnJsonSchema.unique && !columnJsonSchema.compositeUniqueKey;
+	const isRegularUniqueKey = checkIsUniqueKeyRegular(columnJsonSchema);
 	const wasTheFieldAnyUniqueKey = oldColumnJsonSchema?.unique || oldColumnJsonSchema.compositeUniqueKey;
 
 	return isRegularUniqueKey && !wasTheFieldAnyUniqueKey;
@@ -278,7 +279,7 @@ const wasRegularUniqueKeyChangedInTransitionFromCompositeToRegular = (columnJson
 	const oldName = columnJsonSchema.compMod.oldField.name;
 	const oldColumnJsonSchema = collection.role.properties[oldName];
 
-	const isRegularUniqueKey = columnJsonSchema.unique && !columnJsonSchema.compositeUniqueKey;
+	const isRegularUniqueKey = checkIsUniqueKeyRegular(columnJsonSchema);
 	const wasTheFieldAnyUniqueKey = oldColumnJsonSchema?.unique || oldColumnJsonSchema.compositeUniqueKey;
 
 	if (!(isRegularUniqueKey && wasTheFieldAnyUniqueKey)) {
@@ -307,17 +308,8 @@ const wasRegularUniqueKeyChangedInTransitionFromCompositeToRegular = (columnJson
 		// return compare custom properties and amount of columns.
 		// If there was a transition and amount of composite UniqueKey columns is not equal
 		// to amount of regular unique columns, we must recreate UniqueKey
-		const constraintOptions =
-			getCustomPropertiesOfRegularUniqueKeyForComparisonWithRegularUniqueKeyOptions(columnJsonSchema);
-		const areOptionsEqual = oldUniqueKeys.some(oldCompositeUniqueKey => {
-			if (oldCompositeUniqueKey.compositeUniqueKey.length !== amountOfColumnsInRegularUniqueKey) {
-				return false;
-			}
-			const oldCompositeUniqueKeyAsRegularUniqueKeyOptions =
-				getCustomPropertiesOfCompositeUniqueKeyForComparisonWithRegularUniqueKeyOptions(oldCompositeUniqueKey);
-
-			return areConstraintOptionsEqual(oldCompositeUniqueKeyAsRegularUniqueKeyOptions, constraintOptions);
-		});
+		const constraintOptions = extractKeyConstraintOptions(columnJsonSchema.uniqueKeyOptions);
+		const areOptionsEqual = isCompositeEqualsToRegular(oldUniqueKeys, constraintOptions);
 		return UniqueKeyTransitionDto.transition(!areOptionsEqual);
 	}
 
@@ -333,10 +325,10 @@ const wasRegularUniqueKeyChangedInTransitionFromRegularToComposite = (columnJson
 	const oldName = columnJsonSchema.compMod.oldField.name;
 	const oldColumnJsonSchema = collection.role.properties[oldName];
 
-	const wasRegularUniqueKey = oldColumnJsonSchema.unique && !oldColumnJsonSchema.compositeUniqueKey;
-	const isTheFieldAnyUniqueKey = Boolean(columnJsonSchema?.unique);
+	const wasRegularUniqueKey = checkIsUniqueKeyRegular(oldColumnJsonSchema);
+	const isCompositeUniqueKey = Boolean(columnJsonSchema?.compositeUniqueKey);
 
-	if (!(wasRegularUniqueKey && isTheFieldAnyUniqueKey)) {
+	if (!(wasRegularUniqueKey && isCompositeUniqueKey)) {
 		return UniqueKeyTransitionDto.noTransition();
 	}
 
@@ -362,17 +354,8 @@ const wasRegularUniqueKeyChangedInTransitionFromRegularToComposite = (columnJson
 		// return compare custom properties and amount of columns.
 		// If there was a transition and amount of composite UniqueKey columns is not equal
 		// to amount of regular unique columns, we must recreate UniqueKey
-		const constraintOptions =
-			getCustomPropertiesOfRegularUniqueKeyForComparisonWithRegularUniqueKeyOptions(oldColumnJsonSchema);
-		const areOptionsEqual = newUniqueKeys.some(oldCompositeUniqueKey => {
-			if (oldCompositeUniqueKey.compositeUniqueKey.length !== amountOfColumnsInRegularUniqueKey) {
-				return false;
-			}
-			const oldCompositeUniqueKeyAsRegularUniqueKeyOptions =
-				getCustomPropertiesOfCompositeUniqueKeyForComparisonWithRegularUniqueKeyOptions(oldCompositeUniqueKey);
-
-			return areConstraintOptionsEqual(oldCompositeUniqueKeyAsRegularUniqueKeyOptions, constraintOptions);
-		});
+		const constraintOptions = extractKeyConstraintOptions(oldColumnJsonSchema.uniqueKeyOptions);
+		const areOptionsEqual = isCompositeEqualsToRegular(newUniqueKeys, constraintOptions);
 
 		return UniqueKeyTransitionDto.transition(!areOptionsEqual);
 	}
@@ -389,7 +372,7 @@ const isFieldNoLongerARegularUniqueKey = (columnJsonSchema, collection) => {
 	const oldName = columnJsonSchema.compMod.oldField.name;
 
 	const oldJsonSchema = collection.role.properties[oldName];
-	const wasTheFieldARegularUniqueKey = oldJsonSchema?.unique && !oldJsonSchema?.compositeUniqueKey;
+	const wasTheFieldARegularUniqueKey = checkIsUniqueKeyRegular(oldJsonSchema);
 
 	const isNotAnyUniqueKey = !columnJsonSchema.unique && !columnJsonSchema.compositeUniqueKey;
 	return wasTheFieldARegularUniqueKey && isNotAnyUniqueKey;
@@ -410,12 +393,11 @@ const wasRegularUniqueKeyModified = (columnJsonSchema, collection) => {
 	if (!(isRegularUniqueKey && wasTheFieldARegularUniqueKey)) {
 		return false;
 	}
-	const constraintOptions =
-		getCustomPropertiesOfRegularUniqueKeyForComparisonWithRegularUniqueKeyOptions(columnJsonSchema);
-	const oldConstraintOptions =
-		getCustomPropertiesOfRegularUniqueKeyForComparisonWithRegularUniqueKeyOptions(oldJsonSchema);
 
-	return !areConstraintOptionsEqual(oldConstraintOptions, constraintOptions);
+	const constraintOptions = extractKeyConstraintOptions(columnJsonSchema.uniqueKeyOptions);
+	const oldConstraintOptions = extractKeyConstraintOptions(oldJsonSchema.uniqueKeyOptions);
+
+	return !_.isEqual(oldConstraintOptions, constraintOptions);
 };
 
 /**
@@ -453,6 +435,48 @@ const getAddUniqueKeyScriptDtos = ({ scriptFormat, collection }) => {
 		.filter(scriptDto => Boolean(scriptDto.script));
 };
 
+const getDropUniqueKeyScriptDtos = ({ scriptFormat, collection }) => {
+	const collectionSchema = getSchemaOfAlterCollection(collection);
+	const tableName = getEntityName(collectionSchema);
+	const fullTableName = getFullCollectionName(scriptFormat)(collectionSchema);
+
+	const isContainerActivated = isParentContainerActivated(collection);
+	const isCollectionActivated = isContainerActivated && isObjectInDeltaModelActivated(collection);
+
+	return _.toPairs(collection.properties)
+		.filter(([name, jsonSchema]) => {
+			if (isFieldNoLongerARegularUniqueKey(jsonSchema, collection)) {
+				return true;
+			}
+			const transitionToRegularDto = wasRegularUniqueKeyChangedInTransitionFromRegularToComposite(
+				jsonSchema,
+				collection,
+			);
+			if (transitionToRegularDto.didTransitionHappen) {
+				return transitionToRegularDto.wasUniqueKeyChangedInTransition;
+			}
+			return wasRegularUniqueKeyModified(jsonSchema, collection);
+		})
+		.map(([name, jsonSchema]) => {
+			const oldName = jsonSchema.compMod.oldField.name;
+			const oldColumnJsonSchema = collection.role.properties[oldName];
+			const constraintName = oldColumnJsonSchema?.uniqueKeyOptions?.constraintName;
+
+			const script = constraintName
+				? assignTemplates(templates.dropConstraint, {
+						tableName: fullTableName,
+						constraintName: prepareNameForScriptFormat(scriptFormat)(constraintName),
+					})
+				: assignTemplates(templates.dropUniqueKey, {
+						tableName,
+						fullTableName,
+						tableColumn: name,
+					});
+			return new KeyScriptModificationDto(script, fullTableName, true, isCollectionActivated);
+		})
+		.filter(scriptDto => Boolean(scriptDto.script));
+};
+
 /**
  * @param {object} params
  * @property {string} scriptFormat
@@ -460,9 +484,10 @@ const getAddUniqueKeyScriptDtos = ({ scriptFormat, collection }) => {
  * @return {Array<KeyScriptModificationDto>}
  * */
 const getModifyUniqueKeyScriptDtos = ({ scriptFormat, collection }) => {
+	const dropUniqueKeyScriptDtos = getDropUniqueKeyScriptDtos({ scriptFormat, collection });
 	const addUniqueKeyScriptDtos = getAddUniqueKeyScriptDtos({ scriptFormat, collection });
 
-	return addUniqueKeyScriptDtos.filter(Boolean);
+	return [...dropUniqueKeyScriptDtos, ...addUniqueKeyScriptDtos].filter(Boolean);
 };
 
 /**

@@ -87,4 +87,9 @@ module.exports = {
 	addNotNullConstraint: 'ALTER TABLE ${tableName} MODIFY ${columnName} NOT NULL;',
 
 	updateColumnDefaultValue: 'ALTER TABLE ${tableName} MODIFY ${columnName}${defaultValue};',
+
+	dropPrimaryKey: 'ALTER TABLE ${tableName} DROP PRIMARY KEY;',
+
+	dropUniqueKey:
+		"SELECT 'ALTER TABLE ${fullTableName} DROP CONSTRAINT ' || uc.constraint_name || ';' AS sql_stmt\nFROM user_constraints uc\nJOIN user_cons_columns ucc ON uc.constraint_name = ucc.constraint_name\nWHERE uc.table_name = '${tableName}' AND uc.constraint_type = 'U' AND ucc.column_name = '${tableColumn}';",
 };
