@@ -86,5 +86,7 @@ module.exports = {
 
 	addNotNullConstraint: 'ALTER TABLE ${tableName} MODIFY ${columnName} NOT NULL;',
 
+	dropNotNullConstraint: 'ALTER TABLE ${tableName} MODIFY ${columnName} NULL;',
+
 	updateColumnDefaultValue: 'ALTER TABLE ${tableName} MODIFY ${columnName}${defaultValue};',
 };

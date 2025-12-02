@@ -39,14 +39,26 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 	const columnNamesToRemoveNotNullConstraint = _.difference(previousRequiredColumnNames, currentRequiredColumnNames);
 
 	const addNotNullConstraintsScript = _.toPairs(collection.properties)
-		.filter(([name, jsonSchema]) => {
+		.map(([name, jsonSchema]) => {
 			const oldName = jsonSchema.compMod.oldField.name;
 			const shouldRemoveForOldName = columnNamesToRemoveNotNullConstraint.includes(oldName);
 			const shouldAddForNewName = columnNamesToAddNotNullConstraint.includes(name);
-			return shouldAddForNewName && !shouldRemoveForOldName;
+			const scriptParams = {
+				tableName: fullTableName,
+				columnName: prepareName(name),
+			};
+
+			let script = null;
+
+			if (shouldAddForNewName && !shouldRemoveForOldName) {
+				script = assignTemplates(templates.addNotNullConstraint, scriptParams);
+			} else if (!shouldAddForNewName && shouldRemoveForOldName) {
+				script = assignTemplates(templates.dropNotNullConstraint, scriptParams);
+			}
+
+			return script && AlterScriptDto.getInstance([script], true, false);
 		})
-		.map(([columnName]) => setNotNullConstraint(fullTableName, prepareName(columnName)))
-		.map(script => AlterScriptDto.getInstance([script], true, false));
+		.filter(Boolean);
 
 	return addNotNullConstraintsScript;
 };
