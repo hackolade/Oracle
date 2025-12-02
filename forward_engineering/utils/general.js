@@ -221,6 +221,18 @@ const getSchemaOfAlterCollection = collection => {
 	return { ...collection, ...(_.omit(collection?.role, 'properties') || {}) };
 };
 
+const isObjectInDeltaModelActivated = modelObject => {
+	return modelObject.compMod?.isActivated?.new ?? modelObject.role?.isActivated;
+};
+
+const isParentContainerActivated = collection => {
+	return (
+		collection?.compMod?.bucketProperties?.isActivated ??
+		collection?.role?.compMod?.bucketProperties?.isActivated ??
+		true
+	);
+};
+
 module.exports = {
 	getDbName,
 	getBucketName,
@@ -248,4 +260,6 @@ module.exports = {
 	prepareNameForScriptFormat,
 	getFullCollectionName,
 	getSchemaOfAlterCollection,
+	isObjectInDeltaModelActivated,
+	isParentContainerActivated,
 };

@@ -60,9 +60,22 @@ module.exports = ({ prepareName }) => {
 		};
 	};
 
+	/**
+	 * @param tableName {string}
+	 * @param constraintName {string}
+	 * */
+	const dropKeyConstraint = (tableName, constraintName) => {
+		const templatesConfig = {
+			tableName,
+			constraintName: prepareName(_.trim(constraintName)),
+		};
+		return assignTemplates(templates.dropConstraint, templatesConfig);
+	};
+
 	return {
 		getOptionsString,
 		alterKeyConstraint,
 		createKeyConstraint,
+		dropKeyConstraint,
 	};
 };
