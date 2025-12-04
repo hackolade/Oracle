@@ -25,13 +25,13 @@ const updateViewComment = (objectName, comment, isMaterializedView) => {
 const getUpdatedCommentScriptDto = ({ scriptFormat, view }) => {
 	const description = view?.role?.compMod?.description || {};
 
-	if (!description.new || description.new === description.old) {
+	if (description.new === description.old) {
 		return;
 	}
 
 	const schemaName = view.compMod?.keyspaceName;
 	const fullViewName = getNamePrefixedWithSchemaNameForScriptFormat(scriptFormat)(view.code || view.name, schemaName);
-	const wrappedComment = wrapComment(description.new);
+	const wrappedComment = description.new ? wrapComment(description.new) : 'NULL';
 	const script = updateViewComment(fullViewName, wrappedComment, view.materialized);
 
 	return AlterScriptDto.getInstance([script], true, false);
