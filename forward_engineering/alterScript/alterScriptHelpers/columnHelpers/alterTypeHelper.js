@@ -30,26 +30,43 @@ const alterColumnType = (tableName, columnName, type, columnDefinition) => {
 /**
  * @return {boolean}
  * */
-const hasLengthChanged = (collection, oldFieldName, currentJsonSchema) => {
+const haveTypeRelatedPropertiesChanged = (collection, oldFieldName, currentJsonSchema) => {
 	const oldProperty = collection.role.properties[oldFieldName];
 
-	const previousLength = oldProperty?.length;
+	const oldLength = oldProperty?.length;
 	const newLength = currentJsonSchema?.length;
-	return previousLength !== newLength;
-};
 
-/**
- * @return {boolean}
- * */
-const hasPrecisionOrScaleChanged = (collection, oldFieldName, currentJsonSchema) => {
-	const oldProperty = collection.role.properties[oldFieldName];
-
-	const previousPrecision = oldProperty?.precision;
+	const oldPrecision = oldProperty?.precision;
 	const newPrecision = currentJsonSchema?.precision;
-	const previousScale = oldProperty?.scale;
+
+	const oldScale = oldProperty?.scale;
 	const newScale = currentJsonSchema?.scale;
 
-	return previousPrecision !== newPrecision || previousScale !== newScale;
+	const oldFractSecPrecision = oldProperty?.fractSecPrecision;
+	const newFractSecPrecision = currentJsonSchema?.fractSecPrecision;
+
+	const oldWithTimeZone = oldProperty?.withTimeZone;
+	const newWithTimeZone = currentJsonSchema?.withTimeZone;
+
+	const oldLocalTimeZone = oldProperty?.localTimeZone;
+	const newLocalTimeZone = currentJsonSchema?.localTimeZone;
+
+	const oldYearPrecision = oldProperty?.yearPrecision;
+	const newYearPrecision = currentJsonSchema?.yearPrecision;
+
+	const oldDayPrecision = oldProperty?.dayPrecision;
+	const newDayPrecision = currentJsonSchema?.dayPrecision;
+
+	return (
+		oldLength !== newLength ||
+		oldPrecision !== newPrecision ||
+		oldScale !== newScale ||
+		oldFractSecPrecision !== newFractSecPrecision ||
+		oldWithTimeZone !== newWithTimeZone ||
+		oldLocalTimeZone !== newLocalTimeZone ||
+		oldYearPrecision !== newYearPrecision ||
+		oldDayPrecision !== newDayPrecision
+	);
 };
 
 /**
@@ -68,9 +85,7 @@ const getUpdateTypesScriptDtos = (ddlProvider, scriptFormat) => collection => {
 			const hasTypeChanged = checkFieldPropertiesChanged(jsonSchema.compMod, ['type', 'mode']);
 			if (!hasTypeChanged) {
 				const oldName = jsonSchema.compMod.oldField.name;
-				const isNewLength = hasLengthChanged(collection, oldName, jsonSchema);
-				const isNewPrecisionOrScale = hasPrecisionOrScaleChanged(collection, oldName, jsonSchema);
-				return isNewLength || isNewPrecisionOrScale;
+				return haveTypeRelatedPropertiesChanged(collection, oldName, jsonSchema);
 			}
 			return hasTypeChanged;
 		})
