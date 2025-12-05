@@ -36,7 +36,7 @@ module.exports = ({ assignTemplates, templates, commentIfDeactivated, wrapCommen
 		);
 		const primaryKeyString = primaryKey ? ` PRIMARY KEY` : '';
 		const uniqueKeyString = unique ? ` UNIQUE` : '';
-		const nullableString = nullable ? '' : ' NOT NULL';
+		const nullableString = nullable || primaryKey ? '' : ' NOT NULL';
 		return `${nullableString}${constraintString}${primaryKeyString}${uniqueKeyString}${statement}`;
 	};
 
