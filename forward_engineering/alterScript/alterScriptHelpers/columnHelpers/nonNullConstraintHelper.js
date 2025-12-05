@@ -57,7 +57,7 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 				);
 			}
 
-			return scripts.length && AlterScriptDto.getInstance(scripts, true, false);
+			return scripts.length ? AlterScriptDto.getInstance(scripts, true, false) : null;
 		})
 		.filter(Boolean);
 
