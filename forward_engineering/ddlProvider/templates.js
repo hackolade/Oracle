@@ -5,7 +5,8 @@ module.exports = {
 
 	createTable: 'CREATE${tableType} TABLE${ifNotExists} ${name}${tableProps}${options}',
 
-	createTableProps: '${columnDefinitions}${keyConstraints}${checkConstraints}${foreignKeyConstraints}',
+	createTableProps:
+		'${columnDefinitions}${keyConstraints}${checkConstraints}${foreignKeyConstraints}${notNullConstraints}',
 
 	columnDefinition: '${name}${type}${default}${encrypt}${constraints}',
 
@@ -18,8 +19,6 @@ module.exports = {
 
 	createForeignKey:
 		'ALTER TABLE ${foreignTable} ADD CONSTRAINT ${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${onDelete};',
-
-	dropForeignKey: 'ALTER TABLE ${tableName} DROP CONSTRAINT ${fkConstraintName};',
 
 	createIndex: `CREATE$\{indexType} INDEX$\{ifNotExists}$\{name} ON $\{tableName}$\{keys}$\{options};\n`,
 
@@ -84,9 +83,14 @@ module.exports = {
 
 	addPkConstraint: 'ALTER TABLE ${tableName} ADD ${constraintStatement};',
 
-	addNotNullConstraint: 'ALTER TABLE ${tableName} MODIFY ${columnName} NOT NULL;',
+	notNullConstraint: 'CONSTRAINT ${constraintName} CHECK (${columnName} IS NOT NULL)',
 
-	dropNotNullConstraint: 'ALTER TABLE ${tableName} MODIFY ${columnName} NULL;',
+	alterNotNullConstraint: 'ALTER TABLE ${tableName} MODIFY ${columnName} NOT NULL;',
+
+	alterNamedNotNullConstraint:
+		'ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintName} CHECK (${columnName} IS NOT NULL);',
+
+	alterNullableConstraint: 'ALTER TABLE ${tableName} MODIFY ${columnName} NULL;',
 
 	updateColumnDefaultValue: 'ALTER TABLE ${tableName} MODIFY ${columnName}${defaultValue};',
 
