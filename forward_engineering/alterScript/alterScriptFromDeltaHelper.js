@@ -208,7 +208,7 @@ const getAlterCollectionsScriptDtos = ({
 const getAlterViewScriptDtos = (collection, app, dbVersion, scriptFormat) => {
 	const properties = collection.properties?.views?.properties;
 	if (!properties) {
-		return [];
+		return { restViewScripts: [], renameViewScripts: [] };
 	}
 
 	const prepareDtos = mutationType => {
