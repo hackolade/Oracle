@@ -66,7 +66,7 @@
     "dependencies": {
         "adm-zip": "0.5.9",
         "async": "3.2.6",
-        "lodash": "4.17.21",
+        "lodash": "4.17.23",
         "oracledb": "6.6.0",
         "perplex": "0.11.0"
     },
