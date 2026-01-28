@@ -112,7 +112,6 @@ making sure that you maintain a proper JSON format.
 			}
 
 */
-
 [
 	{
 		"lowerTab": "Details",
@@ -706,7 +705,9 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Subpartition description",
 						"propertyKeyword": "subpartitionDescription",
-						"propertyType": "text",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false,
 						"propertyTooltip": "Specify subpartitions description. How many subpartitions you need and where you store them",
 						"dependency": {
 							"key": "partitionBy",
@@ -714,6 +715,7 @@ making sure that you maintain a proper JSON format.
 						}
 					},
 					{
+						// Although it is called "range_subpartition_descs" it actually represent "range_partition_desc" from documentation
 						"propertyName": "Range subpart desc",
 						"propertyType": "group",
 						"propertyKeyword": "range_subpartition_descs",
@@ -743,6 +745,7 @@ making sure that you maintain a proper JSON format.
 						}
 					},
 					{
+						// Although it is called "list_subpartition_descs" it actually represent "list_partition_desc" from documentation
 						"propertyName": "List subpart desc",
 						"propertyType": "group",
 						"propertyKeyword": "list_subpartition_descs",
@@ -758,8 +761,17 @@ making sure that you maintain a proper JSON format.
 							}
 						],
 						"dependency": {
-							"key": "subpartitionType",
-							"value": ["list", "hash", "range"]
+							"type": "and",
+							"values": [
+								{
+									"key": "partitionBy",
+									"value": ["composite list"]
+								},
+								{
+									"key": "subpartitionType",
+									"value": ["range", "hash", "list"]
+								}
+							]
 						}
 					},
 					{
