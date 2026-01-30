@@ -135,7 +135,7 @@ module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivate
 		}
 		return getColumnsList(value.partitionKey, isAllColumnsDeactivated, isParentActivated, ({ name }) =>
 			prepareName(name),
-		);
+		).trim();
 	};
 
 	const getPartitionClause = (value, isActivated) => {
@@ -191,7 +191,8 @@ module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivate
 			case 'composite hash': {
 				const subpartition = getSubpartition(value, isActivated);
 				const hashPartition = getHashPartition(value);
-				return `${subpartition}${hashPartition}`;
+				const compression = value.compression ?? '';
+				return ' ' + `${subpartition}${hashPartition} ${compression}`.trim();
 			}
 			default: {
 				return '';
