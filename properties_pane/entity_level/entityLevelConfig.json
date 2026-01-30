@@ -642,10 +642,10 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Compression",
 						"propertyKeyword": "compression",
-						"propertyTooltip": "Choose the desired hashing type",
-						"propertyType": "select",
-						"defaultValue": "",
-						"options": ["", "table", "index"],
+						"propertyTooltip": "Enter the compression description for the partition.",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false,
 						"dependency": {
 							"type": "and",
 							"values": [
