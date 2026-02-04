@@ -157,7 +157,9 @@ module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivate
 				);
 			}
 			case 'hash': {
-				return getHashPartition(value);
+				const hashPartition = getHashPartition(value);
+				const compression = value.compression ?? '';
+				return `${hashPartition} ${compression}`;
 			}
 			case 'reference': {
 				return (
