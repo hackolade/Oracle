@@ -940,6 +940,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Not null constraint name",
 				"propertyKeyword": "notNullConstraintName",
 				"propertyType": "text",
+				"enableForReference": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -1143,6 +1144,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
@@ -2014,6 +2016,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
 				"defaultValue": false,
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
@@ -2997,6 +3000,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
@@ -4009,6 +4013,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"defaultValue": false,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
@@ -4909,6 +4914,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
@@ -5715,6 +5721,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"defaultValue": false,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
@@ -6465,6 +6472,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"defaultValue": false,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
@@ -7598,6 +7606,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"defaultValue": false,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
@@ -8347,6 +8356,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
@@ -8965,6 +8975,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
 				"defaultValue": false,
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
@@ -9650,6 +9661,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
@@ -10555,6 +10567,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"defaultValue": false,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
@@ -10870,6 +10883,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
@@ -11947,6 +11961,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"defaultValue": false,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
@@ -12655,6 +12670,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
 				"defaultValue": false,
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
