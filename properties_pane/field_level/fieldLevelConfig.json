@@ -2871,6 +2871,41 @@ making sure that you maintain a proper JSON format.
 				"defaultValue": false
 			},
 			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Masked with function",
 				"propertyKeyword": "maskedWithFunction",
 				"propertyTooltip": "Limit exposure of sensitive data with this function",
@@ -4750,6 +4785,41 @@ making sure that you maintain a proper JSON format.
 				"defaultValue": false
 			},
 			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Masked with function",
 				"propertyKeyword": "maskedWithFunction",
 				"propertyTooltip": "Limit exposure of sensitive data with this function",
@@ -6324,6 +6394,41 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "JSON key",
 				"propertyKeyword": "name",
 				"shouldValidate": true,
@@ -7231,6 +7336,41 @@ making sure that you maintain a proper JSON format.
 									"level": "root",
 									"key": "duality",
 									"value": true
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
 								}
 							]
 						}
@@ -8225,6 +8365,41 @@ making sure that you maintain a proper JSON format.
 					]
 				},
 				"defaultValue": false
+			},
+			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
 			},
 			{
 				"propertyName": "Masked with function",
@@ -9535,6 +9710,41 @@ making sure that you maintain a proper JSON format.
 				"defaultValue": false
 			},
 			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Row GUID Column",
 				"propertyKeyword": "ROWGUIDCOL",
 				"propertyType": "checkbox",
@@ -10717,6 +10927,41 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "required",
 				"propertyType": "checkbox"
 			},
+			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
 			"minItems",
 			"maxItems",
 			"uniqueItems",
@@ -11480,6 +11725,41 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Not null",
 				"propertyKeyword": "required",
 				"propertyType": "checkbox"
+			},
+			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
 			},
 			{
 				"propertyName": "Comments",
@@ -12460,6 +12740,41 @@ making sure that you maintain a proper JSON format.
 									"level": "root",
 									"key": "duality",
 									"value": true
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
 								}
 							]
 						}
