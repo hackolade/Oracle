@@ -704,6 +704,10 @@ module.exports = (baseProvider, options, app) => {
 			return statement;
 		},
 
+		commentStatement(statement) {
+			return commentIfDeactivated(statement, { isActivated: false });
+		},
+
 		/**
 		 * @param tableName {string}
 		 * @param oldColumnName {string}
