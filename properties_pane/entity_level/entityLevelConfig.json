@@ -113,1131 +113,1131 @@ making sure that you maintain a proper JSON format.
 
 */
 [
-	{
-		"lowerTab": "Details",
-		"structure": [
-			{
-				"propertyName": "Comments",
-				"propertyKeyword": "description",
-				"shouldValidate": false,
-				"propertyTooltip": "comments",
-				"addTimestampButton": false,
-				"propertyType": "details",
-				"template": "textarea"
-			},
-			{
-				"propertyName": "If not exists",
-				"propertyKeyword": "ifNotExist",
-				"propertyType": "checkbox"
-			},
-			{
-				"propertyName": "Temporary",
-				"propertyKeyword": "temporary",
-				"propertyTooltip": "The data in a temporary table is visible only to the session that inserts the data into the table.  Temporary tables are subject to restrictions.",
-				"defaultValue": false,
-				"propertyType": "checkbox"
-			},
-			{
-				"propertyName": "Temporary type",
-				"propertyKeyword": "temporaryType",
-				"propertyTooltip": "A private temporary table differs from a temporary table in that its definition and data are visible only within the session that created it.",
-				"propertyType": "select",
-				"defaultValue": "global",
-				"options": ["global", "private"],
-				"dependency": {
-					"key": "temporary",
-					"value": true
-				}
-			},
-			{
-				"propertyName": "Sharded",
-				"propertyKeyword": "sharded",
-				"propertyTooltip": "This clause is valid only if you are using Oracle Sharding, which is a data tier architecture in which data is horizontally partitioned across independent databases. ",
-				"defaultValue": false,
-				"propertyType": "checkbox"
-			},
-			{
-				"propertyName": "Duplicated",
-				"propertyKeyword": "duplicated",
-				"propertyTooltip": "Table is duplicated on all shards.",
-				"defaultValue": false,
-				"propertyType": "checkbox",
-				"dependency": {
-					"key": "sharded",
-					"value": true
-				}
-			},
-			{
-				"propertyName": "Immutable",
-				"propertyKeyword": "immutable",
-				"propertyTooltip": "To create a read-only table that protects data from unauthorized modification by insiders.",
-				"defaultValue": false,
-				"propertyType": "checkbox"
-			},
-			{
-				"propertyName": "Storage",
-				"propertyType": "block",
-				"propertyKeyword": "storage",
-				"propertyTooltip": "",
-				"structure": [
-					{
-						"propertyName": "Organization",
-						"propertyKeyword": "organization",
-						"propertyTooltip": "Select from list of options",
-						"propertyType": "select",
-						"defaultValue": "heap",
-						"options": ["", "heap", "index", "external"]
-					},
-					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "tablespace",
-						"propertyTooltip": "Specify the tablespace in which Oracle Database creates the table.  If you omit TABLESPACE, then the database creates that item in the default tablespace of the owner of the schema containing the table.",
-						"propertyType": "text"
-					},
-					{
-						"propertyName": "Logging",
-						"propertyKeyword": "logging",
-						"propertyTooltip": "Specify whether the creation of the table and of any indexes required because of constraints, partition, or LOB storage characteristics will be logged in the redo log file (LOGGING) or not (NOLOGGING).",
-						"propertyType": "checkbox",
-						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"key": "organization",
-									"value": "heap"
-								},
-								{
-									"key": "organization",
-									"value": "index"
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "Row archival",
-						"propertyKeyword": "row_archival",
-						"propertyTooltip": "This clause lets you implement In-Database Archiving, which allows you to designate table rows as active or archived. You can then perform queries on only the active rows within the table.  When you specify this clause, a hidden column ORA_ARCHIVE_STATE is created in the table.",
-						"propertyType": "checkbox"
-					}
-				]
-			},
-			{
-				"propertyName": "Blockchain table",
-				"propertyKeyword": "blockchain",
-				"propertyTooltip": "When you create a blockchain table, an entry is created in the dictionary table blockchain_table$ owned by SYS .",
-				"propertyType": "checkbox"
-			},
-			{
-				"propertyName": "Blockchain table clauses",
-				"propertyType": "block",
-				"propertyKeyword": "blockchain_table_clauses",
-				"propertyTooltip": "",
-				"structure": [
-					{
-						"propertyName": "Immutable",
-						"propertyKeyword": "immutable",
-						"propertyTooltip": "Specify whether the creation of the table and of any indexes required because of constraints, partition, or LOB storage characteristics will be logged in the redo log file (LOGGING) or not (NOLOGGING).",
-						"propertyType": "checkbox"
-					},
-					{
-						"propertyName": "Table retention clause",
-						"propertyKeyword": "blockchain_table_retention_clause",
-						"propertyTooltip": "",
-						"propertyType": "text"
-					},
-					{
-						"propertyName": "Row retention clause",
-						"propertyKeyword": "blockchain_row_retention_clause",
-						"propertyTooltip": "",
-						"propertyType": "text"
-					},
-					{
-						"propertyName": "Hash and data format clause",
-						"propertyKeyword": "blockchain_hash_and_data_format_clause",
-						"propertyTooltip": "",
-						"propertyType": "text"
-					}
-				],
-				"dependency": {
-					"key": "blockchain",
-					"value": true
-				}
-			},
-			{
-				"propertyName": "External table",
-				"propertyKeyword": "external",
-				"propertyTooltip": "To create an external table, you must have the required read and write operating system privileges on the appropriate operating system directories.",
-				"propertyType": "checkbox",
-				"dependency": {
-					"key": "temporary",
-					"value": false
-				}
-			},
-			{
-				"propertyName": "External table clauses",
-				"propertyType": "block",
-				"propertyKeyword": "external_table_clause",
-				"propertyTooltip": " allows you to process data that is stored outside the database from within the database without loading any of the data into the database.  Defining an external table only creates metadata in the data dictionary, pointing to data outside the database and providing seamless read only access to such data.",
-				"structure": [
-					{
-						"propertyName": "Access driver type",
-						"propertyKeyword": "access_driver_type",
-						"propertyTooltip": "The access driver is the API that interprets the external data for the database.",
-						"propertyType": "select",
-						"defaultValue": "ORACLE_LOADER",
-						"options": ["ORACLE_LOADER", "ORACLE_DATAPUMP", "ORACLE_BIGDATA", "ORACLE_HIVE", "ORACLE_HDFS"]
-					},
-					{
-						"propertyName": "Default directory",
-						"propertyKeyword": "default_directory",
-						"propertyTooltip": "Lets you specify a default directory object corresponding to a directory on the file system where the external data sources may reside.",
-						"propertyType": "text"
-					},
-					{
-						"propertyName": "Access parameters",
-						"propertyKeyword": "access_parameter_type",
-						"propertyTooltip": "Lets you assign values to the parameters of the specific access driver for this external table.",
-						"propertyType": "select",
-						"defaultValue": "Opaque Format Spec",
-						"options": ["Opaque Format Spec", "Using CLOB Subquery", "NONE"]
-					},
-					{
-						"propertyName": "Opaque format spec",
-						"propertyKeyword": "opaque_format_spec",
-						"propertyTooltip": "Specifies all access parameters for the ORACLE_LOADER, ORACLE_DATAPUMP, ORACLE_HDFS, and ORACLE_HIVE access drivers.  Field names specified in the opaque_format_spec must match columns in the table definition.",
-						"propertyType": "details",
-						"template": "textarea",
-						"markdown": false,
-						"dependency": {
-							"key": "access_parameter_type",
-							"value": "Opaque Format Spec"
-						}
-					},
-					{
-						"propertyName": "CLOB subquery",
-						"propertyKeyword": "clob_subquery",
-						"propertyTooltip": "Lets you derive the parameters and their values through a subquery. The subquery cannot contain any set operators or an ORDER BY clause. It must return one row containing a single item of data type CLOB.",
-						"propertyType": "details",
-						"template": "textarea",
-						"markdown": false,
-						"dependency": {
-							"key": "access_parameter_type",
-							"value": "Using CLOB Subquery"
-						}
-					},
-					{
-						"propertyName": "Reject limit",
-						"propertyKeyword": "reject_limit",
-						"propertyType": "numeric",
-						"propertyTooltip": "Lets you specify how many conversion errors can occur during a query of the external data before an Oracle Database error is returned and the query is aborted. The default value is 0.",
-						"valueType": "number",
-						"step": 1,
-						"allowNegative": false
-					},
-					{
-						"propertyName": "Project column",
-						"propertyKeyword": "project_column",
-						"propertyTooltip": "This clause lets you determine how the access driver validates the rows of an external table in subsequent queries.",
-						"propertyType": "select",
-						"defaultValue": "all",
-						"options": ["all", "referenced"]
-					},
-					{
-						"propertyName": "Location",
-						"propertyType": "group",
-						"propertyKeyword": "location",
-						"propertyTooltip": "lets you specify one or more external data sources.",
-						"structure": [
-							{
-								"propertyName": "Directory",
-								"propertyKeyword": "location_directory",
-								"propertyTooltip": "",
-								"propertyType": "text"
-							},
-							{
-								"propertyName": "Specifier",
-								"propertyKeyword": "location_specifier",
-								"propertyTooltip": "",
-								"propertyType": "text"
-							}
-						]
-					}
-				],
-				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"key": "temporary",
-							"value": false
-						},
-						{
-							"key": "external",
-							"value": true
-						}
-					]
-				}
-			},
-			{
-				"propertyName": "Partitioning",
-				"propertyKeyword": "partitioning",
-				"propertyType": "group",
-				"groupItemLimit": 1,
-				"propertyTooltip": "Determines how a partitioned table's rows are distributed across partitions",
-				"structure": [
-					{
-						"propertyName": "Partition by",
-						"propertyKeyword": "partitionBy",
-						"propertyTooltip": "Choose the desired partition type",
-						"propertyType": "select",
-						"defaultValue": "",
-						"options": [
-							"",
-							"range",
-							"list",
-							"hash",
-							"composite range",
-							"composite list",
-							"composite hash",
-							"reference",
-							"system"
-						]
-					},
-					{
-						"propertyName": "Columns",
-						"propertyKeyword": "partitionKey",
-						"propertyTooltip": "Specify an ordered list of columns used to determine into which partition a row belongs. These columns are the partitioning key.",
-						"propertyType": "compositeKeySetter",
-						"disabledItemStrategy": "default",
-						"isCompositeKey": true,
-						"setPrimaryKey": false,
-						"template": "collectiontree",
-						"abbr": "PK",
-						"dependency": {
-							"key": "partitionBy",
-							"value": ["range", "hash", "list", "composite range", "composite list", "composite hash"]
-						}
-					},
-					{
-						"propertyName": "Interval",
-						"propertyKeyword": "interval",
-						"propertyType": "details",
-						"template": "textarea",
-						"markdown": false,
-						"dependency": {
-							"key": "partitionBy",
-							"value": ["range", "composite range"]
-						}
-					},
-					{
-						"propertyName": "Subpartition type",
-						"propertyKeyword": "subpartitionType",
-						"propertyTooltip": "Choose the desired subpartition type",
-						"propertyType": "select",
-						"defaultValue": "",
-						"options": ["", "range", "list", "hash"],
-						"dependency": {
-							"key": "partitionBy",
-							"value": ["composite range", "composite list", "composite hash"]
-						}
-					},
-					{
-						"propertyName": "Consistent",
-						"propertyKeyword": "consistent",
-						"propertyType": "checkbox",
-						"dependency": {
-							"key": "partitionBy",
-							"value": ["hash"]
-						}
-					},
-					{
-						"propertyName": "Automatic",
-						"propertyKeyword": "automatic",
-						"propertyTooltip": "To create an automatic list-partitioned table.  This type of table enables the database to create additional partitions on demand.",
-						"propertyType": "checkbox",
-						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"type": "and",
-									"values": [
-										{
-											"key": "partitionBy",
-											"value": ["hash"]
-										},
-										{
-											"key": "consistent",
-											"value": true
-										}
-									]
-								},
-								{
-									"key": "partitionBy",
-									"value": "list"
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "Hash by",
-						"propertyKeyword": "hashBy",
-						"propertyTooltip": "Choose the desired hashing type",
-						"propertyType": "select",
-						"defaultValue": "",
-						"options": ["individual hash partitions", "hash partitions by quantity"],
-						"dependency": {
-							"key": "partitionBy",
-							"value": ["hash", "composite hash"]
-						}
-					},
-					{
-						"propertyName": "Store in tablespaces",
-						"propertyType": "group",
-						"propertyKeyword": "store_in_tablespaces",
-						"propertyTooltip": "Lets you specify one or more tablespaces.",
-						"structure": [
-							{
-								"propertyName": "Tablespace",
-								"propertyKeyword": "store_in_tablespace",
-								"propertyTooltip": "",
-								"propertyType": "text"
-							}
-						],
-						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"type": "and",
-									"values": [
-										{
-											"key": "partitionBy",
-											"value": ["range", "composite range"]
-										},
-										{
-											"key": "interval",
-											"minimum": 1
-										}
-									]
-								},
-								{
-									"type": "and",
-									"values": [
-										{
-											"key": "partitionBy",
-											"value": ["hash", "composite hash"]
-										},
-										{
-											"key": "hashBy",
-											"value": ["hash partitions by quantity"]
-										}
-									]
-								},
-								{
-									"type": "and",
-									"values": [
-										{
-											"key": "partitionBy",
-											"value": ["list"]
-										},
-										{
-											"key": "automatic",
-											"value": true
-										}
-									]
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "Range partitions",
-						"propertyType": "group",
-						"propertyKeyword": "range_partitions",
-						"propertyTooltip": "",
-						"structure": [
-							{
-								"propertyName": "Partition clause",
-								"propertyKeyword": "range_partition_clause",
-								"propertyTooltip": "Specify the noninclusive upper bound for the current partition. The value list is an ordered list of literal values corresponding to the column list in the range_partitions clause.",
-								"propertyType": "details",
-								"template": "textarea",
-								"markdown": false
-							}
-						],
-						"dependency": {
-							"key": "partitionBy",
-							"value": ["range"]
-						}
-					},
-					{
-						"propertyName": "Indiv hash partitions",
-						"propertyType": "group",
-						"propertyKeyword": "individual_hash_partitions",
-						"propertyTooltip": "Use this clause to specify individual partitions by name.",
-						"structure": [
-							{
-								"propertyName": "Hash partition clause",
-								"propertyKeyword": "individual_hash_partition",
-								"propertyTooltip": "",
-								"propertyType": "details",
-								"template": "textarea",
-								"markdown": false
-							}
-						],
-						"dependency": {
-							"type": "and",
-							"values": [
-								{
-									"key": "partitionBy",
-									"value": ["hash", "composite hash"]
-								},
-								{
-									"key": "hashBy",
-									"value": ["individual hash partitions"]
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "List partitions",
-						"propertyType": "group",
-						"propertyKeyword": "list_partitions",
-						"propertyTooltip": "",
-						"structure": [
-							{
-								"propertyName": "Partition clause",
-								"propertyKeyword": "list_partition_clause",
-								"propertyTooltip": "Specify the noninclusive upper bound for the current partition. The value list is an ordered list of literal values corresponding to the column list in the range_partitions clause.",
-								"propertyType": "details",
-								"template": "textarea",
-								"markdown": false
-							}
-						],
-						"dependency": {
-							"key": "partitionBy",
-							"value": ["list"]
-						}
-					},
-					{
-						"propertyName": "Quantity",
-						"propertyKeyword": "hash_partition_quantity",
-						"propertyTooltip": "Choose the desired number hash partitions",
-						"propertyType": "numeric",
-						"valueType": "number",
-						"allowNegative": false,
-						"maxValue": 1024,
-						"step": 1,
-						"dependency": {
-							"type": "and",
-							"values": [
-								{
-									"key": "partitionBy",
-									"value": ["hash", "composite hash"]
-								},
-								{
-									"key": "hashBy",
-									"value": ["hash partitions by quantity"]
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "Compression",
-						"propertyKeyword": "compression",
-						"propertyTooltip": "Enter the compression description for the partition.",
-						"propertyType": "details",
-						"template": "textarea",
-						"markdown": false,
-						"dependency": {
-							"type": "and",
-							"values": [
-								{
-									"key": "partitionBy",
-									"value": ["hash", "composite hash"]
-								},
-								{
-									"key": "hashBy",
-									"value": ["hash partitions by quantity"]
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "Overflow tablespaces",
-						"propertyType": "group",
-						"propertyKeyword": "overflow_store_in_tablespaces",
-						"propertyTooltip": "Lets you specify one or more tablespaces.",
-						"structure": [
-							{
-								"propertyName": "Tablespace",
-								"propertyKeyword": "overflow_store_in_tablespace",
-								"propertyTooltip": "",
-								"propertyType": "text"
-							}
-						],
-						"dependency": {
-							"type": "and",
-							"values": [
-								{
-									"key": "partitionBy",
-									"value": ["hash", "composite hash"]
-								},
-								{
-									"key": "hashBy",
-									"value": ["hash partitions by quantity"]
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "Sub partition keys",
-						"propertyKeyword": "compositePartitionKey",
-						"propertyTooltip": "Specify an ordered list of columns used to determine into which partition a row belongs. These columns are the partitioning key.",
-						"propertyType": "compositeKeySetter",
-						"disabledItemStrategy": "default",
-						"isCompositeKey": true,
-						"setPrimaryKey": false,
-						"template": "collectiontree",
-						"abbr": "PK",
-						"dependency": {
-							"key": "partitionBy",
-							"value": ["composite range", "composite list", "composite hash"]
-						}
-					},
-					{
-						"propertyName": "Subpartition description",
-						"propertyKeyword": "subpartitionDescription",
-						"propertyType": "details",
-						"template": "textarea",
-						"markdown": false,
-						"propertyTooltip": "Specify subpartitions description. How many subpartitions you need and where you store them",
-						"dependency": {
-							"key": "partitionBy",
-							"value": ["composite range", "composite list", "composite hash"]
-						}
-					},
-					{
-						// Although it is called "range_subpartition_descs" it actually represent "range_partition_desc" from documentation
-						"propertyName": "Range subpart desc",
-						"propertyType": "group",
-						"propertyKeyword": "range_subpartition_descs",
-						"propertyTooltip": "",
-						"structure": [
-							{
-								"propertyName": "Partition desc",
-								"propertyKeyword": "range_subpartition_desc",
-								"propertyTooltip": "Specify the noninclusive upper bound for the current partition. The value list is an ordered list of literal values corresponding to the column list in the range_partitions clause.",
-								"propertyType": "details",
-								"template": "textarea",
-								"markdown": false
-							}
-						],
-						"dependency": {
-							"type": "and",
-							"values": [
-								{
-									"key": "partitionBy",
-									"value": ["composite range"]
-								},
-								{
-									"key": "subpartitionType",
-									"value": ["range", "hash", "list"]
-								}
-							]
-						}
-					},
-					{
-						// Although it is called "list_subpartition_descs" it actually represent "list_partition_desc" from documentation
-						"propertyName": "List subpart desc",
-						"propertyType": "group",
-						"propertyKeyword": "list_subpartition_descs",
-						"propertyTooltip": "",
-						"structure": [
-							{
-								"propertyName": "Partition desc",
-								"propertyKeyword": "list_subpartition_description",
-								"propertyTooltip": "Specify the noninclusive upper bound for the current partition. The value list is an ordered list of literal values corresponding to the column list in the range_partitions clause.",
-								"propertyType": "details",
-								"template": "textarea",
-								"markdown": false
-							}
-						],
-						"dependency": {
-							"type": "and",
-							"values": [
-								{
-									"key": "partitionBy",
-									"value": ["composite list"]
-								},
-								{
-									"key": "subpartitionType",
-									"value": ["range", "hash", "list"]
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "Constraint",
-						"propertyKeyword": "constraint",
-						"propertyTooltip": "Specify a referential integrity constraint defined on the table being created, which must refer to a primary key or unique constraint on the parent table. The constraint must be in ENABLE VALIDATE NOT DEFERRABLE state, which is the default when you specify a referential integrity constraint during table creation.",
-						"propertyType": "details",
-						"template": "textarea",
-						"markdown": false,
-						"dependency": {
-							"key": "partitionBy",
-							"value": ["reference"]
-						}
-					},
-					{
-						"propertyName": "Ref part desc",
-						"propertyType": "group",
-						"propertyKeyword": "reference_partition_descs",
-						"propertyTooltip": "",
-						"structure": [
-							{
-								"propertyName": "Partition desc",
-								"propertyKeyword": "reference_partition_desc",
-								"propertyTooltip": "Specify the noninclusive upper bound for the current partition. The value list is an ordered list of literal values corresponding to the column list in the range_partitions clause.",
-								"propertyType": "details",
-								"template": "textarea",
-								"markdown": false
-							}
-						],
-						"dependency": {
-							"key": "partitionBy",
-							"value": ["reference"]
-						}
-					},
-					{
-						"propertyName": "Quantity",
-						"propertyKeyword": "system_partitioning_quantity",
-						"propertyTooltip": "Choose the desired number system partitions",
-						"propertyType": "numeric",
-						"valueType": "number",
-						"allowNegative": false,
-						"maxValue": 1024,
-						"step": 1,
-						"dependency": {
-							"key": "partitionBy",
-							"value": ["system"]
-						}
-					},
-					{
-						"propertyName": "System part desc",
-						"propertyType": "group",
-						"propertyKeyword": "system_partition_descs",
-						"propertyTooltip": "",
-						"structure": [
-							{
-								"propertyName": "Partition desc",
-								"propertyKeyword": "system_partition_desc",
-								"propertyTooltip": "Specify the noninclusive upper bound for the current partition. The value list is an ordered list of literal values corresponding to the column list in the range_partitions clause.",
-								"propertyType": "details",
-								"template": "textarea",
-								"markdown": false
-							}
-						],
-						"dependency": {
-							"key": "partitionBy",
-							"value": ["system"]
-						}
-					}
-				]
-			},
-			{
-				"propertyName": "Table properties",
-				"propertyKeyword": "tableProperties",
-				"shouldValidate": false,
-				"propertyTooltip": "Table properties",
-				"propertyType": "details",
-				"template": "textarea",
-				"markdown": false
-			},
-			{
-				"propertyName": "As Select statement",
-				"propertyKeyword": "selectStatement",
-				"propertyType": "details",
-				"template": "textarea",
-				"markdown": false
-			},
-			{
-				"propertyName": "Remarks",
-				"propertyKeyword": "comments",
-				"propertyTooltip": "remarks",
-				"addTimestampButton": true,
-				"propertyType": "details",
-				"template": "textarea",
-				"valueType": "string"
-			},
-			{
-				"propertyName": "Custom scripts",
-				"propertyType": "block",
-				"propertyKeyword": "customScripts",
-				"propertyTooltip": "",
-				"structure": [
-					{
-						"propertyName": "Before CREATE TABLE",
-						"propertyKeyword": "beforeCreateEntity",
-						"propertyType": "block",
-						"propertyTooltip": "",
-						"structure": [
-							{
-								"propertyName": "Script",
-								"propertyKeyword": "script",
-								"propertyType": "details",
-								"markdown": false,
-								"template": "codeEditor",
-								"templateOptions": {
-									"editorDialect": "sql",
-									"customScriptVariables": true
-								}
-							}
-						]
-					},
-					{
-						"propertyName": "After CREATE TABLE",
-						"propertyKeyword": "afterCreateEntity",
-						"propertyType": "block",
-						"propertyTooltip": "",
-						"structure": [
-							{
-								"propertyName": "Script",
-								"propertyKeyword": "script",
-								"propertyType": "details",
-								"markdown": false,
-								"template": "codeEditor",
-								"templateOptions": {
-									"editorDialect": "sql",
-									"customScriptVariables": true
-								}
-							}
-						]
-					}
-				]
-			}
-		],
-		"columnsRatio": [3.7, 5]
-	},
-	{
-		"lowerTab": "Composite keys",
-		"structure": [
-			{
-				"propertyName": "Primary key",
-				"propertyType": "group",
-				"groupItemLimit": 1,
-				"propertyKeyword": "primaryKey",
-				"propertyTooltip": {
-					"disabled": [
-						{
-							"tooltip": "Remove the existing single column primary key definition prior to unlock the possibility to create a composite primary key definition for this table",
-							"dependency": {
-								"type": "and",
-								"values": [
-									{
-										"level": "children",
-										"key": "primaryKey",
-										"value": true
-									},
-									{
-										"type": "not",
-										"values": {
-											"level": "children",
-											"key": "compositePrimaryKey",
-											"value": true
-										}
-									}
-								]
-							}
-						},
-						{
-							"tooltip": "Remove or update the existing composite primary key definition prior to unlock the possibility to create a new composite primary key definition for this table",
-							"dependency": {
-								"key": "primaryKey",
-								"minLength": 1
-							}
-						}
-					]
-				},
-				"disabledOnCondition": [
-					{
-						"level": "children",
-						"value": {
-							"type": "and",
-							"values": [
-								{
-									"key": "primaryKey",
-									"value": true
-								},
-								{
-									"type": "or",
-									"values": [
-										{
-											"key": "compositePrimaryKey",
-											"value": false
-										},
-										{
-											"key": "compositePrimaryKey",
-											"exist": false
-										}
-									]
-								},
-								{
-									"type": "or",
-									"values": [
-										{
-											"key": "compositeUniqueKey",
-											"value": false
-										},
-										{
-											"key": "compositeUniqueKey",
-											"exist": false
-										}
-									]
-								}
-							]
-						}
-					}
-				],
-				"structure": [
-					{
-						"propertyName": "Constraint name",
-						"propertyKeyword": "constraintName",
-						"propertyTooltip": "",
-						"propertyType": "text"
-					},
-					{
-						"propertyName": "Key",
-						"propertyKeyword": "compositePrimaryKey",
-						"propertyType": "primaryKeySetter",
-						"abbr": "pk"
-					}
-				]
-			},
-			{
-				"propertyName": "Unique key",
-				"propertyType": "group",
-				"propertyKeyword": "uniqueKey",
-				"propertyTooltip": "",
-				"structure": [
-					{
-						"propertyName": "Constraint name",
-						"propertyKeyword": "constraintName",
-						"propertyTooltip": "",
-						"propertyType": "text"
-					},
-					{
-						"propertyName": "Key",
-						"propertyKeyword": "compositeUniqueKey",
-						"propertyType": "compositeKeySetter",
-						"setPrimaryKey": false,
-						"template": "collectiontree",
-						"isCompositeKey": true,
-						"abbr": " "
-					},
-					{
-						"propertyName": "Alternate key",
-						"propertyKeyword": "alternateKey",
-						"propertyTooltip": "",
-						"propertyType": "checkbox",
-						"setFieldPropertyBy": "compositeUniqueKey"
-					}
-				]
-			}
-		]
-	},
-	{
-		"lowerTab": "Indexes",
-		"structure": [
-			{
-				"propertyName": "Index",
-				"propertyType": "group",
-				"propertyKeyword": "Indxs",
-				"propertyTooltip": "",
-				"structure": [
-					{
-						"propertyName": "Name",
-						"propertyKeyword": "indxName",
-						"propertyTooltip": "",
-						"propertyType": "text",
-						"validation": {
-							"required": true
-						}
-					},
-					{
-						"propertyName": "Activated",
-						"propertyKeyword": "isActivated",
-						"propertyTooltip": "Deactivated item will be not included in FE script",
-						"propertyType": "checkbox",
-						"defaultValue": true
-					},
-					{
-						"propertyName": "If not exists",
-						"propertyKeyword": "ifNotExist",
-						"propertyType": "checkbox"
-					},
-					{
-						"propertyName": "Type",
-						"propertyKeyword": "indxType",
-						"propertyType": "select",
-						"options": ["", "multivalue", "unique", "bitmap"]
-					},
-					{
-						"propertyName": "Keys",
-						"propertyKeyword": "indxKey",
-						"propertyType": "fieldList",
-						"template": "orderedList",
-						"attributeList": ["asc", "desc"],
-						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"key": "column_expression",
-									"exist": false
-								},
-								{
-									"key": "column_expression",
-									"value": ""
-								}
-							]
-						},
-						"validation": {
-							"required": true,
-							"minLength": 1
-						}
-					},
-					{
-						"propertyName": "Conditional function",
-						"propertyKeyword": "column_expression",
-						"propertyTooltip": "Enter conditional function for a function-based index",
-						"propertyType": "details",
-						"markdown": false,
-						"template": "codeEditor",
-						"templateOptions": {
-							"editorDialect": "sql"
-						},
-						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"key": "indxKey",
-									"exist": false
-								},
-								{
-									"key": "indxKey",
-									"isEmpty": true
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "Description",
-						"propertyKeyword": "indxDescription",
-						"propertyTooltip": "description",
-						"propertyType": "details",
-						"template": "codeEditor",
-						"templateOptions": {
-							"editorDialect": "markdown"
-						}
-					},
-					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "tablespace",
-						"propertyTooltip": "Specify the tablespace in which Oracle Database creates the table.  If you omit TABLESPACE, then the database creates that item in the default tablespace of the owner of the schema containing the table.",
-						"propertyType": "text"
-					},
-					{
-						"propertyName": "Properties",
-						"propertyKeyword": "index_properties",
-						"propertyTooltip": "Specify the optional index attributes.",
-						"propertyType": "details",
-						"markdown": false,
-						"template": "codeEditor",
-						"templateOptions": {
-							"editorDialect": "sql"
-						}
-					},
-					{
-						"propertyName": "Attributes",
-						"propertyKeyword": "index_attributes",
-						"propertyTooltip": "Specify the optional index attributes.",
-						"propertyType": "details",
-						"markdown": false,
-						"template": "codeEditor",
-						"templateOptions": {
-							"editorDialect": "sql"
-						}
-					},
-					{
-						"propertyName": "Compression",
-						"propertyKeyword": "index_compression",
-						"propertyTooltip": "If you want to use compression for a partitioned index, then you must create the index with compression enabled at the index level. You can subsequently enable and disable the compression setting for individual partitions of such a partitioned index. ",
-						"propertyType": "details",
-						"markdown": false,
-						"template": "codeEditor",
-						"templateOptions": {
-							"editorDialect": "sql"
-						}
-					},
-					{
-						"propertyName": "Logging",
-						"propertyKeyword": "logging_clause",
-						"propertyType": "select",
-						"defaultValue": "logging",
-						"options": ["", "logging", "nologging", "filesystem_like_logging"]
-					},
-					{
-						"propertyName": "Comments",
-						"propertyKeyword": "indxComments",
-						"propertyTooltip": "comments",
-						"addTimestampButton": false,
-						"propertyType": "details",
-						"template": "codeEditor",
-						"templateOptions": {
-							"editorDialect": "markdown"
-						}
-					}
-				]
-			}
-		]
-	},
-	{
-		"lowerTab": "Check Constraints",
-		"structure": [
-			{
-				"propertyName": "Check Constraint",
-				"propertyType": "group",
-				"propertyKeyword": "chkConstr",
-				"propertyTooltip": "",
-				"structure": [
-					{
-						"propertyName": "Name",
-						"propertyKeyword": "chkConstrName",
-						"propertyTooltip": "",
-						"propertyType": "text"
-					},
-					{
-						"propertyName": "Expression",
-						"propertyKeyword": "constrExpression",
-						"propertyTooltip": "Expression",
-						"propertyType": "details",
-						"template": "textarea",
-						"markdown": false
-					},
-					{
-						"propertyName": "Description",
-						"propertyKeyword": "constrDescription",
-						"propertyTooltip": "description",
-						"propertyType": "details",
-						"template": "textarea"
-					},
-					{
-						"propertyName": "Comments",
-						"propertyKeyword": "constrComments",
-						"propertyTooltip": "comments",
-						"addTimestampButton": false,
-						"propertyType": "details",
-						"template": "textarea"
-					}
-				]
-			}
-		]
-	}
+  {
+    "lowerTab": "Details",
+    "structure": [
+      {
+        "propertyName": "Comments",
+        "propertyKeyword": "description",
+        "shouldValidate": false,
+        "propertyTooltip": "comments",
+        "addTimestampButton": false,
+        "propertyType": "details",
+        "template": "textarea"
+      },
+      {
+        "propertyName": "If not exists",
+        "propertyKeyword": "ifNotExist",
+        "propertyType": "checkbox"
+      },
+      {
+        "propertyName": "Temporary",
+        "propertyKeyword": "temporary",
+        "propertyTooltip": "The data in a temporary table is visible only to the session that inserts the data into the table.  Temporary tables are subject to restrictions.",
+        "defaultValue": false,
+        "propertyType": "checkbox"
+      },
+      {
+        "propertyName": "Temporary type",
+        "propertyKeyword": "temporaryType",
+        "propertyTooltip": "A private temporary table differs from a temporary table in that its definition and data are visible only within the session that created it.",
+        "propertyType": "select",
+        "defaultValue": "global",
+        "options": ["global", "private"],
+        "dependency": {
+          "key": "temporary",
+          "value": true
+        }
+      },
+      {
+        "propertyName": "Sharded",
+        "propertyKeyword": "sharded",
+        "propertyTooltip": "This clause is valid only if you are using Oracle Sharding, which is a data tier architecture in which data is horizontally partitioned across independent databases. ",
+        "defaultValue": false,
+        "propertyType": "checkbox"
+      },
+      {
+        "propertyName": "Duplicated",
+        "propertyKeyword": "duplicated",
+        "propertyTooltip": "Table is duplicated on all shards.",
+        "defaultValue": false,
+        "propertyType": "checkbox",
+        "dependency": {
+          "key": "sharded",
+          "value": true
+        }
+      },
+      {
+        "propertyName": "Immutable",
+        "propertyKeyword": "immutable",
+        "propertyTooltip": "To create a read-only table that protects data from unauthorized modification by insiders.",
+        "defaultValue": false,
+        "propertyType": "checkbox"
+      },
+      {
+        "propertyName": "Storage",
+        "propertyType": "block",
+        "propertyKeyword": "storage",
+        "propertyTooltip": "",
+        "structure": [
+          {
+            "propertyName": "Organization",
+            "propertyKeyword": "organization",
+            "propertyTooltip": "Select from list of options",
+            "propertyType": "select",
+            "defaultValue": "heap",
+            "options": ["", "heap", "index", "external"]
+          },
+          {
+            "propertyName": "Tablespace",
+            "propertyKeyword": "tablespace",
+            "propertyTooltip": "Specify the tablespace in which Oracle Database creates the table.  If you omit TABLESPACE, then the database creates that item in the default tablespace of the owner of the schema containing the table.",
+            "propertyType": "text"
+          },
+          {
+            "propertyName": "Logging",
+            "propertyKeyword": "logging",
+            "propertyTooltip": "Specify whether the creation of the table and of any indexes required because of constraints, partition, or LOB storage characteristics will be logged in the redo log file (LOGGING) or not (NOLOGGING).",
+            "propertyType": "checkbox",
+            "dependency": {
+              "type": "or",
+              "values": [
+                {
+                  "key": "organization",
+                  "value": "heap"
+                },
+                {
+                  "key": "organization",
+                  "value": "index"
+                }
+              ]
+            }
+          },
+          {
+            "propertyName": "Row archival",
+            "propertyKeyword": "row_archival",
+            "propertyTooltip": "This clause lets you implement In-Database Archiving, which allows you to designate table rows as active or archived. You can then perform queries on only the active rows within the table.  When you specify this clause, a hidden column ORA_ARCHIVE_STATE is created in the table.",
+            "propertyType": "checkbox"
+          }
+        ]
+      },
+      {
+        "propertyName": "Blockchain table",
+        "propertyKeyword": "blockchain",
+        "propertyTooltip": "When you create a blockchain table, an entry is created in the dictionary table blockchain_table$ owned by SYS .",
+        "propertyType": "checkbox"
+      },
+      {
+        "propertyName": "Blockchain table clauses",
+        "propertyType": "block",
+        "propertyKeyword": "blockchain_table_clauses",
+        "propertyTooltip": "",
+        "structure": [
+          {
+            "propertyName": "Immutable",
+            "propertyKeyword": "immutable",
+            "propertyTooltip": "Specify whether the creation of the table and of any indexes required because of constraints, partition, or LOB storage characteristics will be logged in the redo log file (LOGGING) or not (NOLOGGING).",
+            "propertyType": "checkbox"
+          },
+          {
+            "propertyName": "Table retention clause",
+            "propertyKeyword": "blockchain_table_retention_clause",
+            "propertyTooltip": "",
+            "propertyType": "text"
+          },
+          {
+            "propertyName": "Row retention clause",
+            "propertyKeyword": "blockchain_row_retention_clause",
+            "propertyTooltip": "",
+            "propertyType": "text"
+          },
+          {
+            "propertyName": "Hash and data format clause",
+            "propertyKeyword": "blockchain_hash_and_data_format_clause",
+            "propertyTooltip": "",
+            "propertyType": "text"
+          }
+        ],
+        "dependency": {
+          "key": "blockchain",
+          "value": true
+        }
+      },
+      {
+        "propertyName": "External table",
+        "propertyKeyword": "external",
+        "propertyTooltip": "To create an external table, you must have the required read and write operating system privileges on the appropriate operating system directories.",
+        "propertyType": "checkbox",
+        "dependency": {
+          "key": "temporary",
+          "value": false
+        }
+      },
+      {
+        "propertyName": "External table clauses",
+        "propertyType": "block",
+        "propertyKeyword": "external_table_clause",
+        "propertyTooltip": " allows you to process data that is stored outside the database from within the database without loading any of the data into the database.  Defining an external table only creates metadata in the data dictionary, pointing to data outside the database and providing seamless read only access to such data.",
+        "structure": [
+          {
+            "propertyName": "Access driver type",
+            "propertyKeyword": "access_driver_type",
+            "propertyTooltip": "The access driver is the API that interprets the external data for the database.",
+            "propertyType": "select",
+            "defaultValue": "ORACLE_LOADER",
+            "options": ["ORACLE_LOADER", "ORACLE_DATAPUMP", "ORACLE_BIGDATA", "ORACLE_HIVE", "ORACLE_HDFS"]
+          },
+          {
+            "propertyName": "Default directory",
+            "propertyKeyword": "default_directory",
+            "propertyTooltip": "Lets you specify a default directory object corresponding to a directory on the file system where the external data sources may reside.",
+            "propertyType": "text"
+          },
+          {
+            "propertyName": "Access parameters",
+            "propertyKeyword": "access_parameter_type",
+            "propertyTooltip": "Lets you assign values to the parameters of the specific access driver for this external table.",
+            "propertyType": "select",
+            "defaultValue": "Opaque Format Spec",
+            "options": ["Opaque Format Spec", "Using CLOB Subquery", "NONE"]
+          },
+          {
+            "propertyName": "Opaque format spec",
+            "propertyKeyword": "opaque_format_spec",
+            "propertyTooltip": "Specifies all access parameters for the ORACLE_LOADER, ORACLE_DATAPUMP, ORACLE_HDFS, and ORACLE_HIVE access drivers.  Field names specified in the opaque_format_spec must match columns in the table definition.",
+            "propertyType": "details",
+            "template": "textarea",
+            "markdown": false,
+            "dependency": {
+              "key": "access_parameter_type",
+              "value": "Opaque Format Spec"
+            }
+          },
+          {
+            "propertyName": "CLOB subquery",
+            "propertyKeyword": "clob_subquery",
+            "propertyTooltip": "Lets you derive the parameters and their values through a subquery. The subquery cannot contain any set operators or an ORDER BY clause. It must return one row containing a single item of data type CLOB.",
+            "propertyType": "details",
+            "template": "textarea",
+            "markdown": false,
+            "dependency": {
+              "key": "access_parameter_type",
+              "value": "Using CLOB Subquery"
+            }
+          },
+          {
+            "propertyName": "Reject limit",
+            "propertyKeyword": "reject_limit",
+            "propertyType": "numeric",
+            "propertyTooltip": "Lets you specify how many conversion errors can occur during a query of the external data before an Oracle Database error is returned and the query is aborted. The default value is 0.",
+            "valueType": "number",
+            "step": 1,
+            "allowNegative": false
+          },
+          {
+            "propertyName": "Project column",
+            "propertyKeyword": "project_column",
+            "propertyTooltip": "This clause lets you determine how the access driver validates the rows of an external table in subsequent queries.",
+            "propertyType": "select",
+            "defaultValue": "all",
+            "options": ["all", "referenced"]
+          },
+          {
+            "propertyName": "Location",
+            "propertyType": "group",
+            "propertyKeyword": "location",
+            "propertyTooltip": "lets you specify one or more external data sources.",
+            "structure": [
+              {
+                "propertyName": "Directory",
+                "propertyKeyword": "location_directory",
+                "propertyTooltip": "",
+                "propertyType": "text"
+              },
+              {
+                "propertyName": "Specifier",
+                "propertyKeyword": "location_specifier",
+                "propertyTooltip": "",
+                "propertyType": "text"
+              }
+            ]
+          }
+        ],
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "key": "temporary",
+              "value": false
+            },
+            {
+              "key": "external",
+              "value": true
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "Partitioning",
+        "propertyKeyword": "partitioning",
+        "propertyType": "group",
+        "groupItemLimit": 1,
+        "propertyTooltip": "Determines how a partitioned table's rows are distributed across partitions",
+        "structure": [
+          {
+            "propertyName": "Partition by",
+            "propertyKeyword": "partitionBy",
+            "propertyTooltip": "Choose the desired partition type",
+            "propertyType": "select",
+            "defaultValue": "",
+            "options": [
+              "",
+              "range",
+              "list",
+              "hash",
+              "composite range",
+              "composite list",
+              "composite hash",
+              "reference",
+              "system"
+            ]
+          },
+          {
+            "propertyName": "Columns",
+            "propertyKeyword": "partitionKey",
+            "propertyTooltip": "Specify an ordered list of columns used to determine into which partition a row belongs. These columns are the partitioning key.",
+            "propertyType": "compositeKeySetter",
+            "disabledItemStrategy": "default",
+            "isCompositeKey": true,
+            "setPrimaryKey": false,
+            "template": "collectiontree",
+            "abbr": "PK",
+            "dependency": {
+              "key": "partitionBy",
+              "value": ["range", "hash", "list", "composite range", "composite list", "composite hash"]
+            }
+          },
+          {
+            "propertyName": "Interval",
+            "propertyKeyword": "interval",
+            "propertyType": "details",
+            "template": "textarea",
+            "markdown": false,
+            "dependency": {
+              "key": "partitionBy",
+              "value": ["range", "composite range"]
+            }
+          },
+          {
+            "propertyName": "Subpartition type",
+            "propertyKeyword": "subpartitionType",
+            "propertyTooltip": "Choose the desired subpartition type",
+            "propertyType": "select",
+            "defaultValue": "",
+            "options": ["", "range", "list", "hash"],
+            "dependency": {
+              "key": "partitionBy",
+              "value": ["composite range", "composite list", "composite hash"]
+            }
+          },
+          {
+            "propertyName": "Consistent",
+            "propertyKeyword": "consistent",
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "partitionBy",
+              "value": ["hash"]
+            }
+          },
+          {
+            "propertyName": "Automatic",
+            "propertyKeyword": "automatic",
+            "propertyTooltip": "To create an automatic list-partitioned table.  This type of table enables the database to create additional partitions on demand.",
+            "propertyType": "checkbox",
+            "dependency": {
+              "type": "or",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "key": "partitionBy",
+                      "value": ["hash"]
+                    },
+                    {
+                      "key": "consistent",
+                      "value": true
+                    }
+                  ]
+                },
+                {
+                  "key": "partitionBy",
+                  "value": "list"
+                }
+              ]
+            }
+          },
+          {
+            "propertyName": "Hash by",
+            "propertyKeyword": "hashBy",
+            "propertyTooltip": "Choose the desired hashing type",
+            "propertyType": "select",
+            "defaultValue": "",
+            "options": ["individual hash partitions", "hash partitions by quantity"],
+            "dependency": {
+              "key": "partitionBy",
+              "value": ["hash", "composite hash"]
+            }
+          },
+          {
+            "propertyName": "Store in tablespaces",
+            "propertyType": "group",
+            "propertyKeyword": "store_in_tablespaces",
+            "propertyTooltip": "Lets you specify one or more tablespaces.",
+            "structure": [
+              {
+                "propertyName": "Tablespace",
+                "propertyKeyword": "store_in_tablespace",
+                "propertyTooltip": "",
+                "propertyType": "text"
+              }
+            ],
+            "dependency": {
+              "type": "or",
+              "values": [
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "key": "partitionBy",
+                      "value": ["range", "composite range"]
+                    },
+                    {
+                      "key": "interval",
+                      "minimum": 1
+                    }
+                  ]
+                },
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "key": "partitionBy",
+                      "value": ["hash", "composite hash"]
+                    },
+                    {
+                      "key": "hashBy",
+                      "value": ["hash partitions by quantity"]
+                    }
+                  ]
+                },
+                {
+                  "type": "and",
+                  "values": [
+                    {
+                      "key": "partitionBy",
+                      "value": ["list"]
+                    },
+                    {
+                      "key": "automatic",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "propertyName": "Range partitions",
+            "propertyType": "group",
+            "propertyKeyword": "range_partitions",
+            "propertyTooltip": "",
+            "structure": [
+              {
+                "propertyName": "Partition clause",
+                "propertyKeyword": "range_partition_clause",
+                "propertyTooltip": "Specify the noninclusive upper bound for the current partition. The value list is an ordered list of literal values corresponding to the column list in the range_partitions clause.",
+                "propertyType": "details",
+                "template": "textarea",
+                "markdown": false
+              }
+            ],
+            "dependency": {
+              "key": "partitionBy",
+              "value": ["range"]
+            }
+          },
+          {
+            "propertyName": "Indiv hash partitions",
+            "propertyType": "group",
+            "propertyKeyword": "individual_hash_partitions",
+            "propertyTooltip": "Use this clause to specify individual partitions by name.",
+            "structure": [
+              {
+                "propertyName": "Hash partition clause",
+                "propertyKeyword": "individual_hash_partition",
+                "propertyTooltip": "",
+                "propertyType": "details",
+                "template": "textarea",
+                "markdown": false
+              }
+            ],
+            "dependency": {
+              "type": "and",
+              "values": [
+                {
+                  "key": "partitionBy",
+                  "value": ["hash", "composite hash"]
+                },
+                {
+                  "key": "hashBy",
+                  "value": ["individual hash partitions"]
+                }
+              ]
+            }
+          },
+          {
+            "propertyName": "List partitions",
+            "propertyType": "group",
+            "propertyKeyword": "list_partitions",
+            "propertyTooltip": "",
+            "structure": [
+              {
+                "propertyName": "Partition clause",
+                "propertyKeyword": "list_partition_clause",
+                "propertyTooltip": "Specify the noninclusive upper bound for the current partition. The value list is an ordered list of literal values corresponding to the column list in the range_partitions clause.",
+                "propertyType": "details",
+                "template": "textarea",
+                "markdown": false
+              }
+            ],
+            "dependency": {
+              "key": "partitionBy",
+              "value": ["list"]
+            }
+          },
+          {
+            "propertyName": "Quantity",
+            "propertyKeyword": "hash_partition_quantity",
+            "propertyTooltip": "Choose the desired number hash partitions",
+            "propertyType": "numeric",
+            "valueType": "number",
+            "allowNegative": false,
+            "maxValue": 1024,
+            "step": 1,
+            "dependency": {
+              "type": "and",
+              "values": [
+                {
+                  "key": "partitionBy",
+                  "value": ["hash", "composite hash"]
+                },
+                {
+                  "key": "hashBy",
+                  "value": ["hash partitions by quantity"]
+                }
+              ]
+            }
+          },
+          {
+            "propertyName": "Compression",
+            "propertyKeyword": "compression",
+            "propertyTooltip": "Enter the compression description for the partition.",
+            "propertyType": "details",
+            "template": "textarea",
+            "markdown": false,
+            "dependency": {
+              "type": "and",
+              "values": [
+                {
+                  "key": "partitionBy",
+                  "value": ["hash", "composite hash"]
+                },
+                {
+                  "key": "hashBy",
+                  "value": ["hash partitions by quantity"]
+                }
+              ]
+            }
+          },
+          {
+            "propertyName": "Overflow tablespaces",
+            "propertyType": "group",
+            "propertyKeyword": "overflow_store_in_tablespaces",
+            "propertyTooltip": "Lets you specify one or more tablespaces.",
+            "structure": [
+              {
+                "propertyName": "Tablespace",
+                "propertyKeyword": "overflow_store_in_tablespace",
+                "propertyTooltip": "",
+                "propertyType": "text"
+              }
+            ],
+            "dependency": {
+              "type": "and",
+              "values": [
+                {
+                  "key": "partitionBy",
+                  "value": ["hash", "composite hash"]
+                },
+                {
+                  "key": "hashBy",
+                  "value": ["hash partitions by quantity"]
+                }
+              ]
+            }
+          },
+          {
+            "propertyName": "Sub partition keys",
+            "propertyKeyword": "compositePartitionKey",
+            "propertyTooltip": "Specify an ordered list of columns used to determine into which partition a row belongs. These columns are the partitioning key.",
+            "propertyType": "compositeKeySetter",
+            "disabledItemStrategy": "default",
+            "isCompositeKey": true,
+            "setPrimaryKey": false,
+            "template": "collectiontree",
+            "abbr": "PK",
+            "dependency": {
+              "key": "partitionBy",
+              "value": ["composite range", "composite list", "composite hash"]
+            }
+          },
+          {
+            "propertyName": "Subpartition description",
+            "propertyKeyword": "subpartitionDescription",
+            "propertyType": "details",
+            "template": "textarea",
+            "markdown": false,
+            "propertyTooltip": "Specify subpartitions description. How many subpartitions you need and where you store them",
+            "dependency": {
+              "key": "partitionBy",
+              "value": ["composite range", "composite list", "composite hash"]
+            }
+          },
+          {
+            // Although it is called "range_subpartition_descs" it actually represent "range_partition_desc" from documentation
+            "propertyName": "Range subpart desc",
+            "propertyType": "group",
+            "propertyKeyword": "range_subpartition_descs",
+            "propertyTooltip": "",
+            "structure": [
+              {
+                "propertyName": "Partition desc",
+                "propertyKeyword": "range_subpartition_desc",
+                "propertyTooltip": "Specify the noninclusive upper bound for the current partition. The value list is an ordered list of literal values corresponding to the column list in the range_partitions clause.",
+                "propertyType": "details",
+                "template": "textarea",
+                "markdown": false
+              }
+            ],
+            "dependency": {
+              "type": "and",
+              "values": [
+                {
+                  "key": "partitionBy",
+                  "value": ["composite range"]
+                },
+                {
+                  "key": "subpartitionType",
+                  "value": ["range", "hash", "list"]
+                }
+              ]
+            }
+          },
+          {
+            // Although it is called "list_subpartition_descs" it actually represent "list_partition_desc" from documentation
+            "propertyName": "List subpart desc",
+            "propertyType": "group",
+            "propertyKeyword": "list_subpartition_descs",
+            "propertyTooltip": "",
+            "structure": [
+              {
+                "propertyName": "Partition desc",
+                "propertyKeyword": "list_subpartition_description",
+                "propertyTooltip": "Specify the noninclusive upper bound for the current partition. The value list is an ordered list of literal values corresponding to the column list in the range_partitions clause.",
+                "propertyType": "details",
+                "template": "textarea",
+                "markdown": false
+              }
+            ],
+            "dependency": {
+              "type": "and",
+              "values": [
+                {
+                  "key": "partitionBy",
+                  "value": ["composite list"]
+                },
+                {
+                  "key": "subpartitionType",
+                  "value": ["range", "hash", "list"]
+                }
+              ]
+            }
+          },
+          {
+            "propertyName": "Constraint",
+            "propertyKeyword": "constraint",
+            "propertyTooltip": "Specify a referential integrity constraint defined on the table being created, which must refer to a primary key or unique constraint on the parent table. The constraint must be in ENABLE VALIDATE NOT DEFERRABLE state, which is the default when you specify a referential integrity constraint during table creation.",
+            "propertyType": "details",
+            "template": "textarea",
+            "markdown": false,
+            "dependency": {
+              "key": "partitionBy",
+              "value": ["reference"]
+            }
+          },
+          {
+            "propertyName": "Ref part desc",
+            "propertyType": "group",
+            "propertyKeyword": "reference_partition_descs",
+            "propertyTooltip": "",
+            "structure": [
+              {
+                "propertyName": "Partition desc",
+                "propertyKeyword": "reference_partition_desc",
+                "propertyTooltip": "Specify the noninclusive upper bound for the current partition. The value list is an ordered list of literal values corresponding to the column list in the range_partitions clause.",
+                "propertyType": "details",
+                "template": "textarea",
+                "markdown": false
+              }
+            ],
+            "dependency": {
+              "key": "partitionBy",
+              "value": ["reference"]
+            }
+          },
+          {
+            "propertyName": "Quantity",
+            "propertyKeyword": "system_partitioning_quantity",
+            "propertyTooltip": "Choose the desired number system partitions",
+            "propertyType": "numeric",
+            "valueType": "number",
+            "allowNegative": false,
+            "maxValue": 1024,
+            "step": 1,
+            "dependency": {
+              "key": "partitionBy",
+              "value": ["system"]
+            }
+          },
+          {
+            "propertyName": "System part desc",
+            "propertyType": "group",
+            "propertyKeyword": "system_partition_descs",
+            "propertyTooltip": "",
+            "structure": [
+              {
+                "propertyName": "Partition desc",
+                "propertyKeyword": "system_partition_desc",
+                "propertyTooltip": "Specify the noninclusive upper bound for the current partition. The value list is an ordered list of literal values corresponding to the column list in the range_partitions clause.",
+                "propertyType": "details",
+                "template": "textarea",
+                "markdown": false
+              }
+            ],
+            "dependency": {
+              "key": "partitionBy",
+              "value": ["system"]
+            }
+          }
+        ]
+      },
+      {
+        "propertyName": "Table properties",
+        "propertyKeyword": "tableProperties",
+        "shouldValidate": false,
+        "propertyTooltip": "Table properties",
+        "propertyType": "details",
+        "template": "textarea",
+        "markdown": false
+      },
+      {
+        "propertyName": "As Select statement",
+        "propertyKeyword": "selectStatement",
+        "propertyType": "details",
+        "template": "textarea",
+        "markdown": false
+      },
+      {
+        "propertyName": "Custom scripts",
+        "propertyType": "block",
+        "propertyKeyword": "customScripts",
+        "propertyTooltip": "",
+        "structure": [
+          {
+            "propertyName": "Before CREATE TABLE",
+            "propertyKeyword": "beforeCreateEntity",
+            "propertyType": "block",
+            "propertyTooltip": "",
+            "structure": [
+              {
+                "propertyName": "Script",
+                "propertyKeyword": "script",
+                "propertyType": "details",
+                "markdown": false,
+                "template": "codeEditor",
+                "templateOptions": {
+                  "editorDialect": "sql",
+                  "customScriptVariables": true
+                }
+              }
+            ]
+          },
+          {
+            "propertyName": "After CREATE TABLE",
+            "propertyKeyword": "afterCreateEntity",
+            "propertyType": "block",
+            "propertyTooltip": "",
+            "structure": [
+              {
+                "propertyName": "Script",
+                "propertyKeyword": "script",
+                "propertyType": "details",
+                "markdown": false,
+                "template": "codeEditor",
+                "templateOptions": {
+                  "editorDialect": "sql",
+                  "customScriptVariables": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "propertyName": "Remarks",
+        "propertyKeyword": "comments",
+        "propertyTooltip": "remarks",
+        "addTimestampButton": true,
+        "propertyType": "details",
+        "template": "textarea",
+        "valueType": "string"
+      }
+    ],
+    "columnsRatio": [3.7, 5]
+  },
+  {
+    "lowerTab": "Composite keys",
+    "structure": [
+      {
+        "propertyName": "Primary key",
+        "propertyType": "group",
+        "groupItemLimit": 1,
+        "propertyKeyword": "primaryKey",
+        "propertyTooltip": {
+          "disabled": [
+            {
+              "tooltip": "Remove the existing single column primary key definition prior to unlock the possibility to create a composite primary key definition for this table",
+              "dependency": {
+                "type": "and",
+                "values": [
+                  {
+                    "level": "children",
+                    "key": "primaryKey",
+                    "value": true
+                  },
+                  {
+                    "type": "not",
+                    "values": {
+                      "level": "children",
+                      "key": "compositePrimaryKey",
+                      "value": true
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "tooltip": "Remove or update the existing composite primary key definition prior to unlock the possibility to create a new composite primary key definition for this table",
+              "dependency": {
+                "key": "primaryKey",
+                "minLength": 1
+              }
+            }
+          ]
+        },
+        "disabledOnCondition": [
+          {
+            "level": "children",
+            "value": {
+              "type": "and",
+              "values": [
+                {
+                  "key": "primaryKey",
+                  "value": true
+                },
+                {
+                  "type": "or",
+                  "values": [
+                    {
+                      "key": "compositePrimaryKey",
+                      "value": false
+                    },
+                    {
+                      "key": "compositePrimaryKey",
+                      "exist": false
+                    }
+                  ]
+                },
+                {
+                  "type": "or",
+                  "values": [
+                    {
+                      "key": "compositeUniqueKey",
+                      "value": false
+                    },
+                    {
+                      "key": "compositeUniqueKey",
+                      "exist": false
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "structure": [
+          {
+            "propertyName": "Constraint name",
+            "propertyKeyword": "constraintName",
+            "propertyTooltip": "",
+            "propertyType": "text"
+          },
+          {
+            "propertyName": "Key",
+            "propertyKeyword": "compositePrimaryKey",
+            "propertyType": "primaryKeySetter",
+            "abbr": "pk"
+          }
+        ]
+      },
+      {
+        "propertyName": "Unique key",
+        "propertyType": "group",
+        "propertyKeyword": "uniqueKey",
+        "propertyTooltip": "",
+        "structure": [
+          {
+            "propertyName": "Constraint name",
+            "propertyKeyword": "constraintName",
+            "propertyTooltip": "",
+            "propertyType": "text"
+          },
+          {
+            "propertyName": "Key",
+            "propertyKeyword": "compositeUniqueKey",
+            "propertyType": "compositeKeySetter",
+            "setPrimaryKey": false,
+            "template": "collectiontree",
+            "isCompositeKey": true,
+            "abbr": " "
+          },
+          {
+            "propertyName": "Alternate key",
+            "propertyKeyword": "alternateKey",
+            "propertyTooltip": "",
+            "propertyType": "checkbox",
+            "setFieldPropertyBy": "compositeUniqueKey"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "lowerTab": "Indexes",
+    "structure": [
+      {
+        "propertyName": "Index",
+        "propertyType": "group",
+        "propertyKeyword": "Indxs",
+        "propertyTooltip": "",
+        "structure": [
+          {
+            "propertyName": "Name",
+            "propertyKeyword": "indxName",
+            "propertyTooltip": "",
+            "propertyType": "text",
+            "validation": {
+              "required": true
+            }
+          },
+          {
+            "propertyName": "Activated",
+            "propertyKeyword": "isActivated",
+            "propertyTooltip": "Deactivated item will be not included in FE script",
+            "propertyType": "checkbox",
+            "defaultValue": true
+          },
+          {
+            "propertyName": "If not exists",
+            "propertyKeyword": "ifNotExist",
+            "propertyType": "checkbox"
+          },
+          {
+            "propertyName": "Type",
+            "propertyKeyword": "indxType",
+            "propertyType": "select",
+            "options": ["", "multivalue", "unique", "bitmap"]
+          },
+          {
+            "propertyName": "Keys",
+            "propertyKeyword": "indxKey",
+            "propertyType": "fieldList",
+            "template": "orderedList",
+            "attributeList": ["asc", "desc"],
+            "dependency": {
+              "type": "or",
+              "values": [
+                {
+                  "key": "column_expression",
+                  "exist": false
+                },
+                {
+                  "key": "column_expression",
+                  "value": ""
+                }
+              ]
+            },
+            "validation": {
+              "required": true,
+              "minLength": 1
+            }
+          },
+          {
+            "propertyName": "Conditional function",
+            "propertyKeyword": "column_expression",
+            "propertyTooltip": "Enter conditional function for a function-based index",
+            "propertyType": "details",
+            "markdown": false,
+            "template": "codeEditor",
+            "templateOptions": {
+              "editorDialect": "sql"
+            },
+            "dependency": {
+              "type": "or",
+              "values": [
+                {
+                  "key": "indxKey",
+                  "exist": false
+                },
+                {
+                  "key": "indxKey",
+                  "isEmpty": true
+                }
+              ]
+            }
+          },
+          {
+            "propertyName": "Description",
+            "propertyKeyword": "indxDescription",
+            "propertyTooltip": "description",
+            "propertyType": "details",
+            "template": "codeEditor",
+            "templateOptions": {
+              "editorDialect": "markdown"
+            }
+          },
+          {
+            "propertyName": "Tablespace",
+            "propertyKeyword": "tablespace",
+            "propertyTooltip": "Specify the tablespace in which Oracle Database creates the table.  If you omit TABLESPACE, then the database creates that item in the default tablespace of the owner of the schema containing the table.",
+            "propertyType": "text"
+          },
+          {
+            "propertyName": "Properties",
+            "propertyKeyword": "index_properties",
+            "propertyTooltip": "Specify the optional index attributes.",
+            "propertyType": "details",
+            "markdown": false,
+            "template": "codeEditor",
+            "templateOptions": {
+              "editorDialect": "sql"
+            }
+          },
+          {
+            "propertyName": "Attributes",
+            "propertyKeyword": "index_attributes",
+            "propertyTooltip": "Specify the optional index attributes.",
+            "propertyType": "details",
+            "markdown": false,
+            "template": "codeEditor",
+            "templateOptions": {
+              "editorDialect": "sql"
+            }
+          },
+          {
+            "propertyName": "Compression",
+            "propertyKeyword": "index_compression",
+            "propertyTooltip": "If you want to use compression for a partitioned index, then you must create the index with compression enabled at the index level. You can subsequently enable and disable the compression setting for individual partitions of such a partitioned index. ",
+            "propertyType": "details",
+            "markdown": false,
+            "template": "codeEditor",
+            "templateOptions": {
+              "editorDialect": "sql"
+            }
+          },
+          {
+            "propertyName": "Logging",
+            "propertyKeyword": "logging_clause",
+            "propertyType": "select",
+            "defaultValue": "logging",
+            "options": ["", "logging", "nologging", "filesystem_like_logging"]
+          },
+          {
+            "propertyName": "Comments",
+            "propertyKeyword": "indxComments",
+            "propertyTooltip": "comments",
+            "addTimestampButton": false,
+            "propertyType": "details",
+            "template": "codeEditor",
+            "templateOptions": {
+              "editorDialect": "markdown"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "lowerTab": "Check Constraints",
+    "structure": [
+      {
+        "propertyName": "Check Constraint",
+        "propertyType": "group",
+        "propertyKeyword": "chkConstr",
+        "propertyTooltip": "",
+        "structure": [
+          {
+            "propertyName": "Name",
+            "propertyKeyword": "chkConstrName",
+            "propertyTooltip": "",
+            "propertyType": "text"
+          },
+          {
+            "propertyName": "Expression",
+            "propertyKeyword": "constrExpression",
+            "propertyTooltip": "Expression",
+            "propertyType": "details",
+            "template": "textarea",
+            "markdown": false
+          },
+          {
+            "propertyName": "Description",
+            "propertyKeyword": "constrDescription",
+            "propertyTooltip": "description",
+            "propertyType": "details",
+            "template": "textarea"
+          },
+          {
+            "propertyName": "Comments",
+            "propertyKeyword": "constrComments",
+            "propertyTooltip": "comments",
+            "addTimestampButton": false,
+            "propertyType": "details",
+            "template": "textarea"
+          }
+        ]
+      }
+    ]
+  }
 ]
