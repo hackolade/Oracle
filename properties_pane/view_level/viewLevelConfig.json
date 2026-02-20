@@ -8,837 +8,837 @@
  */
 
 [
-	{
-		"lowerTab": "Details",
-		"structure": [
-			{
-				"propertyName": "Comments",
-				"propertyKeyword": "description",
-				"shouldValidate": false,
-				"propertyTooltip": "comments",
-				"propertyType": "details",
-				"template": "textarea"
-			},
-			{
-				"propertyName": "Materialized",
-				"propertyKeyword": "materialized",
-				"propertyTooltip": "Specify whether to create materialized view.",
-				"propertyType": "checkbox",
-				"dependency": {
-					"type": "or",
-					"values": [
-						{
-							"key": "duality",
-							"value": false
-						},
-						{
-							"key": "duality",
-							"exist": false
-						}
-					]
-				}
-			},
-			{
-				"propertyName": "Or replace",
-				"propertyKeyword": "or_replace",
-				"propertyTooltip": "To re-create the view if it already exists. You can use this clause to change the definition of an existing view without dropping, re-creating, and regranting object privileges previously granted on it.",
-				"propertyType": "checkbox",
-				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"type": "or",
-							"values": [
-								{
-									"key": "materialized",
-									"value": false
-								},
-								{
-									"key": "materialized",
-									"exist": false
-								}
-							]
-						},
-						{
-							"type": "or",
-							"values": [
-								{
-									"key": "ifNotExist",
-									"value": false
-								},
-								{
-									"key": "ifNotExist",
-									"exist": false
-								}
-							]
-						}
-					]
-				}
-			},
-			{
-				"propertyName": "Or replace",
-				"propertyKeyword": "or_replace",
-				"propertyTooltip": "To re-create the view if it already exists. You can use this clause to change the definition of an existing view without dropping, re-creating, and regranting object privileges previously granted on it.",
-				"propertyType": "checkbox",
-				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"type": "or",
-							"values": [
-								{
-									"key": "materialized",
-									"value": false
-								},
-								{
-									"key": "materialized",
-									"exist": false
-								}
-							]
-						},
-						{
-							"key": "ifNotExist",
-							"value": true
-						}
-					]
-				},
-				"disabled": true
-			},
-			{
-				"propertyName": "Duality",
-				"propertyKeyword": "duality",
-				"propertyType": "checkbox",
-				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"type": "not",
-							"values": [
-								{
-									"level": "model",
-									"key": "dbVersion",
-									"value": "12c"
-								},
-								{
-									"level": "model",
-									"key": "dbVersion",
-									"value": "18c"
-								},
-								{
-									"level": "model",
-									"key": "dbVersion",
-									"value": "19c"
-								},
-								{
-									"level": "model",
-									"key": "dbVersion",
-									"value": "21c"
-								}
-							]
-						},
-						{
-							"type": "or",
-							"values": [
-								{
-									"key": "materialized",
-									"value": false
-								},
-								{
-									"key": "materialized",
-									"exist": false
-								}
-							]
-						}
-					]
-				}
-			},
-			{
-				"propertyName": "If not exist",
-				"propertyKeyword": "ifNotExist",
-				"propertyType": "checkbox",
-				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"type": "or",
-							"values": [
-								{
-									"key": "or_replace",
-									"value": false
-								},
-								{
-									"key": "or_replace",
-									"exist": false
-								}
-							]
-						},
-						{
-							"type": "or",
-							"values": [
-								{
-									"key": "duality",
-									"value": false
-								},
-								{
-									"key": "duality",
-									"exist": false
-								}
-							]
-						}
-					]
-				}
-			},
-			{
-				"propertyName": "If not exist",
-				"propertyKeyword": "ifNotExist",
-				"propertyType": "checkbox",
-				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"key": "or_replace",
-							"value": true
-						},
-						{
-							"type": "or",
-							"values": [
-								{
-									"key": "duality",
-									"value": false
-								},
-								{
-									"key": "duality",
-									"exist": false
-								}
-							]
-						}
-					]
-				},
-				"disabled": true
-			},
-			{
-				"propertyName": "Force",
-				"propertyKeyword": "force",
-				"propertyTooltip": "Select from list of options",
-				"propertyType": "select",
-				"options": ["", "force", "no force"],
-				"dependency": {
-					"type": "or",
-					"values": [
-						{
-							"key": "materialized",
-							"value": false
-						},
-						{
-							"key": "materialized",
-							"exist": false
-						}
-					]
-				}
-			},
-			{
-				"propertyName": "Editionable",
-				"propertyKeyword": "editionable",
-				"propertyTooltip": "To specify whether the view becomes an editioned or noneditioned object if editioning is enabled for the schema object type VIEW in schema.",
-				"propertyType": "select",
-				"options": ["", "editionable", "noneditionable"],
-				"dependency": {
-					"type": "or",
-					"values": [
-						{
-							"key": "materialized",
-							"value": false
-						},
-						{
-							"key": "materialized",
-							"exist": false
-						}
-					]
-				}
-			},
-			{
-				"propertyName": "Editioning",
-				"propertyKeyword": "editioning",
-				"propertyTooltip": "A single-table view that selects all rows from the base table and displays a subset of the base table columns. ",
-				"propertyType": "select",
-				"options": ["", "editioning"],
-				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"type": "or",
-							"values": [
-								{
-									"key": "materialized",
-									"value": false
-								},
-								{
-									"key": "materialized",
-									"exist": false
-								}
-							]
-						},
-						{
-							"type": "or",
-							"values": [
-								{
-									"key": "duality",
-									"value": false
-								},
-								{
-									"key": "duality",
-									"exist": false
-								}
-							]
-						}
-					]
-				}
-			},
-			{
-				"propertyName": "Sharing",
-				"propertyKeyword": "sharing",
-				"propertyTooltip": "To determine how the view data is shared, specify one of the following sharing attributes",
-				"propertyType": "select",
-				"options": ["", "METADATA", "DATA", "EXTENDED DATA", "NONE"],
-				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"type": "or",
-							"values": [
-								{
-									"key": "materialized",
-									"value": false
-								},
-								{
-									"key": "materialized",
-									"exist": false
-								}
-							]
-						},
-						{
-							"type": "or",
-							"values": [
-								{
-									"key": "duality",
-									"value": false
-								},
-								{
-									"key": "duality",
-									"exist": false
-								}
-							]
-						}
-					]
-				}
-			},
-			{
-				"propertyName": "View properties",
-				"propertyKeyword": "viewProperties",
-				"shouldValidate": false,
-				"propertyTooltip": "View properties",
-				"propertyType": "details",
-				"template": "textarea",
-				"markdown": false,
-				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"type": "or",
-							"values": [
-								{
-									"key": "materialized",
-									"value": false
-								},
-								{
-									"key": "materialized",
-									"exist": false
-								}
-							]
-						},
-						{
-							"type": "or",
-							"values": [
-								{
-									"key": "duality",
-									"value": false
-								},
-								{
-									"key": "duality",
-									"exist": false
-								}
-							]
-						}
-					]
-				}
-			},
-			{
-				"propertyName": "Materialized view properties",
-				"propertyKeyword": "mviewProperties",
-				"shouldValidate": false,
-				"propertyTooltip": "Materialized view properties",
-				"propertyType": "details",
-				"template": "textarea",
-				"markdown": false,
-				"dependency": {
-					"key": "materialized",
-					"value": true
-				}
-			},
-			{
-				"propertyName": "From root table",
-				"propertyKeyword": "viewOn",
-				"hidden": false,
-				"dependency": {
-					"key": "duality",
-					"value": true
-				}
-			},
-			{
-				"propertyKeyword": "viewOn",
-				"hidden": true,
-				"dependency": {
-					"type": "or",
-					"values": [
-						{
-							"key": "duality",
-							"value": false
-						},
-						{
-							"key": "duality",
-							"exists": false
-						}
-					]
-				}
-			},
-			{
-				"propertyName": "Root table alias",
-				"propertyKeyword": "rootTableAlias",
-				"propertyType": "text",
-				"dependency": {
-					"key": "duality",
-					"value": true
-				}
-			},
-			{
-				"propertyName": "Table tags clause",
-				"propertyKeyword": "tableTagsClause",
-				"propertyType": "block",
-				"propertyTooltip": "",
-				"structure": [
-					{
-						"propertyName": "Check",
-						"propertyKeyword": "check",
-						"propertyType": "select",
-						"options": ["", "check", "nocheck"]
-					},
-					{
-						"propertyName": "Etag",
-						"propertyKeyword": "etag",
-						"propertyType": "checkbox",
-						"dependency": {
-							"key": "check",
-							"value": ["check", "nocheck"]
-						}
-					},
-					{
-						"propertyName": "Insert",
-						"propertyKeyword": "insert",
-						"propertyType": "select",
-						"options": ["", "insert", "noinsert"]
-					},
-					{
-						"propertyName": "Update",
-						"propertyKeyword": "update",
-						"propertyType": "select",
-						"options": ["", "update", "noupdate"]
-					},
-					{
-						"propertyName": "Delete",
-						"propertyKeyword": "delete",
-						"propertyType": "select",
-						"options": ["", "delete", "nodelete"]
-					}
-				],
-				"dependency": {
-					"key": "duality",
-					"value": true
-				}
-			},
-			{
-				"propertyName": "Select Statement",
-				"propertyKeyword": "selectStatement",
-				"propertyType": "details",
-				"propertyTooltip": "Select statement. To reference on partitioned table you should use ${tableName} template",
-				"template": "textarea",
-				"markdown": false,
-				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"type": "or",
-							"values": [
-								{
-									"key": "materialized",
-									"value": false
-								},
-								{
-									"key": "materialized",
-									"exist": false
-								}
-							]
-						},
-						{
-							"type": "or",
-							"values": [
-								{
-									"key": "duality",
-									"value": false
-								},
-								{
-									"key": "duality",
-									"exist": false
-								}
-							]
-						}
-					]
-				}
-			},
-			{
-				"propertyName": "Where clause",
-				"propertyKeyword": "whereClause",
-				"propertyType": "text",
-				"dependency": {
-					"key": "duality",
-					"value": true
-				}
-			},
-			{
-				"propertyName": "Workload analysis",
-				"propertyKeyword": "analysis",
-				"propertyTooltip": "",
-				"propertyType": "block",
-				"dependency": {
-					"key": "duality",
-					"value": true
-				},
-				"structure": [
-					{
-						"propertyName": "Actor",
-						"propertyKeyword": "actor",
-						"propertyType": "text"
-					},
-					{
-						"propertyName": "Description",
-						"propertyKeyword": "queryDescription",
-						"propertyTooltip": "Popup for multi-line text entry",
-						"propertyType": "details",
-						"template": "textarea",
-						"markdown": true
-					},
-					{
-						"propertyName": "Number of documents",
-						"propertyKeyword": "nbrDocs",
-						"propertyType": "numeric",
-						"valueType": "number",
-						"allowNegative": false,
-						"minValue": 0,
-						"step": 1
-					},
-					{
-						"propertyName": "Avg document size (Bytes)",
-						"propertyKeyword": "docSize",
-						"propertyType": "numeric",
-						"valueType": "number",
-						"allowNegative": false,
-						"minValue": 0,
-						"step": 1
-					},
-					{
-						"propertyName": "Read-to-Write ratio",
-						"propertyKeyword": "RtWratio",
-						"propertyType": "text"
-					},
-					{
-						"propertyName": "Write operations",
-						"propertyKeyword": "writeOps",
-						"propertyTooltip": "",
-						"propertyType": "group",
-						"structure": [
-							{
-								"propertyName": "Write ops name",
-								"propertyKeyword": "writeOpsName",
-								"propertyType": "text"
-							},
-							{
-								"propertyName": "Write type",
-								"propertyKeyword": "writeType",
-								"propertyTooltip": "Select from list of options",
-								"propertyType": "select",
-								"defaultValue": "insert",
-								"options": ["check", "insert", "update", "delete"]
-							},
-							{
-								"propertyName": "Update predicates",
-								"propertyKeyword": "updatePredicates",
-								"propertyTooltip": "Popup for multi-line text entry",
-								"propertyType": "details",
-								"template": "textarea",
-								"markdown": false,
-								"dependency": {
-									"key": "writeType",
-									"value": "update"
-								}
-							},
-							{
-								"propertyName": "Write rate",
-								"propertyKeyword": "writeRate",
-								"propertyType": "numeric",
-								"valueType": "number",
-								"allowNegative": false,
-								"minValue": 0,
-								"step": 1
-							},
-							{
-								"propertyName": "Write frequency",
-								"propertyKeyword": "writeFrequency",
-								"propertyTooltip": "Select from list of options",
-								"propertyType": "select",
-								"defaultValue": "per hour",
-								"options": ["per second", "per minute", "per hour"]
-							}
-						]
-					},
-					{
-						"propertyName": "Read operations",
-						"propertyKeyword": "readOperations",
-						"propertyTooltip": "Click the + sign to add new query description",
-						"propertyType": "group",
-						"structure": [
-							{
-								"propertyName": "Read ops name",
-								"propertyKeyword": "readOpsName",
-								"propertyType": "text"
-							},
-							{
-								"propertyName": "Query predicates",
-								"propertyKeyword": "queryPredicates",
-								"propertyTooltip": "Popup for multi-line text entry",
-								"propertyType": "details",
-								"template": "textarea",
-								"markdown": false
-							},
-							{
-								"propertyName": "Read rate",
-								"propertyKeyword": "readRate",
-								"propertyType": "numeric",
-								"valueType": "number",
-								"allowNegative": false,
-								"minValue": 0,
-								"step": 1
-							},
-							{
-								"propertyName": "Read frequency",
-								"propertyKeyword": "readFrequency",
-								"propertyTooltip": "Select from list of options",
-								"propertyType": "select",
-								"defaultValue": "per hour",
-								"options": ["per second", "per minute", "per hour"]
-							}
-						]
-					}
-				]
-			},
-			{
-				"propertyName": "Remarks",
-				"propertyKeyword": "comments",
-				"shouldValidate": false,
-				"propertyTooltip": "remarks",
-				"propertyType": "details",
-				"template": "textarea"
-			},
-			{
-				"propertyKeyword": "pipeline",
-				"hidden": true
-			},
-			{
-				"propertyName": "Custom scripts",
-				"propertyType": "block",
-				"propertyKeyword": "customScripts",
-				"propertyTooltip": "",
-				"structure": [
-					{
-						"propertyName": "Before CREATE VIEW",
-						"propertyKeyword": "beforeCreateView",
-						"propertyType": "block",
-						"propertyTooltip": "",
-						"structure": [
-							{
-								"propertyName": "Script",
-								"propertyKeyword": "script",
-								"propertyType": "details",
-								"markdown": false,
-								"template": "codeEditor",
-								"templateOptions": {
-									"editorDialect": "sql",
-									"customScriptVariables": true
-								}
-							}
-						]
-					},
-					{
-						"propertyName": "After CREATE VIEW",
-						"propertyKeyword": "afterCreateView",
-						"propertyType": "block",
-						"propertyTooltip": "",
-						"structure": [
-							{
-								"propertyName": "Script",
-								"propertyKeyword": "script",
-								"propertyType": "details",
-								"markdown": false,
-								"template": "codeEditor",
-								"templateOptions": {
-									"editorDialect": "sql",
-									"customScriptVariables": true
-								}
-							}
-						]
-					}
-				]
-			}
-		]
-	},
-	{
-		"lowerTab": "Indexes",
-		"structure": [
-			{
-				"propertyName": "Index",
-				"propertyType": "group",
-				"propertyKeyword": "Indxs",
-				"propertyTooltip": "",
-				"dependency": {
-					"key": "materialized",
-					"value": true
-				},
-				"structure": [
-					{
-						"propertyName": "Name",
-						"propertyKeyword": "indxName",
-						"propertyTooltip": "",
-						"propertyType": "text"
-					},
-					{
-						"propertyName": "Activated",
-						"propertyKeyword": "isActivated",
-						"propertyTooltip": "Deactivated item will be not included in FE script",
-						"propertyType": "checkbox",
-						"defaultValue": true
-					},
-					{
-						"propertyName": "Type",
-						"propertyKeyword": "indxType",
-						"propertyType": "select",
-						"options": ["", "multivalue", "unique", "bitmap"]
-					},
-					{
-						"propertyName": "Keys",
-						"propertyKeyword": "indxKey",
-						"propertyType": "fieldList",
-						"template": "orderedList",
-						"attributeList": ["asc", "desc"],
-						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"key": "column_expression",
-									"exist": false
-								},
-								{
-									"key": "column_expression",
-									"value": ""
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "Conditional function",
-						"propertyKeyword": "column_expression",
-						"propertyTooltip": "Enter conditional function for a function-based index",
-						"propertyType": "details",
-						"markdown": false,
-						"template": "codeEditor",
-						"templateOptions": {
-							"editorDialect": "sql"
-						},
-						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"key": "indxKey",
-									"exist": false
-								},
-								{
-									"key": "indxKey",
-									"isEmpty": true
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "Description",
-						"propertyKeyword": "indxDescription",
-						"propertyTooltip": "description",
-						"propertyType": "details",
-						"template": "textarea"
-					},
-					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "tablespace",
-						"propertyTooltip": "Specify the tablespace in which Oracle Database creates the table.  If you omit TABLESPACE, then the database creates that item in the default tablespace of the owner of the schema containing the table.",
-						"propertyType": "text"
-					},
-					{
-						"propertyName": "Properties",
-						"propertyKeyword": "index_properties",
-						"propertyTooltip": "Specify the optional index attributes.",
-						"propertyType": "details",
-						"template": "textarea",
-						"markdown": false
-					},
-					{
-						"propertyName": "Attributes",
-						"propertyKeyword": "index_attributes",
-						"propertyTooltip": "Specify the optional index attributes.",
-						"propertyType": "details",
-						"template": "textarea",
-						"markdown": false
-					},
-					{
-						"propertyName": "Compression",
-						"propertyKeyword": "index_compression",
-						"propertyTooltip": "If you want to use compression for a partitioned index, then you must create the index with compression enabled at the index level. You can subsequently enable and disable the compression setting for individual partitions of such a partitioned index. ",
-						"propertyType": "details",
-						"template": "textarea",
-						"markdown": false
-					},
-					{
-						"propertyName": "Logging",
-						"propertyKeyword": "logging_clause",
-						"propertyType": "select",
-						"defaultValue": "logging",
-						"options": ["", "logging", "nologging", "filesystem_like_logging"]
-					},
-					{
-						"propertyName": "Comments",
-						"propertyKeyword": "indxComments",
-						"propertyTooltip": "comments",
-						"addTimestampButton": false,
-						"propertyType": "details",
-						"template": "textarea"
-					}
-				]
-			}
-		]
-	}
+  {
+    "lowerTab": "Details",
+    "structure": [
+      {
+        "propertyName": "Comments",
+        "propertyKeyword": "description",
+        "shouldValidate": false,
+        "propertyTooltip": "comments",
+        "propertyType": "details",
+        "template": "textarea"
+      },
+      {
+        "propertyName": "Materialized",
+        "propertyKeyword": "materialized",
+        "propertyTooltip": "Specify whether to create materialized view.",
+        "propertyType": "checkbox",
+        "dependency": {
+          "type": "or",
+          "values": [
+            {
+              "key": "duality",
+              "value": false
+            },
+            {
+              "key": "duality",
+              "exist": false
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "Or replace",
+        "propertyKeyword": "or_replace",
+        "propertyTooltip": "To re-create the view if it already exists. You can use this clause to change the definition of an existing view without dropping, re-creating, and regranting object privileges previously granted on it.",
+        "propertyType": "checkbox",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "materialized",
+                  "value": false
+                },
+                {
+                  "key": "materialized",
+                  "exist": false
+                }
+              ]
+            },
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "ifNotExist",
+                  "value": false
+                },
+                {
+                  "key": "ifNotExist",
+                  "exist": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "Or replace",
+        "propertyKeyword": "or_replace",
+        "propertyTooltip": "To re-create the view if it already exists. You can use this clause to change the definition of an existing view without dropping, re-creating, and regranting object privileges previously granted on it.",
+        "propertyType": "checkbox",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "materialized",
+                  "value": false
+                },
+                {
+                  "key": "materialized",
+                  "exist": false
+                }
+              ]
+            },
+            {
+              "key": "ifNotExist",
+              "value": true
+            }
+          ]
+        },
+        "disabled": true
+      },
+      {
+        "propertyName": "Duality",
+        "propertyKeyword": "duality",
+        "propertyType": "checkbox",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "type": "not",
+              "values": [
+                {
+                  "level": "model",
+                  "key": "dbVersion",
+                  "value": "12c"
+                },
+                {
+                  "level": "model",
+                  "key": "dbVersion",
+                  "value": "18c"
+                },
+                {
+                  "level": "model",
+                  "key": "dbVersion",
+                  "value": "19c"
+                },
+                {
+                  "level": "model",
+                  "key": "dbVersion",
+                  "value": "21c"
+                }
+              ]
+            },
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "materialized",
+                  "value": false
+                },
+                {
+                  "key": "materialized",
+                  "exist": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "If not exist",
+        "propertyKeyword": "ifNotExist",
+        "propertyType": "checkbox",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "or_replace",
+                  "value": false
+                },
+                {
+                  "key": "or_replace",
+                  "exist": false
+                }
+              ]
+            },
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "duality",
+                  "value": false
+                },
+                {
+                  "key": "duality",
+                  "exist": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "If not exist",
+        "propertyKeyword": "ifNotExist",
+        "propertyType": "checkbox",
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "key": "or_replace",
+              "value": true
+            },
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "duality",
+                  "value": false
+                },
+                {
+                  "key": "duality",
+                  "exist": false
+                }
+              ]
+            }
+          ]
+        },
+        "disabled": true
+      },
+      {
+        "propertyName": "Force",
+        "propertyKeyword": "force",
+        "propertyTooltip": "Select from list of options",
+        "propertyType": "select",
+        "options": ["", "force", "no force"],
+        "dependency": {
+          "type": "or",
+          "values": [
+            {
+              "key": "materialized",
+              "value": false
+            },
+            {
+              "key": "materialized",
+              "exist": false
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "Editionable",
+        "propertyKeyword": "editionable",
+        "propertyTooltip": "To specify whether the view becomes an editioned or noneditioned object if editioning is enabled for the schema object type VIEW in schema.",
+        "propertyType": "select",
+        "options": ["", "editionable", "noneditionable"],
+        "dependency": {
+          "type": "or",
+          "values": [
+            {
+              "key": "materialized",
+              "value": false
+            },
+            {
+              "key": "materialized",
+              "exist": false
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "Editioning",
+        "propertyKeyword": "editioning",
+        "propertyTooltip": "A single-table view that selects all rows from the base table and displays a subset of the base table columns. ",
+        "propertyType": "select",
+        "options": ["", "editioning"],
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "materialized",
+                  "value": false
+                },
+                {
+                  "key": "materialized",
+                  "exist": false
+                }
+              ]
+            },
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "duality",
+                  "value": false
+                },
+                {
+                  "key": "duality",
+                  "exist": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "Sharing",
+        "propertyKeyword": "sharing",
+        "propertyTooltip": "To determine how the view data is shared, specify one of the following sharing attributes",
+        "propertyType": "select",
+        "options": ["", "METADATA", "DATA", "EXTENDED DATA", "NONE"],
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "materialized",
+                  "value": false
+                },
+                {
+                  "key": "materialized",
+                  "exist": false
+                }
+              ]
+            },
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "duality",
+                  "value": false
+                },
+                {
+                  "key": "duality",
+                  "exist": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "View properties",
+        "propertyKeyword": "viewProperties",
+        "shouldValidate": false,
+        "propertyTooltip": "View properties",
+        "propertyType": "details",
+        "template": "textarea",
+        "markdown": false,
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "materialized",
+                  "value": false
+                },
+                {
+                  "key": "materialized",
+                  "exist": false
+                }
+              ]
+            },
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "duality",
+                  "value": false
+                },
+                {
+                  "key": "duality",
+                  "exist": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "Materialized view properties",
+        "propertyKeyword": "mviewProperties",
+        "shouldValidate": false,
+        "propertyTooltip": "Materialized view properties",
+        "propertyType": "details",
+        "template": "textarea",
+        "markdown": false,
+        "dependency": {
+          "key": "materialized",
+          "value": true
+        }
+      },
+      {
+        "propertyName": "From root table",
+        "propertyKeyword": "viewOn",
+        "hidden": false,
+        "dependency": {
+          "key": "duality",
+          "value": true
+        }
+      },
+      {
+        "propertyKeyword": "viewOn",
+        "hidden": true,
+        "dependency": {
+          "type": "or",
+          "values": [
+            {
+              "key": "duality",
+              "value": false
+            },
+            {
+              "key": "duality",
+              "exists": false
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "Root table alias",
+        "propertyKeyword": "rootTableAlias",
+        "propertyType": "text",
+        "dependency": {
+          "key": "duality",
+          "value": true
+        }
+      },
+      {
+        "propertyName": "Table tags clause",
+        "propertyKeyword": "tableTagsClause",
+        "propertyType": "block",
+        "propertyTooltip": "",
+        "structure": [
+          {
+            "propertyName": "Check",
+            "propertyKeyword": "check",
+            "propertyType": "select",
+            "options": ["", "check", "nocheck"]
+          },
+          {
+            "propertyName": "Etag",
+            "propertyKeyword": "etag",
+            "propertyType": "checkbox",
+            "dependency": {
+              "key": "check",
+              "value": ["check", "nocheck"]
+            }
+          },
+          {
+            "propertyName": "Insert",
+            "propertyKeyword": "insert",
+            "propertyType": "select",
+            "options": ["", "insert", "noinsert"]
+          },
+          {
+            "propertyName": "Update",
+            "propertyKeyword": "update",
+            "propertyType": "select",
+            "options": ["", "update", "noupdate"]
+          },
+          {
+            "propertyName": "Delete",
+            "propertyKeyword": "delete",
+            "propertyType": "select",
+            "options": ["", "delete", "nodelete"]
+          }
+        ],
+        "dependency": {
+          "key": "duality",
+          "value": true
+        }
+      },
+      {
+        "propertyName": "Select Statement",
+        "propertyKeyword": "selectStatement",
+        "propertyType": "details",
+        "propertyTooltip": "Select statement. To reference on partitioned table you should use ${tableName} template",
+        "template": "textarea",
+        "markdown": false,
+        "dependency": {
+          "type": "and",
+          "values": [
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "materialized",
+                  "value": false
+                },
+                {
+                  "key": "materialized",
+                  "exist": false
+                }
+              ]
+            },
+            {
+              "type": "or",
+              "values": [
+                {
+                  "key": "duality",
+                  "value": false
+                },
+                {
+                  "key": "duality",
+                  "exist": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "propertyName": "Where clause",
+        "propertyKeyword": "whereClause",
+        "propertyType": "text",
+        "dependency": {
+          "key": "duality",
+          "value": true
+        }
+      },
+      {
+        "propertyName": "Workload analysis",
+        "propertyKeyword": "analysis",
+        "propertyTooltip": "",
+        "propertyType": "block",
+        "dependency": {
+          "key": "duality",
+          "value": true
+        },
+        "structure": [
+          {
+            "propertyName": "Actor",
+            "propertyKeyword": "actor",
+            "propertyType": "text"
+          },
+          {
+            "propertyName": "Description",
+            "propertyKeyword": "queryDescription",
+            "propertyTooltip": "Popup for multi-line text entry",
+            "propertyType": "details",
+            "template": "textarea",
+            "markdown": true
+          },
+          {
+            "propertyName": "Number of documents",
+            "propertyKeyword": "nbrDocs",
+            "propertyType": "numeric",
+            "valueType": "number",
+            "allowNegative": false,
+            "minValue": 0,
+            "step": 1
+          },
+          {
+            "propertyName": "Avg document size (Bytes)",
+            "propertyKeyword": "docSize",
+            "propertyType": "numeric",
+            "valueType": "number",
+            "allowNegative": false,
+            "minValue": 0,
+            "step": 1
+          },
+          {
+            "propertyName": "Read-to-Write ratio",
+            "propertyKeyword": "RtWratio",
+            "propertyType": "text"
+          },
+          {
+            "propertyName": "Write operations",
+            "propertyKeyword": "writeOps",
+            "propertyTooltip": "",
+            "propertyType": "group",
+            "structure": [
+              {
+                "propertyName": "Write ops name",
+                "propertyKeyword": "writeOpsName",
+                "propertyType": "text"
+              },
+              {
+                "propertyName": "Write type",
+                "propertyKeyword": "writeType",
+                "propertyTooltip": "Select from list of options",
+                "propertyType": "select",
+                "defaultValue": "insert",
+                "options": ["check", "insert", "update", "delete"]
+              },
+              {
+                "propertyName": "Update predicates",
+                "propertyKeyword": "updatePredicates",
+                "propertyTooltip": "Popup for multi-line text entry",
+                "propertyType": "details",
+                "template": "textarea",
+                "markdown": false,
+                "dependency": {
+                  "key": "writeType",
+                  "value": "update"
+                }
+              },
+              {
+                "propertyName": "Write rate",
+                "propertyKeyword": "writeRate",
+                "propertyType": "numeric",
+                "valueType": "number",
+                "allowNegative": false,
+                "minValue": 0,
+                "step": 1
+              },
+              {
+                "propertyName": "Write frequency",
+                "propertyKeyword": "writeFrequency",
+                "propertyTooltip": "Select from list of options",
+                "propertyType": "select",
+                "defaultValue": "per hour",
+                "options": ["per second", "per minute", "per hour"]
+              }
+            ]
+          },
+          {
+            "propertyName": "Read operations",
+            "propertyKeyword": "readOperations",
+            "propertyTooltip": "Click the + sign to add new query description",
+            "propertyType": "group",
+            "structure": [
+              {
+                "propertyName": "Read ops name",
+                "propertyKeyword": "readOpsName",
+                "propertyType": "text"
+              },
+              {
+                "propertyName": "Query predicates",
+                "propertyKeyword": "queryPredicates",
+                "propertyTooltip": "Popup for multi-line text entry",
+                "propertyType": "details",
+                "template": "textarea",
+                "markdown": false
+              },
+              {
+                "propertyName": "Read rate",
+                "propertyKeyword": "readRate",
+                "propertyType": "numeric",
+                "valueType": "number",
+                "allowNegative": false,
+                "minValue": 0,
+                "step": 1
+              },
+              {
+                "propertyName": "Read frequency",
+                "propertyKeyword": "readFrequency",
+                "propertyTooltip": "Select from list of options",
+                "propertyType": "select",
+                "defaultValue": "per hour",
+                "options": ["per second", "per minute", "per hour"]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "propertyName": "Custom scripts",
+        "propertyType": "block",
+        "propertyKeyword": "customScripts",
+        "propertyTooltip": "",
+        "structure": [
+          {
+            "propertyName": "Before CREATE VIEW",
+            "propertyKeyword": "beforeCreateView",
+            "propertyType": "block",
+            "propertyTooltip": "",
+            "structure": [
+              {
+                "propertyName": "Script",
+                "propertyKeyword": "script",
+                "propertyType": "details",
+                "markdown": false,
+                "template": "codeEditor",
+                "templateOptions": {
+                  "editorDialect": "sql",
+                  "customScriptVariables": true
+                }
+              }
+            ]
+          },
+          {
+            "propertyName": "After CREATE VIEW",
+            "propertyKeyword": "afterCreateView",
+            "propertyType": "block",
+            "propertyTooltip": "",
+            "structure": [
+              {
+                "propertyName": "Script",
+                "propertyKeyword": "script",
+                "propertyType": "details",
+                "markdown": false,
+                "template": "codeEditor",
+                "templateOptions": {
+                  "editorDialect": "sql",
+                  "customScriptVariables": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "propertyName": "Remarks",
+        "propertyKeyword": "comments",
+        "shouldValidate": false,
+        "propertyTooltip": "remarks",
+        "propertyType": "details",
+        "template": "textarea"
+      },
+      {
+        "propertyKeyword": "pipeline",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "lowerTab": "Indexes",
+    "structure": [
+      {
+        "propertyName": "Index",
+        "propertyType": "group",
+        "propertyKeyword": "Indxs",
+        "propertyTooltip": "",
+        "dependency": {
+          "key": "materialized",
+          "value": true
+        },
+        "structure": [
+          {
+            "propertyName": "Name",
+            "propertyKeyword": "indxName",
+            "propertyTooltip": "",
+            "propertyType": "text"
+          },
+          {
+            "propertyName": "Activated",
+            "propertyKeyword": "isActivated",
+            "propertyTooltip": "Deactivated item will be not included in FE script",
+            "propertyType": "checkbox",
+            "defaultValue": true
+          },
+          {
+            "propertyName": "Type",
+            "propertyKeyword": "indxType",
+            "propertyType": "select",
+            "options": ["", "multivalue", "unique", "bitmap"]
+          },
+          {
+            "propertyName": "Keys",
+            "propertyKeyword": "indxKey",
+            "propertyType": "fieldList",
+            "template": "orderedList",
+            "attributeList": ["asc", "desc"],
+            "dependency": {
+              "type": "or",
+              "values": [
+                {
+                  "key": "column_expression",
+                  "exist": false
+                },
+                {
+                  "key": "column_expression",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          {
+            "propertyName": "Conditional function",
+            "propertyKeyword": "column_expression",
+            "propertyTooltip": "Enter conditional function for a function-based index",
+            "propertyType": "details",
+            "markdown": false,
+            "template": "codeEditor",
+            "templateOptions": {
+              "editorDialect": "sql"
+            },
+            "dependency": {
+              "type": "or",
+              "values": [
+                {
+                  "key": "indxKey",
+                  "exist": false
+                },
+                {
+                  "key": "indxKey",
+                  "isEmpty": true
+                }
+              ]
+            }
+          },
+          {
+            "propertyName": "Description",
+            "propertyKeyword": "indxDescription",
+            "propertyTooltip": "description",
+            "propertyType": "details",
+            "template": "textarea"
+          },
+          {
+            "propertyName": "Tablespace",
+            "propertyKeyword": "tablespace",
+            "propertyTooltip": "Specify the tablespace in which Oracle Database creates the table.  If you omit TABLESPACE, then the database creates that item in the default tablespace of the owner of the schema containing the table.",
+            "propertyType": "text"
+          },
+          {
+            "propertyName": "Properties",
+            "propertyKeyword": "index_properties",
+            "propertyTooltip": "Specify the optional index attributes.",
+            "propertyType": "details",
+            "template": "textarea",
+            "markdown": false
+          },
+          {
+            "propertyName": "Attributes",
+            "propertyKeyword": "index_attributes",
+            "propertyTooltip": "Specify the optional index attributes.",
+            "propertyType": "details",
+            "template": "textarea",
+            "markdown": false
+          },
+          {
+            "propertyName": "Compression",
+            "propertyKeyword": "index_compression",
+            "propertyTooltip": "If you want to use compression for a partitioned index, then you must create the index with compression enabled at the index level. You can subsequently enable and disable the compression setting for individual partitions of such a partitioned index. ",
+            "propertyType": "details",
+            "template": "textarea",
+            "markdown": false
+          },
+          {
+            "propertyName": "Logging",
+            "propertyKeyword": "logging_clause",
+            "propertyType": "select",
+            "defaultValue": "logging",
+            "options": ["", "logging", "nologging", "filesystem_like_logging"]
+          },
+          {
+            "propertyName": "Comments",
+            "propertyKeyword": "indxComments",
+            "propertyTooltip": "comments",
+            "addTimestampButton": false,
+            "propertyType": "details",
+            "template": "textarea"
+          }
+        ]
+      }
+    ]
+  }
 ]
