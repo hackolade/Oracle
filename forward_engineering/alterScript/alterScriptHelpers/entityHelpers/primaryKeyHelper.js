@@ -489,7 +489,7 @@ const getModifyPkConstraintsScriptDtos = ({ scriptFormat, collection }) => {
 	const sortedAllDtos = sortModifyKeyConstraints(allDtos);
 
 	return sortedAllDtos
-		.map(dto => AlterScriptDto.getInstance([dto.script], dto.isActivated, dto.isDropScript))
+		.map(dto => AlterScriptDto.getInstance(dto.script, dto.isActivated, dto.isDropScript))
 		.filter(Boolean);
 };
 

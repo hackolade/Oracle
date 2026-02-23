@@ -25,7 +25,7 @@ const {
 	getDeleteForeignKeyScriptDtos,
 	getAddForeignKeyScriptDtos,
 } = require('./alterScriptHelpers/alterRelationshipsHelper');
-const { AlterScriptDto, ModificationScript } = require('./types/AlterScriptDto');
+const { AlterScriptDto } = require('./types/AlterScriptDto');
 const { App, CoreData } = require('../types/coreApplicationTypes');
 const { InternalDefinitions, ModelDefinitions, ExternalDefinitions } = require('../types/coreApplicationDataTypes');
 const {
@@ -143,7 +143,7 @@ const getAlterCollectionsScriptDtos = ({
 	const createCollectionsScriptDtos = sortCollectionsByRelationships(
 		createScriptsData.filter(collection => collection.compMod?.created),
 		inlineDeltaRelationships,
-	).map(
+	).flatMap(
 		getAddCollectionScriptDto({
 			app,
 			dbVersion,
@@ -374,9 +374,7 @@ const prettifyAlterScriptDto = dto => {
 	if (!dto) {
 		return undefined;
 	}
-	/**
-	 * @type {Array<ModificationScript>}
-	 * */
+
 	const nonEmptyScriptModificationDtos = dto.scripts
 		.map(scriptDto => ({
 			...scriptDto,

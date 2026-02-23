@@ -8,7 +8,7 @@ const getAddContainerScriptDto = (app, scriptFormat) => containerName => {
 	const ddlContainerName = prepareNameForScriptFormat(scriptFormat)(containerName);
 
 	const createContainerStatement = `CREATE USER ${ddlContainerName} NO AUTHENTICATION;`;
-	return AlterScriptDto.getInstance([createContainerStatement], true, false);
+	return AlterScriptDto.getInstance(createContainerStatement, true, false);
 };
 
 /**
@@ -18,7 +18,7 @@ const getDeleteContainerScriptDto = (app, scriptFormat) => containerName => {
 	const ddlContainerName = prepareNameForScriptFormat(scriptFormat)(containerName);
 
 	const dropContainerStatement = `DROP USER ${ddlContainerName};`;
-	return AlterScriptDto.getInstance([dropContainerStatement], true, true);
+	return AlterScriptDto.getInstance(dropContainerStatement, true, true);
 };
 
 module.exports = {

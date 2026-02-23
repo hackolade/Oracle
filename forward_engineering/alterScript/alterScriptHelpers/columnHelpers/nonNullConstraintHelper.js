@@ -24,7 +24,7 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 	const previousRequiredColumnNames = collection.role.required || [];
 
 	const addNotNullConstraintsScript = _.toPairs(collection.properties)
-		.map(([name, jsonSchema]) => {
+		.flatMap(([name, jsonSchema]) => {
 			const oldName = jsonSchema.compMod.oldField.name;
 
 			const newConstraintName = jsonSchema.notNullConstraintName || '';
@@ -43,8 +43,10 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 
 			if (isOldRequired && (!isNewRequired || isNameChanged)) {
 				const template = oldConstraintName ? templates.dropConstraint : templates.alterNullableConstraint;
-				scripts.push(
+				AlterScriptDto.getInstance(
 					assignTemplates(template, { ...scriptParams, constraintName: prepareName(oldConstraintName) }),
+					true,
+					Boolean(oldConstraintName),
 				);
 			}
 
@@ -52,12 +54,14 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 				const template = newConstraintName
 					? templates.alterNamedNotNullConstraint
 					: templates.alterNotNullConstraint;
-				scripts.push(
+				AlterScriptDto.getInstance(
 					assignTemplates(template, { ...scriptParams, constraintName: prepareName(newConstraintName) }),
+					true,
+					false,
 				);
 			}
 
-			return scripts.length ? AlterScriptDto.getInstance(scripts, true, false) : null;
+			return scripts;
 		})
 		.filter(Boolean);
 

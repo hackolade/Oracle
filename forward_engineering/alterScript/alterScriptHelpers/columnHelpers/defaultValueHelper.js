@@ -51,9 +51,9 @@ const getUpdatedDefaultColumnValueScriptDtos = ({ scriptFormat, collection }) =>
 				defaultValue: getColumnDefault(jsonSchema),
 			};
 
-			return updateColumnDefaultValue(scriptGenerationConfig);
+			const script = updateColumnDefaultValue(scriptGenerationConfig);
+			return AlterScriptDto.getInstance(script, true, false);
 		})
-		.map(script => AlterScriptDto.getInstance([script], true, false))
 		.filter(Boolean);
 };
 

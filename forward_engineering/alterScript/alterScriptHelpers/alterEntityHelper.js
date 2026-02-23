@@ -98,9 +98,11 @@ const getAddCollectionScriptDto =
 			ddlProvider,
 			collection,
 			dbVersion,
-		}).flatMap(({ scripts }) => scripts.map(({ script }) => script));
+		});
+
 		const script = ddlProvider.createTable(hydratedTable, jsonSchema.isActivated);
-		return AlterScriptDto.getInstance([script, ...indexesOnNewlyCreatedColumnsScripts], true, false);
+
+		return [AlterScriptDto.getInstance(script, true, false), ...indexesOnNewlyCreatedColumnsScripts];
 	};
 
 /**
@@ -113,7 +115,7 @@ const getDeleteCollectionScriptDto = (app, scriptFormat) => collection => {
 	const fullName = getNamePrefixedWithSchemaNameForScriptFormat(scriptFormat)(tableName, schemaName);
 
 	const script = `DROP TABLE ${fullName};`;
-	return AlterScriptDto.getInstance([script], true, true);
+	return AlterScriptDto.getInstance(script, true, true);
 };
 
 /**
@@ -184,12 +186,13 @@ const getAddColumnScriptDtos =
 					definitionJsonSchema,
 				});
 			})
-			.map(data => ddlProvider.convertColumnDefinition(data))
-			.map(script => `ALTER TABLE ${fullName} ADD (${script});`)
-			.map(script => AlterScriptDto.getInstance([script], true, false))
-			.filter(Boolean);
+			.map(data => {
+				const scriptPart = ddlProvider.convertColumnDefinition(data);
+				const script = `ALTER TABLE ${fullName} ADD (${scriptPart});`;
+				return AlterScriptDto.getInstance(script, true, false);
+			});
 
-		return scripts.filter(Boolean);
+		return scripts;
 	};
 
 /**
@@ -227,9 +230,10 @@ const getDeleteColumnScriptDtos = (app, scriptFormat) => collection => {
 
 	return _.toPairs(collection.properties)
 		.filter(([name, jsonSchema]) => !jsonSchema.compMod)
-		.map(([name]) => `ALTER TABLE ${fullName} DROP COLUMN ${prepareNameForScriptFormat(scriptFormat)(name)};`)
-		.map(script => AlterScriptDto.getInstance([script], true, true))
-		.filter(Boolean);
+		.map(([name]) => {
+			const script = `ALTER TABLE ${fullName} DROP COLUMN ${prepareNameForScriptFormat(scriptFormat)(name)};`;
+			return AlterScriptDto.getInstance(script, true, true);
+		});
 };
 
 /**

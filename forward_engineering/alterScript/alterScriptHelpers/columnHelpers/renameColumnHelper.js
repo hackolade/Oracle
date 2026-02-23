@@ -21,9 +21,9 @@ const getRenameColumnScriptDtos = (ddlProvider, scriptFormat) => collection => {
 		.map(jsonSchema => {
 			const oldColumnName = prepareNameForScriptFormat(scriptFormat)(jsonSchema.compMod.oldField.name);
 			const newColumnName = prepareNameForScriptFormat(scriptFormat)(jsonSchema.compMod.newField.name);
-			return ddlProvider.renameColumn(fullName, oldColumnName, newColumnName);
-		})
-		.map(script => AlterScriptDto.getInstance([script], true, false));
+			const script = ddlProvider.renameColumn(fullName, oldColumnName, newColumnName);
+			return AlterScriptDto.getInstance(script, true, false);
+		});
 };
 
 module.exports = {

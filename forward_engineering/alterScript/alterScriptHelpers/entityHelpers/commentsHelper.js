@@ -40,7 +40,7 @@ const getUpdatedCommentOnCollectionScriptDto = ({ scriptFormat, collection }) =>
 	const comment = newComment ? wrapComment(newComment) : 'NULL';
 	const script = updateTableComment(fullTableName, comment);
 
-	return AlterScriptDto.getInstance([script], true, false);
+	return AlterScriptDto.getInstance(script, true, false);
 };
 
 /**

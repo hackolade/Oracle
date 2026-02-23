@@ -48,9 +48,9 @@ const getUpdatedCommentOnColumnScriptDtos = ({ scriptFormat, collection }) => {
 			const columnName = prepareNameForScriptFormat(scriptFormat)(name);
 			const fullColumnName = `${fullTableName}.${columnName}`;
 
-			return updateColumnComment(fullColumnName, wrappedComment);
-		})
-		.map(script => AlterScriptDto.getInstance([script], true, false));
+			const script = updateColumnComment(fullColumnName, wrappedComment);
+			return AlterScriptDto.getInstance(script, true, false);
+		});
 };
 
 /**

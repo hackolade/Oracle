@@ -37,7 +37,7 @@ const getRenameCollectionScriptDto = ({ scriptFormat, collection }) => {
 		newName: prepareNameForScriptFormat(scriptFormat)(newName),
 	});
 
-	return AlterScriptDto.getInstance([script], true, false);
+	return AlterScriptDto.getInstance(script, true, false);
 };
 
 /**

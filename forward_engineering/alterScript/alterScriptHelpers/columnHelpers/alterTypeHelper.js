@@ -92,9 +92,9 @@ const getUpdateTypesScriptDtos = (ddlProvider, scriptFormat) => collection => {
 		.map(([name, jsonSchema]) => {
 			const type = _.toUpper(jsonSchema.compMod.newField.mode || jsonSchema.compMod.newField.type);
 			const columnName = prepareNameForScriptFormat(scriptFormat)(name);
-			return alterColumnType(fullName, columnName, type, jsonSchema);
-		})
-		.map(script => AlterScriptDto.getInstance([script], true, true));
+			const script = alterColumnType(fullName, columnName, type, jsonSchema);
+			return AlterScriptDto.getInstance(script, true, true);
+		});
 };
 
 module.exports = {

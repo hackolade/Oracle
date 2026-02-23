@@ -28,7 +28,7 @@ const getRenameEntityScriptDto = ({ scriptFormat, entity }) => {
 		newName: prepareNameForScriptFormat(scriptFormat)(newName),
 	});
 
-	return AlterScriptDto.getInstance([renameScript], true, false);
+	return AlterScriptDto.getInstance(renameScript, true, false);
 };
 
 /**
