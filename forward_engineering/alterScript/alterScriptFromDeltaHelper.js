@@ -406,13 +406,13 @@ const getAlterContainersSequencesScriptDtos = ({ collection, app, dbVersion }) =
 	const deletedContainers = getItemProperties(containers?.deleted);
 	const modifiedContainers = getItemProperties(containers?.modified);
 
-	const addContainersSequencesScriptDtos = addedContainers.map(container =>
+	const addContainersSequencesScriptDtos = addedContainers.flatMap(container =>
 		getAddContainerSequencesScriptDtos({ app })({ container, dbVersion }),
 	);
-	const deleteContainersScriptDtos = deletedContainers.map(container =>
+	const deleteContainersScriptDtos = deletedContainers.flatMap(container =>
 		getDeleteContainerSequencesScriptDtos({ app })({ container, dbVersion }),
 	);
-	const modifyContainersScriptDtos = modifiedContainers.map(container =>
+	const modifyContainersScriptDtos = modifiedContainers.flatMap(container =>
 		getModifyContainerSequencesScriptDtos({ app })({ container, dbVersion }),
 	);
 
