@@ -485,12 +485,10 @@ const getModifyPkConstraintsScriptDtos = ({ scriptFormat, collection }) => {
 	const modifyCompositePkScriptDtos = getModifyCompositePkScriptDtos({ scriptFormat, collection });
 	const modifyPkScriptDtos = getModifyPkScriptDtos({ scriptFormat, collection });
 
-	const allDtos = [...modifyCompositePkScriptDtos, ...modifyPkScriptDtos];
+	const allDtos = [...modifyCompositePkScriptDtos, ...modifyPkScriptDtos].filter(Boolean);
 	const sortedAllDtos = sortModifyKeyConstraints(allDtos);
 
-	return sortedAllDtos
-		.map(dto => AlterScriptDto.getInstance(dto.script, dto.isActivated, dto.isDropScript))
-		.filter(Boolean);
+	return sortedAllDtos;
 };
 
 module.exports = {

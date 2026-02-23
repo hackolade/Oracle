@@ -177,9 +177,7 @@ const getAlterCollectionsScriptDtos = ({
 		.flatMap(getDeleteColumnScriptDtos(app, scriptFormat));
 	const modifyColumnScriptDtos = modifyScriptsData.flatMap(getModifyColumnScriptDtos(app, dbVersion, scriptFormat));
 
-	const [collectionDropDtos, modifyCollectionDtos] = _.partition(modifyCollectionScriptDtos, collectionDto =>
-		collectionDto.scripts?.some(s => s.isDropScript),
-	);
+	const [collectionDropDtos, modifyCollectionDtos] = _.partition(modifyCollectionScriptDtos, dto => dto.isDropScript);
 
 	return [
 		...createCollectionsScriptDtos,
@@ -367,30 +365,6 @@ const getAlterRelationshipsScriptDtos = ({ collection, app, scriptFormat, ignore
 };
 
 /**
- * @param dto {AlterScriptDto}
- * @return {AlterScriptDto | undefined}
- */
-const prettifyAlterScriptDto = dto => {
-	if (!dto) {
-		return undefined;
-	}
-
-	const nonEmptyScriptModificationDtos = dto.scripts
-		.map(scriptDto => ({
-			...scriptDto,
-			script: (scriptDto.script || '').trim(),
-		}))
-		.filter(scriptDto => Boolean(scriptDto.script));
-	if (!nonEmptyScriptModificationDtos.length) {
-		return undefined;
-	}
-	return {
-		...dto,
-		scripts: nonEmptyScriptModificationDtos,
-	};
-};
-
-/**
  * @param {{
  * collection: Object,
  * app: App,
@@ -501,10 +475,7 @@ const getAlterScriptDtos = (data, app) => {
 		...collectionsScriptDtos,
 		...viewScriptDtos.restViewScripts,
 		...relationshipScriptDtos,
-	]
-		.filter(Boolean)
-		.map(dto => prettifyAlterScriptDto(dto))
-		.filter(Boolean);
+	].filter(Boolean);
 };
 
 module.exports = {

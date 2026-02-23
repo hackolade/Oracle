@@ -21,13 +21,14 @@ class AlterScriptDto {
 	 * @return {AlterScriptDto | undefined}
 	 * */
 	static getInstance(script, isActivated, isDropScript) {
-		if (!script?.trim()) {
+		const cleanScript = script?.trim();
+		if (!cleanScript) {
 			return undefined;
 		}
 		return {
 			isActivated,
 			isDropScript,
-			scripts: script.trim(),
+			script: cleanScript,
 		};
 	}
 }

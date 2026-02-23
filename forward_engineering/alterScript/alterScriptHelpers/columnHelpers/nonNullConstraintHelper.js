@@ -43,10 +43,12 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 
 			if (isOldRequired && (!isNewRequired || isNameChanged)) {
 				const template = oldConstraintName ? templates.dropConstraint : templates.alterNullableConstraint;
-				AlterScriptDto.getInstance(
-					assignTemplates(template, { ...scriptParams, constraintName: prepareName(oldConstraintName) }),
-					true,
-					Boolean(oldConstraintName),
+				scripts.push(
+					AlterScriptDto.getInstance(
+						assignTemplates(template, { ...scriptParams, constraintName: prepareName(oldConstraintName) }),
+						true,
+						Boolean(templates.dropConstraint),
+					),
 				);
 			}
 
@@ -54,10 +56,12 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 				const template = newConstraintName
 					? templates.alterNamedNotNullConstraint
 					: templates.alterNotNullConstraint;
-				AlterScriptDto.getInstance(
-					assignTemplates(template, { ...scriptParams, constraintName: prepareName(newConstraintName) }),
-					true,
-					false,
+				scripts.push(
+					AlterScriptDto.getInstance(
+						assignTemplates(template, { ...scriptParams, constraintName: prepareName(newConstraintName) }),
+						true,
+						false,
+					),
 				);
 			}
 
