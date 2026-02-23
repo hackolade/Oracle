@@ -708,6 +708,10 @@ module.exports = (baseProvider, options, app) => {
 			return commentIfDeactivated(statement, { isActivated: false });
 		},
 
+		prepareName(name) {
+			return prepareName(name);
+		},
+
 		/**
 		 * @param tableName {string}
 		 * @param oldColumnName {string}
