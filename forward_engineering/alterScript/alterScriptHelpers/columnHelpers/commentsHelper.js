@@ -41,10 +41,10 @@ const getUpdatedCommentOnColumnScriptDtos = ({ scriptFormat, collection }) => {
 			const oldName = jsonSchema.compMod.oldField.name;
 			const oldComment = collection.role.properties[oldName]?.description;
 
-			return newComment && (!oldComment || newComment !== oldComment);
+			return newComment !== oldComment;
 		})
 		.map(([name, jsonSchema]) => {
-			const wrappedComment = wrapComment(jsonSchema.description);
+			const wrappedComment = jsonSchema.description ? wrapComment(jsonSchema.description) : 'NULL';
 			const columnName = prepareNameForScriptFormat(scriptFormat)(name);
 			const fullColumnName = `${fullTableName}.${columnName}`;
 

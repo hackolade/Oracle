@@ -161,17 +161,6 @@
 						}
 					}
 				]
-			],
-			[
-				"addPropertiesByPath",
-				[
-					{
-						"keyPath": "generatedDefaultValue.identity",
-						"subProperties": {
-							"numberToCache": 1
-						}
-					}
-				]
 			]
 		]
 	}

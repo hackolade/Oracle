@@ -22,6 +22,7 @@ const {
 } = require('../utils/general');
 const { assignTemplates } = require('../utils/assignTemplates');
 const { decorateType } = require('./ddlHelpers/columnDefinitionHelpers/decorateType');
+const { getNotNullConstraints } = require('../alterScript/alterScriptHelpers/columnHelpers/nonNullConstraintHelper');
 
 /**
  * @param dbVersion {string} DB version in "21ai" format
@@ -35,10 +36,9 @@ const shouldUseTryCatchIfNotExistsWrapper = dbVersion => {
 module.exports = (baseProvider, options, app) => {
 	const toArray = val => (_.isArray(val) ? val : [val]);
 
-	const prepareName = prepareNameForScriptFormat(options?.targetScriptOptions?.keyword);
-	const getNamePrefixedWithSchemaName = getNamePrefixedWithSchemaNameForScriptFormat(
-		options?.targetScriptOptions?.keyword,
-	);
+	const scriptFormat = options?.targetScriptOptions?.keyword;
+	const prepareName = prepareNameForScriptFormat(scriptFormat);
+	const getNamePrefixedWithSchemaName = getNamePrefixedWithSchemaNameForScriptFormat(scriptFormat);
 
 	const keyHelper = require('./ddlHelpers/keyHelper')(clean);
 
@@ -183,7 +183,7 @@ module.exports = (baseProvider, options, app) => {
 				primaryKeyOptions: jsonSchema.primaryKeyOptions,
 				unique: keyHelper.isInlineUnique(jsonSchema),
 				uniqueKeyOptions: jsonSchema.uniqueKeyOptions,
-				nullable: columnDefinition.nullable,
+				nullable: columnDefinition.nullable || Boolean(jsonSchema.notNullConstraintName?.trim()),
 				default: columnDefinition.default,
 				comment: jsonSchema.refDescription || jsonSchema.description || definitionJsonSchema.description,
 				isActivated: columnDefinition.isActivated,
@@ -342,12 +342,12 @@ module.exports = (baseProvider, options, app) => {
 		 * @param fkConstraintName {string}
 		 * @return string
 		 * */
-		dropForeignKey(tableName, fkConstraintName) {
+		dropForeignKey(tableName, constraintName) {
 			const templateConfig = {
 				tableName,
-				fkConstraintName,
+				constraintName,
 			};
-			return assignTemplates(templates.dropForeignKey, templateConfig);
+			return assignTemplates(templates.dropConstraint, templateConfig);
 		},
 
 		hydrateTable({ tableData, entityData, jsonSchema }) {
@@ -358,6 +358,7 @@ module.exports = (baseProvider, options, app) => {
 			return {
 				...tableData,
 				keyConstraints: keyHelper.getTableKeyConstraints(jsonSchema),
+				notNullConstraints: getNotNullConstraints(jsonSchema, scriptFormat),
 				selectStatement: _.trim(detailsTab.selectStatement),
 				partitioning: _.assign({}, partitioning, { compositePartitionKey }),
 				..._.pick(
@@ -405,6 +406,7 @@ module.exports = (baseProvider, options, app) => {
 				ifNotExist,
 				tableProperties,
 				synonyms,
+				notNullConstraints,
 			},
 			isActivated,
 		) {
@@ -428,11 +430,18 @@ module.exports = (baseProvider, options, app) => {
 
 			const columnDescriptions = getColumnComments(tableName, columnDefinitions);
 
+			const dividedNotNullConstraints = divideIntoActivatedAndDeactivated(
+				notNullConstraints,
+				key => key.statement,
+			);
+			const notNullConstraintsString = generateConstraintsString(dividedNotNullConstraints, isActivated);
+
 			const tableProps = assignTemplates(templates.createTableProps, {
 				columnDefinitions: _.join(columns, ',\n\t'),
 				foreignKeyConstraints: foreignKeyConstraintsString,
 				keyConstraints: keyConstraintsString,
-				checkConstraints: !_.isEmpty(checkConstraints) ? ',\n\t' + _.join(checkConstraints, ',\n\t') : '',
+				checkConstraints: _.isEmpty(checkConstraints) ? '' : ',\n\t' + _.join(checkConstraints, ',\n\t'),
+				notNullConstraints: notNullConstraintsString,
 			});
 
 			const synonymsStatements = generateSynonymStatements(synonyms, tableName, schemaData.schemaName);
@@ -693,6 +702,14 @@ module.exports = (baseProvider, options, app) => {
 
 		commentIfDeactivated(statement, data, isPartOfLine) {
 			return statement;
+		},
+
+		commentStatement(statement) {
+			return commentIfDeactivated(statement, { isActivated: false });
+		},
+
+		prepareName(name) {
+			return prepareName(name);
 		},
 
 		/**

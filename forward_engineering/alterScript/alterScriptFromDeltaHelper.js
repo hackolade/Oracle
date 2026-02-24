@@ -183,13 +183,18 @@ const getAlterCollectionsScriptDtos = ({
 		.flatMap(getDeleteColumnScriptDtos(app, scriptFormat));
 	const modifyColumnScriptDtos = modifyScriptsData.flatMap(getModifyColumnScriptDtos(app, dbVersion, scriptFormat));
 
+	const [collectionDropDtos, modifyCollectionDtos] = _.partition(modifyCollectionScriptDtos, collectionDto =>
+		collectionDto.scripts?.some(s => s.isDropScript),
+	);
+
 	return [
 		...createCollectionsScriptDtos,
 		...deleteCollectionScriptDtos,
+		...collectionDropDtos,
 		...addColumnScriptDtos,
 		...deleteColumnScriptDtos,
 		...modifyColumnScriptDtos,
-		...modifyCollectionScriptDtos,
+		...modifyCollectionDtos,
 	].filter(Boolean);
 };
 
@@ -203,7 +208,7 @@ const getAlterCollectionsScriptDtos = ({
 const getAlterViewScriptDtos = (collection, app, dbVersion, scriptFormat) => {
 	const properties = collection.properties?.views?.properties;
 	if (!properties) {
-		return [];
+		return { restViewScripts: [], renameViewScripts: [] };
 	}
 
 	const prepareDtos = mutationType => {

@@ -31,13 +31,13 @@ const getUpdatedCommentOnCollectionScriptDto = ({ scriptFormat, collection }) =>
 	}
 
 	const { old: oldComment, new: newComment } = descriptionInfo;
-	if (!newComment || newComment === oldComment) {
+	if (newComment === oldComment) {
 		return undefined;
 	}
 
 	const collectionSchema = getSchemaOfAlterCollection(collection);
 	const fullTableName = getFullCollectionName(scriptFormat)(collectionSchema);
-	const comment = wrapComment(newComment);
+	const comment = newComment ? wrapComment(newComment) : 'NULL';
 	const script = updateTableComment(fullTableName, comment);
 
 	return AlterScriptDto.getInstance([script], true, false);

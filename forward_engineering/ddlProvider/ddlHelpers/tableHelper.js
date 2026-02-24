@@ -35,7 +35,7 @@ module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivate
 			{ key: 'external_table_clause', getValue: getExternalTableClause },
 			{ key: 'partitioning', getValue: getPartitioning },
 			{ key: 'selectStatement', getValue: getBasicValue('AS') },
-			{ key: 'tableProperties', getValue: value => value },
+			{ key: 'tableProperties', getValue: value => _.trim(value) },
 		]
 			.map(config => (tableData[config.key] ? wrap(config.getValue(tableData[config.key], tableData)) : ''))
 			.filter(Boolean)
@@ -120,7 +120,9 @@ module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivate
 			const expression = getPartitionKeys(value, isActivated);
 			const partitionClause = getPartitionClause(value, isActivated);
 
-			return `PARTITION BY ${_.toUpper(_.startsWith(value.partitionBy, 'composite') ? _.last(value.partitionBy.split(' ')) : value.partitionBy)} ${expression}${partitionClause}`;
+			return _.trim(
+				`PARTITION BY ${_.toUpper(_.startsWith(value.partitionBy, 'composite') ? _.last(value.partitionBy.split(' ')) : value.partitionBy)} ${expression}${partitionClause}`,
+			);
 		}
 
 		return '';
@@ -133,7 +135,7 @@ module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivate
 		}
 		return getColumnsList(value.partitionKey, isAllColumnsDeactivated, isParentActivated, ({ name }) =>
 			prepareName(name),
-		);
+		).trim();
 	};
 
 	const getPartitionClause = (value, isActivated) => {
@@ -155,7 +157,9 @@ module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivate
 				);
 			}
 			case 'hash': {
-				return getHashPartition(value);
+				const hashPartition = getHashPartition(value);
+				const compression = value.compression ?? '';
+				return `${hashPartition} ${compression}`;
 			}
 			case 'reference': {
 				return (
@@ -189,7 +193,8 @@ module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivate
 			case 'composite hash': {
 				const subpartition = getSubpartition(value, isActivated);
 				const hashPartition = getHashPartition(value);
-				return `${subpartition}${hashPartition}`;
+				const compression = value.compression ?? '';
+				return ' ' + `${subpartition}${hashPartition} ${compression}`.trim();
 			}
 			default: {
 				return '';

@@ -940,6 +940,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Not null constraint name",
 				"propertyKeyword": "notNullConstraintName",
 				"propertyType": "text",
+				"enableForReference": true,
 				"dependency": {
 					"type": "and",
 					"values": [
@@ -1143,6 +1144,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
@@ -2014,6 +2016,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
 				"defaultValue": false,
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
@@ -2911,6 +2914,41 @@ making sure that you maintain a proper JSON format.
 				"defaultValue": false
 			},
 			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Masked with function",
 				"propertyKeyword": "maskedWithFunction",
 				"propertyTooltip": "Limit exposure of sensitive data with this function",
@@ -3040,6 +3078,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
@@ -4052,6 +4091,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"defaultValue": false,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
@@ -4831,6 +4871,41 @@ making sure that you maintain a proper JSON format.
 				"defaultValue": false
 			},
 			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Masked with function",
 				"propertyKeyword": "maskedWithFunction",
 				"propertyTooltip": "Limit exposure of sensitive data with this function",
@@ -4995,6 +5070,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
@@ -5801,6 +5877,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"defaultValue": false,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
@@ -6446,6 +6523,41 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "JSON key",
 				"propertyKeyword": "name",
 				"shouldValidate": true,
@@ -6594,6 +6706,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"defaultValue": false,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
@@ -7402,6 +7515,41 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Alternate Key",
 				"propertyKeyword": "alternateKey",
 				"defaultValue": false,
@@ -7770,6 +7918,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"defaultValue": false,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
@@ -8433,6 +8582,41 @@ making sure that you maintain a proper JSON format.
 				"defaultValue": false
 			},
 			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Masked with function",
 				"propertyKeyword": "maskedWithFunction",
 				"propertyTooltip": "Limit exposure of sensitive data with this function",
@@ -8562,6 +8746,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
@@ -9180,6 +9365,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
 				"defaultValue": false,
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
@@ -9782,6 +9968,41 @@ making sure that you maintain a proper JSON format.
 				"defaultValue": false
 			},
 			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Row GUID Column",
 				"propertyKeyword": "ROWGUIDCOL",
 				"propertyType": "checkbox",
@@ -9908,6 +10129,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
@@ -10813,6 +11035,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"defaultValue": false,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
@@ -11004,6 +11227,41 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Not null",
 				"propertyKeyword": "required",
 				"propertyType": "checkbox"
+			},
+			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
 			},
 			"minItems",
 			"maxItems",
@@ -11214,6 +11472,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Primary key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",
@@ -11812,6 +12071,41 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "checkbox"
 			},
 			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Comments",
 				"propertyKeyword": "description",
 				"propertyTooltip": "comments",
@@ -12334,6 +12628,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Key",
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
+				"enableForReference": true,
 				"defaultValue": false,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
@@ -12882,6 +13177,41 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Not null constraint name",
+				"propertyKeyword": "notNullConstraintName",
+				"propertyType": "text",
+				"enableForReference": true,
+				"dependency": {
+					"type": "and",
+					"values": [
+						{
+							"key": "required",
+							"value": true
+						},
+						{
+							"type": "not",
+							"values": [
+								{
+									"type": "and",
+									"values": [
+										{
+											"level": "root",
+											"key": "viewOn",
+											"exist": true
+										},
+										{
+											"level": "root",
+											"key": "duality",
+											"value": true
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Not persistable",
 				"propertyKeyword": "notPersistable",
 				"enableForReference": true,
@@ -13085,6 +13415,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "primaryKey",
 				"propertyType": "checkbox",
 				"defaultValue": false,
+				"enableForReference": true,
 				"preserveOnCleanDependencies": true,
 				"dependency": {
 					"type": "and",

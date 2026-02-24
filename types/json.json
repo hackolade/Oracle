@@ -10,35 +10,40 @@
 		"source": true
 	},
 	"dependency": {
-		"type": "or",
+		"type": "and",
 		"values": [
 			{
-				"level": "model",
-				"key": "dbVersion",
-				"value": "21c"
-			},
-			{
-				"type": "and",
+				"type": "not",
 				"values": [
 					{
 						"level": "model",
 						"key": "dbVersion",
-						"value": "23ai"
+						"value": "12c"
 					},
 					{
-						"type": "or",
-						"values": [
-							{
-								"level": "root",
-								"key": "duality",
-								"value": false
-							},
-							{
-								"level": "root",
-								"key": "duality",
-								"exist": false
-							}
-						]
+						"level": "model",
+						"key": "dbVersion",
+						"value": "18c"
+					},
+					{
+						"level": "model",
+						"key": "dbVersion",
+						"value": "19c"
+					}
+				]
+			},
+			{
+				"type": "or",
+				"values": [
+					{
+						"level": "root",
+						"key": "duality",
+						"value": false
+					},
+					{
+						"level": "root",
+						"key": "duality",
+						"exist": false
 					}
 				]
 			}
