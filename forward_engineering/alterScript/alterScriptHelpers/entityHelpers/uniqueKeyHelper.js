@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { AlterScriptDto } = require('../../types/AlterScriptDto');
+const { AlterScriptDto, SCRIPT_TYPE } = require('../../types/AlterScriptDto');
 const {
 	AlterCollectionDto,
 	AlterCollectionColumnDto,
@@ -502,7 +502,9 @@ const getModifyUniqueKeyConstraintsScriptDtos = ({ scriptFormat, collection }) =
 	const allDtos = [...modifyCompositeUniqueKeyScriptDtos, ...modifyUniqueKeyScriptDtos].filter(Boolean);
 	const sortedAllDtos = sortModifyKeyConstraints(allDtos);
 
-	return sortedAllDtos;
+	return sortedAllDtos.map(dto =>
+		AlterScriptDto.getInstance(dto.script, dto.isActivated, dto.isDropScript, SCRIPT_TYPE.alterEntity),
+	);
 };
 
 module.exports = {
