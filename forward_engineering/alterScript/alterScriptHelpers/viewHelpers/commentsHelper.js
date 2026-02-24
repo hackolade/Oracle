@@ -1,4 +1,4 @@
-const { AlterScriptDto } = require('../../types/AlterScriptDto');
+const { AlterScriptDto, SCRIPT_TYPE } = require('../../types/AlterScriptDto');
 const { wrapComment, getNamePrefixedWithSchemaNameForScriptFormat } = require('../../../utils/general');
 const { assignTemplates } = require('../../../utils/assignTemplates');
 const templates = require('../../../ddlProvider/templates');
@@ -34,7 +34,7 @@ const getUpdatedCommentScriptDto = ({ scriptFormat, view }) => {
 	const wrappedComment = description.new ? wrapComment(description.new) : 'NULL';
 	const script = updateViewComment(fullViewName, wrappedComment, view.materialized);
 
-	return AlterScriptDto.getInstance(script, true, false);
+	return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.alterView);
 };
 
 /**

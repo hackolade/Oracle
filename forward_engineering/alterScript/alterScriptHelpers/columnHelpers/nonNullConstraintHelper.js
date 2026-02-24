@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { AlterScriptDto } = require('../../types/AlterScriptDto');
+const { AlterScriptDto, SCRIPT_TYPE } = require('../../types/AlterScriptDto');
 const { assignTemplates } = require('../../../utils/assignTemplates');
 const templates = require('../../../ddlProvider/templates');
 const {
@@ -48,6 +48,7 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 						assignTemplates(template, { ...scriptParams, constraintName: prepareName(oldConstraintName) }),
 						true,
 						Boolean(templates.dropConstraint),
+						SCRIPT_TYPE.alterEntity,
 					),
 				);
 			}
@@ -61,6 +62,7 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 						assignTemplates(template, { ...scriptParams, constraintName: prepareName(newConstraintName) }),
 						true,
 						false,
+						SCRIPT_TYPE.alterEntity,
 					),
 				);
 			}

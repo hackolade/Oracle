@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { AlterScriptDto } = require('../../types/AlterScriptDto');
+const { AlterScriptDto, SCRIPT_TYPE } = require('../../types/AlterScriptDto');
 const {
 	checkFieldPropertiesChanged,
 	getEntityName,
@@ -22,7 +22,7 @@ const getRenameColumnScriptDtos = (ddlProvider, scriptFormat) => collection => {
 			const oldColumnName = prepareNameForScriptFormat(scriptFormat)(jsonSchema.compMod.oldField.name);
 			const newColumnName = prepareNameForScriptFormat(scriptFormat)(jsonSchema.compMod.newField.name);
 			const script = ddlProvider.renameColumn(fullName, oldColumnName, newColumnName);
-			return AlterScriptDto.getInstance(script, true, false);
+			return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.alterEntity);
 		});
 };
 

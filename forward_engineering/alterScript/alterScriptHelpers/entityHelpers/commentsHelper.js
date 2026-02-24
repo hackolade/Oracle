@@ -1,4 +1,4 @@
-const { AlterScriptDto } = require('../../types/AlterScriptDto');
+const { AlterScriptDto, SCRIPT_TYPE } = require('../../types/AlterScriptDto');
 const { AlterCollectionDto } = require('../../types/AlterCollectionDto');
 const { assignTemplates } = require('../../../utils/assignTemplates');
 const { wrapComment, getSchemaOfAlterCollection, getFullCollectionName } = require('../../../utils/general');
@@ -40,7 +40,7 @@ const getUpdatedCommentOnCollectionScriptDto = ({ scriptFormat, collection }) =>
 	const comment = newComment ? wrapComment(newComment) : 'NULL';
 	const script = updateTableComment(fullTableName, comment);
 
-	return AlterScriptDto.getInstance(script, true, false);
+	return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.alterEntity);
 };
 
 /**

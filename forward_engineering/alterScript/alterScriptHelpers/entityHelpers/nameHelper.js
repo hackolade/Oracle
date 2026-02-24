@@ -1,4 +1,4 @@
-const { AlterScriptDto } = require('../../types/AlterScriptDto');
+const { AlterScriptDto, SCRIPT_TYPE } = require('../../types/AlterScriptDto');
 const { AlterCollectionDto } = require('../../types/AlterCollectionDto');
 const { assignTemplates } = require('../../../utils/assignTemplates');
 const {
@@ -37,7 +37,7 @@ const getRenameCollectionScriptDto = ({ scriptFormat, collection }) => {
 		newName: prepareNameForScriptFormat(scriptFormat)(newName),
 	});
 
-	return AlterScriptDto.getInstance(script, true, false);
+	return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.alterEntity);
 };
 
 /**

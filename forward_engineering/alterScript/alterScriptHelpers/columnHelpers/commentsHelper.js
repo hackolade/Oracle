@@ -1,5 +1,5 @@
 const { toPairs } = require('lodash');
-const { AlterScriptDto } = require('../../types/AlterScriptDto');
+const { AlterScriptDto, SCRIPT_TYPE } = require('../../types/AlterScriptDto');
 const {
 	getFullColumnName,
 	wrapComment,
@@ -49,7 +49,7 @@ const getUpdatedCommentOnColumnScriptDtos = ({ scriptFormat, collection }) => {
 			const fullColumnName = `${fullTableName}.${columnName}`;
 
 			const script = updateColumnComment(fullColumnName, wrappedComment);
-			return AlterScriptDto.getInstance(script, true, false);
+			return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.alterEntity);
 		});
 };
 

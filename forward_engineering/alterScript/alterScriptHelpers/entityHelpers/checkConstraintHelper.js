@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const { AlterCollectionDto } = require('../../types/AlterCollectionDto');
-const { AlterScriptDto } = require('../../types/AlterScriptDto');
+const { AlterScriptDto, SCRIPT_TYPE } = require('../../types/AlterScriptDto');
 const { wrapInQuotes, getSchemaOfAlterCollection, getFullCollectionName } = require('../../../utils/general');
 const { assignTemplates } = require('../../../utils/assignTemplates');
 const templates = require('../../../ddlProvider/templates');
@@ -66,7 +66,7 @@ const getDropCheckConstraintScriptDtos = (constraintHistory, fullTableName) => {
 		.map(historyEntry => {
 			const wrappedConstraintName = wrapInQuotes(historyEntry.old.chkConstrName);
 			const script = dropConstraint(fullTableName, wrappedConstraintName);
-			return AlterScriptDto.getInstance(script, true, true);
+			return AlterScriptDto.getInstance(script, true, true, SCRIPT_TYPE.alterEntity);
 		});
 };
 
@@ -96,7 +96,7 @@ const getAddCheckConstraintScriptDtos = (constraintHistory, fullTableName) => {
 		.map(historyEntry => {
 			const { chkConstrName, constrExpression } = historyEntry.new;
 			const script = addCheckConstraint(fullTableName, wrapInQuotes(chkConstrName), constrExpression);
-			return AlterScriptDto.getInstance(script, true, false);
+			return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.alterEntity);
 		});
 };
 
@@ -127,8 +127,8 @@ const getUpdateCheckConstraintScriptDtos = (constraintHistory, fullTableName) =>
 			);
 
 			return [
-				AlterScriptDto.getInstance(dropConstraintScript, true, true),
-				AlterScriptDto.getInstance(addConstraintScript, true, false),
+				AlterScriptDto.getInstance(dropConstraintScript, true, true, SCRIPT_TYPE.alterEntity),
+				AlterScriptDto.getInstance(addConstraintScript, true, false, SCRIPT_TYPE.alterEntity),
 			];
 		});
 };

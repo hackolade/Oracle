@@ -1,4 +1,4 @@
-const { AlterScriptDto } = require('../types/AlterScriptDto');
+const { AlterScriptDto, SCRIPT_TYPE } = require('../types/AlterScriptDto');
 const { AlterRelationshipDto } = require('../types/AlterRelationshipDto');
 const { getNamePrefixedWithSchemaNameForScriptFormat, prepareNameForScriptFormat } = require('../../utils/general');
 
@@ -74,7 +74,12 @@ const getAddForeignKeyScriptDtos = ddlProvider => addedRelationships => {
 		.filter(relationship => canRelationshipBeAdded(relationship))
 		.map(relationship => {
 			const scriptDto = getAddSingleForeignKeyStatementDto(ddlProvider)(relationship);
-			return AlterScriptDto.getInstance(scriptDto.statement, scriptDto.isActivated, false);
+			return AlterScriptDto.getInstance(
+				scriptDto.statement,
+				scriptDto.isActivated,
+				false,
+				SCRIPT_TYPE.alterEntity,
+			);
 		})
 		.filter(Boolean);
 };
@@ -126,7 +131,12 @@ const getDeleteForeignKeyScriptDtos = (ddlProvider, scriptFormat) => deletedRela
 		.filter(relationship => canRelationshipBeDeleted(relationship))
 		.map(relationship => {
 			const scriptDto = getDeleteSingleForeignKeyStatementDto(ddlProvider, scriptFormat)(relationship);
-			return AlterScriptDto.getInstance(scriptDto.statement, scriptDto.isActivated, true);
+			return AlterScriptDto.getInstance(
+				scriptDto.statement,
+				scriptDto.isActivated,
+				true,
+				SCRIPT_TYPE.alterEntity,
+			);
 		})
 		.filter(Boolean);
 };
@@ -142,8 +152,8 @@ const getModifyForeignKeyScriptDtos = (ddlProvider, scriptFormat) => modifiedRel
 			const addScriptDto = getAddSingleForeignKeyStatementDto(ddlProvider)(relationship);
 			const isActivated = addScriptDto.isActivated && deleteScriptDto.isActivated;
 			return [
-				AlterScriptDto.getInstance(deleteScriptDto.statement, isActivated, true),
-				AlterScriptDto.getInstance(addScriptDto.statement, isActivated, false),
+				AlterScriptDto.getInstance(deleteScriptDto.statement, isActivated, true, SCRIPT_TYPE.alterEntity),
+				AlterScriptDto.getInstance(addScriptDto.statement, isActivated, false, SCRIPT_TYPE.alterEntity),
 			];
 		})
 		.filter(Boolean);

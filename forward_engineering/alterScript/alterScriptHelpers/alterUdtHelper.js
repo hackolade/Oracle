@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const { checkFieldPropertiesChanged, prepareNameForScriptFormat } = require('../../utils/general');
 const templates = require('../../ddlProvider/templates');
-const { AlterScriptDto } = require('../types/AlterScriptDto');
+const { AlterScriptDto, SCRIPT_TYPE } = require('../types/AlterScriptDto');
 
 /**
  * @return {(jsonSchema: Object) => AlterScriptDto |  undefined}
@@ -48,7 +48,7 @@ const getCreateUdtScriptDto =
 
 		const udt = { ...updatedUdt, properties: columnDefinitions };
 		const script = ddlProvider.createUdt(udt);
-		return AlterScriptDto.getInstance(script, true, false);
+		return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.createUDT);
 	};
 
 /**
@@ -57,7 +57,7 @@ const getCreateUdtScriptDto =
 const getDeleteUdtScriptDto = (app, scriptFormat) => udt => {
 	const ddlUdtName = prepareNameForScriptFormat(scriptFormat)(udt.code || udt.name);
 	const dropUdtScript = `DROP TYPE ${ddlUdtName};`;
-	return AlterScriptDto.getInstance(dropUdtScript, true, true);
+	return AlterScriptDto.getInstance(dropUdtScript, true, true, SCRIPT_TYPE.dropUDT);
 };
 
 /**
@@ -99,7 +99,7 @@ const getAddColumnToTypeScriptDtos =
 			.map(data => {
 				const scriptPart = ddlProvider.convertColumnDefinition(data, templates.objectTypeColumnDefinition);
 				const script = `ALTER TYPE ${fullName} ADD ATTRIBUTE ${scriptPart};`;
-				return AlterScriptDto.getInstance(script, true, false);
+				return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.alterUDT);
 			});
 	};
 
@@ -113,7 +113,7 @@ const getDeleteColumnFromTypeScriptDtos = (app, scriptFormat) => udt => {
 		.filter(([name, jsonSchema]) => !jsonSchema.compMod)
 		.map(([name]) => {
 			const script = `ALTER TYPE ${fullName} DROP ATTRIBUTE ${prepareNameForScriptFormat(scriptFormat)(name)};`;
-			return AlterScriptDto.getInstance(script, true, true);
+			return AlterScriptDto.getInstance(script, true, true, SCRIPT_TYPE.alterUDT);
 		});
 };
 
@@ -136,8 +136,8 @@ const getModifyColumnOfTypeScriptDtos = (app, scriptFormat) => udt => {
 			const createAttributeScript = `ALTER TYPE ${fullName} ADD ATTRIBUTE ${newDdlName};`;
 
 			return [
-				AlterScriptDto.getInstance(dropAttributeScript, true, true),
-				AlterScriptDto.getInstance(createAttributeScript, true, false),
+				AlterScriptDto.getInstance(dropAttributeScript, true, true, SCRIPT_TYPE.alterUDT),
+				AlterScriptDto.getInstance(createAttributeScript, true, false, SCRIPT_TYPE.alterUDT),
 			];
 		});
 
@@ -150,7 +150,7 @@ const getModifyColumnOfTypeScriptDtos = (app, scriptFormat) => udt => {
 			const ddlAttributeName = prepareNameForScriptFormat(scriptFormat)(name);
 			const ddlType = _.toUpper(jsonSchema.compMod.newField.mode || jsonSchema.compMod.newField.type);
 			const script = `ALTER TYPE ${fullName} MODIFY ATTRIBUTE ${ddlAttributeName} ${ddlType};`;
-			return AlterScriptDto.getInstance(script, true, false);
+			return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.alterUDT);
 		});
 
 	return [...renameColumnScripts, ...changeTypeScripts];

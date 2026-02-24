@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { AlterScriptDto } = require('../types/AlterScriptDto');
+const { AlterScriptDto, SCRIPT_TYPE } = require('../types/AlterScriptDto');
 const { AlterCollectionDto } = require('../types/AlterCollectionDto');
 const { getUpdateTypesScriptDtos } = require('./columnHelpers/alterTypeHelper');
 const { getRenameColumnScriptDtos } = require('./columnHelpers/renameColumnHelper');
@@ -8,6 +8,7 @@ const {
 	getEntityName,
 	getNamePrefixedWithSchemaNameForScriptFormat,
 	prepareNameForScriptFormat,
+	getId,
 } = require('../../utils/general');
 const { getModifyCheckConstraintScriptDtos } = require('./entityHelpers/checkConstraintHelper');
 const { getModifyPkConstraintsScriptDtos } = require('./entityHelpers/primaryKeyHelper');
@@ -102,20 +103,23 @@ const getAddCollectionScriptDto =
 
 		const script = ddlProvider.createTable(hydratedTable, jsonSchema.isActivated);
 
-		return [AlterScriptDto.getInstance(script, true, false), ...indexesOnNewlyCreatedColumnsScripts];
+		return [
+			AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.createEntity, getId(jsonSchema)),
+			...indexesOnNewlyCreatedColumnsScripts,
+		];
 	};
 
 /**
  * @return {(collection: AlterCollectionDto) => AlterScriptDto | undefined}
  * */
 const getDeleteCollectionScriptDto = (app, scriptFormat) => collection => {
-	const jsonData = { ...collection, ...(_.omit(collection?.role, 'properties') || {}) };
+	const jsonData = { ...collection, ..._.omit(collection?.role, 'properties') };
 	const tableName = getEntityName(jsonData);
 	const schemaName = collection.compMod.keyspaceName;
 	const fullName = getNamePrefixedWithSchemaNameForScriptFormat(scriptFormat)(tableName, schemaName);
 
 	const script = `DROP TABLE ${fullName};`;
-	return AlterScriptDto.getInstance(script, true, true);
+	return AlterScriptDto.getInstance(script, true, true, SCRIPT_TYPE.dropEntity, getId(jsonData));
 };
 
 /**
@@ -161,7 +165,7 @@ const getAddColumnScriptDtos =
 		);
 		const { getDefinitionByReference } = app.require('@hackolade/ddl-fe-utils');
 
-		const collectionSchema = { ...collection, ...(_.omit(collection?.role, 'properties') || {}) };
+		const collectionSchema = { ...collection, ..._.omit(collection?.role, 'properties') };
 		const tableName = getEntityName(collectionSchema);
 		const schemaName = collectionSchema.compMod?.keyspaceName;
 		const fullName = getNamePrefixedWithSchemaNameForScriptFormat(scriptFormat)(tableName, schemaName);
@@ -189,7 +193,13 @@ const getAddColumnScriptDtos =
 			.map(data => {
 				const scriptPart = ddlProvider.convertColumnDefinition(data);
 				const script = `ALTER TABLE ${fullName} ADD (${scriptPart});`;
-				return AlterScriptDto.getInstance(script, true, false);
+				return AlterScriptDto.getInstance(
+					script,
+					true,
+					false,
+					SCRIPT_TYPE.alterEntity,
+					getId(collectionSchema),
+				);
 			});
 
 		return scripts;
@@ -223,7 +233,7 @@ const getNewlyCreatedIndexesScripts = ({ ddlProvider, collection }) => {
  * @return {(collection: Object) => AlterScriptDto[]}
  * */
 const getDeleteColumnScriptDtos = (app, scriptFormat) => collection => {
-	const collectionSchema = { ...collection, ...(_.omit(collection?.role, 'properties') || {}) };
+	const collectionSchema = { ...collection, ..._.omit(collection?.role, 'properties') };
 	const tableName = getEntityName(collectionSchema);
 	const schemaName = collectionSchema.compMod?.keyspaceName;
 	const fullName = getNamePrefixedWithSchemaNameForScriptFormat(scriptFormat)(tableName, schemaName);
@@ -232,7 +242,7 @@ const getDeleteColumnScriptDtos = (app, scriptFormat) => collection => {
 		.filter(([name, jsonSchema]) => !jsonSchema.compMod)
 		.map(([name]) => {
 			const script = `ALTER TABLE ${fullName} DROP COLUMN ${prepareNameForScriptFormat(scriptFormat)(name)};`;
-			return AlterScriptDto.getInstance(script, true, true);
+			return AlterScriptDto.getInstance(script, true, true, SCRIPT_TYPE.alterEntity, getId(collectionSchema));
 		});
 };
 

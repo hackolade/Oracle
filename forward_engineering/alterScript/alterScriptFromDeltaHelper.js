@@ -51,12 +51,12 @@ const getAlterContainersScriptDtos = ({ collection, app, scriptFormat }) => {
 	const deletedContainers = getItems(containersData?.deleted);
 
 	const addContainersScriptDtos = addedContainers.map(container => {
-		const containerName = Object.keys(container.properties)[0];
-		return getAddContainerScriptDto(app, scriptFormat)(containerName);
+		const [[containerName, containerData]] = Object.entries(container.properties);
+		return getAddContainerScriptDto(app, scriptFormat)(containerName, containerData);
 	});
 	const deleteContainersScriptDtos = deletedContainers.map(container => {
-		const containerName = Object.keys(container.properties)[0];
-		return getDeleteContainerScriptDto(app, scriptFormat)(containerName);
+		const [[containerName, containerData]] = Object.entries(container.properties);
+		return getDeleteContainerScriptDto(app, scriptFormat)(containerName, containerData);
 	});
 
 	return [...addContainersScriptDtos, ...deleteContainersScriptDtos].filter(Boolean);

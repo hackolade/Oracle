@@ -1,7 +1,7 @@
 const _ = require('lodash');
-const { AlterScriptDto } = require('../types/AlterScriptDto');
+const { AlterScriptDto, SCRIPT_TYPE } = require('../types/AlterScriptDto');
 const { mapDeltaDualityViewToFeDualityView } = require('./dualityViewHelpers/deltaDualityViewToFeDualityViewMapper');
-const { prepareNameForScriptFormat } = require('../../utils/general');
+const { prepareNameForScriptFormat, getId } = require('../../utils/general');
 const { getModifyViewCommentsScriptDtos } = require('./viewHelpers/commentsHelper');
 const { getModifyEntityNameScriptDtos } = require('./viewHelpers/nameHelper');
 
@@ -26,7 +26,7 @@ const getAddRegularViewScriptDto = (app, scriptFormat) => view => {
 	};
 	const hydratedView = ddlProvider.hydrateView({ viewData, entityData: [view] });
 	const createViewStatement = ddlProvider.createView(hydratedView, {}, view.isActivated);
-	return AlterScriptDto.getInstance(createViewStatement, true, false);
+	return AlterScriptDto.getInstance(createViewStatement, true, false, SCRIPT_TYPE.createView, getId(view));
 };
 
 /**
@@ -41,7 +41,7 @@ const getDualityViewScriptDto = (app, scriptFormat) => view => {
 
 	const createDualityViewDto = mapDeltaDualityViewToFeDualityView(view);
 	const script = ddlProvider.createDualityView(createDualityViewDto);
-	return AlterScriptDto.getInstance(script, true, false);
+	return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.createView, getId(view));
 };
 
 /**
@@ -61,7 +61,7 @@ const getDeleteViewScriptDto = (app, scriptFormat) => view => {
 	const ddlViewName = prepareNameForScriptFormat(scriptFormat)(view.code || view.name);
 
 	const dropViewScript = `DROP VIEW ${ddlViewName};`;
-	return AlterScriptDto.getInstance(dropViewScript, true, true);
+	return AlterScriptDto.getInstance(dropViewScript, true, true, SCRIPT_TYPE.dropView, getId(view));
 };
 
 /**
