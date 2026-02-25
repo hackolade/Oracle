@@ -233,6 +233,8 @@ const isParentContainerActivated = collection => {
 	);
 };
 
+const getId = entity => entity.id || entity.role.id;
+
 module.exports = {
 	getDbName,
 	getBucketName,
@@ -262,4 +264,5 @@ module.exports = {
 	getSchemaOfAlterCollection,
 	isObjectInDeltaModelActivated,
 	isParentContainerActivated,
+	getId,
 };

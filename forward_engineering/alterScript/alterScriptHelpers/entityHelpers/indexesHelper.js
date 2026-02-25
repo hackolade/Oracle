@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { AlterScriptDto } = require('../../types/AlterScriptDto.js');
+const { AlterScriptDto, SCRIPT_TYPE } = require('../../types/AlterScriptDto.js');
 const { AlterCollectionDto } = require('../../types/AlterCollectionDto');
 const { AlterIndexDto } = require('../../types/AlterIndexDto');
 const { prepareNameForScriptFormat } = require('../../../utils/general.js');
@@ -139,7 +139,7 @@ const getDeleteIndexScriptDto =
 		const name = prepareNameForScriptFormat(scriptFormat)(index.indxName);
 		const script = ddlProvider.dropIndex({ name });
 
-		return AlterScriptDto.getInstance([script], index.isActivated, true);
+		return AlterScriptDto.getInstance(script, index.isActivated, true, SCRIPT_TYPE.dropEntityIndex);
 	};
 
 /**
@@ -161,7 +161,7 @@ const getAddedIndexesScriptDtos =
 			return !correspondingOldIndex;
 		});
 
-		return addedIndexes.map(index => getAddIndexScriptDto({ ddlProvider })({ index, collection }));
+		return addedIndexes.map(index => getAddIndexScriptDto({ ddlProvider })({ index, collection })).filter(Boolean);
 	};
 
 /**
@@ -177,7 +177,7 @@ const getAddIndexScriptDto =
 			schemaName: collection?.role?.compMod?.bucketProperties?.name,
 		});
 
-		return AlterScriptDto.getInstance([script], index.isActivated, false);
+		return AlterScriptDto.getInstance(script, index.isActivated, false, SCRIPT_TYPE.createEntityIndex);
 	};
 
 /**
@@ -225,20 +225,20 @@ const getModifyIndexScriptDto =
 
 		if (shouldDropAndRecreateIndex({ oldIndex, newIndex })) {
 			const dropIndexDto = AlterScriptDto.getInstance(
-				[ddlProvider.dropIndex({ name: oldName })],
+				ddlProvider.dropIndex({ name: oldName }),
 				newIndex.isActivated,
 				true,
+				SCRIPT_TYPE.dropEntityIndex,
 			);
 			const newIndexWithAddedKeyNames = addNameToIndexKey({ index: newIndex, collection });
 			const createIndexDto = AlterScriptDto.getInstance(
-				[
-					ddlProvider.createIndex(collection?.role?.compMod?.collectionName?.new, {
-						...newIndexWithAddedKeyNames,
-						schemaName: collection?.role?.compMod?.bucketProperties?.name,
-					}),
-				],
+				ddlProvider.createIndex(collection?.role?.compMod?.collectionName?.new, {
+					...newIndexWithAddedKeyNames,
+					schemaName: collection?.role?.compMod?.bucketProperties?.name,
+				}),
 				newIndex.isActivated,
 				false,
+				SCRIPT_TYPE.createEntityIndex,
 			);
 			alterScriptDtos.push(dropIndexDto, createIndexDto);
 
@@ -248,18 +248,20 @@ const getModifyIndexScriptDto =
 		const shouldRenameIndex = oldIndex.indxName !== newIndex.indxName;
 		if (shouldRenameIndex) {
 			const alterIndexDto = AlterScriptDto.getInstance(
-				[ddlProvider.alterIndexRename({ oldName, newName })],
+				ddlProvider.alterIndexRename({ oldName, newName }),
 				newIndex.isActivated,
 				false,
+				SCRIPT_TYPE.alterEntityIndex,
 			);
 			alterScriptDtos.push(alterIndexDto);
 		}
 
 		if (shouldAlterIndexRebuild({ oldIndex, newIndex })) {
 			const alterIndexRebuildDto = AlterScriptDto.getInstance(
-				[ddlProvider.alterIndexRebuild({ name: newName, indexData: newIndex })],
+				ddlProvider.alterIndexRebuild({ name: newName, indexData: newIndex }),
 				newIndex.isActivated,
 				false,
+				SCRIPT_TYPE.alterEntityIndex,
 			);
 			alterScriptDtos.push(alterIndexRebuildDto);
 		}

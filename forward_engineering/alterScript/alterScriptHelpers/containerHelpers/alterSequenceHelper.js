@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { AlterScriptDto } = require('../../types/AlterScriptDto');
+const { AlterScriptDto, SCRIPT_TYPE } = require('../../types/AlterScriptDto');
 const { App } = require('../../../types/coreApplicationTypes');
 const { getDbName, getGroupItemsByCompMode } = require('../../../utils/general');
 
@@ -19,7 +19,7 @@ const getAddContainerSequencesScriptDtos =
 			.map(sequence => {
 				const script = ddlProvider.createSchemaSequence({ schemaName, sequence });
 
-				return AlterScriptDto.getInstance([script], true, false);
+				return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.alterContainer);
 			})
 			.filter(Boolean);
 	};
@@ -45,13 +45,13 @@ const getModifyContainerSequencesScriptDtos =
 		const removedScriptDtos = removed.map(sequence => {
 			const script = ddlProvider.dropSchemaSequence({ schemaName, sequence });
 
-			return AlterScriptDto.getInstance([script], true, true);
+			return AlterScriptDto.getInstance(script, true, true, SCRIPT_TYPE.alterContainer);
 		});
 
 		const addedScriptDtos = added.map(sequence => {
 			const script = ddlProvider.createSchemaSequence({ schemaName, sequence });
 
-			return AlterScriptDto.getInstance([script], true, false);
+			return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.alterContainer);
 		});
 
 		const modifiedScriptDtos = modified.map(sequence => {
@@ -59,7 +59,7 @@ const getModifyContainerSequencesScriptDtos =
 			const script = ddlProvider.alterSchemaSequence({ schemaName, sequence, oldSequence });
 			const isDropScript = script.startsWith('DROP');
 
-			return AlterScriptDto.getInstance([script], true, isDropScript);
+			return AlterScriptDto.getInstance(script, true, isDropScript, SCRIPT_TYPE.alterContainer);
 		});
 
 		return [...modifiedScriptDtos, ...removedScriptDtos, ...addedScriptDtos].filter(Boolean);
@@ -79,7 +79,7 @@ const getDeleteContainerSequencesScriptDtos =
 			.map(sequence => {
 				const script = ddlProvider.dropSchemaSequence({ schemaName, sequence });
 
-				return AlterScriptDto.getInstance([script], true, true);
+				return AlterScriptDto.getInstance(script, true, true, SCRIPT_TYPE.alterContainer);
 			})
 			.filter(Boolean);
 	};
