@@ -223,8 +223,8 @@ module.exports = (baseProvider, options, app) => {
 
 		convertColumnDefinition(columnDefinition, template = templates.columnDefinition) {
 			const type = replaceTypeByVersion(columnDefinition.type, columnDefinition.dbVersion);
-
-			const annotations = ' ' + getAnnotationsString(prepareName)(columnDefinition.columnAnnotations);
+			const annotations = getAnnotationsString(prepareName)(columnDefinition.columnAnnotations);
+			const finalAnnotationsClause = annotations ? ' ' + annotations : '';
 
 			return commentIfDeactivated(
 				assignTemplates(template, {
@@ -233,7 +233,7 @@ module.exports = (baseProvider, options, app) => {
 					default: getColumnDefault(columnDefinition),
 					encrypt: getColumnEncrypt(columnDefinition),
 					constraints: getColumnConstraints(columnDefinition),
-					annotations,
+					annotations: finalAnnotationsClause,
 				}),
 				{
 					isActivated: columnDefinition.isActivated,
