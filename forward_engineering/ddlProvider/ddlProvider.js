@@ -596,6 +596,7 @@ module.exports = (baseProvider, options, app) => {
 					dbVersion: _.get(viewData, 'schemaData.dbVersion'),
 				},
 				whereClause: detailsTab.whereClause,
+				viewAnnotations: detailsTab.viewAnnotations,
 			};
 		},
 
@@ -659,6 +660,8 @@ module.exports = (baseProvider, options, app) => {
 			const dbVersion = _.get(viewData, 'modelInfo.dbVersion', '');
 			const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
 
+			const annotations = getAnnotationsString(prepareName)(viewData.viewAnnotations);
+
 			let createViewDdl = assignTemplates(templates.createView, {
 				name: viewName,
 				ifNotExists: !usingTryCatchWrapper && viewData.ifNotExist ? ' IF NOT EXISTS' : '',
@@ -669,6 +672,7 @@ module.exports = (baseProvider, options, app) => {
 				viewProperties: viewData.viewProperties ? ' \n' + tab(viewData.viewProperties) : '',
 				sharing: viewData.sharing && !viewData.materialized ? ` SHARING=${viewData.sharing}` : '',
 				selectStatement,
+				annotations: annotations ? `\n\t${annotations}` : '',
 			});
 			if (usingTryCatchWrapper) {
 				createViewDdl = wrapIfNotExists(createViewDdl, viewData.ifNotExist);
