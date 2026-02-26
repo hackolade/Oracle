@@ -316,15 +316,15 @@ module.exports = ({
 		const wrapValue = value => wrapComment(value);
 
 		const annotationsItems = tableAnnotations
-			.filter(annotation => annotation?.tableAnnotationName?.trim())
+			.filter(annotation => annotation?.annotationName?.trim())
 			.map(annotation => {
-				const name = prepareName(annotation.tableAnnotationName.trim());
+				const { annotationName, annotationValue } = annotation;
+				const name = prepareName(annotationName.trim());
 
 				let finalValue = '';
-				const annotationValue = annotation?.tableAnnotationValue;
 
-				if (annotationValue !== undefined && String(annotationValue).trim() !== '') {
-					finalValue = ' ' + wrapValue(String(annotationValue).trim());
+				if (annotationValue !== undefined && annotationValue.trim() !== '') {
+					finalValue = ' ' + wrapValue(annotationValue.trim());
 				}
 
 				return `${name}${finalValue}`;
