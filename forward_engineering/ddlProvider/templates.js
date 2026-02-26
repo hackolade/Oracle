@@ -29,7 +29,7 @@ module.exports = {
 	alterIndexRebuild: 'ALTER INDEX ${name} REBUILD ${options};',
 
 	createView:
-		'CREATE${orReplace}${force}${viewType}${materialized} VIEW${ifNotExists} ${name} ${sharing}${viewProperties}\n\tAS ${selectStatement}',
+		'CREATE${orReplace}${force}${viewType}${materialized} VIEW${ifNotExists} ${name} ${sharing}${viewProperties}${annotations}\n\tAS ${selectStatement}',
 
 	viewSelectStatement: 'SELECT ${keys}\n\tFROM ${tableName}',
 
