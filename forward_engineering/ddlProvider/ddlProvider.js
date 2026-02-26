@@ -65,6 +65,7 @@ module.exports = (baseProvider, options, app) => {
 		commentIfDeactivated,
 		prepareName,
 		assignTemplates,
+		wrapComment,
 	});
 
 	const { getUserDefinedType, isNotPlainType } = require('./ddlHelpers/udtHelper')({
@@ -375,6 +376,7 @@ module.exports = (baseProvider, options, app) => {
 					'description',
 					'ifNotExist',
 					'tableProperties',
+					'tableAnnotations',
 				),
 				synonyms:
 					tableData?.schemaData?.synonyms?.filter(synonym => synonym.synonymEntityId === jsonSchema.GUID) ||
@@ -407,6 +409,7 @@ module.exports = (baseProvider, options, app) => {
 				tableProperties,
 				synonyms,
 				notNullConstraints,
+				tableAnnotations,
 			},
 			isActivated,
 		) {
@@ -471,6 +474,7 @@ module.exports = (baseProvider, options, app) => {
 					partitioning,
 					selectStatement,
 					tableProperties,
+					tableAnnotations,
 				}),
 			});
 			if (usingTryCatchWrapper) {
