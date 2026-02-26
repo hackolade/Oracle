@@ -20,6 +20,7 @@ const {
 	getColumnsList,
 	prepareNameForScriptFormat,
 } = require('../utils/general');
+const { getAnnotationsString } = require('../utils/getAnnotationsString');
 const { assignTemplates } = require('../utils/assignTemplates');
 const { decorateType } = require('./ddlHelpers/columnDefinitionHelpers/decorateType');
 const { getNotNullConstraints } = require('../alterScript/alterScriptHelpers/columnHelpers/nonNullConstraintHelper');
@@ -207,6 +208,7 @@ module.exports = (baseProvider, options, app) => {
 				subtype: jsonSchema.subtype,
 				defaultOnNull: jsonSchema.defaultOnNull,
 				generatedDefaultValue: jsonSchema.generatedDefaultValue,
+				columnAnnotations: jsonSchema.columnAnnotations,
 			};
 		},
 
@@ -221,6 +223,8 @@ module.exports = (baseProvider, options, app) => {
 
 		convertColumnDefinition(columnDefinition, template = templates.columnDefinition) {
 			const type = replaceTypeByVersion(columnDefinition.type, columnDefinition.dbVersion);
+			const annotations = getAnnotationsString(prepareName)(columnDefinition.columnAnnotations);
+			const finalAnnotationsClause = annotations ? ' ' + annotations : '';
 
 			return commentIfDeactivated(
 				assignTemplates(template, {
@@ -229,6 +233,7 @@ module.exports = (baseProvider, options, app) => {
 					default: getColumnDefault(columnDefinition),
 					encrypt: getColumnEncrypt(columnDefinition),
 					constraints: getColumnConstraints(columnDefinition),
+					annotations: finalAnnotationsClause,
 				}),
 				{
 					isActivated: columnDefinition.isActivated,
