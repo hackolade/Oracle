@@ -1,5 +1,5 @@
 const { toPairs } = require('lodash');
-const { AlterScriptDto } = require('../../types/AlterScriptDto');
+const { AlterScriptDto, SCRIPT_TYPE } = require('../../types/AlterScriptDto');
 const { AlterCollectionDto } = require('../../types/AlterCollectionDto');
 const {
 	prepareNameForScriptFormat,
@@ -51,9 +51,9 @@ const getUpdatedDefaultColumnValueScriptDtos = ({ scriptFormat, collection }) =>
 				defaultValue: getColumnDefault(jsonSchema),
 			};
 
-			return updateColumnDefaultValue(scriptGenerationConfig);
+			const script = updateColumnDefaultValue(scriptGenerationConfig);
+			return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.alterEntity);
 		})
-		.map(script => AlterScriptDto.getInstance([script], true, false))
 		.filter(Boolean);
 };
 

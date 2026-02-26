@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { AlterScriptDto } = require('../../types/AlterScriptDto');
+const { AlterScriptDto, SCRIPT_TYPE } = require('../../types/AlterScriptDto');
 const { assignTemplates } = require('../../../utils/assignTemplates');
 const templates = require('../../../ddlProvider/templates');
 const {
@@ -24,7 +24,7 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 	const previousRequiredColumnNames = collection.role.required || [];
 
 	const addNotNullConstraintsScript = _.toPairs(collection.properties)
-		.map(([name, jsonSchema]) => {
+		.flatMap(([name, jsonSchema]) => {
 			const oldName = jsonSchema.compMod.oldField.name;
 
 			const newConstraintName = jsonSchema.notNullConstraintName || '';
@@ -44,7 +44,12 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 			if (isOldRequired && (!isNewRequired || isNameChanged)) {
 				const template = oldConstraintName ? templates.dropConstraint : templates.alterNullableConstraint;
 				scripts.push(
-					assignTemplates(template, { ...scriptParams, constraintName: prepareName(oldConstraintName) }),
+					AlterScriptDto.getInstance(
+						assignTemplates(template, { ...scriptParams, constraintName: prepareName(oldConstraintName) }),
+						true,
+						Boolean(templates.dropConstraint),
+						SCRIPT_TYPE.alterEntity,
+					),
 				);
 			}
 
@@ -53,11 +58,16 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 					? templates.alterNamedNotNullConstraint
 					: templates.alterNotNullConstraint;
 				scripts.push(
-					assignTemplates(template, { ...scriptParams, constraintName: prepareName(newConstraintName) }),
+					AlterScriptDto.getInstance(
+						assignTemplates(template, { ...scriptParams, constraintName: prepareName(newConstraintName) }),
+						true,
+						false,
+						SCRIPT_TYPE.alterEntity,
+					),
 				);
 			}
 
-			return scripts.length ? AlterScriptDto.getInstance(scripts, true, false) : null;
+			return scripts;
 		})
 		.filter(Boolean);
 

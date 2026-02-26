@@ -1,97 +1,71 @@
-class ModificationScript {
+const SCRIPT_TYPE = /** @type {const} */ ({
+	createContainer: 'CREATE_CONTAINER',
+	dropContainer: 'DROP_CONTAINER',
+	alterContainer: 'ALTER_CONTAINER',
+	createEntity: 'CREATE_ENTITY',
+	dropEntity: 'DROP_ENTITY',
+	alterEntity: 'ALTER_ENTITY',
+	createView: 'CREATE_VIEW',
+	dropView: 'DROP_VIEW',
+	alterView: 'ALTER_VIEW',
+	createForeignKey: 'CREATE_FOREIGN_KEY',
+	dropForeignKey: 'DROP_FOREIGN_KEY',
+	createUDT: 'CREATE_UDT',
+	dropUDT: 'CREATE_UDT',
+	alterUDT: 'CREATE_UDT',
+	createEntityIndex: 'CREATE_ENTITY_INDEX',
+	dropEntityIndex: 'DROP_ENTITY_INDEX',
+	alterEntityIndex: 'ALTER_ENTITY_INDEX',
+});
+
+class AlterScriptDto {
 	/**
-	 * @type {string}
-	 * */
-	script;
+	 * @type {boolean | undefined}
+	 */
+	isActivated;
 
 	/**
 	 * @type {boolean}
 	 * */
 	isDropScript;
-}
-
-class AlterScriptDto {
-	/**
-	 * @type {boolean | undefined}
-	 * */
-	isActivated;
 
 	/**
-	 * @type {Array<ModificationScript>}
-	 * */
-	scripts;
+	 * @type {string}
+	 */
+	script;
 
 	/**
-	 * @param {Array<string>} scripts
-	 * @param {boolean} isActivated
-	 * @param {boolean} isDropScripts
-	 * @return {Array<AlterScriptDto>}
-	 * */
-	static getInstances(scripts, isActivated, isDropScripts) {
-		return (scripts || []).filter(Boolean).map(script => ({
-			isActivated,
-			scripts: [
-				{
-					isDropScript: isDropScripts,
-					script,
-				},
-			],
-		}));
-	}
+	 * @type {typeof SCRIPT_TYPE[keyof typeof SCRIPT_TYPE] | null}
+	 */
+	scriptType;
 
 	/**
-	 * @param {Array<string>} scripts
+	 * @type {string | null}
+	 */
+	entityId;
+
+	/**
+	 * @param {string} script
 	 * @param {boolean} isActivated
 	 * @param {boolean} isDropScripts
 	 * @return {AlterScriptDto | undefined}
 	 * */
-	static getInstance(scripts, isActivated, isDropScripts) {
-		if (!scripts?.filter(Boolean)?.length) {
-			return undefined;
+	static getInstance(script, isActivated, isDropScript, scriptType, entityId) {
+		const cleanScript = script?.trim();
+		if (!cleanScript) {
+			return null;
 		}
 		return {
 			isActivated,
-			scripts: scripts.filter(Boolean).map(script => ({
-				isDropScript: isDropScripts,
-				script,
-			})),
-		};
-	}
-
-	/**
-	 * @param {string | undefined} dropScript
-	 * @param {string | undefined} createScript
-	 * @param {boolean} isActivated
-	 * @return {AlterScriptDto | undefined}
-	 * */
-	static getDropAndRecreateInstance(dropScript, createScript, isActivated) {
-		/**
-		 * @type {ModificationScript[]}
-		 * */
-		const scriptModificationDtos = [];
-		if (dropScript) {
-			scriptModificationDtos.push({
-				isDropScript: true,
-				script: dropScript,
-			});
-		}
-		if (createScript) {
-			scriptModificationDtos.push({
-				isDropScript: false,
-				script: createScript,
-			});
-		}
-		if (!scriptModificationDtos?.length) {
-			return undefined;
-		}
-		return {
-			isActivated,
-			scripts: scriptModificationDtos,
+			isDropScript,
+			script: cleanScript,
+			scriptType,
+			entityId,
 		};
 	}
 }
 
 module.exports = {
-	ModificationScript,
 	AlterScriptDto,
+	SCRIPT_TYPE,
 };
