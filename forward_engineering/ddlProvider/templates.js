@@ -8,7 +8,7 @@ module.exports = {
 	createTableProps:
 		'${columnDefinitions}${keyConstraints}${checkConstraints}${foreignKeyConstraints}${notNullConstraints}',
 
-	columnDefinition: '${name}${type}${default}${encrypt}${constraints}',
+	columnDefinition: '${name}${type}${default}${encrypt}${constraints}${annotations}',
 
 	createKeyConstraint: '${constraintName}${keyType}${columns}${options}',
 
@@ -20,7 +20,7 @@ module.exports = {
 	createForeignKey:
 		'ALTER TABLE ${foreignTable} ADD CONSTRAINT ${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${onDelete};',
 
-	createIndex: `CREATE$\{indexType} INDEX$\{ifNotExists}$\{name} ON $\{tableName}$\{keys}$\{options};\n`,
+	createIndex: 'CREATE${indexType} INDEX${ifNotExists}${name} ON ${tableName}${keys}${options}${annotations};\n',
 
 	dropIndex: 'DROP INDEX ${name};',
 
@@ -29,7 +29,7 @@ module.exports = {
 	alterIndexRebuild: 'ALTER INDEX ${name} REBUILD ${options};',
 
 	createView:
-		'CREATE${orReplace}${force}${viewType}${materialized} VIEW${ifNotExists} ${name} ${sharing}${viewProperties}\n\tAS ${selectStatement}',
+		'CREATE${orReplace}${force}${viewType}${materialized} VIEW${ifNotExists} ${name} ${sharing}${viewProperties}${annotations}\n\tAS ${selectStatement}',
 
 	viewSelectStatement: 'SELECT ${keys}\n\tFROM ${tableName}',
 
@@ -61,7 +61,7 @@ module.exports = {
 
 	dualityView: {
 		createJsonRelationalDualityViewHeading:
-			'CREATE${orReplaceStatement}${forceStatement}${editionableStatement} JSON RELATIONAL DUALITY VIEW ${viewName} AS',
+			'CREATE${orReplaceStatement}${forceStatement}${editionableStatement} JSON RELATIONAL DUALITY VIEW ${viewName}${annotations} AS',
 
 		sql: {
 			tableTagsStatement:

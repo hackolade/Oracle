@@ -1,5 +1,6 @@
 const { getViewName } = require('../../../utils/general');
 const { DualityViewPropertiesType } = require('../../../enums/DualityViewPropertiesType');
+const { getAnnotationsString } = require('../../../utils/getAnnotationsString');
 
 /**
  * @abstract
@@ -176,9 +177,10 @@ class AbstractDualityViewFeDdlCreator {
 
 	/**
 	 * @param createViewDto {CreateDualityViewDto}
+	 * @param prepareName {Function}
 	 * @return {string}
 	 * */
-	getCreateJsonRelationalDualityViewHeadingDdl(createViewDto) {
+	getCreateJsonRelationalDualityViewHeadingDdl(createViewDto, prepareName) {
 		const { jsonSchema, view } = createViewDto;
 		const template = this._ddlTemplates?.dualityView?.createJsonRelationalDualityViewHeading || '';
 
@@ -187,12 +189,14 @@ class AbstractDualityViewFeDdlCreator {
 		const editionableStatement = this._getEditionableStatement(jsonSchema);
 		const viewName = getViewName(view);
 		const ddlViewName = this._getNamePrefixedWithSchemaName(viewName, view.schemaName);
+		const annotations = getAnnotationsString(prepareName)(view.viewAnnotations);
 
 		const params = {
 			orReplaceStatement,
 			forceStatement,
 			editionableStatement,
 			viewName: ddlViewName,
+			annotations: annotations ? `\n\t${annotations}` : '',
 		};
 		return this._assignTemplates(template, params);
 	}
@@ -210,7 +214,7 @@ class AbstractDualityViewFeDdlCreator {
 	 * @return {string}
 	 * */
 	convertDualityViewToDdl(createViewDto) {
-		const heading = this.getCreateJsonRelationalDualityViewHeadingDdl(createViewDto);
+		const heading = this.getCreateJsonRelationalDualityViewHeadingDdl(createViewDto, this._prepareName);
 		const body = this.getDualityViewBodyDdl(createViewDto);
 		return heading + '\n' + body + '\n';
 	}

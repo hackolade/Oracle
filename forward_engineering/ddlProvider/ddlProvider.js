@@ -20,6 +20,7 @@ const {
 	getColumnsList,
 	prepareNameForScriptFormat,
 } = require('../utils/general');
+const { getAnnotationsString } = require('../utils/getAnnotationsString');
 const { assignTemplates } = require('../utils/assignTemplates');
 const { decorateType } = require('./ddlHelpers/columnDefinitionHelpers/decorateType');
 const { getNotNullConstraints } = require('../alterScript/alterScriptHelpers/columnHelpers/nonNullConstraintHelper');
@@ -65,6 +66,7 @@ module.exports = (baseProvider, options, app) => {
 		commentIfDeactivated,
 		prepareName,
 		assignTemplates,
+		wrapComment,
 	});
 
 	const { getUserDefinedType, isNotPlainType } = require('./ddlHelpers/udtHelper')({
@@ -206,6 +208,7 @@ module.exports = (baseProvider, options, app) => {
 				subtype: jsonSchema.subtype,
 				defaultOnNull: jsonSchema.defaultOnNull,
 				generatedDefaultValue: jsonSchema.generatedDefaultValue,
+				columnAnnotations: jsonSchema.columnAnnotations,
 			};
 		},
 
@@ -220,6 +223,8 @@ module.exports = (baseProvider, options, app) => {
 
 		convertColumnDefinition(columnDefinition, template = templates.columnDefinition) {
 			const type = replaceTypeByVersion(columnDefinition.type, columnDefinition.dbVersion);
+			const annotations = getAnnotationsString(prepareName)(columnDefinition.columnAnnotations);
+			const finalAnnotationsClause = annotations ? ' ' + annotations : '';
 
 			return commentIfDeactivated(
 				assignTemplates(template, {
@@ -228,6 +233,7 @@ module.exports = (baseProvider, options, app) => {
 					default: getColumnDefault(columnDefinition),
 					encrypt: getColumnEncrypt(columnDefinition),
 					constraints: getColumnConstraints(columnDefinition),
+					annotations: finalAnnotationsClause,
 				}),
 				{
 					isActivated: columnDefinition.isActivated,
@@ -375,6 +381,7 @@ module.exports = (baseProvider, options, app) => {
 					'description',
 					'ifNotExist',
 					'tableProperties',
+					'tableAnnotations',
 				),
 				synonyms:
 					tableData?.schemaData?.synonyms?.filter(synonym => synonym.synonymEntityId === jsonSchema.GUID) ||
@@ -407,6 +414,7 @@ module.exports = (baseProvider, options, app) => {
 				tableProperties,
 				synonyms,
 				notNullConstraints,
+				tableAnnotations,
 			},
 			isActivated,
 		) {
@@ -471,6 +479,7 @@ module.exports = (baseProvider, options, app) => {
 					partitioning,
 					selectStatement,
 					tableProperties,
+					tableAnnotations,
 				}),
 			});
 			if (usingTryCatchWrapper) {
@@ -485,7 +494,7 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		hydrateIndex(indexData, tableData, schemaData) {
-			return { ...indexData, schemaName: schemaData.schemaName };
+			return { ...indexData, schemaName: schemaData.schemaName, indexAnnotations: indexData.indexAnnotations };
 		},
 
 		createIndex(tableName, index, dbData, isParentActivated = true) {
@@ -501,6 +510,9 @@ module.exports = (baseProvider, options, app) => {
 			const dbVersion = options.dbVersion || '';
 			const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
 
+			const annotations = getAnnotationsString(prepareName)(index.indexAnnotations);
+			const finalAnnotationsClause = annotations ? ' ' + annotations : '';
+
 			const shouldInsertIfNotExistsStatement = index.ifNotExist && !usingTryCatchWrapper;
 
 			let statement = assignTemplates(templates.createIndex, {
@@ -510,6 +522,7 @@ module.exports = (baseProvider, options, app) => {
 				keys,
 				options: indexOptions,
 				tableName: getNamePrefixedWithSchemaName(tableName, index.schemaName),
+				annotations: finalAnnotationsClause,
 			});
 
 			if (index.ifNotExist && usingTryCatchWrapper) {
@@ -587,6 +600,7 @@ module.exports = (baseProvider, options, app) => {
 					dbVersion: _.get(viewData, 'schemaData.dbVersion'),
 				},
 				whereClause: detailsTab.whereClause,
+				viewAnnotations: detailsTab.viewAnnotations,
 			};
 		},
 
@@ -650,6 +664,8 @@ module.exports = (baseProvider, options, app) => {
 			const dbVersion = _.get(viewData, 'modelInfo.dbVersion', '');
 			const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
 
+			const annotations = getAnnotationsString(prepareName)(viewData.viewAnnotations);
+
 			let createViewDdl = assignTemplates(templates.createView, {
 				name: viewName,
 				ifNotExists: !usingTryCatchWrapper && viewData.ifNotExist ? ' IF NOT EXISTS' : '',
@@ -660,6 +676,7 @@ module.exports = (baseProvider, options, app) => {
 				viewProperties: viewData.viewProperties ? ' \n' + tab(viewData.viewProperties) : '',
 				sharing: viewData.sharing && !viewData.materialized ? ` SHARING=${viewData.sharing}` : '',
 				selectStatement,
+				annotations: annotations ? `\n\t${annotations}` : '',
 			});
 			if (usingTryCatchWrapper) {
 				createViewDdl = wrapIfNotExists(createViewDdl, viewData.ifNotExist);

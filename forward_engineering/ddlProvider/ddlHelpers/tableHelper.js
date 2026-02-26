@@ -1,15 +1,8 @@
 const _ = require('lodash');
+const { getAnnotationsString } = require('../../utils/getAnnotationsString');
 
-module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivated, prepareName, assignTemplates }) => {
-	const getTableType = ({
-		duplicated,
-		external,
-		immutable,
-		sharded,
-		temporary,
-		temporaryType,
-		blockchain_table_clauses,
-	}) => {
+module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivated, prepareName }) => {
+	const getTableType = ({ duplicated, immutable, sharded, temporary, temporaryType, blockchain_table_clauses }) => {
 		const blockchain = !_.isEmpty(blockchain_table_clauses);
 		switch (true) {
 			case temporary:
@@ -36,6 +29,7 @@ module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivate
 			{ key: 'partitioning', getValue: getPartitioning },
 			{ key: 'selectStatement', getValue: getBasicValue('AS') },
 			{ key: 'tableProperties', getValue: value => _.trim(value) },
+			{ key: 'tableAnnotations', getValue: getAnnotationsString(prepareName) },
 		]
 			.map(config => (tableData[config.key] ? wrap(config.getValue(tableData[config.key], tableData)) : ''))
 			.filter(Boolean)

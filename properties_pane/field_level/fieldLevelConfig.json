@@ -2121,6 +2121,49 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Annotations",
+				"propertyKeyword": "columnAnnotations",
+				"propertyTooltip": "An individual annotation has a name and an optional value. Both the name and the value are freeform text fields. Annotations are additive, meaning that multiple annotations can be specified for the same schema object in a single DDL.",
+				"propertyType": "group",
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "annotationName",
+						"propertyTooltip": "An identifier that can have up to 1024 characters. If the annotation name is a reserved word it must be provided in double quotes. When a double quoted identifier is used, the identifier can also contain whitespace characters",
+						"propertyType": "text",
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,1024}[^\\.,\\-=/:\\s]$"
+						}
+					},
+					{
+						"propertyName": "Value",
+						"propertyKeyword": "annotationValue",
+						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false,
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,4000}[^\\.,\\-=/:\\s]$"
+						}
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "12c"
+						},
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "18c"
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
 				"shouldValidate": false,
@@ -4112,6 +4155,49 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Annotations",
+				"propertyKeyword": "columnAnnotations",
+				"propertyTooltip": "An individual annotation has a name and an optional value. Both the name and the value are freeform text fields. Annotations are additive, meaning that multiple annotations can be specified for the same schema object in a single DDL.",
+				"propertyType": "group",
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "annotationName",
+						"propertyTooltip": "An identifier that can have up to 1024 characters. If the annotation name is a reserved word it must be provided in double quotes. When a double quoted identifier is used, the identifier can also contain whitespace characters",
+						"propertyType": "text",
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,1024}[^\\.,\\-=/:\\s]$"
+						}
+					},
+					{
+						"propertyName": "Value",
+						"propertyKeyword": "annotationValue",
+						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false,
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,4000}[^\\.,\\-=/:\\s]$"
+						}
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "12c"
+						},
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "18c"
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
 				"shouldValidate": false,
@@ -5855,6 +5941,49 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Annotations",
+				"propertyKeyword": "columnAnnotations",
+				"propertyTooltip": "An individual annotation has a name and an optional value. Both the name and the value are freeform text fields. Annotations are additive, meaning that multiple annotations can be specified for the same schema object in a single DDL.",
+				"propertyType": "group",
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "annotationName",
+						"propertyTooltip": "An identifier that can have up to 1024 characters. If the annotation name is a reserved word it must be provided in double quotes. When a double quoted identifier is used, the identifier can also contain whitespace characters",
+						"propertyType": "text",
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,1024}[^\\.,\\-=/:\\s]$"
+						}
+					},
+					{
+						"propertyName": "Value",
+						"propertyKeyword": "annotationValue",
+						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false,
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,4000}[^\\.,\\-=/:\\s]$"
+						}
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "12c"
+						},
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "18c"
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
 				"shouldValidate": false,
@@ -6636,6 +6765,49 @@ making sure that you maintain a proper JSON format.
 							"level": "root",
 							"key": "duality",
 							"value": true
+						}
+					]
+				}
+			},
+			{
+				"propertyName": "Annotations",
+				"propertyKeyword": "columnAnnotations",
+				"propertyTooltip": "An individual annotation has a name and an optional value. Both the name and the value are freeform text fields. Annotations are additive, meaning that multiple annotations can be specified for the same schema object in a single DDL.",
+				"propertyType": "group",
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "annotationName",
+						"propertyTooltip": "An identifier that can have up to 1024 characters. If the annotation name is a reserved word it must be provided in double quotes. When a double quoted identifier is used, the identifier can also contain whitespace characters",
+						"propertyType": "text",
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,1024}[^\\.,\\-=/:\\s]$"
+						}
+					},
+					{
+						"propertyName": "Value",
+						"propertyKeyword": "annotationValue",
+						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false,
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,4000}[^\\.,\\-=/:\\s]$"
+						}
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "12c"
+						},
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "18c"
 						}
 					]
 				}
@@ -7823,6 +7995,49 @@ making sure that you maintain a proper JSON format.
 									"value": true
 								}
 							]
+						}
+					]
+				}
+			},
+			{
+				"propertyName": "Annotations",
+				"propertyKeyword": "columnAnnotations",
+				"propertyTooltip": "An individual annotation has a name and an optional value. Both the name and the value are freeform text fields. Annotations are additive, meaning that multiple annotations can be specified for the same schema object in a single DDL.",
+				"propertyType": "group",
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "annotationName",
+						"propertyTooltip": "An identifier that can have up to 1024 characters. If the annotation name is a reserved word it must be provided in double quotes. When a double quoted identifier is used, the identifier can also contain whitespace characters",
+						"propertyType": "text",
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,1024}[^\\.,\\-=/:\\s]$"
+						}
+					},
+					{
+						"propertyName": "Value",
+						"propertyKeyword": "annotationValue",
+						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false,
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,4000}[^\\.,\\-=/:\\s]$"
+						}
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "12c"
+						},
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "18c"
 						}
 					]
 				}
@@ -9208,6 +9423,49 @@ making sure that you maintain a proper JSON format.
 							"level": "root",
 							"key": "duality",
 							"value": true
+						}
+					]
+				}
+			},
+			{
+				"propertyName": "Annotations",
+				"propertyKeyword": "columnAnnotations",
+				"propertyTooltip": "An individual annotation has a name and an optional value. Both the name and the value are freeform text fields. Annotations are additive, meaning that multiple annotations can be specified for the same schema object in a single DDL.",
+				"propertyType": "group",
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "annotationName",
+						"propertyTooltip": "An identifier that can have up to 1024 characters. If the annotation name is a reserved word it must be provided in double quotes. When a double quoted identifier is used, the identifier can also contain whitespace characters",
+						"propertyType": "text",
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,1024}[^\\.,\\-=/:\\s]$"
+						}
+					},
+					{
+						"propertyName": "Value",
+						"propertyKeyword": "annotationValue",
+						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false,
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,4000}[^\\.,\\-=/:\\s]$"
+						}
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "12c"
+						},
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "18c"
 						}
 					]
 				}
@@ -10841,6 +11099,49 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Annotations",
+				"propertyKeyword": "columnAnnotations",
+				"propertyTooltip": "An individual annotation has a name and an optional value. Both the name and the value are freeform text fields. Annotations are additive, meaning that multiple annotations can be specified for the same schema object in a single DDL.",
+				"propertyType": "group",
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "annotationName",
+						"propertyTooltip": "An identifier that can have up to 1024 characters. If the annotation name is a reserved word it must be provided in double quotes. When a double quoted identifier is used, the identifier can also contain whitespace characters",
+						"propertyType": "text",
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,1024}[^\\.,\\-=/:\\s]$"
+						}
+					},
+					{
+						"propertyName": "Value",
+						"propertyKeyword": "annotationValue",
+						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false,
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,4000}[^\\.,\\-=/:\\s]$"
+						}
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "12c"
+						},
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "18c"
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
 				"shouldValidate": false,
@@ -10973,6 +11274,49 @@ making sure that you maintain a proper JSON format.
 				"addTimestampButton": false,
 				"propertyType": "details",
 				"template": "textarea"
+			},
+			{
+				"propertyName": "Annotations",
+				"propertyKeyword": "columnAnnotations",
+				"propertyTooltip": "An individual annotation has a name and an optional value. Both the name and the value are freeform text fields. Annotations are additive, meaning that multiple annotations can be specified for the same schema object in a single DDL.",
+				"propertyType": "group",
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "annotationName",
+						"propertyTooltip": "An identifier that can have up to 1024 characters. If the annotation name is a reserved word it must be provided in double quotes. When a double quoted identifier is used, the identifier can also contain whitespace characters",
+						"propertyType": "text",
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,1024}[^\\.,\\-=/:\\s]$"
+						}
+					},
+					{
+						"propertyName": "Value",
+						"propertyKeyword": "annotationValue",
+						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false,
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,4000}[^\\.,\\-=/:\\s]$"
+						}
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "12c"
+						},
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "18c"
+						}
+					]
+				}
 			},
 			{
 				"propertyName": "Remarks",
@@ -11806,6 +12150,49 @@ making sure that you maintain a proper JSON format.
 			},
 			"sample",
 			{
+				"propertyName": "Annotations",
+				"propertyKeyword": "columnAnnotations",
+				"propertyTooltip": "An individual annotation has a name and an optional value. Both the name and the value are freeform text fields. Annotations are additive, meaning that multiple annotations can be specified for the same schema object in a single DDL.",
+				"propertyType": "group",
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "annotationName",
+						"propertyTooltip": "An identifier that can have up to 1024 characters. If the annotation name is a reserved word it must be provided in double quotes. When a double quoted identifier is used, the identifier can also contain whitespace characters",
+						"propertyType": "text",
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,1024}[^\\.,\\-=/:\\s]$"
+						}
+					},
+					{
+						"propertyName": "Value",
+						"propertyKeyword": "annotationValue",
+						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false,
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,4000}[^\\.,\\-=/:\\s]$"
+						}
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "12c"
+						},
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "18c"
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
 				"shouldValidate": false,
@@ -12300,6 +12687,49 @@ making sure that you maintain a proper JSON format.
 							"level": "root",
 							"key": "duality",
 							"value": true
+						}
+					]
+				}
+			},
+			{
+				"propertyName": "Annotations",
+				"propertyKeyword": "columnAnnotations",
+				"propertyTooltip": "An individual annotation has a name and an optional value. Both the name and the value are freeform text fields. Annotations are additive, meaning that multiple annotations can be specified for the same schema object in a single DDL.",
+				"propertyType": "group",
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "annotationName",
+						"propertyTooltip": "An identifier that can have up to 1024 characters. If the annotation name is a reserved word it must be provided in double quotes. When a double quoted identifier is used, the identifier can also contain whitespace characters",
+						"propertyType": "text",
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,1024}[^\\.,\\-=/:\\s]$"
+						}
+					},
+					{
+						"propertyName": "Value",
+						"propertyKeyword": "annotationValue",
+						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false,
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,4000}[^\\.,\\-=/:\\s]$"
+						}
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "12c"
+						},
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "18c"
 						}
 					]
 				}
@@ -13048,6 +13478,49 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Annotations",
+				"propertyKeyword": "columnAnnotations",
+				"propertyTooltip": "An individual annotation has a name and an optional value. Both the name and the value are freeform text fields. Annotations are additive, meaning that multiple annotations can be specified for the same schema object in a single DDL.",
+				"propertyType": "group",
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "annotationName",
+						"propertyTooltip": "An identifier that can have up to 1024 characters. If the annotation name is a reserved word it must be provided in double quotes. When a double quoted identifier is used, the identifier can also contain whitespace characters",
+						"propertyType": "text",
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,1024}[^\\.,\\-=/:\\s]$"
+						}
+					},
+					{
+						"propertyName": "Value",
+						"propertyKeyword": "annotationValue",
+						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false,
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,4000}[^\\.,\\-=/:\\s]$"
+						}
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "12c"
+						},
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "18c"
+						}
+					]
+				}
+			},
+			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
 				"shouldValidate": false,
@@ -13557,6 +14030,49 @@ making sure that you maintain a proper JSON format.
 						]
 					}
 				]
+			},
+			{
+				"propertyName": "Annotations",
+				"propertyKeyword": "columnAnnotations",
+				"propertyTooltip": "An individual annotation has a name and an optional value. Both the name and the value are freeform text fields. Annotations are additive, meaning that multiple annotations can be specified for the same schema object in a single DDL.",
+				"propertyType": "group",
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "annotationName",
+						"propertyTooltip": "An identifier that can have up to 1024 characters. If the annotation name is a reserved word it must be provided in double quotes. When a double quoted identifier is used, the identifier can also contain whitespace characters",
+						"propertyType": "text",
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,1024}[^\\.,\\-=/:\\s]$"
+						}
+					},
+					{
+						"propertyName": "Value",
+						"propertyKeyword": "annotationValue",
+						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false,
+						"validation": {
+							"regex": "^(?=.*?\\d)?(?=.*?[a-zA-Z])?[^\\.,\\-=/:\\s][^\\.,\\-=/:]{1,4000}[^\\.,\\-=/:\\s]$"
+						}
+					}
+				],
+				"dependency": {
+					"type": "not",
+					"values": [
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "12c"
+						},
+						{
+							"level": "model",
+							"key": "dbVersion",
+							"value": "18c"
+						}
+					]
+				}
 			},
 			{
 				"propertyName": "Remarks",

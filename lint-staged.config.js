@@ -7,6 +7,6 @@
  * the agreement/contract under which the software has been supplied.
  */
 module.exports = {
-  '*.{js,jsx,ts,tsx,cjs,mjs}': ['prettier --write', 'npm run lint'],
-  '*.{json,css,scss}': ['prettier --write'],
+	'*.{js,jsx,ts,tsx,cjs,mjs}': ['prettier --write', 'npm run lint'],
+	'*.{json,css,scss}': ['prettier --write'],
 };
