@@ -61,7 +61,7 @@ module.exports = {
 
 	dualityView: {
 		createJsonRelationalDualityViewHeading:
-			'CREATE${orReplaceStatement}${forceStatement}${editionableStatement} JSON RELATIONAL DUALITY VIEW ${viewName} AS',
+			'CREATE${orReplaceStatement}${forceStatement}${editionableStatement} JSON RELATIONAL DUALITY VIEW ${viewName}${annotations} AS',
 
 		sql: {
 			tableTagsStatement:
