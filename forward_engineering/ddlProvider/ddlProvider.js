@@ -24,7 +24,6 @@ const { getAnnotationsString } = require('../utils/getAnnotationsString');
 const { assignTemplates } = require('../utils/assignTemplates');
 const { decorateType } = require('./ddlHelpers/columnDefinitionHelpers/decorateType');
 const { getNotNullConstraints } = require('../alterScript/alterScriptHelpers/columnHelpers/nonNullConstraintHelper');
-const { getAnnotationsString } = require('../utils/getAnnotationsString');
 
 /**
  * @param dbVersion {string} DB version in "21ai" format
