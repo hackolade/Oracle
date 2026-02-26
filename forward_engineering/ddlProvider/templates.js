@@ -8,7 +8,7 @@ module.exports = {
 	createTableProps:
 		'${columnDefinitions}${keyConstraints}${checkConstraints}${foreignKeyConstraints}${notNullConstraints}',
 
-	columnDefinition: '${name}${type}${default}${encrypt}${constraints}',
+	columnDefinition: '${name}${type}${default}${encrypt}${constraints}${annotations}',
 
 	createKeyConstraint: '${constraintName}${keyType}${columns}${options}',
 
