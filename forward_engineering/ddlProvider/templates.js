@@ -20,7 +20,7 @@ module.exports = {
 	createForeignKey:
 		'ALTER TABLE ${foreignTable} ADD CONSTRAINT ${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${onDelete};',
 
-	createIndex: `CREATE$\{indexType} INDEX$\{ifNotExists}$\{name} ON $\{tableName}$\{keys}$\{options};\n`,
+	createIndex: 'CREATE${indexType} INDEX${ifNotExists}${name} ON ${tableName}${keys}${options}${annotations};\n',
 
 	dropIndex: 'DROP INDEX ${name};',
 
