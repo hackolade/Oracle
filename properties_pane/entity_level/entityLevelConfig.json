@@ -912,7 +912,7 @@ making sure that you maintain a proper JSON format.
 				"structure": [
 					{
 						"propertyName": "Name",
-						"propertyKeyword": "tableAnnotationName",
+						"propertyKeyword": "annotationName",
 						"propertyTooltip": "An identifier that can have up to 1024 characters. If the annotation name is a reserved word it must be provided in double quotes. When a double quoted identifier is used, the identifier can also contain whitespace characters",
 						"propertyType": "text",
 						"validation": {
@@ -921,7 +921,7 @@ making sure that you maintain a proper JSON format.
 					},
 					{
 						"propertyName": "Value",
-						"propertyKeyword": "tableAnnotationValue",
+						"propertyKeyword": "annotationValue",
 						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
 						"propertyType": "details",
 						"template": "textarea",
@@ -1234,7 +1234,7 @@ making sure that you maintain a proper JSON format.
 						"structure": [
 							{
 								"propertyName": "Name",
-								"propertyKeyword": "indexAnnotationName",
+								"propertyKeyword": "annotationName",
 								"propertyTooltip": "An identifier that can have up to 1024 characters. If the annotation name is a reserved word it must be provided in double quotes. When a double quoted identifier is used, the identifier can also contain whitespace characters",
 								"propertyType": "text",
 								"validation": {
@@ -1243,7 +1243,7 @@ making sure that you maintain a proper JSON format.
 							},
 							{
 								"propertyName": "Value",
-								"propertyKeyword": "indexAnnotationValue",
+								"propertyKeyword": "annotationValue",
 								"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
 								"propertyType": "details",
 								"template": "textarea",

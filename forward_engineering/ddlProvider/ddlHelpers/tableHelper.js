@@ -1,22 +1,8 @@
 const _ = require('lodash');
+const { getAnnotationsString } = require('../../utils/getAnnotationsString');
 
-module.exports = ({
-	getColumnsList,
-	checkAllKeysDeactivated,
-	commentIfDeactivated,
-	prepareName,
-	assignTemplates,
-	wrapComment,
-}) => {
-	const getTableType = ({
-		duplicated,
-		external,
-		immutable,
-		sharded,
-		temporary,
-		temporaryType,
-		blockchain_table_clauses,
-	}) => {
+module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivated, prepareName }) => {
+	const getTableType = ({ duplicated, immutable, sharded, temporary, temporaryType, blockchain_table_clauses }) => {
 		const blockchain = !_.isEmpty(blockchain_table_clauses);
 		switch (true) {
 			case temporary:
@@ -43,7 +29,7 @@ module.exports = ({
 			{ key: 'partitioning', getValue: getPartitioning },
 			{ key: 'selectStatement', getValue: getBasicValue('AS') },
 			{ key: 'tableProperties', getValue: value => _.trim(value) },
-			{ key: 'tableAnnotations', getValue: getAnnotationsString },
+			{ key: 'tableAnnotations', getValue: getAnnotationsString(prepareName) },
 		]
 			.map(config => (tableData[config.key] ? wrap(config.getValue(tableData[config.key], tableData)) : ''))
 			.filter(Boolean)
@@ -301,40 +287,6 @@ module.exports = ({
 	const customPropertiesForForeignKey = relationship => {
 		const foreignOnDelete = _.get(relationship, 'relationshipOnDelete', '');
 		return { foreignOnDelete };
-	};
-
-	/**
-	 * Generates annotations string.
-	 * @param {Array} tableAnnotations - tableAnnotations array.
-	 * @returns {string} - Annotation string (e.g: "\nANNOTATIONS (...)") or ''.
-	 */
-	const getAnnotationsString = tableAnnotations => {
-		if (!Array.isArray(tableAnnotations) || tableAnnotations.length === 0) {
-			return '';
-		}
-
-		const wrapValue = value => wrapComment(value);
-
-		const annotationsItems = tableAnnotations
-			.filter(annotation => annotation?.tableAnnotationName?.trim())
-			.map(annotation => {
-				const name = prepareName(annotation.tableAnnotationName.trim());
-
-				let finalValue = '';
-				const annotationValue = annotation?.tableAnnotationValue;
-
-				if (annotationValue !== undefined && String(annotationValue).trim() !== '') {
-					finalValue = ' ' + wrapValue(String(annotationValue).trim());
-				}
-
-				return `${name}${finalValue}`;
-			});
-
-		if (annotationsItems.length > 0) {
-			return `ANNOTATIONS (${annotationsItems.join(', ')})`;
-		}
-
-		return '';
 	};
 
 	return {
