@@ -1,6 +1,13 @@
 const _ = require('lodash');
 
-module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivated, prepareName, assignTemplates }) => {
+module.exports = ({
+	getColumnsList,
+	checkAllKeysDeactivated,
+	commentIfDeactivated,
+	prepareName,
+	assignTemplates,
+	wrapComment,
+}) => {
 	const getTableType = ({
 		duplicated,
 		external,
@@ -306,20 +313,18 @@ module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivate
 			return '';
 		}
 
+		const wrapValue = value => wrapComment(value);
+
 		const annotationsItems = tableAnnotations
 			.filter(annotation => annotation?.tableAnnotationName?.trim())
 			.map(annotation => {
 				const name = prepareName(annotation.tableAnnotationName.trim());
 
-				// Oracle string values must be enclosed in single quotes.
-				// If the user's value contains a single quote (e.g., "Manager's table"),
-				// we must escape it by doubling it (e.g., "Manager''s table") to prevent SQL syntax errors.
 				let finalValue = '';
 				const annotationValue = annotation?.tableAnnotationValue;
 
 				if (annotationValue !== undefined && String(annotationValue).trim() !== '') {
-					const escapedValue = String(annotationValue).replaceAll("'", "''");
-					finalValue = ` '${escapedValue}'`;
+					finalValue = ' ' + wrapValue(String(annotationValue).trim());
 				}
 
 				return `${name}${finalValue}`;

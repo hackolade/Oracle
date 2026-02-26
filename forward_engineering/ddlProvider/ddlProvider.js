@@ -65,6 +65,7 @@ module.exports = (baseProvider, options, app) => {
 		commentIfDeactivated,
 		prepareName,
 		assignTemplates,
+		wrapComment,
 	});
 
 	const { getUserDefinedType, isNotPlainType } = require('./ddlHelpers/udtHelper')({
