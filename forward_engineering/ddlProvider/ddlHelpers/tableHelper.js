@@ -307,26 +307,22 @@ module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivate
 		}
 
 		const annotationsItems = tableAnnotations
-			.filter(ann => ann?.tableAnnotationName?.trim())
-			.map(ann => {
-				let name = ann.tableAnnotationName.trim();
-
-				// Oracle identifiers (including annotation names) must be enclosed in double quotes
-				// if they contain spaces, special characters, or start with a number.
-				if (!/^\w+$/.test(name) && !name.startsWith('"')) {
-					name = `"${name}"`;
-				}
+			.filter(annotation => annotation?.tableAnnotationName?.trim())
+			.map(annotation => {
+				const name = prepareName(annotation.tableAnnotationName.trim());
 
 				// Oracle string values must be enclosed in single quotes.
 				// If the user's value contains a single quote (e.g., "Manager's table"),
 				// we must escape it by doubling it (e.g., "Manager''s table") to prevent SQL syntax errors.
-				let valueStr = '';
-				if (ann?.tableAnnotationValue !== undefined && String(ann?.tableAnnotationValue).trim() !== '') {
-					const escapedVal = String(ann?.tableAnnotationValue).replaceAll("'", "''");
-					valueStr = ` '${escapedVal}'`;
+				let finalValue = '';
+				const annotationValue = annotation?.tableAnnotationValue;
+
+				if (annotationValue !== undefined && String(annotationValue).trim() !== '') {
+					const escapedValue = String(annotationValue).replaceAll("'", "''");
+					finalValue = ` '${escapedValue}'`;
 				}
 
-				return `${name}${valueStr}`;
+				return `${name}${finalValue}`;
 			});
 
 		if (annotationsItems.length > 0) {
