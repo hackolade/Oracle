@@ -494,7 +494,7 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		hydrateIndex(indexData, tableData, schemaData) {
-			return { ...indexData, schemaName: schemaData.schemaName };
+			return { ...indexData, schemaName: schemaData.schemaName, indexAnnotations: indexData.indexAnnotations };
 		},
 
 		createIndex(tableName, index, dbData, isParentActivated = true) {
@@ -510,6 +510,9 @@ module.exports = (baseProvider, options, app) => {
 			const dbVersion = options.dbVersion || '';
 			const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
 
+			const annotations = getAnnotationsString(prepareName)(index.indexAnnotations);
+			const finalAnnotationsClause = annotations ? ' ' + annotations : '';
+
 			const shouldInsertIfNotExistsStatement = index.ifNotExist && !usingTryCatchWrapper;
 
 			let statement = assignTemplates(templates.createIndex, {
@@ -519,6 +522,7 @@ module.exports = (baseProvider, options, app) => {
 				keys,
 				options: indexOptions,
 				tableName: getNamePrefixedWithSchemaName(tableName, index.schemaName),
+				annotations: finalAnnotationsClause,
 			});
 
 			if (index.ifNotExist && usingTryCatchWrapper) {
