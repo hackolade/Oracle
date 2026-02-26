@@ -36,6 +36,7 @@ module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivate
 			{ key: 'partitioning', getValue: getPartitioning },
 			{ key: 'selectStatement', getValue: getBasicValue('AS') },
 			{ key: 'tableProperties', getValue: value => _.trim(value) },
+			{ key: 'tableAnnotations', getValue: getAnnotationsString },
 		]
 			.map(config => (tableData[config.key] ? wrap(config.getValue(tableData[config.key], tableData)) : ''))
 			.filter(Boolean)
@@ -293,6 +294,46 @@ module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivate
 	const customPropertiesForForeignKey = relationship => {
 		const foreignOnDelete = _.get(relationship, 'relationshipOnDelete', '');
 		return { foreignOnDelete };
+	};
+
+	/**
+	 * Generates annotations string.
+	 * @param {Array} tableAnnotations - tableAnnotations array.
+	 * @returns {string} - Annotation string (e.g: "\nANNOTATIONS (...)") or ''.
+	 */
+	const getAnnotationsString = tableAnnotations => {
+		if (!Array.isArray(tableAnnotations) || tableAnnotations.length === 0) {
+			return '';
+		}
+
+		const annotationsItems = tableAnnotations
+			.filter(ann => ann?.tableAnnotationName?.trim())
+			.map(ann => {
+				let name = ann.tableAnnotationName.trim();
+
+				// Oracle identifiers (including annotation names) must be enclosed in double quotes
+				// if they contain spaces, special characters, or start with a number.
+				if (!/^\w+$/.test(name) && !name.startsWith('"')) {
+					name = `"${name}"`;
+				}
+
+				// Oracle string values must be enclosed in single quotes.
+				// If the user's value contains a single quote (e.g., "Manager's table"),
+				// we must escape it by doubling it (e.g., "Manager''s table") to prevent SQL syntax errors.
+				let valueStr = '';
+				if (ann?.tableAnnotationValue !== undefined && String(ann?.tableAnnotationValue).trim() !== '') {
+					const escapedVal = String(ann?.tableAnnotationValue).replaceAll("'", "''");
+					valueStr = ` '${escapedVal}'`;
+				}
+
+				return `${name}${valueStr}`;
+			});
+
+		if (annotationsItems.length > 0) {
+			return `ANNOTATIONS (${annotationsItems.join(', ')})`;
+		}
+
+		return '';
 	};
 
 	return {
