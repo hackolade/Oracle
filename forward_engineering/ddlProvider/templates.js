@@ -1,5 +1,5 @@
 module.exports = {
-	createSchema: 'CREATE USER${ifNotExists} ${schemaName} NO AUTHENTICATION',
+	createSchema: 'CREATE USER${ifNotExists} ${schemaName}${annotations} NO AUTHENTICATION',
 
 	comment: '\nCOMMENT ON ${object} ${objectName} IS ${comment};\n',
 
