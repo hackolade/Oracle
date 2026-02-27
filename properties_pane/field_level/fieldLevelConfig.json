@@ -113,7 +113,6 @@ making sure that you maintain a proper JSON format.
 			}
 
 */
-
 {
 	"lowerTab": "Details",
 	"structure": {
@@ -2138,7 +2137,7 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Value",
 						"propertyKeyword": "annotationValue",
-						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyTooltip": "The value of the annotation is optionsal. Value can have a maximum of 4000 characters.",
 						"propertyType": "details",
 						"template": "textarea",
 						"markdown": false,
@@ -4172,7 +4171,7 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Value",
 						"propertyKeyword": "annotationValue",
-						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyTooltip": "The value of the annotation is optionsal. Value can have a maximum of 4000 characters.",
 						"propertyType": "details",
 						"template": "textarea",
 						"markdown": false,
@@ -5958,7 +5957,7 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Value",
 						"propertyKeyword": "annotationValue",
-						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyTooltip": "The value of the annotation is optionsal. Value can have a maximum of 4000 characters.",
 						"propertyType": "details",
 						"template": "textarea",
 						"markdown": false,
@@ -6787,7 +6786,7 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Value",
 						"propertyKeyword": "annotationValue",
-						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyTooltip": "The value of the annotation is optionsal. Value can have a maximum of 4000 characters.",
 						"propertyType": "details",
 						"template": "textarea",
 						"markdown": false,
@@ -8017,7 +8016,7 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Value",
 						"propertyKeyword": "annotationValue",
-						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyTooltip": "The value of the annotation is optionsal. Value can have a maximum of 4000 characters.",
 						"propertyType": "details",
 						"template": "textarea",
 						"markdown": false,
@@ -9445,7 +9444,7 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Value",
 						"propertyKeyword": "annotationValue",
-						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyTooltip": "The value of the annotation is optionsal. Value can have a maximum of 4000 characters.",
 						"propertyType": "details",
 						"template": "textarea",
 						"markdown": false,
@@ -11116,7 +11115,7 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Value",
 						"propertyKeyword": "annotationValue",
-						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyTooltip": "The value of the annotation is optionsal. Value can have a maximum of 4000 characters.",
 						"propertyType": "details",
 						"template": "textarea",
 						"markdown": false,
@@ -11183,9 +11182,18 @@ making sure that you maintain a proper JSON format.
 				},
 				"options": [
 					"",
-					{ "name": "int8", "value": "vector<int8>" },
-					{ "name": "float32", "value": "vector<float32>" },
-					{ "name": "float64", "value": "vector<float64>" }
+					{
+						"name": "int8",
+						"value": "vector<int8>"
+					},
+					{
+						"name": "float32",
+						"value": "vector<float32>"
+					},
+					{
+						"name": "float64",
+						"value": "vector<float64>"
+					}
 				]
 			},
 			{
@@ -11293,7 +11301,7 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Value",
 						"propertyKeyword": "annotationValue",
-						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyTooltip": "The value of the annotation is optionsal. Value can have a maximum of 4000 characters.",
 						"propertyType": "details",
 						"template": "textarea",
 						"markdown": false,
@@ -12167,7 +12175,7 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Value",
 						"propertyKeyword": "annotationValue",
-						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyTooltip": "The value of the annotation is optionsal. Value can have a maximum of 4000 characters.",
 						"propertyType": "details",
 						"template": "textarea",
 						"markdown": false,
@@ -12709,7 +12717,7 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Value",
 						"propertyKeyword": "annotationValue",
-						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyTooltip": "The value of the annotation is optionsal. Value can have a maximum of 4000 characters.",
 						"propertyType": "details",
 						"template": "textarea",
 						"markdown": false,
@@ -13495,7 +13503,7 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Value",
 						"propertyKeyword": "annotationValue",
-						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyTooltip": "The value of the annotation is optionsal. Value can have a maximum of 4000 characters.",
 						"propertyType": "details",
 						"template": "textarea",
 						"markdown": false,
@@ -14049,7 +14057,7 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Value",
 						"propertyKeyword": "annotationValue",
-						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyTooltip": "The value of the annotation is optionsal. Value can have a maximum of 4000 characters.",
 						"propertyType": "details",
 						"template": "textarea",
 						"markdown": false,

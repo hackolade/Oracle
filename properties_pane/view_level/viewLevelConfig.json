@@ -6,7 +6,6 @@
  * IntegrIT S.A. or in accordance with the terms and conditions stipulated in
  * the agreement/contract under which the software has been supplied.
  */
-
 [
 	{
 		"lowerTab": "Details",
@@ -697,7 +696,7 @@
 					{
 						"propertyName": "Value",
 						"propertyKeyword": "annotationValue",
-						"propertyTooltip": "The value of the annotation is optionsal.  Value can have a maximum of 4000 characters.",
+						"propertyTooltip": "The value of the annotation is optionsal. Value can have a maximum of 4000 characters.",
 						"propertyType": "details",
 						"template": "textarea",
 						"markdown": false,

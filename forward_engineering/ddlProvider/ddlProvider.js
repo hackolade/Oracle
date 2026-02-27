@@ -135,18 +135,22 @@ module.exports = (baseProvider, options, app) => {
 				synonyms: data.synonyms,
 				sequences: data.sequences,
 				isActivated: containerData.isActivated,
+				schemaAnnotations: containerData.schemaAnnotations,
 			};
 		},
 
-		createSchema({ schemaName, ifNotExist, dbVersion, sequences, isActivated = true }) {
+		createSchema({ schemaName, ifNotExist, dbVersion, sequences, isActivated = true, schemaAnnotations }) {
 			const emptyLineSeparator = '\n\n';
 			const statementTerminator = ';';
 
+			const annotations = getAnnotationsString(prepareName)(schemaAnnotations);
+			const finalAnnotationsClause = annotations ? ' ' + annotations : '';
 			const preparedSchemaName = prepareName(schemaName);
 			const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
 			const schemaStatement = assignTemplates(templates.createSchema, {
 				schemaName: preparedSchemaName,
 				ifNotExists: !usingTryCatchWrapper && ifNotExist ? ' IF NOT EXISTS' : '',
+				annotations: finalAnnotationsClause,
 			});
 			const sequencesStatement = getSequencesScript({ schemaName, sequences, usingTryCatchWrapper });
 			const schemaSequencesStatement = sequencesStatement ? emptyLineSeparator + sequencesStatement : '';
