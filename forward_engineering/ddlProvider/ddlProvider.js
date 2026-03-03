@@ -143,7 +143,7 @@ module.exports = (baseProvider, options, app) => {
 			const emptyLineSeparator = '\n\n';
 			const statementTerminator = ';';
 
-			const annotations = getAnnotationsString(prepareName, dbVersion)(schemaAnnotations);
+			const annotations = getAnnotationsString(prepareName)(schemaAnnotations);
 			const finalAnnotationsClause = annotations ? ' ' + annotations : '';
 			const preparedSchemaName = prepareName(schemaName);
 			const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
@@ -228,7 +228,7 @@ module.exports = (baseProvider, options, app) => {
 		convertColumnDefinition(columnDefinition, template = templates.columnDefinition) {
 			const dbVersion = columnDefinition?.dbVersion;
 			const type = replaceTypeByVersion(columnDefinition.type, dbVersion);
-			const annotations = getAnnotationsString(prepareName, dbVersion)(columnDefinition.columnAnnotations);
+			const annotations = getAnnotationsString(prepareName)(columnDefinition.columnAnnotations);
 			const finalAnnotationsClause = annotations ? ' ' + annotations : '';
 
 			return commentIfDeactivated(
@@ -485,7 +485,6 @@ module.exports = (baseProvider, options, app) => {
 					selectStatement,
 					tableProperties,
 					tableAnnotations,
-					dbVersion,
 				}),
 			});
 			if (usingTryCatchWrapper) {
@@ -516,7 +515,7 @@ module.exports = (baseProvider, options, app) => {
 			const dbVersion = options.dbVersion || '';
 			const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
 
-			const annotations = getAnnotationsString(prepareName, dbVersion)(index.indexAnnotations);
+			const annotations = getAnnotationsString(prepareName)(index.indexAnnotations);
 			const finalAnnotationsClause = annotations ? ' ' + annotations : '';
 
 			const shouldInsertIfNotExistsStatement = index.ifNotExist && !usingTryCatchWrapper;
@@ -670,7 +669,7 @@ module.exports = (baseProvider, options, app) => {
 			const dbVersion = _.get(viewData, 'modelInfo.dbVersion', '');
 			const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
 
-			const annotations = getAnnotationsString(prepareName, dbVersion)(viewData.viewAnnotations);
+			const annotations = getAnnotationsString(prepareName)(viewData.viewAnnotations);
 
 			let createViewDdl = assignTemplates(templates.createView, {
 				name: viewName,

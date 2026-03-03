@@ -113,7 +113,6 @@ making sure that you maintain a proper JSON format.
 			}
 
 */
-
 [
 	{
 		"lowerTab": "Details",
@@ -171,6 +170,22 @@ making sure that you maintain a proper JSON format.
 							]
 						},
 						"adapter": "adaptUnavailableTypes"
+					},
+					{
+						"dependency": {
+							"type": "or",
+							"values": [
+								{
+									"key": "dbVersion",
+									"value": "12c"
+								},
+								{
+									"key": "dbVersion",
+									"value": "18c"
+								}
+							]
+						},
+						"adapter": "adaptOracleAnnotationsForLegacy"
 					}
 				]
 			},

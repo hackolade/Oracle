@@ -7,19 +7,12 @@ const { wrapComment } = require('./general');
  * }} Annotation
  */
 
-const UNSUPPORTED_DB_VERSIONS = new Set(['12c', '18c']);
-
 /**
  * Generates annotations string.
  * @param {function} prepareName - Function to format/escape identifiers
- * @param {string} [dbVersion] - Database version
  * @returns {(annotations: Annotation[]) => string} - returns Annotations string (e.g: "\nANNOTATIONS (...)") or ''.
  */
-const getAnnotationsString = (prepareName, dbVersion) => annotations => {
-	if (!dbVersion || UNSUPPORTED_DB_VERSIONS.has(dbVersion)) {
-		return '';
-	}
-
+const getAnnotationsString = prepareName => annotations => {
 	if (!Array.isArray(annotations) || annotations.length === 0) {
 		return '';
 	}
