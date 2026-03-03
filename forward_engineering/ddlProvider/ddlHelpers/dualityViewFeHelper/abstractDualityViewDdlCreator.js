@@ -183,14 +183,13 @@ class AbstractDualityViewFeDdlCreator {
 	getCreateJsonRelationalDualityViewHeadingDdl(createViewDto, prepareName) {
 		const { jsonSchema, view } = createViewDto;
 		const template = this._ddlTemplates?.dualityView?.createJsonRelationalDualityViewHeading || '';
-		const dbVersion = view?.modelInfo?.dbVersion || '';
 
 		const orReplaceStatement = this._getOrReplaceStatement(view);
 		const forceStatement = this._getForceStatement(jsonSchema);
 		const editionableStatement = this._getEditionableStatement(jsonSchema);
 		const viewName = getViewName(view);
 		const ddlViewName = this._getNamePrefixedWithSchemaName(viewName, view.schemaName);
-		const annotations = getAnnotationsString(prepareName, dbVersion)(view.viewAnnotations);
+		const annotations = getAnnotationsString(prepareName)(view.viewAnnotations);
 
 		const params = {
 			orReplaceStatement,

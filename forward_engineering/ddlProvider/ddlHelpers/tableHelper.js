@@ -29,7 +29,7 @@ module.exports = ({ getColumnsList, checkAllKeysDeactivated, commentIfDeactivate
 			{ key: 'partitioning', getValue: getPartitioning },
 			{ key: 'selectStatement', getValue: getBasicValue('AS') },
 			{ key: 'tableProperties', getValue: value => _.trim(value) },
-			{ key: 'tableAnnotations', getValue: getAnnotationsString(prepareName, tableData?.dbVersion) },
+			{ key: 'tableAnnotations', getValue: getAnnotationsString(prepareName) },
 		]
 			.map(config => (tableData[config.key] ? wrap(config.getValue(tableData[config.key], tableData)) : ''))
 			.filter(Boolean)

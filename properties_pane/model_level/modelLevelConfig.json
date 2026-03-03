@@ -184,7 +184,8 @@ making sure that you maintain a proper JSON format.
 									"value": "18c"
 								}
 							]
-						}
+						},
+						"adapter": "adaptOracleAnnotationsForLegacy"
 					}
 				]
 			},
