@@ -35,6 +35,7 @@ esbuild
 			'oci-common',
 			'oci-objectstorage',
 			'oci-secrets',
+			'oracledb',
 		],
 		plugins: [
 			clean({
@@ -48,8 +49,8 @@ esbuild
 			}),
 			copy({
 				assets: {
-					from: [path.join('node_modules', 'oracledb', 'build', '**', '*')],
-					to: [path.join('node_modules', 'oracledb', 'build')],
+					from: [path.join('node_modules', 'oracledb', '**', '*')],
+					to: [path.join('node_modules', 'oracledb')],
 				},
 			}),
 			copyFolderFiles({
