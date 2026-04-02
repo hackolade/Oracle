@@ -16,10 +16,12 @@ module.exports = ({ prepareName, getNamePrefixedWithSchemaName }) => {
 	 * @return {string}
 	 * */
 	const getIndexKeys = ({ indxKey, column_expression }) => {
-		if (column_expression) {
-			const ddlColumnExpression = escapeSingleQuote(column_expression);
-			return `\n(\n\t${ddlColumnExpression}\n)\n\t`;
+		const columnExpression = _.trim(column_expression);
+
+		if (columnExpression) {
+			return `\n(\n\t${columnExpression}\n)\n\t`;
 		}
+
 		if (_.isArray(indxKey) && !_.isEmpty(indxKey)) {
 			const indexedColumnsClause = _.map(
 				indxKey,
@@ -27,6 +29,7 @@ module.exports = ({ prepareName, getNamePrefixedWithSchemaName }) => {
 			).join(',\n\t');
 			return `\n(\n\t${indexedColumnsClause}\n)\n\t`;
 		}
+
 		return '';
 	};
 
