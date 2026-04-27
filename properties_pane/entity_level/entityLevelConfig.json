@@ -1207,7 +1207,7 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "Logging",
 						"propertyKeyword": "logging_clause",
 						"propertyType": "select",
-						"defaultValue": "logging",
+						"defaultValue": "",
 						"options": ["", "logging", "nologging", "filesystem_like_logging"]
 					},
 					{
