@@ -235,6 +235,8 @@ const isParentContainerActivated = collection => {
 
 const getId = entity => entity.id || entity.role.id;
 
+const normalizeLineEndings = str => str.replaceAll('\r\n', '\n');
+
 module.exports = {
 	getDbName,
 	getBucketName,
@@ -265,4 +267,5 @@ module.exports = {
 	isObjectInDeltaModelActivated,
 	isParentContainerActivated,
 	getId,
+	normalizeLineEndings,
 };

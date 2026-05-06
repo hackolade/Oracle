@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { escapeSingleQuote } = require('../../utils/general');
+const { escapeSingleQuote, normalizeLineEndings } = require('../../utils/general');
 
 module.exports = ({ prepareName, getNamePrefixedWithSchemaName }) => {
 	const getIndexType = indexType => {
@@ -51,9 +51,9 @@ module.exports = ({ prepareName, getNamePrefixedWithSchemaName }) => {
 		let options = `${loggingClause}${tableSpacePart}${indexCompression}`;
 
 		if (index_properties) {
-			options = ` ${index_properties}`;
+			options = ` ${normalizeLineEndings(index_properties)}`;
 		} else if (index_attributes) {
-			options = ` ${index_attributes}`;
+			options = ` ${normalizeLineEndings(index_attributes)}`;
 		}
 		const isKeysEmpty = _.isEmpty(indxKey) && _.isEmpty(column_expression);
 
