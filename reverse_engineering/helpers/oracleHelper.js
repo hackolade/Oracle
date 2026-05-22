@@ -380,6 +380,135 @@ const getSshConnectionString = async (data, sshService, logger) => {
 	);
 };
 
+const trySyncTnsEndpointEarly = (connectionInfo, { connectionMethod, TNSpath, serviceName }, logger) => {
+	if (connectionMethod !== 'TNS' || !TNSpath) {
+		return;
+	}
+
+	try {
+		const tnsConfigDir = resolveTnsConfigDir(TNSpath);
+		const tnsNamesOraFile = getTnsNamesOraFile(tnsConfigDir);
+
+		if (tnsNamesOraFile && fs.existsSync(tnsNamesOraFile)) {
+			syncConnectionEndpointFromTns(connectionInfo, tnsConfigDir, serviceName, logger);
+		}
+	} catch (error) {
+		logger({ message: `Unable to sync host/port from tnsnames.ora: ${error.message}` });
+	}
+};
+
+const assertBasicServiceName = (connectionMethod, serviceName) => {
+	if (connectionMethod === 'Basic' && !normalizeTnsAlias(serviceName)) {
+		throw new Error('Service name is required for Basic connection method.');
+	}
+};
+
+const setupWalletConfigDir = async ({ walletFile, tempFolder, name }, connectionInfo, serviceName, logger) => {
+	const configDir = await extractWallet({ walletFile, tempFolder, name });
+	setPluginTnsAdmin(configDir);
+	const resolvedTnsService = syncConnectionEndpointFromTns(connectionInfo, configDir, serviceName, logger);
+
+	return { configDir, tnsServicePort: resolvedTnsService?.port };
+};
+
+const applyTnsMutualTlsWallet = (configDir, useMutualTls, tnsServicePort, logger) => {
+	if (useMutualTls && !isMtlsPort(tnsServicePort)) {
+		logger({
+			message: `mTLS is enabled but TNS service uses port ${tnsServicePort ?? 'unknown'} (not ${MTLS_PORT}). Connecting without wallet.`,
+		});
+		return;
+	}
+
+	if (!useMutualTls || !isMtlsPort(tnsServicePort)) {
+		return;
+	}
+
+	if (!hasWalletFiles(configDir)) {
+		throw new Error(
+			`Mutual TLS requires wallet files (${WALLET_FILES.join(', ')}) in the TNS directory "${configDir}".`,
+		);
+	}
+
+	fixSqlNetOraWalletPath(path.join(configDir, 'sqlnet.ora'), configDir);
+	setPluginTnsAdmin(configDir);
+};
+
+const setupTnsConfigDir = (TNSpath, connectionInfo, { serviceName, useMutualTls, walletPassword }, logger) => {
+	const configDir = resolveTnsConfigDir(TNSpath);
+	assertTnsConfigDir(configDir);
+
+	const resolvedTnsService = syncConnectionEndpointFromTns(connectionInfo, configDir, serviceName, logger);
+	const tnsServicePort = resolvedTnsService?.port;
+
+	assertTnsMtlsRequirements({ configDir, tnsServicePort, useMutualTls, walletPassword, logger });
+	applyTnsMutualTlsWallet(configDir, useMutualTls, tnsServicePort, logger);
+
+	return { configDir, tnsServicePort };
+};
+
+const resolveConnectionConfigDir = async (
+	connectionMethod,
+	connectionInfo,
+	{ walletFile, walletPassword, tempFolder, name, TNSpath, serviceName },
+	useMutualTls,
+	logger,
+) => {
+	if (connectionMethod === 'Wallet') {
+		return setupWalletConfigDir({ walletFile, tempFolder, name }, connectionInfo, serviceName, logger);
+	}
+
+	if (connectionMethod === 'TNS') {
+		return setupTnsConfigDir(TNSpath, connectionInfo, { serviceName, useMutualTls, walletPassword }, logger);
+	}
+
+	return { configDir: undefined, tnsServicePort: undefined };
+};
+
+const buildSessionConnectString = (
+	{ connectionMethod, configDir, serviceName, proxy, useMutualTls, tnsServicePort, host, port, sid },
+	logger,
+) => {
+	const useTnsWallet =
+		connectionMethod === 'Wallet' || (connectionMethod === 'TNS' && useMutualTls && isMtlsPort(tnsServicePort));
+
+	if (['Wallet', 'TNS'].includes(connectionMethod)) {
+		return getConnectionStringByTnsNames(configDir, serviceName, proxy, logger, useTnsWallet);
+	}
+
+	return getConnectionDescription({ host, port, sid, service: serviceName }, logger);
+};
+
+const applySshTunnelIfNeeded = async (ssh, connectString, tunnelParams, sshService, logger) => {
+	if (!ssh) {
+		return connectString;
+	}
+
+	useSshTunnel = true;
+	return getSshConnectionString(tunnelParams, sshService, logger);
+};
+
+const shouldUseWalletForConnect = ({ connectionMethod, useMutualTls, tnsServicePort, connectString }) =>
+	connectionMethod === 'Wallet' ||
+	(connectionMethod === 'TNS' &&
+		useMutualTls &&
+		(isMtlsPort(tnsServicePort) || connectStringUsesMtlsPort(connectString)));
+
+const logWalletConnectNotes = ({ connectionMethod, useMutualTls, useWallet, walletPassword }, logger) => {
+	if (connectionMethod === 'TNS' && useMutualTls && !useWallet) {
+		logger({
+			message:
+				'Skipping walletLocation, walletPassword, and configDir for thin connect (TNS service does not use mTLS port 1522).',
+		});
+	}
+
+	if (walletPassword && !useWallet) {
+		logger({
+			message:
+				'A wallet password is stored in the connection profile but is not sent to Oracle (mTLS disabled, non-mTLS port, or non-wallet connection method).',
+		});
+	}
+};
+
 const connect = async (connectionInfo, sshService, logger) => {
 	const {
 		walletFile,
@@ -412,18 +541,7 @@ const connect = async (connectionInfo, sshService, logger) => {
 		mutualTLS,
 	} = connectionInfo;
 
-	if (connectionMethod === 'TNS' && TNSpath) {
-		try {
-			const tnsConfigDir = resolveTnsConfigDir(TNSpath);
-			const tnsNamesOraFile = getTnsNamesOraFile(tnsConfigDir);
-
-			if (tnsNamesOraFile && fs.existsSync(tnsNamesOraFile)) {
-				syncConnectionEndpointFromTns(connectionInfo, tnsConfigDir, serviceName, logger);
-			}
-		} catch (error) {
-			logger({ message: `Unable to sync host/port from tnsnames.ora: ${error.message}` });
-		}
-	}
+	trySyncTnsEndpointEarly(connectionInfo, { connectionMethod, TNSpath, serviceName }, logger);
 
 	if (connection) {
 		logger({ message: 'Reusing existing Oracle connection' });
@@ -435,140 +553,59 @@ const connect = async (connectionInfo, sshService, logger) => {
 	}
 
 	const useMutualTls = isMutualTlsEnabled(mutualTLS);
+	assertBasicServiceName(connectionMethod, serviceName);
 
-	const MODES = {
-		thin: 'thin',
-		thick: 'thick',
-	};
-	let configDir;
-	let libDir;
-	let credentials = {};
-	let proxy = '';
-	let tnsServicePort;
+	const { configDir, tnsServicePort } = await resolveConnectionConfigDir(
+		connectionMethod,
+		connectionInfo,
+		{ walletFile, walletPassword, tempFolder, name, TNSpath, serviceName },
+		useMutualTls,
+		logger,
+	);
 
-	if (connectionMethod === 'Basic' && !normalizeTnsAlias(serviceName)) {
-		throw new Error('Service name is required for Basic connection method.');
-	}
+	const libDir = clientType === 'InstantClient' ? clientPath : undefined;
+	const proxy = options?.proxy ? parseProxyOptions(options.proxy) : '';
 
-	if (connectionMethod === 'Wallet') {
-		configDir = await extractWallet({ walletFile, tempFolder, name });
-		setPluginTnsAdmin(configDir);
-		const resolvedTnsService = syncConnectionEndpointFromTns(connectionInfo, configDir, serviceName, logger);
-		tnsServicePort = resolvedTnsService?.port;
-	}
-
-	if (connectionMethod === 'TNS') {
-		configDir = resolveTnsConfigDir(TNSpath);
-		assertTnsConfigDir(configDir);
-
-		const resolvedTnsService = syncConnectionEndpointFromTns(connectionInfo, configDir, serviceName, logger);
-		tnsServicePort = resolvedTnsService?.port;
-
-		assertTnsMtlsRequirements({ configDir, tnsServicePort, useMutualTls, walletPassword, logger });
-
-		if (useMutualTls && !isMtlsPort(tnsServicePort)) {
-			logger({
-				message: `mTLS is enabled but TNS service uses port ${tnsServicePort ?? 'unknown'} (not ${MTLS_PORT}). Connecting without wallet.`,
-			});
-		}
-
-		if (useMutualTls && isMtlsPort(tnsServicePort)) {
-			if (!hasWalletFiles(configDir)) {
-				throw new Error(
-					`Mutual TLS requires wallet files (${WALLET_FILES.join(', ')}) in the TNS directory "${configDir}".`,
-				);
-			}
-
-			fixSqlNetOraWalletPath(path.join(configDir, 'sqlnet.ora'), configDir);
-			setPluginTnsAdmin(configDir);
-		}
-	}
-
-	if (clientType === 'InstantClient') {
-		libDir = clientPath;
-	}
-
-	if (options?.proxy) {
-		proxy = parseProxyOptions(options?.proxy);
-	}
-
-	if (mode !== MODES.thin) {
+	if (mode !== 'thin') {
 		oracleDB.initOracleClient({ libDir, configDir });
 	}
 
-	let connectString = '';
-	const useTnsWallet =
-		connectionMethod === 'Wallet' || (connectionMethod === 'TNS' && useMutualTls && isMtlsPort(tnsServicePort));
+	let connectString = buildSessionConnectString(
+		{ connectionMethod, configDir, serviceName, proxy, useMutualTls, tnsServicePort, host, port, sid },
+		logger,
+	);
 
-	if (['Wallet', 'TNS'].includes(connectionMethod)) {
-		connectString = getConnectionStringByTnsNames(configDir, serviceName, proxy, logger, useTnsWallet);
-	} else {
-		connectString = getConnectionDescription(
-			{
-				host,
-				port,
-				sid,
-				service: serviceName,
+	connectString = await applySshTunnelIfNeeded(
+		ssh,
+		connectString,
+		{
+			host,
+			port,
+			configDir,
+			serviceName,
+			sid,
+			connectionMethod,
+			sshConfig: {
+				ssh_user,
+				ssh_host,
+				ssh_port,
+				ssh_method,
+				ssh_key_file,
+				ssh_password,
+				ssh_key_passphrase,
 			},
-			logger,
-		);
-	}
+		},
+		sshService,
+		logger,
+	);
 
-	if (ssh) {
-		useSshTunnel = true;
-		connectString = await getSshConnectionString(
-			{
-				host,
-				port,
-				configDir,
-				serviceName,
-				sid,
-				connectionMethod,
-				sshConfig: {
-					ssh_user,
-					ssh_host,
-					ssh_port,
-					ssh_method,
-					ssh_key_file,
-					ssh_password,
-					ssh_key_passphrase,
-				},
-			},
-			sshService,
-			logger,
-		);
-	}
-
-	if (authMethod === 'OS') {
-		credentials.externalAuth = true;
-	} else if (authMethod === 'Kerberos') {
-		credentials.username = userName;
-		credentials.password = userPassword;
-		credentials.externalAuth = true;
-	} else {
-		credentials.username = userName;
-		credentials.password = userPassword;
-	}
-
-	const useWallet =
-		connectionMethod === 'Wallet' ||
-		(connectionMethod === 'TNS' &&
-			useMutualTls &&
-			(isMtlsPort(tnsServicePort) || connectStringUsesMtlsPort(connectString)));
-
-	if (connectionMethod === 'TNS' && useMutualTls && !useWallet) {
-		logger({
-			message:
-				'Skipping walletLocation, walletPassword, and configDir for thin connect (TNS service does not use mTLS port 1522).',
-		});
-	}
-
-	if (walletPassword && !useWallet) {
-		logger({
-			message:
-				'A wallet password is stored in the connection profile but is not sent to Oracle (mTLS disabled, non-mTLS port, or non-wallet connection method).',
-		});
-	}
+	const useWallet = shouldUseWalletForConnect({
+		connectionMethod,
+		useMutualTls,
+		tnsServicePort,
+		connectString,
+	});
+	logWalletConnectNotes({ connectionMethod, useMutualTls, useWallet, walletPassword }, logger);
 
 	const normalizedConnectString = normalizeConnectString(connectString);
 	const hostnameToResolve = connectionMethod === 'Basic' ? host : connectionInfo.host;
