@@ -29,12 +29,29 @@ module.exports = {
 	},
 
 	async testConnection(connectionInfo, logger, callback, app) {
+		const sshService = app.require('@hackolade/ssh-service');
+
 		try {
-			await this.connect(connectionInfo, logger, () => {}, app);
+			logInfo('Test connection', connectionInfo, logger);
+			oracleHelper.logEnvironment(logger);
+			await oracleHelper.disconnect(sshService);
+			await oracleHelper.connect(connectionInfo, sshService, message => {
+				logger.log('info', message, 'Connection');
+			});
 			callback(null);
 		} catch (error) {
 			logger.log('error', { message: error.message, stack: error.stack, error }, 'Test connection');
 			callback({ message: error.message, stack: error.stack });
+		} finally {
+			try {
+				await oracleHelper.disconnect(sshService);
+			} catch (disconnectError) {
+				logger.log(
+					'warn',
+					{ message: disconnectError.message, stack: disconnectError.stack },
+					'Disconnect after test connection',
+				);
+			}
 		}
 	},
 
@@ -42,7 +59,11 @@ module.exports = {
 		try {
 			logInfo('Get schemas', connectionInfo, logger);
 			await this.connect(connectionInfo, logger, () => {}, app);
-			const schemas = await oracleHelper.getSchemaNames();
+			const schemas = await oracleHelper.getSchemaNames(connectionInfo, {
+				info: data => logger.log('info', data, 'Get schemas'),
+				error: error =>
+					logger.log('error', { message: error.message, stack: error.stack, error }, 'Get schemas'),
+			});
 			logger.log('info', schemas, 'All schemas list', connectionInfo.hiddenKeys);
 			return callback(null, schemas);
 		} catch (error) {

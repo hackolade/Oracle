@@ -92,3 +92,4 @@ const extractWallet = async ({ walletFile, tempFolder, name }) => {
 };
 
 module.exports = extractWallet;
+module.exports.fixSqlNetOraWalletPath = replaceSqlNetOraDirectoryPath;
