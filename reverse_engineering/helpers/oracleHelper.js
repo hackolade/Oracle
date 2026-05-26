@@ -9,6 +9,12 @@ const { normalizeConnectString, getConnectionDescription } = require('./connectS
 const { clearPluginTnsAdmin } = require('./tns/tnsAdmin');
 const { normalizeTnsAlias, getResolvedTnsService } = require('./tns/tnsConnectString');
 const {
+	normalizeAuthMethod,
+	assertExternalAuthMode,
+	buildConnectionAuthParams,
+	logAuthMethodNotes,
+} = require('./connectionAuth');
+const {
 	trySyncTnsEndpointEarly,
 	resolveConnectionConfigDir,
 	buildSessionConnectString,
@@ -235,6 +241,10 @@ const connect = async (connectionInfo, sshService, logger) => {
 	});
 	logWalletConnectNotes({ connectionMethod, useMutualTls, useWallet, walletPassword }, logger);
 
+	const resolvedAuthMethod = normalizeAuthMethod(authMethod);
+	assertExternalAuthMode(resolvedAuthMethod, mode);
+	logAuthMethodNotes(resolvedAuthMethod, userPassword, logger);
+
 	const normalizedConnectString = normalizeConnectString(connectString);
 	const hostnameToResolve = connectionMethod === 'Basic' ? host : connectionInfo.host;
 
@@ -253,8 +263,7 @@ const connect = async (connectionInfo, sshService, logger) => {
 
 	return authByCredentials({
 		connectString: normalizedConnectString,
-		username: userName,
-		password: userPassword,
+		...buildConnectionAuthParams(resolvedAuthMethod, userName, userPassword),
 		queryRequestTimeout,
 		authRole,
 		configDir: useWallet ? configDir : undefined,
@@ -290,6 +299,7 @@ const authByCredentials = ({
 	connectString,
 	username,
 	password,
+	externalAuth,
 	queryRequestTimeout,
 	authRole,
 	walletPassword,
@@ -301,6 +311,7 @@ const authByCredentials = ({
 			{
 				username,
 				password,
+				externalAuth,
 				connectString,
 				privilege: authRole === 'default' ? undefined : oracleDB[authRole],
 				walletLocation,

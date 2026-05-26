@@ -245,21 +245,24 @@
 			{
 				"inputLabel": "Authentication method",
 				"inputKeyword": "authMethod",
+				"description": "OS and Kerberos require Thick mode and a configured Oracle client (Instant Client or Oracle Home).",
 				"inputType": "select",
 				"defaultValue": "Username / Password",
-				"options": [{ "value": "Username / Password", "label": "Username / Password" }]
+				"options": [
+					{ "value": "Username / Password", "label": "Username / Password" },
+					{ "value": "OS", "label": "OS" },
+					{ "value": "Kerberos", "label": "Kerberos" }
+				]
 			},
 			{
 				"inputLabel": "User Name",
 				"inputKeyword": "userName",
 				"inputType": "text",
 				"inputPlaceholder": "User Name",
+				"description": "For Kerberos proxy connections, use the [username] format.",
 				"dependency": {
 					"key": "authMethod",
 					"value": ["Username / Password", "Kerberos"]
-				},
-				"validation": {
-					"regex": "([^\\s])"
 				}
 			},
 			{
@@ -269,7 +272,7 @@
 				"inputPlaceholder": "Password",
 				"dependency": {
 					"key": "authMethod",
-					"value": ["Username / Password", "Kerberos"]
+					"value": ["Username / Password"]
 				},
 				"isHiddenKey": true,
 				"validation": {
