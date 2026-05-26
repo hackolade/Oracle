@@ -101,7 +101,7 @@
 			{
 				"inputLabel": "Wallet archive",
 				"inputKeyword": "walletFile",
-				"description": "Specify the full path location and name of the wallet zip file",
+				"description": "Specify the full path location and name of the wallet zip file.",
 				"inputType": "file",
 				"extensions": ["zip"],
 				"dependency": {
@@ -124,7 +124,7 @@
 			{
 				"inputLabel": "Mutual TLS (mTLS)",
 				"inputKeyword": "mutualTLS",
-				"description": "Enable only when the database requires a client wallet (mutual TLS). Leave unchecked for legacy TNS connections that use a tnsnames.ora directory with username/password only.",
+				"description": "Enable only when the database requires a client certificate (cloud wallet, mutual TLS).",
 				"inputType": "checkbox",
 				"defaultValue": false,
 				"dependency": {
@@ -149,7 +149,7 @@
 			{
 				"inputLabel": "Service Name",
 				"inputKeyword": "serviceName",
-				"description": "Specify the service name of the Oracle Instance",
+				"description": "Specify the service name of the Oracle Instance.",
 				"inputType": "text",
 				"regex": "([^\\s])",
 				"dependency": {
@@ -169,7 +169,6 @@
 			{
 				"inputLabel": "Wallet Password",
 				"inputKeyword": "walletPassword",
-				"description": "OCI wallet password (not the database user password). Required for Cloud Wallet and TNS with mTLS enabled.",
 				"inputType": "password",
 				"isHiddenKey": true,
 				"dependency": {
@@ -211,7 +210,7 @@
 			{
 				"inputLabel": "TNS alias",
 				"inputKeyword": "serviceName",
-				"description": "Optional. Leave empty to use the first entry in tnsnames.ora (e.g. <database name>_high).",
+				"description": "Leave empty to use the first entry in tnsnames.ora (e.g. <database name>_high).",
 				"inputType": "text",
 				"inputPlaceholder": "Optional TNS alias",
 				"dependency": {
@@ -222,7 +221,7 @@
 			{
 				"inputLabel": "SID",
 				"inputKeyword": "sid",
-				"description": "Optionally specify the SID of the Oracle Instance",
+				"description": "Optionally specify the SID of the Oracle Instance.",
 				"inputType": "text",
 				"dependency": {
 					"type": "and",
