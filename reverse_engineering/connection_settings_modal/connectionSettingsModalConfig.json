@@ -246,21 +246,24 @@
 			{
 				"inputLabel": "Authentication method",
 				"inputKeyword": "authMethod",
+				"description": "Kerberos uses JDBC Thin (Java 11–21); thick mode and Instant Client are not used. OS authentication requires Thick mode and Oracle Instant Client.",
 				"inputType": "select",
 				"defaultValue": "Username / Password",
-				"options": [{ "value": "Username / Password", "label": "Username / Password" }]
+				"options": [
+					{ "value": "Username / Password", "label": "Username / Password" },
+					{ "value": "OS", "label": "OS" },
+					{ "value": "Kerberos", "label": "Kerberos" }
+				]
 			},
 			{
 				"inputLabel": "User Name",
 				"inputKeyword": "userName",
 				"inputType": "text",
 				"inputPlaceholder": "User Name",
+				"description": "Kerberos: leave empty (identity from ticket). Proxy only: use [username] format.",
 				"dependency": {
 					"key": "authMethod",
 					"value": ["Username / Password", "Kerberos"]
-				},
-				"validation": {
-					"regex": "([^\\s])"
 				}
 			},
 			{
@@ -268,13 +271,31 @@
 				"inputKeyword": "userPassword",
 				"inputType": "password",
 				"inputPlaceholder": "Password",
+				"isHiddenKey": true,
 				"dependency": {
 					"key": "authMethod",
-					"value": ["Username / Password", "Kerberos"]
-				},
-				"isHiddenKey": true,
-				"validation": {
-					"regex": "([^\\s])"
+					"value": ["Username / Password"]
+				}
+			},
+			{
+				"inputLabel": "Java path",
+				"inputKeyword": "javaPath",
+				"inputType": "text",
+				"inputPlaceholder": "Optional — defaults to JAVA_HOME or java on PATH",
+				"description": "Java 11–21 for Kerberos JDBC (JDK 25 is not supported). Run jdbc/build.sh once. Example: /opt/homebrew/opt/openjdk@21/bin/java",
+				"dependency": {
+					"key": "authMethod",
+					"value": ["Kerberos"]
+				}
+			},
+			{
+				"inputLabel": "Kerberos ticket cache",
+				"inputKeyword": "krb5Cc",
+				"inputType": "text",
+				"inputPlaceholder": "Optional — default ~/.hackolade/krb5cc_hackolade",
+				"dependency": {
+					"key": "authMethod",
+					"value": ["Kerberos"]
 				}
 			},
 			{
@@ -290,7 +311,11 @@
 					{ "value": "SYSDG", "label": "SYSDG" },
 					{ "value": "SYSKM", "label": "SYSKM" },
 					{ "value": "SYSASM", "label": "SYSASM" }
-				]
+				],
+				"dependency": {
+					"key": "authMethod",
+					"value": ["Username / Password", "OS"]
+				}
 			}
 		]
 	},

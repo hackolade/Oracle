@@ -53,6 +53,12 @@ esbuild
 					to: [path.join('node_modules', 'oracledb')],
 				},
 			}),
+			copy({
+				assets: {
+					from: [path.join('jdbc', 'lib', '*.jar')],
+					to: [path.join('jdbc', 'lib')],
+				},
+			}),
 			copyFolderFiles({
 				fromPath: __dirname,
 				targetFolderPath: RELEASE_FOLDER_PATH,

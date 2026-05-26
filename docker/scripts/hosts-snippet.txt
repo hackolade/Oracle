@@ -1,0 +1,2 @@
+# Add these lines to /etc/hosts on your Mac (or Azure VM client) so Kerberos SPN hostnames resolve.
+127.0.0.1   oracle-db.hackolade.local kdc.hackolade.local

@@ -1,0 +1,12 @@
+{
+	"comment": "Example Hackolade Oracle connection for Kerberos JDBC (local Docker lab)",
+	"name": "Oracle Free Kerberos (local Docker)",
+	"connectionMethod": "Basic",
+	"host": "oracle-db.hackolade.local",
+	"port": 1521,
+	"identifierType": "serviceName",
+	"serviceName": "FREEPDB1",
+	"authMethod": "Kerberos",
+	"javaPath": "/opt/homebrew/opt/openjdk@21/bin/java",
+	"userName": "hackolade_krb"
+}

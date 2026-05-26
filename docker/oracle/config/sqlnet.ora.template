@@ -1,0 +1,7 @@
+# Server-side sqlnet.ora (generated into /opt/oracle/kerberos/sqlnet.ora by kerberos-setup)
+SQLNET.AUTHENTICATION_SERVICES=(KERBEROS5)
+SQLNET.AUTHENTICATION_KERBEROS5_SERVICE=oracle
+SQLNET.KERBEROS5_CONF=/etc/krb5.conf
+SQLNET.KERBEROS5_CONF_MIT=TRUE
+SQLNET.KERBEROS5_KEYTAB=/opt/oracle/kerberos/v5srvtab
+SQLNET.KERBEROS5_CLOCKSKEW=300

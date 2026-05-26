@@ -6,3 +6,7 @@
 node_modules
 .DS_Store
 release
+docker/.env
+jdbc/lib/classes
+jdbc/lib/ojdbc11.jar
+jdbc/lib/json.jar

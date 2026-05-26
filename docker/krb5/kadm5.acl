@@ -1,0 +1,2 @@
+# Dev lab ACL. Use "all" (not "*") so remote kadmin can run ktadd (needs extract + change-password).
+admin/admin@HACKOLADE.LOCAL	all

@@ -1,0 +1,107 @@
+# Local Oracle Free + MIT Kerberos lab for Hackolade plugin testing (Kerberos JDBC).
+# Same layout can run on an Azure VM (Linux) with the same images and .env.
+#
+# Usage:
+#   cp .env.example .env
+#   docker compose up -d
+#   docker compose --profile setup run --rm kerberos-setup
+#   See README.md for Mac client (/etc/hosts, kinit, Instant Client).
+
+services:
+  kdc:
+    build:
+      context: ./kdc
+      dockerfile: Dockerfile
+    container_name: hackolade-kdc
+    hostname: kdc.hackolade.local
+    environment:
+      KRB5_REALM: ${KRB5_REALM:-HACKOLADE.LOCAL}
+      KDC_MASTER_PASSWORD: ${KDC_MASTER_PASSWORD}
+      KADMIN_PASSWORD: ${KADMIN_PASSWORD}
+    volumes:
+      - kdc-data:/var/kerberos/krb5kdc
+      - ./krb5/krb5.conf:/etc/krb5.conf:ro
+      - ./krb5/kdc.conf:/etc/krb5kdc/kdc.conf:ro
+      - ./krb5/kadm5.acl:/etc/krb5kdc/kadm5.acl:ro
+    ports:
+      - "88:88/tcp"
+      - "88:88/udp"
+      - "749:749/tcp"
+    networks:
+      kerbnet:
+        aliases:
+          - kdc.hackolade.local
+    healthcheck:
+      test: ["CMD-SHELL", "kadmin.local -q 'list_principals' 2>/dev/null | grep -q admin"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 15s
+
+  oracle:
+    image: container-registry.oracle.com/database/free:latest
+    container_name: hackolade-oracle-free
+    hostname: oracle-db.hackolade.local
+    depends_on:
+      kdc:
+        condition: service_healthy
+    environment:
+      ORACLE_PWD: ${ORACLE_PWD}
+    shm_size: "2gb"
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+      - kerberos-config:/opt/oracle/kerberos
+      - ./krb5/krb5.conf:/etc/krb5.conf:ro
+      - ./oracle/scripts/setup:/opt/oracle/scripts/setup:ro
+      - ./oracle/scripts/startup:/opt/oracle/scripts/startup:ro
+    ports:
+      - "1521:1521"
+    networks:
+      kerbnet:
+        aliases:
+          - oracle-db.hackolade.local
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "echo \"SELECT 1 FROM DUAL;\" | sqlplus -s -L system/\"$$ORACLE_PWD\"@//localhost:1521/FREEPDB1 | grep -q 1",
+        ]
+      interval: 30s
+      timeout: 15s
+      retries: 20
+      start_period: 600s
+
+  # One-shot: create Kerberos principals + keytab, then signal Oracle startup scripts.
+  # Run after oracle is healthy: docker compose --profile setup run --rm kerberos-setup
+  kerberos-setup:
+    profiles: ["setup"]
+    build:
+      context: ./kerberos-setup
+      dockerfile: Dockerfile
+    container_name: hackolade-kerberos-setup
+    environment:
+      KRB5_REALM: ${KRB5_REALM:-HACKOLADE.LOCAL}
+      ORACLE_FQDN: ${ORACLE_FQDN:-oracle-db.hackolade.local}
+      KRB_USER: ${KRB_USER:-hackolade_krb}
+      KRB_USER_PASSWORD: ${KRB_USER_PASSWORD}
+      KADMIN_PASSWORD: ${KADMIN_PASSWORD}
+    volumes:
+      - kerberos-config:/kerberos
+      - ./krb5/krb5.conf:/etc/krb5.conf:ro
+      - ./oracle/config/sqlnet.ora.template:/templates/sqlnet.ora.template:ro
+    depends_on:
+      kdc:
+        condition: service_healthy
+      oracle:
+        condition: service_healthy
+    networks:
+      - kerbnet
+
+volumes:
+  kdc-data:
+  oracle-data:
+  kerberos-config:
+
+networks:
+  kerbnet:
+    driver: bridge

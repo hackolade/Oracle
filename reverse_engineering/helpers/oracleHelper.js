@@ -10,12 +10,14 @@ const fixSqlNetOraWalletPath = require('./extractWallet').fixSqlNetOraWalletPath
 const parseTns = require('./parseTns');
 const { getSchemaSequences } = require('./getSchemaSequences');
 const { getSchemaSynonyms } = require('./getSchemaSynonyms');
+const jdbcKerberosHelper = require('./jdbcKerberosHelper');
 
 const noConnectionError = { message: 'Connection error' };
 
 let connection;
 let useSshTunnel;
 let pluginTnsAdmin;
+let thickOracleClientInitialized = false;
 
 const setPluginTnsAdmin = configDir => {
 	pluginTnsAdmin = configDir;
@@ -493,6 +495,145 @@ const shouldUseWalletForConnect = ({ connectionMethod, useMutualTls, tnsServiceP
 		useMutualTls &&
 		(isMtlsPort(tnsServicePort) || connectStringUsesMtlsPort(connectString)));
 
+const AUTH_METHOD_USERNAME_PASSWORD = 'Username / Password';
+const AUTH_METHOD_OS = 'OS';
+const AUTH_METHOD_KERBEROS = 'Kerberos';
+
+const normalizeAuthMethod = authMethod => authMethod || AUTH_METHOD_USERNAME_PASSWORD;
+
+const assertExternalAuthMode = (authMethod, mode) => {
+	if (authMethod === AUTH_METHOD_USERNAME_PASSWORD) {
+		return;
+	}
+
+	if (mode === 'thin') {
+		throw new Error(
+			`${authMethod} authentication requires Thick mode with Oracle Instant Client or Oracle Home configured for external authentication.`,
+		);
+	}
+};
+
+const buildConnectionAuthParams = (authMethod, userName, userPassword) => {
+	if (authMethod === AUTH_METHOD_USERNAME_PASSWORD) {
+		if (!normalizeTnsAlias(userName) || !userPassword) {
+			throw new Error('User name and password are required for Username / Password authentication.');
+		}
+
+		return { username: userName, password: userPassword };
+	}
+
+	if (authMethod === AUTH_METHOD_OS) {
+		return { externalAuth: true };
+	}
+
+	return { username: userName, password: userPassword };
+};
+
+const logAuthMethodNotes = (authMethod, userPassword, logger) => {
+	if (authMethod === AUTH_METHOD_KERBEROS && userPassword) {
+		logger({
+			message:
+				'Password is not sent for Kerberos JDBC authentication (identity comes from the Kerberos ticket cache).',
+		});
+	}
+};
+
+const connectViaJdbcKerberos = async (connectionInfo, sshService, logger) => {
+	const {
+		connectionMethod,
+		host,
+		port,
+		serviceName,
+		sid,
+		options,
+		ssh,
+		ssh_user,
+		ssh_host,
+		ssh_port,
+		ssh_method,
+		ssh_key_file,
+		ssh_key_passphrase,
+		ssh_password,
+		pluginPath,
+		javaPath,
+		krb5Cc,
+		krb5Conf,
+	} = connectionInfo;
+
+	if (connectionMethod !== 'Basic') {
+		throw new Error('Kerberos authentication (JDBC) supports Basic connection method only.');
+	}
+
+	assertBasicServiceName(connectionMethod, serviceName);
+
+	const proxy = options?.proxy ? parseProxyOptions(options.proxy) : '';
+	let connectString = buildSessionConnectString(
+		{
+			connectionMethod,
+			configDir: undefined,
+			serviceName,
+			proxy,
+			useMutualTls: false,
+			tnsServicePort: undefined,
+			host,
+			port,
+			sid,
+		},
+		logger,
+	);
+
+	connectString = await applySshTunnelIfNeeded(
+		ssh,
+		connectString,
+		{
+			host,
+			port,
+			configDir: undefined,
+			serviceName,
+			sid,
+			connectionMethod,
+			sshConfig: {
+				ssh_user,
+				ssh_host,
+				ssh_port,
+				ssh_method,
+				ssh_key_file,
+				ssh_password,
+				ssh_key_passphrase,
+			},
+		},
+		sshService,
+		logger,
+	);
+
+	const normalizedConnectString = normalizeConnectString(connectString);
+
+	if (!ssh && host) {
+		await assertResolvableConnectHost(host, logger);
+	}
+
+	logger({
+		message: 'Oracle connectString (Kerberos JDBC)',
+		connectString: normalizedConnectString,
+		hostname: host,
+		authTransport: 'jdbc',
+	});
+
+	const { userName } = connectionInfo;
+
+	connection = await jdbcKerberosHelper.connect({
+		pluginPath,
+		javaPath,
+		connectString: normalizedConnectString,
+		krb5Cc,
+		krb5Conf,
+		userName: userName?.startsWith('[') ? undefined : userName,
+		logger,
+	});
+
+	return connection;
+};
+
 const logWalletConnectNotes = ({ connectionMethod, useMutualTls, useWallet, walletPassword }, logger) => {
 	if (connectionMethod === 'TNS' && useMutualTls && !useWallet) {
 		logger({
@@ -525,7 +666,6 @@ const connect = async (connectionInfo, sshService, logger) => {
 		clientPath,
 		clientType,
 		queryRequestTimeout,
-		authMethod,
 		options,
 		sid,
 		ssh,
@@ -537,6 +677,7 @@ const connect = async (connectionInfo, sshService, logger) => {
 		ssh_key_passphrase,
 		ssh_password,
 		authRole,
+		authMethod,
 		mode,
 		mutualTLS,
 	} = connectionInfo;
@@ -546,6 +687,11 @@ const connect = async (connectionInfo, sshService, logger) => {
 	if (connection) {
 		logger({ message: 'Reusing existing Oracle connection' });
 		return connection;
+	}
+
+	const resolvedAuthMethod = normalizeAuthMethod(authMethod);
+	if (resolvedAuthMethod === AUTH_METHOD_KERBEROS) {
+		return connectViaJdbcKerberos(connectionInfo, sshService, logger);
 	}
 
 	if (connectionMethod === 'Basic') {
@@ -566,8 +712,23 @@ const connect = async (connectionInfo, sshService, logger) => {
 	const libDir = clientType === 'InstantClient' ? clientPath : undefined;
 	const proxy = options?.proxy ? parseProxyOptions(options.proxy) : '';
 
+	let thickConfigDir = configDir;
 	if (mode !== 'thin') {
-		oracleDB.initOracleClient({ libDir, configDir });
+		if (!thickOracleClientInitialized) {
+			try {
+				oracleDB.initOracleClient({ libDir, configDir: thickConfigDir });
+				thickOracleClientInitialized = true;
+			} catch (err) {
+				if (!/already been called/i.test(String(err.message))) {
+					throw err;
+				}
+				thickOracleClientInitialized = true;
+			}
+		}
+
+		if (thickConfigDir) {
+			setPluginTnsAdmin(thickConfigDir);
+		}
 	}
 
 	let connectString = buildSessionConnectString(
@@ -607,6 +768,9 @@ const connect = async (connectionInfo, sshService, logger) => {
 	});
 	logWalletConnectNotes({ connectionMethod, useMutualTls, useWallet, walletPassword }, logger);
 
+	assertExternalAuthMode(resolvedAuthMethod, mode);
+	logAuthMethodNotes(resolvedAuthMethod, userPassword, logger);
+
 	const normalizedConnectString = normalizeConnectString(connectString);
 	const hostnameToResolve = connectionMethod === 'Basic' ? host : connectionInfo.host;
 
@@ -614,22 +778,23 @@ const connect = async (connectionInfo, sshService, logger) => {
 		await assertResolvableConnectHost(hostnameToResolve, logger);
 	}
 
+	const sessionConfigDir = useWallet ? configDir : undefined;
+
 	logger({
 		message: 'Oracle connectString',
 		connectString: normalizedConnectString,
 		hostname: hostnameToResolve,
 		useWallet,
 		walletLocation: useWallet ? configDir : undefined,
-		configDir: useWallet ? configDir : undefined,
+		configDir: sessionConfigDir,
 	});
 
 	return authByCredentials({
 		connectString: normalizedConnectString,
-		username: userName,
-		password: userPassword,
+		...buildConnectionAuthParams(resolvedAuthMethod, userName, userPassword),
 		queryRequestTimeout,
 		authRole,
-		configDir: useWallet ? configDir : undefined,
+		configDir: sessionConfigDir,
 		walletLocation: useWallet ? configDir : undefined,
 		walletPassword: useWallet ? walletPassword : undefined,
 	});
@@ -644,6 +809,13 @@ const disconnect = async sshService => {
 	if (useSshTunnel) {
 		useSshTunnel = false;
 		await sshService.closeConsumer();
+	}
+
+	if (connection.type === 'jdbc') {
+		await jdbcKerberosHelper.disconnect();
+		connection = null;
+		clearPluginTnsAdmin();
+		return;
 	}
 
 	return new Promise((resolve, reject) => {
@@ -662,6 +834,7 @@ const authByCredentials = ({
 	connectString,
 	username,
 	password,
+	externalAuth,
 	queryRequestTimeout,
 	authRole,
 	walletPassword,
@@ -673,6 +846,7 @@ const authByCredentials = ({
 			{
 				username,
 				password,
+				externalAuth,
 				connectString,
 				privilege: authRole === 'default' ? undefined : oracleDB[authRole],
 				walletLocation,
@@ -894,6 +1068,14 @@ const execute = (command, options = {}, binds = []) => {
 	if (!connection) {
 		return Promise.reject(noConnectionError);
 	}
+
+	if (connection.type === 'jdbc') {
+		if (binds?.length) {
+			return Promise.reject(new Error('Kerberos JDBC bridge does not support bind parameters yet.'));
+		}
+		return jdbcKerberosHelper.execute(command, options);
+	}
+
 	return new Promise((resolve, reject) => {
 		connection.execute(command, binds, options, (err, result) => {
 			if (err) {
