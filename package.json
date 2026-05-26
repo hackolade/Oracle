@@ -76,7 +76,9 @@
     },
     "scripts": {
         "lint": "oxlint . || true",
-        "package": "node esbuild.package.js",
+        "build:jdbc": "node scripts/build-jdbc-kerberos.js",
+        "postinstall": "node scripts/build-jdbc-kerberos.js",
+        "package": "node scripts/build-jdbc-kerberos.js --strict && node esbuild.package.js",
         "lint:check": "oxlint --type-aware --type-check . || true",
         "format": "prettier --write ."
     },

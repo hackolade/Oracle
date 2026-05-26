@@ -8,7 +8,7 @@ Hackolade Oracle plugin uses **JDBC Thin + Java** for Kerberos. Thick mode and I
 |------|--------|
 | Java | **11–21** only (JDK 25 breaks Oracle Kerberos in JDBC) |
 | Ticket | MIT `kinit` — default cache `~/.hackolade/krb5cc_hackolade` |
-| Build | Run `./jdbc/build.sh` once (ships `ojdbc11.jar` + bridge in `jdbc/lib/`) |
+| Build | `npm install` / `npm ci` downloads JARs and compiles the bridge into `jdbc/lib/` (or `npm run build:jdbc`) |
 | Thick / IC | Optional for password/OS auth only; **not** required for Kerberos |
 
 ## Connection modal

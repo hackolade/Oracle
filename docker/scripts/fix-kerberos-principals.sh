@@ -71,4 +71,4 @@ docker exec "${KDC_CONTAINER}" kadmin.local -q "list_principals ${KRB_USER}* ora
 echo ""
 echo "Test on Mac (JDBC — works on all platforms):"
 echo "  ./scripts/mac-kinit.sh"
-echo "  cd .. && ./jdbc/build.sh && node docker/scripts/test-jdbc-kerberos.js"
+echo "  cd .. && npm run build:jdbc && node docker/scripts/test-jdbc-kerberos.js"

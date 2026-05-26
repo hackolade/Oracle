@@ -13,7 +13,7 @@ The same `docker-compose.yml` runs on **macOS (M4)** and can be copied to an **A
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  Mac / Azure VM (Hackolade host)                            │
-│  • Java 11–21 + jdbc/build.sh artifacts                     │
+│  • Java 11–21 + npm install (JDBC Kerberos artifacts)       │
 │  • krb5.conf + kinit → TGT (MIT krb5)                       │
 └───────────────────────────┬─────────────────────────────────┘
                             │ :1521 / :88
@@ -76,13 +76,13 @@ See `scripts/hosts-snippet.txt`.
 2. Build the JDBC bridge and obtain a ticket:
    ```bash
    cd docker && ./scripts/mac-kinit.sh
-   cd .. && ./jdbc/build.sh
+   cd .. && npm run build:jdbc
    ./docker/scripts/ensure-kerberos-db-user.sh   # if DB existed before Kerberos setup
    node docker/scripts/test-jdbc-kerberos.js     # expect: SUCCESS: [ [ 1 ] ]
    ```
 3. Package the plugin and point Hackolade at it:
    ```bash
-   npm run package
+   npm ci && npm run package
    # copy release to ~/.hackolade/plugins/Oracle (or your pluginPath)
    ```
 4. Hackolade connection:
@@ -107,7 +107,7 @@ No Instant Client is required for Kerberos when using JDBC.
 
 # Kerberos JDBC (cross-platform, no Instant Client)
 cd ..   # Oracle plugin repo root
-./jdbc/build.sh
+npm run build:jdbc
 node docker/scripts/test-jdbc-kerberos.js
 ```
 

@@ -79,7 +79,7 @@ const assertJdbcRuntime = pluginPath => {
 	if (missing.length) {
 		throw new Error(
 			`Kerberos (JDBC) runtime missing: ${missing.join(', ')} in ${libDir}. ` +
-				'Run: chmod +x jdbc/build.sh && ./jdbc/build.sh from the Oracle plugin directory.',
+				'Run: npm install (or npm run build:jdbc) in the Oracle plugin directory.',
 		);
 	}
 

@@ -10,3 +10,4 @@ docker/.env
 jdbc/lib/classes
 jdbc/lib/ojdbc11.jar
 jdbc/lib/json.jar
+jdbc/lib/kerberos-jdbc-bridge.jar

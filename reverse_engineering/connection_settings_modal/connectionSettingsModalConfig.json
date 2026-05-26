@@ -282,7 +282,7 @@
 				"inputKeyword": "javaPath",
 				"inputType": "text",
 				"inputPlaceholder": "Optional — defaults to JAVA_HOME or java on PATH",
-				"description": "Java 11–21 for Kerberos JDBC (JDK 25 is not supported). Run jdbc/build.sh once. Example: /opt/homebrew/opt/openjdk@21/bin/java",
+				"description": "Java 11–21 for Kerberos JDBC (JDK 25 is not supported). JDBC JARs are built on npm install. Example: /opt/homebrew/opt/openjdk@21/bin/java",
 				"dependency": {
 					"key": "authMethod",
 					"value": ["Kerberos"]

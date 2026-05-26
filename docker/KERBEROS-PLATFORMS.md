@@ -13,7 +13,7 @@ Works on **macOS, Linux, and Windows** with:
 Test from the plugin repo:
 
 ```bash
-./jdbc/build.sh
+npm install
 node docker/scripts/test-jdbc-kerberos.js
 ```
 
