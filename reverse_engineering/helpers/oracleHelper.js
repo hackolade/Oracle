@@ -1,34 +1,26 @@
 const _ = require('lodash');
 const dns = require('dns');
 const dnsPromises = dns.promises;
-const fs = require('fs');
 const net = require('net');
-const path = require('path');
 const oracleDB = require('oracledb');
-const extractWallet = require('./extractWallet');
-const fixSqlNetOraWalletPath = require('./extractWallet').fixSqlNetOraWalletPath;
-const parseTns = require('./parseTns');
 const { getSchemaSequences } = require('./getSchemaSequences');
 const { getSchemaSynonyms } = require('./getSchemaSynonyms');
+const { normalizeConnectString, getConnectionDescription } = require('./connectStringDescription');
+const { clearPluginTnsAdmin } = require('./tns/tnsAdmin');
+const { normalizeTnsAlias, getResolvedTnsService } = require('./tns/tnsConnectString');
+const {
+	trySyncTnsEndpointEarly,
+	resolveConnectionConfigDir,
+	buildSessionConnectString,
+	shouldUseWalletForConnect,
+	logWalletConnectNotes,
+	isMutualTlsEnabled,
+} = require('./tns/tnsConnectionSetup');
 
 const noConnectionError = { message: 'Connection error' };
 
 let connection;
 let useSshTunnel;
-let pluginTnsAdmin;
-
-const setPluginTnsAdmin = configDir => {
-	pluginTnsAdmin = configDir;
-	process.env.TNS_ADMIN = configDir;
-};
-
-const clearPluginTnsAdmin = () => {
-	if (pluginTnsAdmin && process.env.TNS_ADMIN === pluginTnsAdmin) {
-		delete process.env.TNS_ADMIN;
-	}
-
-	pluginTnsAdmin = null;
-};
 
 const parseProxyOptions = (proxyString = '') => {
 	const result = proxyString.match(/http:\/\/(?:.*?:.*?@)?(.*?):(\d+)/i);
@@ -42,233 +34,6 @@ const parseProxyOptions = (proxyString = '') => {
 		httpsProxyPort: result[2],
 	};
 };
-
-const TNS_NAMES_FILE = 'tnsnames.ora';
-
-const resolveTnsConfigDir = tnsPath => {
-	if (!tnsPath) {
-		return tnsPath;
-	}
-
-	const normalizedPath = path.normalize(String(tnsPath).trim());
-
-	if (!fs.existsSync(normalizedPath)) {
-		return normalizedPath;
-	}
-
-	if (fs.statSync(normalizedPath).isDirectory()) {
-		return normalizedPath;
-	}
-
-	if (path.basename(normalizedPath).toLowerCase() === TNS_NAMES_FILE) {
-		return path.dirname(normalizedPath);
-	}
-
-	throw new Error(`Invalid TNS path "${normalizedPath}". Select the wallet directory or the ${TNS_NAMES_FILE} file.`);
-};
-
-const assertTnsConfigDir = configDir => {
-	const tnsNamesOraFile = getTnsNamesOraFile(configDir);
-
-	if (!tnsNamesOraFile || !fs.existsSync(tnsNamesOraFile)) {
-		throw new Error(
-			`Cannot find ${TNS_NAMES_FILE} in "${configDir}". Select the wallet directory or the ${TNS_NAMES_FILE} file.`,
-		);
-	}
-};
-
-const getTnsNamesOraFile = configDir => {
-	const resolvedConfigDir = resolveTnsConfigDir(configDir);
-	const tnsNamesOraFile = [
-		resolvedConfigDir,
-		process.env.TNS_ADMIN,
-		path.join(process.env.ORACLE_HOME || '', 'network', 'admin'),
-		path.join(process.env.LD_LIBRARY_PATH || '', 'network', 'admin'),
-	].reduce((filePath, configFolder) => {
-		if (filePath) {
-			return filePath;
-		}
-
-		let file = path.join(configFolder, 'tnsnames.ora');
-
-		if (fs.existsSync(file)) {
-			return file;
-		} else {
-			return filePath;
-		}
-	}, '');
-
-	return tnsNamesOraFile;
-};
-
-const parseTnsNamesOra = filePath => {
-	const content = fs.readFileSync(filePath).toString();
-	const result = parseTns(content);
-	return result;
-};
-
-const WALLET_FILES = ['ewallet.pem', 'cwallet.sso', 'ewallet.p12'];
-const MTLS_PORT = '1522';
-
-const hasWalletFiles = configDir =>
-	configDir && fs.existsSync(configDir) && WALLET_FILES.some(file => fs.existsSync(path.join(configDir, file)));
-
-const hasAutoLoginWallet = configDir => configDir && fs.existsSync(path.join(configDir, 'cwallet.sso'));
-
-const isMutualTlsEnabled = mutualTLS => mutualTLS === true || mutualTLS === 'true';
-
-const assertTnsMtlsRequirements = ({ configDir, tnsServicePort, useMutualTls, walletPassword, logger }) => {
-	if (!useMutualTls) {
-		if (isMtlsPort(tnsServicePort)) {
-			logger({
-				message: `TNS service uses port ${MTLS_PORT} without mutual TLS enabled. Connecting in legacy TNS mode (server TLS only, no wallet). Enable "Mutual TLS (mTLS)" if the database requires a client wallet.`,
-			});
-		}
-
-		return;
-	}
-
-	if (!isMtlsPort(tnsServicePort)) {
-		return;
-	}
-
-	if (!hasWalletFiles(configDir)) {
-		throw new Error(
-			`Mutual TLS requires wallet files (${WALLET_FILES.join(', ')}) in the TNS directory "${configDir}".`,
-		);
-	}
-
-	if (!walletPassword && !hasAutoLoginWallet(configDir)) {
-		throw new Error(
-			`Mutual TLS requires a wallet password (OCI wallet zip password), unless the directory contains an auto-login wallet (cwallet.sso).`,
-		);
-	}
-
-	if (!walletPassword && hasAutoLoginWallet(configDir)) {
-		logger({
-			message: 'Using auto-login wallet (cwallet.sso); wallet password not required.',
-		});
-	}
-};
-
-const isMtlsPort = port => String(port) === MTLS_PORT;
-
-const connectStringUsesMtlsPort = connectString => /\(PORT\s*=\s*1522\)/i.test(connectString);
-
-const normalizeTnsAlias = serviceName => (serviceName == null ? '' : String(serviceName).trim());
-
-const getResolvedTnsService = (configDir, serviceName, logger) => {
-	const tnsAlias = normalizeTnsAlias(serviceName);
-	const filePath = getTnsNamesOraFile(configDir);
-
-	if (!fs.existsSync(filePath)) {
-		return null;
-	}
-
-	logger({ message: 'Found tnsnames.ora file: ' + filePath });
-
-	const tnsData = parseTnsNamesOra(filePath);
-
-	logger({ message: 'tnsnames.ora successfully parsed' });
-	const tnsServicesNames = Object.keys(tnsData);
-
-	if (tnsServicesNames.length === 0) {
-		logger({ message: 'No TNS services found in tnsnames.ora' });
-		return null;
-	}
-
-	const [firstTnsServiceName] = tnsServicesNames;
-	const tnsService = (tnsAlias && tnsData[tnsAlias]) || tnsData[firstTnsServiceName];
-
-	if (!tnsAlias) {
-		logger({
-			message: `No TNS alias provided. Using first TNS service ${firstTnsServiceName} from ${path.join(configDir, 'tnsnames.ora')}.`,
-		});
-	} else if (!tnsData[tnsAlias]) {
-		logger({
-			message: `TNS alias '${tnsAlias}' not found. Using first TNS service ${firstTnsServiceName} from ${path.join(configDir, 'tnsnames.ora')}.`,
-		});
-	} else {
-		logger({
-			message: `Connect using TNS service ${tnsAlias} from ${path.join(configDir, 'tnsnames.ora')}.`,
-		});
-	}
-
-	const description = tnsService?.data?.description;
-	const address = description?.address;
-	const resolvedAlias = tnsAlias && tnsData[tnsAlias] ? tnsAlias : firstTnsServiceName;
-
-	return {
-		description,
-		address,
-		service: description?.connect_data?.service_name,
-		sid: description?.connect_data?.sid,
-		port: address?.port,
-		resolvedAlias,
-	};
-};
-
-const syncConnectionEndpointFromTns = (connectionInfo, configDir, serviceName, logger) => {
-	const resolved = getResolvedTnsService(configDir, serviceName, logger);
-
-	if (!resolved?.address?.host) {
-		return resolved;
-	}
-
-	connectionInfo.host = resolved.address.host;
-	connectionInfo.port = resolved.address.port;
-
-	logger({
-		message: 'Synced connection host/port from tnsnames.ora for connections list',
-		host: connectionInfo.host,
-		port: connectionInfo.port,
-		tnsAlias: resolved.resolvedAlias,
-	});
-
-	return resolved;
-};
-
-const getConnectionStringByTnsNames = (configDir, serviceName, proxy, logger, useWallet = false) => {
-	const resolved = getResolvedTnsService(configDir, serviceName, logger);
-
-	if (!resolved) {
-		return serviceName;
-	}
-
-	const { description, address, service, sid, port, resolvedAlias } = resolved;
-
-	logger({ message: 'tnsnames.ora', address, service, port });
-
-	if (useWallet) {
-		logger({
-			message: 'Using TNS alias with mTLS wallet',
-			connectString: resolvedAlias,
-		});
-		return resolvedAlias;
-	}
-
-	return getConnectionDescription(
-		_.omitBy(
-			{
-				...address,
-				...proxy,
-				protocol: address?.protocol || 'tcps',
-				service: service || serviceName,
-				sid,
-				retryCount: description?.retry_count,
-				retryDelay: description?.retry_delay,
-				sslServerDnMatch: description?.security?.ssl_server_dn_match,
-			},
-			_.isUndefined,
-		),
-		logger,
-	);
-};
-
-const combine = (val, str) => (val ? str : '');
-
-const normalizeConnectString = connectString =>
-	typeof connectString === 'string' ? connectString.replace(/\s+/g, '') : connectString;
 
 const UNUSABLE_RESOLVED_HOSTS = new Set(['255.255.255.255', '0.0.0.0']);
 
@@ -300,29 +65,6 @@ const assertResolvableConnectHost = async (hostname, logger) => {
 			`Hostname "${hostname}" resolves to ${unusableAddress}. This often means an Azure VM is stopped or its public IP was deallocated. Start the VM or update the hostname, then try again.`,
 		);
 	}
-};
-
-const getConnectionDescription = (
-	{ protocol, host, port, sid, service, httpsProxy, httpsProxyPort, retryCount, retryDelay, sslServerDnMatch },
-	logger,
-) => {
-	const connectionString = normalizeConnectString(`(DESCRIPTION=
-		${combine(retryCount, `(RETRY_COUNT=${retryCount})`)}
-		${combine(retryDelay, `(RETRY_DELAY=${retryDelay})`)}
-		(ADDRESS=
-			(PROTOCOL=${protocol || 'tcp'})
-			(HOST=${host})
-			(PORT=${port}))
-			${combine(httpsProxy, `(HTTPS_PROXY=${httpsProxy})`)}
-			${combine(httpsProxyPort, `(HTTPS_PROXY_PORT=${httpsProxyPort})`)}
-		(CONNECT_DATA=
-					${combine(sid, `(SID=${sid})`)}
-					${combine(service, `(SERVICE_NAME=${service})`)}
-		)
-		${combine(sslServerDnMatch, `(SECURITY=(SSL_SERVER_DN_MATCH=${sslServerDnMatch}))`)}
-	)`);
-	logger({ message: 'connectString', connectString: connectionString });
-	return connectionString;
 };
 
 const getSshConnectionString = async (data, sshService, logger) => {
@@ -380,102 +122,10 @@ const getSshConnectionString = async (data, sshService, logger) => {
 	);
 };
 
-const trySyncTnsEndpointEarly = (connectionInfo, { connectionMethod, TNSpath, serviceName }, logger) => {
-	if (connectionMethod !== 'TNS' || !TNSpath) {
-		return;
-	}
-
-	try {
-		const tnsConfigDir = resolveTnsConfigDir(TNSpath);
-		const tnsNamesOraFile = getTnsNamesOraFile(tnsConfigDir);
-
-		if (tnsNamesOraFile && fs.existsSync(tnsNamesOraFile)) {
-			syncConnectionEndpointFromTns(connectionInfo, tnsConfigDir, serviceName, logger);
-		}
-	} catch (error) {
-		logger({ message: `Unable to sync host/port from tnsnames.ora: ${error.message}` });
-	}
-};
-
 const assertBasicServiceName = (connectionMethod, serviceName) => {
 	if (connectionMethod === 'Basic' && !normalizeTnsAlias(serviceName)) {
 		throw new Error('Service name is required for Basic connection method.');
 	}
-};
-
-const setupWalletConfigDir = async ({ walletFile, tempFolder, name }, connectionInfo, serviceName, logger) => {
-	const configDir = await extractWallet({ walletFile, tempFolder, name });
-	setPluginTnsAdmin(configDir);
-	const resolvedTnsService = syncConnectionEndpointFromTns(connectionInfo, configDir, serviceName, logger);
-
-	return { configDir, tnsServicePort: resolvedTnsService?.port };
-};
-
-const applyTnsMutualTlsWallet = (configDir, useMutualTls, tnsServicePort, logger) => {
-	if (useMutualTls && !isMtlsPort(tnsServicePort)) {
-		logger({
-			message: `mTLS is enabled but TNS service uses port ${tnsServicePort ?? 'unknown'} (not ${MTLS_PORT}). Connecting without wallet.`,
-		});
-		return;
-	}
-
-	if (!useMutualTls || !isMtlsPort(tnsServicePort)) {
-		return;
-	}
-
-	if (!hasWalletFiles(configDir)) {
-		throw new Error(
-			`Mutual TLS requires wallet files (${WALLET_FILES.join(', ')}) in the TNS directory "${configDir}".`,
-		);
-	}
-
-	fixSqlNetOraWalletPath(path.join(configDir, 'sqlnet.ora'), configDir);
-	setPluginTnsAdmin(configDir);
-};
-
-const setupTnsConfigDir = (TNSpath, connectionInfo, { serviceName, useMutualTls, walletPassword }, logger) => {
-	const configDir = resolveTnsConfigDir(TNSpath);
-	assertTnsConfigDir(configDir);
-
-	const resolvedTnsService = syncConnectionEndpointFromTns(connectionInfo, configDir, serviceName, logger);
-	const tnsServicePort = resolvedTnsService?.port;
-
-	assertTnsMtlsRequirements({ configDir, tnsServicePort, useMutualTls, walletPassword, logger });
-	applyTnsMutualTlsWallet(configDir, useMutualTls, tnsServicePort, logger);
-
-	return { configDir, tnsServicePort };
-};
-
-const resolveConnectionConfigDir = async (
-	connectionMethod,
-	connectionInfo,
-	{ walletFile, walletPassword, tempFolder, name, TNSpath, serviceName },
-	useMutualTls,
-	logger,
-) => {
-	if (connectionMethod === 'Wallet') {
-		return setupWalletConfigDir({ walletFile, tempFolder, name }, connectionInfo, serviceName, logger);
-	}
-
-	if (connectionMethod === 'TNS') {
-		return setupTnsConfigDir(TNSpath, connectionInfo, { serviceName, useMutualTls, walletPassword }, logger);
-	}
-
-	return { configDir: undefined, tnsServicePort: undefined };
-};
-
-const buildSessionConnectString = (
-	{ connectionMethod, configDir, serviceName, proxy, useMutualTls, tnsServicePort, host, port, sid },
-	logger,
-) => {
-	const useTnsWallet =
-		connectionMethod === 'Wallet' || (connectionMethod === 'TNS' && useMutualTls && isMtlsPort(tnsServicePort));
-
-	if (['Wallet', 'TNS'].includes(connectionMethod)) {
-		return getConnectionStringByTnsNames(configDir, serviceName, proxy, logger, useTnsWallet);
-	}
-
-	return getConnectionDescription({ host, port, sid, service: serviceName }, logger);
 };
 
 const applySshTunnelIfNeeded = async (ssh, connectString, tunnelParams, sshService, logger) => {
@@ -485,28 +135,6 @@ const applySshTunnelIfNeeded = async (ssh, connectString, tunnelParams, sshServi
 
 	useSshTunnel = true;
 	return getSshConnectionString(tunnelParams, sshService, logger);
-};
-
-const shouldUseWalletForConnect = ({ connectionMethod, useMutualTls, tnsServicePort, connectString }) =>
-	connectionMethod === 'Wallet' ||
-	(connectionMethod === 'TNS' &&
-		useMutualTls &&
-		(isMtlsPort(tnsServicePort) || connectStringUsesMtlsPort(connectString)));
-
-const logWalletConnectNotes = ({ connectionMethod, useMutualTls, useWallet, walletPassword }, logger) => {
-	if (connectionMethod === 'TNS' && useMutualTls && !useWallet) {
-		logger({
-			message:
-				'Skipping walletLocation, walletPassword, and configDir for thin connect (TNS service does not use mTLS port 1522).',
-		});
-	}
-
-	if (walletPassword && !useWallet) {
-		logger({
-			message:
-				'A wallet password is stored in the connection profile but is not sent to Oracle (mTLS disabled, non-mTLS port, or non-wallet connection method).',
-		});
-	}
 };
 
 const connect = async (connectionInfo, sshService, logger) => {
