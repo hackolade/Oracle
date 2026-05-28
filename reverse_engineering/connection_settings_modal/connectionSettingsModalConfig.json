@@ -99,9 +99,9 @@
 				}
 			},
 			{
-				"inputLabel": "Wallet file",
+				"inputLabel": "Wallet archive",
 				"inputKeyword": "walletFile",
-				"description": "Specify the full path location and name of the wallet zip file",
+				"description": "Specify the full path location and name of the wallet zip file.",
 				"inputType": "file",
 				"extensions": ["zip"],
 				"dependency": {
@@ -110,11 +110,23 @@
 				}
 			},
 			{
-				"inputLabel": "Tnsnames Directory",
+				"inputLabel": "Tnsnames file",
 				"inputKeyword": "TNSpath",
-				"description": "Specify the full path to directory with tnsnames.ora file",
+				"description": "Specify the full path to tnsnames.ora.",
 				"inputType": "file",
 				"openType": "openDirectory",
+				"extensions": ["ora", "txt"],
+				"dependency": {
+					"key": "connectionMethod",
+					"value": ["TNS"]
+				}
+			},
+			{
+				"inputLabel": "Mutual TLS (mTLS)",
+				"inputKeyword": "mutualTLS",
+				"description": "Enable only when the database requires a client certificate (cloud wallet, mutual TLS).",
+				"inputType": "checkbox",
+				"defaultValue": false,
 				"dependency": {
 					"key": "connectionMethod",
 					"value": ["TNS"]
@@ -137,27 +149,19 @@
 			{
 				"inputLabel": "Service Name",
 				"inputKeyword": "serviceName",
-				"description": "Specify the service name of the Oracle Instance",
+				"description": "Specify the service name of the Oracle Instance.",
 				"inputType": "text",
+				"regex": "([^\\s])",
 				"dependency": {
-					"type": "or",
+					"type": "and",
 					"values": [
 						{
 							"key": "connectionMethod",
-							"value": ["TNS"]
+							"value": ["Basic"]
 						},
 						{
-							"type": "and",
-							"values": [
-								{
-									"key": "connectionMethod",
-									"value": ["Basic"]
-								},
-								{
-									"key": "identifierType",
-									"value": ["serviceName"]
-								}
-							]
+							"key": "identifierType",
+							"value": ["serviceName"]
 						}
 					]
 				}
@@ -165,27 +169,59 @@
 			{
 				"inputLabel": "Wallet Password",
 				"inputKeyword": "walletPassword",
-				"description": "Specify the password used to protect the wallet",
 				"inputType": "password",
 				"isHiddenKey": true,
 				"dependency": {
-					"type": "and",
+					"type": "or",
 					"values": [
 						{
-							"key": "connectionMethod",
-							"value": ["Wallet"]
+							"type": "and",
+							"values": [
+								{
+									"key": "connectionMethod",
+									"value": ["Wallet"]
+								},
+								{
+									"key": "mode",
+									"value": ["thin"]
+								}
+							]
 						},
 						{
-							"key": "mode",
-							"value": ["thin"]
+							"type": "and",
+							"values": [
+								{
+									"key": "connectionMethod",
+									"value": ["TNS"]
+								},
+								{
+									"key": "mode",
+									"value": ["thin"]
+								},
+								{
+									"key": "mutualTLS",
+									"value": [true, "true"]
+								}
+							]
 						}
 					]
 				}
 			},
 			{
+				"inputLabel": "TNS alias",
+				"inputKeyword": "serviceName",
+				"description": "Leave empty to use the first entry in tnsnames.ora (e.g. <database name>_high).",
+				"inputType": "text",
+				"inputPlaceholder": "Optional TNS alias",
+				"dependency": {
+					"key": "connectionMethod",
+					"value": ["TNS"]
+				}
+			},
+			{
 				"inputLabel": "SID",
 				"inputKeyword": "sid",
-				"description": "Optionally specify the SID of the Oracle Instance",
+				"description": "Optionally specify the SID of the Oracle Instance.",
 				"inputType": "text",
 				"dependency": {
 					"type": "and",
@@ -209,21 +245,24 @@
 			{
 				"inputLabel": "Authentication method",
 				"inputKeyword": "authMethod",
+				"description": "OS and Kerberos require Thick mode and a configured Oracle client (Instant Client or Oracle Home).",
 				"inputType": "select",
 				"defaultValue": "Username / Password",
-				"options": [{ "value": "Username / Password", "label": "Username / Password" }]
+				"options": [
+					{ "value": "Username / Password", "label": "Username / Password" },
+					{ "value": "OS", "label": "OS" },
+					{ "value": "Kerberos", "label": "Kerberos" }
+				]
 			},
 			{
 				"inputLabel": "User Name",
 				"inputKeyword": "userName",
 				"inputType": "text",
 				"inputPlaceholder": "User Name",
+				"description": "For Kerberos proxy connections, use the [username] format.",
 				"dependency": {
 					"key": "authMethod",
 					"value": ["Username / Password", "Kerberos"]
-				},
-				"validation": {
-					"regex": "([^\\s])"
 				}
 			},
 			{
@@ -233,7 +272,7 @@
 				"inputPlaceholder": "Password",
 				"dependency": {
 					"key": "authMethod",
-					"value": ["Username / Password", "Kerberos"]
+					"value": ["Username / Password"]
 				},
 				"isHiddenKey": true,
 				"validation": {

@@ -1,11 +1,27 @@
 const _ = require('lodash');
-const fs = require('fs');
-const path = require('path');
+const dns = require('dns');
+const dnsPromises = dns.promises;
+const net = require('net');
 const oracleDB = require('oracledb');
-const extractWallet = require('./extractWallet');
-const parseTns = require('./parseTns');
 const { getSchemaSequences } = require('./getSchemaSequences');
 const { getSchemaSynonyms } = require('./getSchemaSynonyms');
+const { normalizeConnectString, getConnectionDescription } = require('./connectStringDescription');
+const { clearPluginTnsAdmin } = require('./tns/tnsAdmin');
+const { normalizeTnsAlias, getResolvedTnsService } = require('./tns/tnsConnectString');
+const {
+	normalizeAuthMethod,
+	assertExternalAuthMode,
+	buildConnectionAuthParams,
+	logAuthMethodNotes,
+} = require('./connectionAuth');
+const {
+	trySyncTnsEndpointEarly,
+	resolveConnectionConfigDir,
+	buildSessionConnectString,
+	shouldUseWalletForConnect,
+	logWalletConnectNotes,
+	isMutualTlsEnabled,
+} = require('./tns/tnsConnectionSetup');
 
 const noConnectionError = { message: 'Connection error' };
 
@@ -25,104 +41,36 @@ const parseProxyOptions = (proxyString = '') => {
 	};
 };
 
-const getTnsNamesOraFile = configDir => {
-	const tnsNamesOraFile = [
-		configDir,
-		process.env.TNS_ADMIN,
-		path.join(process.env.ORACLE_HOME || '', 'network', 'admin'),
-		path.join(process.env.LD_LIBRARY_PATH || '', 'network', 'admin'),
-	].reduce((filePath, configFolder) => {
-		if (filePath) {
-			return filePath;
-		}
+const UNUSABLE_RESOLVED_HOSTS = new Set(['255.255.255.255', '0.0.0.0']);
 
-		let file = path.join(configFolder, 'tnsnames.ora');
-
-		if (fs.existsSync(file)) {
-			return file;
-		} else {
-			return filePath;
-		}
-	}, '');
-
-	return tnsNamesOraFile;
-};
-
-const parseTnsNamesOra = filePath => {
-	const content = fs.readFileSync(filePath).toString();
-	const result = parseTns(content);
-	return result;
-};
-
-const getConnectionStringByTnsNames = (configDir, serviceName, proxy, logger) => {
-	const filePath = getTnsNamesOraFile(configDir);
-
-	if (!fs.existsSync(filePath)) {
-		return serviceName;
+const assertResolvableConnectHost = async (hostname, logger) => {
+	if (!hostname || net.isIP(hostname)) {
+		return;
 	}
 
-	logger({ message: 'Found tnsnames.ora file: ' + filePath });
+	let addresses;
 
-	const tnsData = parseTnsNamesOra(filePath);
-
-	logger({ message: 'tnsnames.ora successfully parsed' });
-	const tnsServicesNames = Object.keys(tnsData);
-
-	if (!tnsData[serviceName] && tnsServicesNames.length === 0) {
-		logger({ message: `Cannot find '${serviceName}' in tnsnames.ora and no fallback found` });
-		return serviceName;
+	try {
+		addresses = await dnsPromises.lookup(hostname, { all: true });
+	} catch (error) {
+		throw new Error(`Cannot resolve hostname "${hostname}": ${error.message}`);
 	}
 
-	const [firstTnsServiceName] = tnsServicesNames;
-	const tnsService = tnsData[serviceName] || tnsData[firstTnsServiceName];
-	if (!tnsData[serviceName]) {
-		logger({
-			message: `Connect using first TNS service ${firstTnsServiceName}' from ${path.join(configDir, 'tnsnames.ora')}.`,
-		});
-	} else {
-		logger({
-			message: `Connect using TNS service ${serviceName}' from ${path.join(configDir, 'tnsnames.ora')}.`,
-		});
+	const resolvedAddresses = addresses.map(entry => entry.address);
+
+	logger({
+		message: 'Resolved connection hostname for TCP connect',
+		hostname,
+		resolvedAddresses,
+	});
+
+	const unusableAddress = resolvedAddresses.find(address => UNUSABLE_RESOLVED_HOSTS.has(address));
+
+	if (unusableAddress) {
+		throw new Error(
+			`Hostname "${hostname}" resolves to ${unusableAddress}. This often means an Azure VM is stopped or its public IP was deallocated. Start the VM or update the hostname, then try again.`,
+		);
 	}
-
-	const address = tnsService?.data?.description?.address;
-	const service = tnsService?.data?.description?.connect_data?.service_name;
-	const sid = tnsService?.data?.description?.connect_data?.sid;
-
-	logger({ message: 'tnsnames.ora', address, service });
-
-	return getConnectionDescription(
-		_.omitBy(
-			{
-				...address,
-				...proxy,
-				protocol: address?.protocol || 'tcps',
-				service: service || serviceName,
-				sid: sid,
-			},
-			_.isUndefined,
-		),
-		logger,
-	);
-};
-
-const combine = (val, str) => (val ? str : '');
-
-const getConnectionDescription = ({ protocol, host, port, sid, service, httpsProxy, httpsProxyPort }, logger) => {
-	const connectionString = `(DESCRIPTION=
-		(ADDRESS=
-			(PROTOCOL=${protocol || 'tcp'})
-			(HOST=${host})
-			(PORT=${port}))
-			${combine(httpsProxy, `(HTTPS_PROXY=${httpsProxy})`)}
-			${combine(httpsProxyPort, `(HTTPS_PROXY_PORT=${httpsProxyPort})`)}
-		(CONNECT_DATA=
-					${combine(sid, `(SID=${sid})`)}
-					${combine(service, `(SERVICE_NAME=${service})`)}
-		)
-	)`;
-	logger({ message: 'connectionString', connectionString });
-	return connectionString;
 };
 
 const getSshConnectionString = async (data, sshService, logger) => {
@@ -134,32 +82,22 @@ const getSshConnectionString = async (data, sshService, logger) => {
 	};
 
 	if (['Wallet', 'TNS'].includes(data.connectionMethod)) {
-		const filePath = getTnsNamesOraFile(data.configDir);
+		const resolved = getResolvedTnsService(data.configDir, data.serviceName, logger);
 
-		if (!fs.existsSync(filePath)) {
+		if (!resolved) {
 			throw new Error(
 				'Cannot find tnsnames.ora file. Please, specify tnsnames folder or use Base connection method.',
 			);
 		}
 
-		logger({ message: 'Found tnsnames.ora file: ' + filePath });
-
-		const tnsData = parseTnsNamesOra(filePath);
-
-		if (!tnsData[data.serviceName]) {
-			throw new Error('Cannot find "' + data.serviceName + '" in tnsnames.ora');
-		}
-
-		const address = tnsData[data.serviceName]?.data?.description?.address;
-		const service = tnsData[data.serviceName]?.data?.description?.connect_data?.service_name;
-		const sid = tnsData[data.serviceName]?.data?.description?.connect_data?.sid;
+		const { address, service, sid } = resolved;
 
 		logger({ message: 'tnsnames.ora', address, service });
 
 		connectionData.protocol = address?.protocol;
 		connectionData.host = address?.host;
 		connectionData.port = address?.port;
-		connectionData.service = service || data.serviceName;
+		connectionData.service = service || normalizeTnsAlias(data.serviceName);
 		connectionData.sid = sid;
 	} else {
 		connectionData.host = data.host;
@@ -190,8 +128,23 @@ const getSshConnectionString = async (data, sshService, logger) => {
 	);
 };
 
-const connect = async (
-	{
+const assertBasicServiceName = (connectionMethod, serviceName) => {
+	if (connectionMethod === 'Basic' && !normalizeTnsAlias(serviceName)) {
+		throw new Error('Service name is required for Basic connection method.');
+	}
+};
+
+const applySshTunnelIfNeeded = async (ssh, connectString, tunnelParams, sshService, logger) => {
+	if (!ssh) {
+		return connectString;
+	}
+
+	useSshTunnel = true;
+	return getSshConnectionString(tunnelParams, sshService, logger);
+};
+
+const connect = async (connectionInfo, sshService, logger) => {
+	const {
 		walletFile,
 		walletPassword,
 		tempFolder,
@@ -219,110 +172,110 @@ const connect = async (
 		ssh_password,
 		authRole,
 		mode,
-	},
-	sshService,
-	logger,
-) => {
+		mutualTLS,
+	} = connectionInfo;
+
+	trySyncTnsEndpointEarly(connectionInfo, { connectionMethod, TNSpath, serviceName }, logger);
+
 	if (connection) {
+		logger({ message: 'Reusing existing Oracle connection' });
 		return connection;
 	}
 
-	const MODES = {
-		thin: 'thin',
-		thick: 'thick',
-	};
-	let configDir;
-	let libDir;
-	let credentials = {};
-	let proxy = '';
-
-	if (connectionMethod === 'Wallet') {
-		configDir = await extractWallet({ walletFile, tempFolder, name });
-		process.env.TNS_ADMIN = configDir;
+	if (connectionMethod === 'Basic') {
+		clearPluginTnsAdmin();
 	}
 
-	if (connectionMethod === 'TNS') {
-		configDir = TNSpath;
-	}
+	const useMutualTls = isMutualTlsEnabled(mutualTLS);
+	assertBasicServiceName(connectionMethod, serviceName);
 
-	if (clientType === 'InstantClient') {
-		libDir = clientPath;
-	}
+	const { configDir, tnsServicePort } = await resolveConnectionConfigDir(
+		connectionMethod,
+		connectionInfo,
+		{ walletFile, walletPassword, tempFolder, name, TNSpath, serviceName },
+		useMutualTls,
+		logger,
+	);
 
-	if (options?.proxy) {
-		proxy = parseProxyOptions(options?.proxy);
-	}
+	const libDir = clientType === 'InstantClient' ? clientPath : undefined;
+	const proxy = options?.proxy ? parseProxyOptions(options.proxy) : '';
 
-	if (mode !== MODES.thin) {
+	if (mode !== 'thin') {
 		oracleDB.initOracleClient({ libDir, configDir });
 	}
 
-	let connectString = '';
+	let connectString = buildSessionConnectString(
+		{ connectionMethod, configDir, serviceName, proxy, useMutualTls, tnsServicePort, host, port, sid },
+		logger,
+	);
 
-	if (['Wallet', 'TNS'].includes(connectionMethod)) {
-		connectString = getConnectionStringByTnsNames(configDir, serviceName, proxy, logger);
-	} else {
-		connectString = getConnectionDescription(
-			{
-				host,
-				port,
-				sid,
-				service: serviceName,
+	connectString = await applySshTunnelIfNeeded(
+		ssh,
+		connectString,
+		{
+			host,
+			port,
+			configDir,
+			serviceName,
+			sid,
+			connectionMethod,
+			sshConfig: {
+				ssh_user,
+				ssh_host,
+				ssh_port,
+				ssh_method,
+				ssh_key_file,
+				ssh_password,
+				ssh_key_passphrase,
 			},
-			logger,
-		);
+		},
+		sshService,
+		logger,
+	);
+
+	const useWallet = shouldUseWalletForConnect({
+		connectionMethod,
+		useMutualTls,
+		tnsServicePort,
+		connectString,
+	});
+	logWalletConnectNotes({ connectionMethod, useMutualTls, useWallet, walletPassword }, logger);
+
+	const resolvedAuthMethod = normalizeAuthMethod(authMethod);
+	assertExternalAuthMode(resolvedAuthMethod, mode);
+	logAuthMethodNotes(resolvedAuthMethod, userPassword, logger);
+
+	const normalizedConnectString = normalizeConnectString(connectString);
+	const hostnameToResolve = connectionMethod === 'Basic' ? host : connectionInfo.host;
+
+	if (!ssh && hostnameToResolve) {
+		await assertResolvableConnectHost(hostnameToResolve, logger);
 	}
 
-	if (ssh) {
-		useSshTunnel = true;
-		connectString = await getSshConnectionString(
-			{
-				host,
-				port,
-				configDir,
-				serviceName,
-				sid,
-				connectionMethod,
-				sshConfig: {
-					ssh_user,
-					ssh_host,
-					ssh_port,
-					ssh_method,
-					ssh_key_file,
-					ssh_password,
-					ssh_key_passphrase,
-				},
-			},
-			sshService,
-			logger,
-		);
-	}
-
-	if (authMethod === 'OS') {
-		credentials.externalAuth = true;
-	} else if (authMethod === 'Kerberos') {
-		credentials.username = userName;
-		credentials.password = userPassword;
-		credentials.externalAuth = true;
-	} else {
-		credentials.username = userName;
-		credentials.password = userPassword;
-	}
+	logger({
+		message: 'Oracle connectString',
+		connectString: normalizedConnectString,
+		hostname: hostnameToResolve,
+		useWallet,
+		walletLocation: useWallet ? configDir : undefined,
+		configDir: useWallet ? configDir : undefined,
+	});
 
 	return authByCredentials({
-		connectString,
-		username: userName,
-		password: userPassword,
+		connectString: normalizedConnectString,
+		...buildConnectionAuthParams(resolvedAuthMethod, userName, userPassword),
 		queryRequestTimeout,
 		authRole,
-		walletLocation: configDir,
-		walletPassword,
+		configDir: useWallet ? configDir : undefined,
+		walletLocation: useWallet ? configDir : undefined,
+		walletPassword: useWallet ? walletPassword : undefined,
 	});
 };
 
 const disconnect = async sshService => {
 	if (!connection) {
-		return Promise.reject(noConnectionError);
+		clearPluginTnsAdmin();
+		return;
 	}
 
 	if (useSshTunnel) {
@@ -333,6 +286,7 @@ const disconnect = async sshService => {
 	return new Promise((resolve, reject) => {
 		connection.close(err => {
 			connection = null;
+			clearPluginTnsAdmin();
 			if (err) {
 				return reject(err);
 			}
@@ -345,20 +299,27 @@ const authByCredentials = ({
 	connectString,
 	username,
 	password,
+	externalAuth,
 	queryRequestTimeout,
 	authRole,
 	walletPassword,
 	walletLocation,
+	configDir,
 }) => {
 	return new Promise((resolve, reject) => {
-		const connectionConfig = {
-			username,
-			password,
-			connectString,
-			privilege: authRole === 'default' ? undefined : oracleDB[authRole],
-			walletLocation,
-			walletPassword,
-		};
+		const connectionConfig = _.omitBy(
+			{
+				username,
+				password,
+				externalAuth,
+				connectString,
+				privilege: authRole === 'default' ? undefined : oracleDB[authRole],
+				walletLocation,
+				walletPassword,
+				configDir,
+			},
+			_.isUndefined,
+		);
 		oracleDB.getConnection(connectionConfig, (err, conn) => {
 			if (err) {
 				connection = null;
@@ -387,11 +348,7 @@ const getSchemaNames = async ({ includeSystemCollection, schemaName }, logger) =
 	} else {
 		query = `${selectStatement} WHERE ORACLE_MAINTAINED = 'N'${stmt ? ` AND ${stmt}` : ''}`;
 	}
-	return await execute(query).catch(e => {
-		logger.info({ message: 'Cannot retrieve schema names' });
-		logger.error(e);
-		return [];
-	});
+	return execute(query);
 };
 
 const pairToObj = pairs => {

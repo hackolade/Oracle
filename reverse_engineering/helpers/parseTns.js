@@ -19,7 +19,7 @@ function parseObject(lex, obj = {}) {
 
 	return {
 		...obj,
-		[id]: value,
+		[id.toLowerCase()]: value,
 	};
 }
 
