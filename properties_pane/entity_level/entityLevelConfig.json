@@ -1101,6 +1101,12 @@ making sure that you maintain a proper JSON format.
 						"propertyType": "checkbox"
 					},
 					{
+						"propertyName": "Index schema",
+						"propertyKeyword": "indxSchema",
+						"propertyTooltip": "",
+						"propertyType": "text"
+					},
+					{
 						"propertyName": "Type",
 						"propertyKeyword": "indxType",
 						"propertyType": "select",

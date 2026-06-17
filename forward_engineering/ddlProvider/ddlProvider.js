@@ -1,3 +1,7 @@
+/**
+ * @import { IndexDto } from '../types'
+ */
+
 const _ = require('lodash');
 const defaultTypes = require('../configs/defaultTypes');
 const descriptors = require('../configs/descriptors');
@@ -502,6 +506,14 @@ module.exports = (baseProvider, options, app) => {
 			return { ...indexData, schemaName: schemaData.schemaName, indexAnnotations: indexData.indexAnnotations };
 		},
 
+		/**
+		 *
+		 * @param {string} tableName
+		 * @param {IndexDto} index
+		 * @param {Record<string, unknown>} [dbData]
+		 * @param {boolean} [isParentActivated]
+		 * @returns {string}
+		 */
 		createIndex(tableName, index, dbData, isParentActivated = true) {
 			const name = getIndexName({ index });
 			const hasKeys = !!index.indxKey.length || !!_.trim(index.column_expression);

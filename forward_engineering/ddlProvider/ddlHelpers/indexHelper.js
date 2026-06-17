@@ -1,13 +1,30 @@
+/**
+ * @import { IndexDto } from '../../types'
+ */
+
 const _ = require('lodash');
-const { escapeSingleQuote, normalizeLineEndings } = require('../../utils/general');
+const { normalizeLineEndings } = require('../../utils/general');
 
 module.exports = ({ prepareName, getNamePrefixedWithSchemaName }) => {
 	const getIndexType = indexType => {
 		return indexType ? ` ${_.toUpper(indexType)}` : '';
 	};
 
+	/**
+	 *
+	 * @param param0
+	 * @param {IndexDto} param0.index
+	 * @returns {string}
+	 */
 	const getIndexName = ({ index }) => {
-		return index.indxName ? ` ${getNamePrefixedWithSchemaName(index.indxName, index.schemaName)}` : '';
+		if (!index.indxName) {
+			return '';
+		}
+
+		// `index.indxSchema` - is custom schema name from cross schema indexes, specified manually by user
+		// `index.schemaName` - is schema name where the actually table created
+		const schemaName = index.indxSchema || index.schemaName;
+		return ` ${getNamePrefixedWithSchemaName(index.indxName, schemaName)}`;
 	};
 
 	/**
