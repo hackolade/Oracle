@@ -1260,6 +1260,23 @@ making sure that you maintain a proper JSON format.
 						}
 					},
 					{
+						"propertyName": "Partition scope",
+						"propertyKeyword": "indxPartitionScope",
+						"propertyType": "select",
+						"defaultValue": "",
+						"options": ["", "local", "global"]
+					},
+					{
+						"propertyName": "Index partition clause",
+						"propertyKeyword": "indxPartitionClause",
+						"propertyType": "details",
+						"template": "codeEditor",
+						"markdown": false,
+						"templateOptions": {
+							"editorDialect": "sql"
+						}
+					},
+					{
 						"propertyName": "Comments",
 						"propertyKeyword": "indxComments",
 						"propertyTooltip": "comments",

@@ -56,5 +56,7 @@ export type IndexDto = {
 	index_compression?: string;
 	logging_clause?: string;
 	indexAnnotations?: Annotation[];
+	indxPartitionScope?: string;
+	indxPartitionClause?: string;
 	indxComments?: string;
 };
