@@ -28,6 +28,38 @@ module.exports = ({ prepareName, getNamePrefixedWithSchemaName }) => {
 	};
 
 	/**
+	 * Builds the LOCAL/GLOBAL partition clause for CREATE INDEX.
+	 * Partition options are emitted before other index attributes per Oracle CREATE INDEX syntax.
+	 *
+	 * @param {Pick<IndexDto, 'indxPartitionScope' | 'indxPartitionClause'>} param0
+	 * @param {'local' | 'global' | '' | undefined} [param0.indxPartitionScope]
+	 * @param {string | undefined} [param0.indxPartitionClause] Clause appended after LOCAL or GLOBAL (e.g. `STORE IN (...)` or `PARTITION BY RANGE (...)`).
+	 * @returns {string} ` LOCAL`, ` LOCAL <clause>`, ` GLOBAL <clause>`, or an empty string.
+	 */
+	const getIndexPartitionOptions = ({ indxPartitionScope, indxPartitionClause }) => {
+		const scope = _.toLower(_.trim(indxPartitionScope));
+		const clause = _.trim(indxPartitionClause);
+
+		if (!scope) {
+			return '';
+		}
+
+		if (scope === 'local') {
+			return clause ? ` LOCAL ${clause}` : ' LOCAL';
+		}
+
+		if (scope === 'global') {
+			if (!clause) {
+				return '';
+			}
+
+			return ` GLOBAL ${clause}`;
+		}
+
+		return '';
+	};
+
+	/**
 	 * @param indxKey {Array<Object> | undefined}
 	 * @param column_expression {string | undefined}
 	 * @return {string}
@@ -50,6 +82,13 @@ module.exports = ({ prepareName, getNamePrefixedWithSchemaName }) => {
 		return '';
 	};
 
+	/**
+	 * Builds index options for CREATE INDEX and ALTER INDEX ... REBUILD statements.
+	 * Partition options precede logging, tablespace, compression, and free-form index properties.
+	 *
+	 * @param {IndexDto} param0
+	 * @returns {string}
+	 */
 	const getIndexOptions = ({
 		indxDescription,
 		comments,
@@ -60,17 +99,20 @@ module.exports = ({ prepareName, getNamePrefixedWithSchemaName }) => {
 		logging_clause,
 		indxKey,
 		column_expression,
+		indxPartitionScope,
+		indxPartitionClause,
 	}) => {
+		const partitionOptions = getIndexPartitionOptions({ indxPartitionScope, indxPartitionClause });
 		const loggingClause = logging_clause ? ` ${_.toUpper(logging_clause)}` : '';
 		const tableSpacePart = tablespace ? ` TABLESPACE ${tablespace}` : '';
 		const indexCompression = index_compression ? ` ${index_compression}` : '';
 
-		let options = `${loggingClause}${tableSpacePart}${indexCompression}`;
+		let options = `${partitionOptions}${loggingClause}${tableSpacePart}${indexCompression}`;
 
 		if (index_properties) {
-			options = ` ${normalizeLineEndings(index_properties)}`;
+			options = `${partitionOptions} ${normalizeLineEndings(index_properties)}`;
 		} else if (index_attributes) {
-			options = ` ${normalizeLineEndings(index_attributes)}`;
+			options = `${partitionOptions} ${normalizeLineEndings(index_attributes)}`;
 		}
 		const isKeysEmpty = _.isEmpty(indxKey) && _.isEmpty(column_expression);
 
