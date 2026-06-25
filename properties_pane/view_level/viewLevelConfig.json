@@ -762,6 +762,12 @@
 						"defaultValue": true
 					},
 					{
+						"propertyName": "Index schema",
+						"propertyKeyword": "indxSchema",
+						"propertyTooltip": "",
+						"propertyType": "text"
+					},
+					{
 						"propertyName": "Type",
 						"propertyKeyword": "indxType",
 						"propertyType": "select",
