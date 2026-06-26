@@ -114,7 +114,7 @@
 				"inputKeyword": "TNSpath",
 				"description": "Specify the full path to tnsnames.ora.",
 				"inputType": "file",
-				"openType": "openDirectory",
+				"openType": "openFile",
 				"extensions": ["ora", "txt"],
 				"dependency": {
 					"key": "connectionMethod",
