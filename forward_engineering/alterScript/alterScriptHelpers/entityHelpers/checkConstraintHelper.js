@@ -46,8 +46,10 @@ const mapCheckConstraintNamesToChangeHistory = ({ collection, scriptFormat }) =>
 	if (!checkConstraintHistory) {
 		return [];
 	}
+
 	const newConstraints = checkConstraintHistory.new || [];
 	const oldConstraints = checkConstraintHistory.old || [];
+
 	const constrNames = _.chain([...newConstraints, ...oldConstraints])
 		.map(constr => constr.chkConstrName)
 		.uniq()
@@ -56,9 +58,11 @@ const mapCheckConstraintNamesToChangeHistory = ({ collection, scriptFormat }) =>
 	return constrNames.map(rawChkConstrName => {
 		const chkConstrName = prepareNameForScriptFormat(scriptFormat)(rawChkConstrName);
 
+		const updateName = constraint => (constraint ? { ...constraint, chkConstrName } : undefined);
+
 		return {
-			old: _.find(oldConstraints, { chkConstrName }),
-			new: _.find(newConstraints, { chkConstrName }),
+			old: updateName(_.find(oldConstraints, { chkConstrName: rawChkConstrName })),
+			new: updateName(_.find(newConstraints, { chkConstrName: rawChkConstrName })),
 		};
 	});
 };
