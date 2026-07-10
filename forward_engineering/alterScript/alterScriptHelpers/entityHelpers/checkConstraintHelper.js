@@ -73,10 +73,14 @@ const getDropCheckConstraintScriptDtos = (constraintHistory, fullTableName) => {
 /**
  * @param tableName {string}
  * @param constraintName {string}
- * @param expression {expression}
+ * @param expression {string}
  * @return string
  * */
 const addCheckConstraint = (tableName, constraintName, expression) => {
+	if (!expression?.trim?.()) {
+		return '';
+	}
+
 	const templateConfig = {
 		tableName,
 		constraintName,
