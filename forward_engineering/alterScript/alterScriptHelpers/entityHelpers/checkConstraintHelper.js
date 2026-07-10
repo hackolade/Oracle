@@ -1,7 +1,11 @@
 const _ = require('lodash');
 const { AlterCollectionDto } = require('../../types/AlterCollectionDto');
 const { AlterScriptDto, SCRIPT_TYPE } = require('../../types/AlterScriptDto');
-const { wrapInQuotes, getSchemaOfAlterCollection, getFullCollectionName } = require('../../../utils/general');
+const {
+	getSchemaOfAlterCollection,
+	getFullCollectionName,
+	prepareNameForScriptFormat,
+} = require('../../../utils/general');
 const { assignTemplates } = require('../../../utils/assignTemplates');
 const templates = require('../../../ddlProvider/templates');
 
@@ -32,10 +36,12 @@ const dropConstraint = (tableName, constraintName) => {
 };
 
 /**
- * @param {AlterCollectionDto} collection
+ * @param {object} params
+ * @param {AlterCollectionDto} params.collection
+ * @param {string} params.scriptFormat
  * @return {Array<CheckConstraintHistoryEntry>}
  * */
-const mapCheckConstraintNamesToChangeHistory = collection => {
+const mapCheckConstraintNamesToChangeHistory = ({ collection, scriptFormat }) => {
 	const checkConstraintHistory = collection?.compMod?.chkConstr;
 	if (!checkConstraintHistory) {
 		return [];
@@ -47,7 +53,9 @@ const mapCheckConstraintNamesToChangeHistory = collection => {
 		.uniq()
 		.value();
 
-	return constrNames.map(chkConstrName => {
+	return constrNames.map(rawChkConstrName => {
+		const chkConstrName = prepareNameForScriptFormat(scriptFormat)(rawChkConstrName);
+
 		return {
 			old: _.find(oldConstraints, { chkConstrName }),
 			new: _.find(newConstraints, { chkConstrName }),
@@ -64,8 +72,7 @@ const getDropCheckConstraintScriptDtos = (constraintHistory, fullTableName) => {
 	return constraintHistory
 		.filter(historyEntry => historyEntry.old && !historyEntry.new)
 		.map(historyEntry => {
-			const wrappedConstraintName = wrapInQuotes(historyEntry.old.chkConstrName);
-			const script = dropConstraint(fullTableName, wrappedConstraintName);
+			const script = dropConstraint(fullTableName, historyEntry.old.chkConstrName);
 			return AlterScriptDto.getInstance(script, true, true, SCRIPT_TYPE.alterEntity);
 		});
 };
@@ -99,7 +106,7 @@ const getAddCheckConstraintScriptDtos = (constraintHistory, fullTableName) => {
 		.filter(historyEntry => historyEntry.new && !historyEntry.old)
 		.map(historyEntry => {
 			const { chkConstrName, constrExpression } = historyEntry.new;
-			const script = addCheckConstraint(fullTableName, wrapInQuotes(chkConstrName), constrExpression);
+			const script = addCheckConstraint(fullTableName, chkConstrName, constrExpression);
 			return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.alterEntity);
 		});
 };
@@ -121,14 +128,10 @@ const getUpdateCheckConstraintScriptDtos = (constraintHistory, fullTableName) =>
 		})
 		.flatMap(historyEntry => {
 			const { chkConstrName: oldConstrainName } = historyEntry.old;
-			const dropConstraintScript = dropConstraint(fullTableName, wrapInQuotes(oldConstrainName));
+			const dropConstraintScript = dropConstraint(fullTableName, oldConstrainName);
 
 			const { chkConstrName: newConstrainName, constrExpression: newConstraintExpression } = historyEntry.new;
-			const addConstraintScript = addCheckConstraint(
-				fullTableName,
-				wrapInQuotes(newConstrainName),
-				newConstraintExpression,
-			);
+			const addConstraintScript = addCheckConstraint(fullTableName, newConstrainName, newConstraintExpression);
 
 			return [
 				AlterScriptDto.getInstance(dropConstraintScript, true, true, SCRIPT_TYPE.alterEntity),
@@ -138,20 +141,21 @@ const getUpdateCheckConstraintScriptDtos = (constraintHistory, fullTableName) =>
 };
 
 /**
- * @param {{ scriptFormat: string }}
+ * @param {object} params
+ * @param {string} params.scriptFormat
  * @return {(collection: AlterCollectionDto) => Array<AlterScriptDto>}
  * */
 const getModifyCheckConstraintScriptDtos =
 	({ scriptFormat }) =>
 	collection => {
 		const collectionSchema = getSchemaOfAlterCollection(collection);
-		const fullName = getFullCollectionName(scriptFormat)(collectionSchema);
+		const fullTableName = getFullCollectionName(scriptFormat)(collectionSchema);
 
-		const constraintHistory = mapCheckConstraintNamesToChangeHistory(collection);
+		const constraintHistory = mapCheckConstraintNamesToChangeHistory({ collection, scriptFormat });
 
-		const addCheckConstraintScripts = getAddCheckConstraintScriptDtos(constraintHistory, fullName);
-		const dropCheckConstraintScripts = getDropCheckConstraintScriptDtos(constraintHistory, fullName);
-		const updateCheckConstraintScripts = getUpdateCheckConstraintScriptDtos(constraintHistory, fullName);
+		const addCheckConstraintScripts = getAddCheckConstraintScriptDtos(constraintHistory, fullTableName);
+		const dropCheckConstraintScripts = getDropCheckConstraintScriptDtos(constraintHistory, fullTableName);
+		const updateCheckConstraintScripts = getUpdateCheckConstraintScriptDtos(constraintHistory, fullTableName);
 
 		return [...addCheckConstraintScripts, ...dropCheckConstraintScripts, ...updateCheckConstraintScripts];
 	};
