@@ -64,7 +64,7 @@
     "description": "Hackolade plugin for Oracle and Autonomous databases",
     "disabled": false,
     "dependencies": {
-        "adm-zip": "0.5.9",
+        "adm-zip": "0.6.0",
         "async": "3.2.6",
         "lodash": "4.18.1",
         "oracledb": "6.6.0",
@@ -94,6 +94,7 @@
         "simple-git-hooks": "2.13.1"
     },
     "overrides": {
-        "minimatch": "10.2.4"
+        "minimatch": "10.2.4",
+        "brace-expansion": "5.0.8"
     }
 }
