@@ -11,6 +11,9 @@ const { EXCLUDED_EXTENSIONS, EXCLUDED_FILES, DEFAULT_RELEASE_FOLDER_PATH } = req
 const packageData = JSON.parse(fs.readFileSync('./package.json').toString());
 const RELEASE_FOLDER_PATH = path.join(DEFAULT_RELEASE_FOLDER_PATH, `${packageData.name}-${packageData.version}`);
 
+const writeArg = process.argv.find(arg => arg.startsWith('--write='));
+const write = writeArg ? writeArg.slice('--write='.length) !== 'false' : true;
+
 esbuild
 	.build({
 		entryPoints: [
@@ -25,6 +28,7 @@ esbuild
 		platform: 'node',
 		target: 'node16',
 		outdir: RELEASE_FOLDER_PATH,
+		write,
 		minify: true,
 		logLevel: 'info',
 		external: [
@@ -37,29 +41,31 @@ esbuild
 			'oci-secrets',
 			'oracledb',
 		],
-		plugins: [
-			clean({
-				patterns: [DEFAULT_RELEASE_FOLDER_PATH],
-			}),
-			copy({
-				assets: {
-					from: [path.join('node_modules', 'lodash', '**', '*')],
-					to: [path.join('node_modules', 'lodash')],
-				},
-			}),
-			copy({
-				assets: {
-					from: [path.join('node_modules', 'oracledb', '**', '*')],
-					to: [path.join('node_modules', 'oracledb')],
-				},
-			}),
-			copyFolderFiles({
-				fromPath: __dirname,
-				targetFolderPath: RELEASE_FOLDER_PATH,
-				excludedExtensions: EXCLUDED_EXTENSIONS,
-				excludedFiles: EXCLUDED_FILES,
-			}),
-			addReleaseFlag(path.resolve(RELEASE_FOLDER_PATH, 'package.json')),
-		],
+		plugins: write
+			? [
+					clean({
+						patterns: [DEFAULT_RELEASE_FOLDER_PATH],
+					}),
+					copy({
+						assets: {
+							from: [path.join('node_modules', 'lodash', '**', '*')],
+							to: [path.join('node_modules', 'lodash')],
+						},
+					}),
+					copy({
+						assets: {
+							from: [path.join('node_modules', 'oracledb', '**', '*')],
+							to: [path.join('node_modules', 'oracledb')],
+						},
+					}),
+					copyFolderFiles({
+						fromPath: __dirname,
+						targetFolderPath: RELEASE_FOLDER_PATH,
+						excludedExtensions: EXCLUDED_EXTENSIONS,
+						excludedFiles: EXCLUDED_FILES,
+					}),
+					addReleaseFlag(path.resolve(RELEASE_FOLDER_PATH, 'package.json')),
+				]
+			: [],
 	})
 	.catch(() => process.exit(1));
