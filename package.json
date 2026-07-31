@@ -71,11 +71,12 @@
         "perplex": "0.11.0"
     },
     "simple-git-hooks": {
-        "pre-commit": "npm run package && npx lint-staged --config lint-staged.config.js",
-        "pre-push": "npm run lint"
+        "pre-commit": "npx lint-staged --config lint-staged.config.js",
+        "pre-push": "npm run lint && npm run bundle:check"
     },
     "scripts": {
         "lint": "oxlint . || true",
+        "bundle:check": "node esbuild.package.js --write=false",
         "package": "node esbuild.package.js",
         "lint:check": "oxlint --type-aware --type-check . || true",
         "format": "prettier --write ."
