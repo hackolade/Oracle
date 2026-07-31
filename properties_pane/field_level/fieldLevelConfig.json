@@ -549,6 +549,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "length",
 				"propertyType": "numeric",
 				"valueType": "number",
+				"enableForReference": true,
 				"propertyTooltip": "Setting for Length must be between 1 and 2000",
 				"minValue": 1,
 				"maxValue": 2000,
@@ -589,6 +590,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "length",
 				"propertyType": "numeric",
 				"valueType": "number",
+				"enableForReference": true,
 				"propertyTooltip": "Setting for Length must be between 1 and 32767",
 				"minValue": 1,
 				"maxValue": 32767,
@@ -628,6 +630,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Length semantics",
 				"propertyKeyword": "lengthSemantics",
 				"propertyType": "select",
+				"enableForReference": true,
 				"options": ["", "char", "byte"],
 				"dependency": {
 					"type": "and",
@@ -740,6 +743,7 @@ making sure that you maintain a proper JSON format.
 				"shouldValidate": true,
 				"fieldType": "dynamicField",
 				"changeAction": "changeDefaultValueOfField",
+				"enableForReference": true,
 				"shadowState": true,
 				"valueType": "asFieldType",
 				"dependency": {
@@ -784,6 +788,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "On null",
 				"propertyKeyword": "defaultOnNull",
+				"enableForReference": true,
 				"propertyType": "checkbox",
 				"dependency": {
 					"type": "and",
@@ -975,6 +980,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "maskedWithFunction",
 				"propertyTooltip": "Limit exposure of sensitive data with this function",
 				"propertyType": "details",
+				"enableForReference": true,
 				"template": "textarea",
 				"markdown": false,
 				"dependency": {
@@ -2165,6 +2171,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
+				"enableForReference": true,
 				"shouldValidate": false,
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
@@ -2528,6 +2535,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Precision",
 				"propertyKeyword": "precision",
+				"enableForReference": true,
 				"propertyType": "numeric",
 				"valueType": "number",
 				"propertyTooltip": "Setting for Precision must be between 1 and 38",
@@ -2576,6 +2584,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Scale",
 				"propertyKeyword": "scale",
+				"enableForReference": true,
 				"propertyType": "numeric",
 				"valueType": "number",
 				"propertyTooltip": "Setting for Scale must be between -84 and 127",
@@ -2625,6 +2634,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Default",
 				"propertyKeyword": "default",
+				"enableForReference": true,
 				"shouldValidate": true,
 				"fieldType": "dynamicField",
 				"changeAction": "changeDefaultValueOfField",
@@ -2672,6 +2682,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "On null",
 				"propertyKeyword": "defaultOnNull",
+				"enableForReference": true,
 				"propertyType": "checkbox",
 				"dependency": {
 					"type": "and",
@@ -2950,6 +2961,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Masked with function",
 				"propertyKeyword": "maskedWithFunction",
+				"enableForReference": true,
 				"propertyTooltip": "Limit exposure of sensitive data with this function",
 				"propertyType": "details",
 				"template": "textarea",
@@ -4199,6 +4211,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
+				"enableForReference": true,
 				"shouldValidate": false,
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
@@ -4564,6 +4577,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Year precision",
 				"propertyKeyword": "yearPrecision",
+				"enableForReference": true,
 				"propertyType": "numeric",
 				"valueType": "number",
 				"propertyTooltip": "Setting for precision must be between 0 and 9",
@@ -4604,6 +4618,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Day precision",
 				"propertyKeyword": "dayPrecision",
+				"enableForReference": true,
 				"propertyType": "numeric",
 				"valueType": "number",
 				"propertyTooltip": "Setting for precision must be between 0 and 9",
@@ -4644,6 +4659,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Fractional seconds precision",
 				"propertyKeyword": "fractSecPrecision",
+				"enableForReference": true,
 				"propertyType": "numeric",
 				"valueType": "number",
 				"propertyTooltip": "Setting for precision must be between 0 and 9",
@@ -4684,6 +4700,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "With time zone",
 				"propertyKeyword": "withTimeZone",
+				"enableForReference": true,
 				"propertyType": "checkbox",
 				"dependency": {
 					"type": "and",
@@ -4718,6 +4735,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Local time zone",
 				"propertyKeyword": "localTimeZone",
+				"enableForReference": true,
 				"propertyType": "checkbox",
 				"dependency": {
 					"type": "and",
@@ -4907,6 +4925,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Masked with function",
 				"propertyKeyword": "maskedWithFunction",
+				"enableForReference": true,
 				"propertyTooltip": "Limit exposure of sensitive data with this function",
 				"propertyType": "details",
 				"template": "textarea",
@@ -5605,6 +5624,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "On null",
 				"propertyKeyword": "defaultOnNull",
+				"enableForReference": true,
 				"propertyType": "checkbox",
 				"dependency": {
 					"type": "and",
@@ -5985,6 +6005,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
+				"enableForReference": true,
 				"shouldValidate": false,
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
@@ -6814,6 +6835,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
+				"enableForReference": true,
 				"shouldValidate": false,
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
@@ -7577,6 +7599,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Default",
 				"propertyKeyword": "default",
+				"enableForReference": true,
 				"propertyType": "text"
 			},
 			{
@@ -8044,6 +8067,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
+				"enableForReference": true,
 				"shouldValidate": false,
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
@@ -8448,6 +8472,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Length",
 				"propertyKeyword": "length",
+				"enableForReference": true,
 				"propertyType": "numeric",
 				"valueType": "number",
 				"propertyTooltip": "Setting for Length must be between 1 and 8000",
@@ -8618,6 +8643,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Masked with function",
 				"propertyKeyword": "maskedWithFunction",
+				"enableForReference": true,
 				"propertyTooltip": "Limit exposure of sensitive data with this function",
 				"propertyType": "details",
 				"template": "textarea",
@@ -9472,6 +9498,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
+				"enableForReference": true,
 				"shouldValidate": false,
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
@@ -10738,6 +10765,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Default",
 				"propertyKeyword": "default",
+				"enableForReference": true,
 				"shouldValidate": true,
 				"fieldType": "dynamicField",
 				"changeAction": "changeDefaultValueOfField",
@@ -10785,6 +10813,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "On null",
 				"propertyKeyword": "defaultOnNull",
+				"enableForReference": true,
 				"propertyType": "checkbox",
 				"dependency": {
 					"type": "and",
@@ -11143,6 +11172,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
+				"enableForReference": true,
 				"shouldValidate": false,
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
@@ -11164,6 +11194,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Dimension",
 				"propertyKeyword": "dimension",
+				"enableForReference": true,
 				"propertyType": "numeric",
 				"valueType": "integer",
 				"allowNegative": false,
@@ -11329,6 +11360,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
+				"enableForReference": true,
 				"shouldValidate": false,
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
@@ -12125,6 +12157,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "On null",
 				"propertyKeyword": "defaultOnNull",
+				"enableForReference": true,
 				"propertyType": "checkbox",
 				"dependency": {
 					"type": "and",
@@ -12203,6 +12236,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
+				"enableForReference": true,
 				"shouldValidate": false,
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
@@ -12745,6 +12779,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
+				"enableForReference": true,
 				"shouldValidate": false,
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
@@ -13531,6 +13566,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
+				"enableForReference": true,
 				"shouldValidate": false,
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
@@ -14085,6 +14121,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Remarks",
 				"propertyKeyword": "comments",
+				"enableForReference": true,
 				"shouldValidate": false,
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
