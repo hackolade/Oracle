@@ -23,11 +23,13 @@ const {
 	wrapComment,
 	getColumnsList,
 	prepareNameForScriptFormat,
+	toArray,
 } = require('../utils/general');
 const { getAnnotationsString } = require('../utils/getAnnotationsString');
 const { assignTemplates } = require('../utils/assignTemplates');
 const { decorateType } = require('./ddlHelpers/columnDefinitionHelpers/decorateType');
 const { getNotNullConstraints } = require('../alterScript/alterScriptHelpers/columnHelpers/nonNullConstraintHelper');
+const keyHelper = require('./ddlHelpers/keyHelper')(clean);
 
 /**
  * @param dbVersion {string} DB version in "21ai" format
@@ -38,14 +40,10 @@ const shouldUseTryCatchIfNotExistsWrapper = dbVersion => {
 	return dbVersionAsNumber < DbVersion.IF_NOT_EXISTS_SINCE;
 };
 
-module.exports = (baseProvider, options, app) => {
-	const toArray = val => (_.isArray(val) ? val : [val]);
-
+const ddlProvider = (baseProvider, options, app) => {
 	const scriptFormat = options?.targetScriptOptions?.keyword;
 	const prepareName = prepareNameForScriptFormat(scriptFormat);
 	const getNamePrefixedWithSchemaName = getNamePrefixedWithSchemaNameForScriptFormat(scriptFormat);
-
-	const keyHelper = require('./ddlHelpers/keyHelper')(clean);
 
 	const { getColumnComments, getColumnConstraints, replaceTypeByVersion, getColumnDefault, getColumnEncrypt } =
 		require('./ddlHelpers/columnDefinitionHelper.js')({
@@ -193,7 +191,8 @@ module.exports = (baseProvider, options, app) => {
 				primaryKeyOptions: jsonSchema.primaryKeyOptions,
 				unique: keyHelper.isInlineUnique(jsonSchema),
 				uniqueKeyOptions: jsonSchema.uniqueKeyOptions,
-				nullable: columnDefinition.nullable || Boolean(jsonSchema.notNullConstraintName?.trim()),
+				nullable: columnDefinition.nullable,
+				notNullConstraintName: jsonSchema.notNullConstraintName,
 				default: columnDefinition.default,
 				comment: jsonSchema.refDescription || jsonSchema.description || definitionJsonSchema.description,
 				isActivated: columnDefinition.isActivated,
@@ -354,7 +353,7 @@ module.exports = (baseProvider, options, app) => {
 
 		/**
 		 * @param tableName {string}
-		 * @param fkConstraintName {string}
+		 * @param constraintName {string}
 		 * @return string
 		 * */
 		dropForeignKey(tableName, constraintName) {
@@ -375,7 +374,7 @@ module.exports = (baseProvider, options, app) => {
 				keyConstraints: keyHelper.getTableKeyConstraints(jsonSchema),
 				notNullConstraints: getNotNullConstraints(jsonSchema, scriptFormat),
 				selectStatement: _.trim(detailsTab.selectStatement),
-				partitioning: _.assign({}, partitioning, { compositePartitionKey }),
+				partitioning: { ...partitioning, compositePartitionKey },
 				..._.pick(
 					detailsTab,
 					'blockchain_table_clauses',
@@ -792,3 +791,5 @@ module.exports = (baseProvider, options, app) => {
 		},
 	};
 };
+
+module.exports = ddlProvider;

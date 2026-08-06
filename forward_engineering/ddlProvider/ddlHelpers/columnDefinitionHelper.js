@@ -30,14 +30,34 @@ module.exports = ({ assignTemplates, templates, commentIfDeactivated, wrapCommen
 			.value();
 	};
 
-	const getColumnConstraints = ({ nullable, unique, primaryKey, primaryKeyOptions, uniqueKeyOptions }) => {
+	const getNotNullString = ({ nullable, primaryKey, notNullConstraintName }) => {
+		if (nullable || primaryKey) {
+			return '';
+		}
+
+		if (notNullConstraintName?.trim()) {
+			const { constraintString } = getOptionsString({ constraintName: notNullConstraintName });
+			return ` ${constraintString}NOT NULL`;
+		}
+
+		return ' NOT NULL';
+	};
+
+	const getColumnConstraints = ({
+		nullable,
+		unique,
+		primaryKey,
+		primaryKeyOptions,
+		uniqueKeyOptions,
+		notNullConstraintName,
+	}) => {
 		const { constraintString, statement } = getOptionsString(
 			getOptions({ primaryKey, unique, primaryKeyOptions, uniqueKeyOptions }),
 		);
 		const primaryKeyString = primaryKey ? ` PRIMARY KEY` : '';
 		const uniqueKeyString = unique ? ` UNIQUE` : '';
-		const nullableString = nullable || primaryKey ? '' : ' NOT NULL';
-		return `${nullableString}${constraintString}${primaryKeyString}${uniqueKeyString}${statement}`;
+		const notNullString = getNotNullString({ nullable, primaryKey, notNullConstraintName });
+		return `${notNullString}${constraintString}${primaryKeyString}${uniqueKeyString}${statement}`;
 	};
 
 	const getOptions = ({ primaryKey, unique, primaryKeyOptions, uniqueKeyOptions }) => {

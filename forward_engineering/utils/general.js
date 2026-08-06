@@ -237,6 +237,8 @@ const getId = entity => entity.id || entity.role.id;
 
 const normalizeLineEndings = str => str.replaceAll('\r\n', '\n');
 
+const toArray = val => (Array.isArray(val) ? val : [val]);
+
 module.exports = {
 	getDbName,
 	getBucketName,
@@ -268,4 +270,5 @@ module.exports = {
 	isParentContainerActivated,
 	getId,
 	normalizeLineEndings,
+	toArray,
 };
