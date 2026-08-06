@@ -87,8 +87,7 @@ module.exports = {
 
 	alterNotNullConstraint: 'ALTER TABLE ${tableName} MODIFY ${columnName} NOT NULL;',
 
-	alterNamedNotNullConstraint:
-		'ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintName} CHECK (${columnName} IS NOT NULL);',
+	alterNamedNotNullConstraint: 'ALTER TABLE ${tableName} MODIFY ${columnName} CONSTRAINT ${constraintName} NOT NULL;',
 
 	alterNullableConstraint: 'ALTER TABLE ${tableName} MODIFY ${columnName} NULL;',
 

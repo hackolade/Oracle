@@ -42,12 +42,11 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 			const scripts = [];
 
 			if (isOldRequired && (!isNewRequired || isNameChanged)) {
-				const template = oldConstraintName ? templates.dropConstraint : templates.alterNullableConstraint;
 				scripts.push(
 					AlterScriptDto.getInstance(
-						assignTemplates(template, { ...scriptParams, constraintName: prepareName(oldConstraintName) }),
+						assignTemplates(templates.alterNullableConstraint, scriptParams),
 						true,
-						Boolean(templates.dropConstraint),
+						false,
 						SCRIPT_TYPE.alterEntity,
 					),
 				);
@@ -74,33 +73,12 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 	return addNotNullConstraintsScript;
 };
 
-const createNotNullConstraintScript = ({ scriptFormat, constraintName, columnName }) => {
-	const prepareName = prepareNameForScriptFormat(scriptFormat);
-	return assignTemplates(templates.notNullConstraint, {
-		constraintName: prepareName(constraintName),
-		columnName: prepareName(columnName),
-	});
-};
-
 /**
- * Get named NOT NULL constraints data
- * @param {object} jsonSchema
- * @param {string} scriptFormat
+ * Column-level named NOT NULL constraints are emitted inline on the column definition.
  * @returns {Array<{ statement: string, isActivated: boolean }>}
  */
-const getNotNullConstraints = (jsonSchema, scriptFormat) => {
-	return _.toPairs(jsonSchema.properties)
-		.filter(
-			([name, columnSchema]) => jsonSchema.required?.includes(name) && columnSchema.notNullConstraintName?.trim(),
-		)
-		.map(([name, columnSchema]) => ({
-			statement: createNotNullConstraintScript({
-				scriptFormat,
-				constraintName: columnSchema.notNullConstraintName,
-				columnName: name,
-			}),
-			isActivated: columnSchema.isActivated,
-		}));
+const getNotNullConstraints = () => {
+	return [];
 };
 
 module.exports = {
