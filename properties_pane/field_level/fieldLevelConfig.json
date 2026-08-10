@@ -853,13 +853,15 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "",
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
+				"enableForReference": true,
 				"structure": [
 					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
 						"template": "textarea",
-						"markdown": false
+						"markdown": false,
+						"enableForReference": true
 					}
 				],
 				"dependency": {
@@ -2747,11 +2749,13 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "",
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
+				"enableForReference": true,
 				"structure": [
 					{
 						"propertyName": "As identity",
 						"propertyKeyword": "asIdentity",
 						"propertyType": "checkbox",
+						"enableForReference": true,
 						"dependency": {
 							"level": "objectRoot",
 							"key": "mode",
@@ -2781,6 +2785,7 @@ making sure that you maintain a proper JSON format.
 						"propertyType": "details",
 						"template": "textarea",
 						"markdown": false,
+						"enableForReference": true,
 						"dependency": {
 							"type": "not",
 							"values": {
@@ -2795,6 +2800,7 @@ making sure that you maintain a proper JSON format.
 						"propertyType": "select",
 						"options": ["ALWAYS", "BY DEFAULT"],
 						"defaultValue": "ALWAYS",
+						"enableForReference": true,
 						"dependency": {
 							"key": "asIdentity",
 							"value": true
@@ -2805,6 +2811,7 @@ making sure that you maintain a proper JSON format.
 						"propertyKeyword": "generatedOnNull",
 						"propertyTooltip": "Generate a value for the identity column only if a NULL value provided",
 						"propertyType": "checkbox",
+						"enableForReference": true,
 						"dependency": {
 							"key": "generatedType",
 							"value": "BY DEFAULT"
@@ -2815,6 +2822,7 @@ making sure that you maintain a proper JSON format.
 						"propertyType": "block",
 						"propertyKeyword": "identity",
 						"propertyTooltip": "Creates an identity column in a table",
+						"enableForReference": true,
 						"dependency": {
 							"key": "asIdentity",
 							"value": true
@@ -2827,7 +2835,8 @@ making sure that you maintain a proper JSON format.
 								"propertyType": "numeric",
 								"valueType": "number",
 								"minValue": 1,
-								"step": 1
+								"step": 1,
+								"enableForReference": true
 							},
 							{
 								"propertyName": "Increment",
@@ -2836,7 +2845,8 @@ making sure that you maintain a proper JSON format.
 								"propertyType": "numeric",
 								"valueType": "number",
 								"minValue": 1,
-								"step": 1
+								"step": 1,
+								"enableForReference": true
 							},
 							{
 								"propertyName": "Cache",
@@ -2845,7 +2855,8 @@ making sure that you maintain a proper JSON format.
 								"propertyType": "numeric",
 								"valueType": "number",
 								"minValue": 1,
-								"step": 1
+								"step": 1,
+								"enableForReference": true
 							}
 						]
 					}
@@ -4800,13 +4811,15 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "",
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
+				"enableForReference": true,
 				"structure": [
 					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
 						"template": "textarea",
-						"markdown": false
+						"markdown": false,
+						"enableForReference": true
 					}
 				],
 				"dependency": {
@@ -6486,13 +6499,16 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "",
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
+				"enableForReference": true,
 				"structure": [
 					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
 						"template": "textarea",
-						"markdown": false
+						"markdown": false,
+
+						"enableForReference": true
 					}
 				],
 				"dependency": {
@@ -7479,13 +7495,16 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "",
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
+				"enableForReference": true,
+
 				"structure": [
 					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
 						"template": "textarea",
-						"markdown": false
+						"markdown": false,
+						"enableForReference": true
 					}
 				],
 				"dependency": {
@@ -8543,13 +8562,16 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "",
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
+				"enableForReference": true,
+
 				"structure": [
 					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
 						"template": "textarea",
-						"markdown": false
+						"markdown": false,
+						"enableForReference": true
 					}
 				],
 				"dependency": {
@@ -9931,13 +9953,16 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "",
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
+				"enableForReference": true,
+
 				"structure": [
 					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
 						"template": "textarea",
-						"markdown": false
+						"markdown": false,
+						"enableForReference": true
 					}
 				],
 				"dependency": {
@@ -11232,13 +11257,16 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "",
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
+				"enableForReference": true,
+
 				"structure": [
 					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
 						"template": "textarea",
-						"markdown": false
+						"markdown": false,
+						"enableForReference": true
 					}
 				],
 				"dependency": {
@@ -12075,13 +12103,16 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "",
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
+				"enableForReference": true,
+
 				"structure": [
 					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
 						"template": "textarea",
-						"markdown": false
+						"markdown": false,
+						"enableForReference": true
 					}
 				],
 				"dependency": {
@@ -13163,13 +13194,15 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "",
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
+				"enableForReference": true,
 				"structure": [
 					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
 						"template": "textarea",
-						"markdown": false
+						"markdown": false,
+						"enableForReference": true
 					}
 				],
 				"dependency": {
@@ -13915,13 +13948,15 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "",
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
+				"enableForReference": true,
 				"structure": [
 					{
 						"propertyName": "Expression",
 						"propertyKeyword": "expression",
 						"propertyType": "details",
 						"template": "textarea",
-						"markdown": false
+						"markdown": false,
+						"enableForReference": true
 					}
 				],
 				"dependency": {
