@@ -4,7 +4,6 @@
 	"dtdAbbreviation": "[...]",
 	"parentType": "array",
 	"useSample": false,
-	"hiddenOnEntity": "view",
 	"restrictNormalization": true,
 	"defaultValues": {
 		"subtype": "",

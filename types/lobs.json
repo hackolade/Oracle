@@ -4,7 +4,6 @@
 	"dtdAbbreviation": "{LOB}",
 	"parentType": "binary",
 	"useSample": false,
-	"hiddenOnEntity": "view",
 	"jsonType": {
 		"order": 1,
 		"jsonRoot": true,
