@@ -6507,7 +6507,6 @@ making sure that you maintain a proper JSON format.
 						"propertyType": "details",
 						"template": "textarea",
 						"markdown": false,
-
 						"enableForReference": true
 					}
 				],
@@ -7496,7 +7495,6 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
 				"enableForReference": true,
-
 				"structure": [
 					{
 						"propertyName": "Expression",
@@ -8563,7 +8561,6 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
 				"enableForReference": true,
-
 				"structure": [
 					{
 						"propertyName": "Expression",
@@ -9954,7 +9951,6 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
 				"enableForReference": true,
-
 				"structure": [
 					{
 						"propertyName": "Expression",
@@ -11258,7 +11254,6 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
 				"enableForReference": true,
-
 				"structure": [
 					{
 						"propertyName": "Expression",
@@ -12104,7 +12099,6 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "generatedDefaultValue",
 				"propertyType": "block",
 				"enableForReference": true,
-
 				"structure": [
 					{
 						"propertyName": "Expression",
