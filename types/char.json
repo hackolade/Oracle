@@ -6,7 +6,6 @@
 	"useSample": true,
 	"sample": "",
 	"default": true,
-	"hiddenOnEntity": "view",
 	"jsonType": {
 		"order": 1,
 		"jsonRoot": true,
