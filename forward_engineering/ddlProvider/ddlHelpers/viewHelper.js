@@ -24,9 +24,9 @@ module.exports = ({ prepareName }) => {
 
 		return keys.reduce(
 			(result, key) => {
+				// Keys without a tableName are plain columns that don't reference any table/view column.
+				// They exist for documentation purposes only and can't take part in the SELECT statement.
 				if (!key.tableName) {
-					result.columns.push(getKeyWithAlias(key));
-
 					return result;
 				}
 
