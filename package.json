@@ -65,10 +65,10 @@
     "description": "Hackolade plugin for Oracle and Autonomous databases",
     "disabled": false,
     "dependencies": {
-        "adm-zip": "0.6.0",
+        "adm-zip": "0.6.1",
         "async": "3.2.6",
         "lodash": "4.18.1",
-        "oracledb": "6.6.0",
+        "oracledb": "7.0.1",
         "perplex": "0.11.0"
     },
     "simple-git-hooks": {
