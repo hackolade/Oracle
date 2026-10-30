@@ -85,7 +85,7 @@ const getColumnDefault = ({ type, default: defaultValue, defaultOnNull, generate
 		return `${generatedClause} AS (${expressionValue})`;
 	}
 
-	if (defaultValue || defaultValue === 0) {
+	if (defaultValue !== undefined && defaultValue !== null) {
 		const onNull = getOnNullClause({ onNull: defaultOnNull });
 
 		return ` DEFAULT${onNull} ${defaultValue}`;
