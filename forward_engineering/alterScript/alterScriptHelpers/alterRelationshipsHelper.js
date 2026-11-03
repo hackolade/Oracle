@@ -43,6 +43,7 @@ const getAddSingleForeignKeyStatementDto = ddlProvider => relationship => {
 		primaryTable: compMod.parent.collection.name,
 		primarySchemaName: compMod.parent.bucket.name,
 		primaryTableActivated: compMod.parent.collection.isActivated,
+		isActivated: compMod.isActivated?.new,
 	});
 };
 
