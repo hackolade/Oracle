@@ -276,6 +276,7 @@ const ddlProvider = (baseProvider, options, app) => {
 				foreignSchemaName,
 				primarySchemaName,
 				customProperties,
+				isActivated: isRelationshipActivated,
 			},
 			dbData,
 			schemaData,
@@ -303,7 +304,7 @@ const ddlProvider = (baseProvider, options, app) => {
 
 			return {
 				statement: _.trim(foreignKeyStatement),
-				isActivated,
+				isActivated: isActivated && isRelationshipActivated !== false,
 			};
 		},
 
@@ -319,6 +320,7 @@ const ddlProvider = (baseProvider, options, app) => {
 				foreignSchemaName,
 				primarySchemaName,
 				customProperties,
+				isActivated: isRelationshipActivated,
 			},
 			dbData,
 			schemaData,
@@ -347,7 +349,7 @@ const ddlProvider = (baseProvider, options, app) => {
 
 			return {
 				statement: _.trim(foreignKeyStatement) + '\n',
-				isActivated,
+				isActivated: isActivated && isRelationshipActivated !== false,
 			};
 		},
 
