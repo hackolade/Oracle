@@ -6,6 +6,8 @@ const {
 	getSchemaOfAlterCollection,
 	getFullCollectionName,
 	prepareNameForScriptFormat,
+	isObjectInDeltaModelActivated,
+	isParentContainerActivated,
 } = require('../../../utils/general');
 const { assignTemplates } = require('../../../utils/assignTemplates');
 const templates = require('../../../ddlProvider/templates');
@@ -34,6 +36,8 @@ const updateColumnComment = (objectName, comment) => {
 const getUpdatedCommentOnColumnScriptDtos = ({ scriptFormat, collection }) => {
 	const collectionSchema = getSchemaOfAlterCollection(collection);
 	const fullTableName = getFullCollectionName(scriptFormat)(collectionSchema);
+	const isCollectionActivated =
+		isParentContainerActivated(collection) !== false && isObjectInDeltaModelActivated(collection) !== false;
 
 	return toPairs(collection.properties)
 		.filter(([name, jsonSchema]) => {
@@ -49,7 +53,8 @@ const getUpdatedCommentOnColumnScriptDtos = ({ scriptFormat, collection }) => {
 			const fullColumnName = `${fullTableName}.${columnName}`;
 
 			const script = updateColumnComment(fullColumnName, wrappedComment);
-			return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.alterEntity);
+			const isActivated = isCollectionActivated && jsonSchema.isActivated !== false;
+			return AlterScriptDto.getInstance(script, isActivated, false, SCRIPT_TYPE.alterEntity);
 		});
 };
 

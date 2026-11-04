@@ -1,7 +1,13 @@
 const { AlterScriptDto, SCRIPT_TYPE } = require('../../types/AlterScriptDto');
 const { AlterCollectionDto } = require('../../types/AlterCollectionDto');
 const { assignTemplates } = require('../../../utils/assignTemplates');
-const { wrapComment, getSchemaOfAlterCollection, getFullCollectionName } = require('../../../utils/general');
+const {
+	wrapComment,
+	getSchemaOfAlterCollection,
+	getFullCollectionName,
+	isObjectInDeltaModelActivated,
+	isParentContainerActivated,
+} = require('../../../utils/general');
 const templates = require('../../../ddlProvider/templates');
 
 /**
@@ -39,8 +45,10 @@ const getUpdatedCommentOnCollectionScriptDto = ({ scriptFormat, collection }) =>
 	const fullTableName = getFullCollectionName(scriptFormat)(collectionSchema);
 	const comment = newComment ? wrapComment(newComment) : 'NULL';
 	const script = updateTableComment(fullTableName, comment);
+	const isActivated =
+		isParentContainerActivated(collection) !== false && isObjectInDeltaModelActivated(collection) !== false;
 
-	return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.alterEntity);
+	return AlterScriptDto.getInstance(script, isActivated, false, SCRIPT_TYPE.alterEntity);
 };
 
 /**
