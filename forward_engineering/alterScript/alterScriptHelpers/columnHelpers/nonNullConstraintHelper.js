@@ -7,6 +7,8 @@ const {
 	getSchemaOfAlterCollection,
 	getFullCollectionName,
 	prepareNameForScriptFormat,
+	isObjectInDeltaModelActivated,
+	isParentContainerActivated,
 } = require('../../../utils/general');
 
 /**
@@ -19,6 +21,8 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 	const prepareName = prepareNameForScriptFormat(scriptFormat);
 	const collectionSchema = getSchemaOfAlterCollection(collection);
 	const fullTableName = getFullCollectionName(scriptFormat)(collectionSchema);
+	const isCollectionActivated =
+		isParentContainerActivated(collection) !== false && isObjectInDeltaModelActivated(collection) !== false;
 
 	const currentRequiredColumnNames = collection.required || [];
 	const previousRequiredColumnNames = collection.role.required || [];
@@ -33,6 +37,7 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 
 			const isOldRequired = previousRequiredColumnNames.includes(oldName);
 			const isNewRequired = currentRequiredColumnNames.includes(name);
+			const isActivated = isCollectionActivated && jsonSchema.isActivated !== false;
 
 			const scriptParams = {
 				tableName: fullTableName,
@@ -45,7 +50,7 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 				scripts.push(
 					AlterScriptDto.getInstance(
 						assignTemplates(templates.alterNullableConstraint, scriptParams),
-						true,
+						isActivated,
 						false,
 						SCRIPT_TYPE.alterEntity,
 					),
@@ -59,7 +64,7 @@ const getModifyNonNullColumnsScriptDtos = ({ scriptFormat, collection }) => {
 				scripts.push(
 					AlterScriptDto.getInstance(
 						assignTemplates(template, { ...scriptParams, constraintName: prepareName(newConstraintName) }),
-						true,
+						isActivated,
 						false,
 						SCRIPT_TYPE.alterEntity,
 					),

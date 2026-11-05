@@ -5,6 +5,8 @@ const {
 	prepareNameForScriptFormat,
 	getSchemaOfAlterCollection,
 	getFullCollectionName,
+	isObjectInDeltaModelActivated,
+	isParentContainerActivated,
 } = require('../../../utils/general');
 const { assignTemplates } = require('../../../utils/assignTemplates');
 const { getColumnDefault } = require('../../../ddlProvider/ddlHelpers/columnDefinitionHelpers/getColumnDefault');
@@ -35,6 +37,8 @@ const getUpdatedDefaultColumnValueScriptDtos = ({ scriptFormat, collection }) =>
 	const prepareName = prepareNameForScriptFormat(scriptFormat);
 	const collectionSchema = getSchemaOfAlterCollection(collection);
 	const fullTableName = getFullCollectionName(scriptFormat)(collectionSchema);
+	const isCollectionActivated =
+		isParentContainerActivated(collection) !== false && isObjectInDeltaModelActivated(collection) !== false;
 
 	return toPairs(collection.properties)
 		.filter(([_name, jsonSchema]) => {
@@ -52,7 +56,8 @@ const getUpdatedDefaultColumnValueScriptDtos = ({ scriptFormat, collection }) =>
 			};
 
 			const script = updateColumnDefaultValue(scriptGenerationConfig);
-			return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.alterEntity);
+			const isActivated = isCollectionActivated && jsonSchema.isActivated !== false;
+			return AlterScriptDto.getInstance(script, isActivated, false, SCRIPT_TYPE.alterEntity);
 		})
 		.filter(Boolean);
 };
