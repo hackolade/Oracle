@@ -5,6 +5,8 @@ const {
 	getSchemaOfAlterCollection,
 	getFullCollectionName,
 	prepareNameForScriptFormat,
+	isObjectInDeltaModelActivated,
+	isParentContainerActivated,
 } = require('../../../utils/general');
 const { assignTemplates } = require('../../../utils/assignTemplates');
 const templates = require('../../../ddlProvider/templates');
@@ -70,14 +72,15 @@ const mapCheckConstraintNamesToChangeHistory = ({ collection, scriptFormat }) =>
 /**
  * @param {Array<CheckConstraintHistoryEntry>} constraintHistory
  * @param {string} fullTableName
+ * @param {boolean} isActivated
  * @return {Array<AlterScriptDto>}
  * */
-const getDropCheckConstraintScriptDtos = (constraintHistory, fullTableName) => {
+const getDropCheckConstraintScriptDtos = (constraintHistory, fullTableName, isActivated) => {
 	return constraintHistory
 		.filter(historyEntry => historyEntry.old && !historyEntry.new)
 		.map(historyEntry => {
 			const script = dropConstraint(fullTableName, historyEntry.old.chkConstrName);
-			return AlterScriptDto.getInstance(script, true, true, SCRIPT_TYPE.alterEntity);
+			return AlterScriptDto.getInstance(script, isActivated, true, SCRIPT_TYPE.alterEntity);
 		});
 };
 
@@ -103,24 +106,26 @@ const addCheckConstraint = (tableName, constraintName, expression) => {
 /**
  * @param {Array<CheckConstraintHistoryEntry>} constraintHistory
  * @param {string} fullTableName
+ * @param {boolean} isActivated
  * @return {Array<AlterScriptDto>}
  * */
-const getAddCheckConstraintScriptDtos = (constraintHistory, fullTableName) => {
+const getAddCheckConstraintScriptDtos = (constraintHistory, fullTableName, isActivated) => {
 	return constraintHistory
 		.filter(historyEntry => historyEntry.new && !historyEntry.old)
 		.map(historyEntry => {
 			const { chkConstrName, constrExpression } = historyEntry.new;
 			const script = addCheckConstraint(fullTableName, chkConstrName, constrExpression);
-			return AlterScriptDto.getInstance(script, true, false, SCRIPT_TYPE.alterEntity);
+			return AlterScriptDto.getInstance(script, isActivated, false, SCRIPT_TYPE.alterEntity);
 		});
 };
 
 /**
  * @param {Array<CheckConstraintHistoryEntry>} constraintHistory
  * @param {string} fullTableName
+ * @param {boolean} isActivated
  * @return {Array<AlterScriptDto>}
  * */
-const getUpdateCheckConstraintScriptDtos = (constraintHistory, fullTableName) => {
+const getUpdateCheckConstraintScriptDtos = (constraintHistory, fullTableName, isActivated) => {
 	return constraintHistory
 		.filter(historyEntry => {
 			if (historyEntry.old && historyEntry.new) {
@@ -138,8 +143,8 @@ const getUpdateCheckConstraintScriptDtos = (constraintHistory, fullTableName) =>
 			const addConstraintScript = addCheckConstraint(fullTableName, newConstrainName, newConstraintExpression);
 
 			return [
-				AlterScriptDto.getInstance(dropConstraintScript, true, true, SCRIPT_TYPE.alterEntity),
-				AlterScriptDto.getInstance(addConstraintScript, true, false, SCRIPT_TYPE.alterEntity),
+				AlterScriptDto.getInstance(dropConstraintScript, isActivated, true, SCRIPT_TYPE.alterEntity),
+				AlterScriptDto.getInstance(addConstraintScript, isActivated, false, SCRIPT_TYPE.alterEntity),
 			];
 		});
 };
@@ -154,12 +159,26 @@ const getModifyCheckConstraintScriptDtos =
 	collection => {
 		const collectionSchema = getSchemaOfAlterCollection(collection);
 		const fullTableName = getFullCollectionName(scriptFormat)(collectionSchema);
+		const isActivated =
+			isParentContainerActivated(collection) !== false && isObjectInDeltaModelActivated(collection) !== false;
 
 		const constraintHistory = mapCheckConstraintNamesToChangeHistory({ collection, scriptFormat });
 
-		const addCheckConstraintScripts = getAddCheckConstraintScriptDtos(constraintHistory, fullTableName);
-		const dropCheckConstraintScripts = getDropCheckConstraintScriptDtos(constraintHistory, fullTableName);
-		const updateCheckConstraintScripts = getUpdateCheckConstraintScriptDtos(constraintHistory, fullTableName);
+		const addCheckConstraintScripts = getAddCheckConstraintScriptDtos(
+			constraintHistory,
+			fullTableName,
+			isActivated,
+		);
+		const dropCheckConstraintScripts = getDropCheckConstraintScriptDtos(
+			constraintHistory,
+			fullTableName,
+			isActivated,
+		);
+		const updateCheckConstraintScripts = getUpdateCheckConstraintScriptDtos(
+			constraintHistory,
+			fullTableName,
+			isActivated,
+		);
 
 		return [...addCheckConstraintScripts, ...dropCheckConstraintScripts, ...updateCheckConstraintScripts];
 	};
