@@ -88,8 +88,13 @@ module.exports = ({ prepareName, getNamePrefixedWithSchemaName }) => {
 				};
 			});
 
+			// Do not comment the column when (!index.isActivated || !isParentActivated || !hasActiveColumns) because the whole index will be commented out
+			const isActivatedByNeed = !index.isActivated || !isParentActivated || !hasActiveColumns;
+
 			const indexedColumnsClause = indexedColumns
-				.map(column => commentIfDeactivated(column.statement, { isActivated: column.isActivated }))
+				.map(column =>
+					commentIfDeactivated(column.statement, { isActivated: isActivatedByNeed || column.isActivated }),
+				)
 				.join(',\n\t');
 			statement = `\n(\n\t${indexedColumnsClause}\n)\n\t`;
 		}

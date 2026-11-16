@@ -63,7 +63,15 @@ module.exports = ({ prepareName }) => {
 		);
 
 		const join = items =>
-			items.map(item => commentIfDeactivated(item.statement, { isActivated: item.isActivated })).join(',\n\t\t');
+			items
+				.map(
+					// Do not comment the column or table when (!isViewActivated || !hasActiveColumns) because the whole view will be commented out
+					item =>
+						commentIfDeactivated(item.statement, {
+							isActivated: !isViewActivated || !hasActiveColumns || item.isActivated,
+						}),
+				)
+				.join(',\n\t\t');
 
 		return {
 			hasActiveColumns,
