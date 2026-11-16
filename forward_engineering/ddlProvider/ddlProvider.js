@@ -524,7 +524,7 @@ const ddlProvider = (baseProvider, options, app) => {
 			}
 
 			const indexType = getIndexType(index.indxType);
-			const keys = getIndexKeys(index);
+			const { statement: keys, hasActiveColumns } = getIndexKeys({ index, isParentActivated });
 			const indexOptions = getIndexOptions(index);
 			const dbVersion = options.dbVersion || '';
 			const usingTryCatchWrapper = shouldUseTryCatchIfNotExistsWrapper(dbVersion);
@@ -550,12 +550,12 @@ const ddlProvider = (baseProvider, options, app) => {
 
 			if (usingTryCatchWrapper) {
 				return commentIfDeactivated(statement, {
-					isActivated: index.isActivated,
+					isActivated: isParentActivated && index.isActivated && hasActiveColumns,
 				});
 			}
 
 			return commentIfDeactivated(statement, {
-				isActivated: index.isActivated,
+				isActivated: isParentActivated && index.isActivated && hasActiveColumns,
 			});
 		},
 
@@ -630,8 +630,8 @@ const ddlProvider = (baseProvider, options, app) => {
 		createViewIndex(viewName, index, dbData, isParentActivated) {
 			const name = getIndexName({ index });
 			const indexType = getIndexType(index.indxType);
-			const keys = getIndexKeys(index);
-			const options = getIndexOptions(index, isParentActivated);
+			const { statement: keys, hasActiveColumns } = getIndexKeys({ index, isParentActivated });
+			const options = getIndexOptions(index);
 
 			if (!index.materialized) {
 				return;
@@ -646,7 +646,7 @@ const ddlProvider = (baseProvider, options, app) => {
 					tableName: getNamePrefixedWithSchemaName(viewName, index.schemaName),
 				}),
 				{
-					isActivated: index.isActivated,
+					isActivated: isParentActivated && index.isActivated && hasActiveColumns,
 				},
 			);
 		},
@@ -655,11 +655,13 @@ const ddlProvider = (baseProvider, options, app) => {
 			return viewData.materialized ? 'MATERIALIZED VIEW' : 'TABLE';
 		},
 
-		createView(viewData, dbData, isActivated) {
+		createView(viewData, dbData, isViewActivated) {
 			const viewName = getNamePrefixedWithSchemaName(viewData.name, viewData.schemaName);
 
-			const { columns, tables } = getViewData(viewData.keys);
-			const columnsAsString = columns.map(column => column.statement).join(',\n\t\t');
+			const { columnsAsString, tablesAsString, hasActiveColumns } = getViewData({
+				keys: viewData.keys,
+				isViewActivated,
+			});
 
 			const comment = viewData.description
 				? '\n' +
@@ -671,10 +673,11 @@ const ddlProvider = (baseProvider, options, app) => {
 					'\n'
 				: '\n';
 
-			const selectStatement = _.trim(viewData.selectStatement)
+			const hasCustomSelectStatement = Boolean(_.trim(viewData.selectStatement));
+			const selectStatement = hasCustomSelectStatement
 				? _.trim(tab(viewData.selectStatement))
 				: assignTemplates(templates.viewSelectStatement, {
-						tableName: tables.join(', '),
+						tableName: tablesAsString,
 						keys: columnsAsString,
 					});
 
@@ -702,6 +705,8 @@ const ddlProvider = (baseProvider, options, app) => {
 			} else {
 				createViewDdl += ';';
 			}
+
+			const isActivated = isViewActivated && (hasCustomSelectStatement || hasActiveColumns);
 
 			return commentIfDeactivated(createViewDdl + comment + synonymsStatements, { isActivated });
 		},

@@ -222,7 +222,7 @@ const getSchemaOfAlterCollection = collection => {
 };
 
 const isObjectInDeltaModelActivated = modelObject => {
-	return modelObject.compMod?.isActivated?.new ?? modelObject.role?.isActivated;
+	return modelObject.compMod?.isActivated?.new ?? modelObject.role?.isActivated ?? true;
 };
 
 const isParentContainerActivated = collection => {

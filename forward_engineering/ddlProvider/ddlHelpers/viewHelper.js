@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const { commentIfDeactivated } = require('../../utils/general');
 
 module.exports = ({ prepareName }) => {
 	const getViewType = ({ editioning, editionable }) => {
@@ -17,12 +18,14 @@ module.exports = ({ prepareName }) => {
 		}
 	};
 
-	const getViewData = keys => {
+	const getViewData = ({ keys, isViewActivated }) => {
 		if (!Array.isArray(keys)) {
 			return { tables: [], columns: [] };
 		}
 
-		return keys.reduce(
+		let hasActiveColumns = false;
+
+		const { columns, tables } = keys.reduce(
 			(result, key) => {
 				// Keys without a tableName are plain columns that don't reference any table/view column.
 				// They exist for documentation purposes only and can't take part in the SELECT statement.
@@ -30,16 +33,26 @@ module.exports = ({ prepareName }) => {
 					return result;
 				}
 
-				const tableName = `${prepareName(key.dbName)}.${prepareName(key.tableName)}`;
+				let tableName = `${prepareName(key.dbName)}.${prepareName(key.tableName)}`;
 
-				if (!result.tables.includes(tableName)) {
-					result.tables.push(tableName);
+				const addedTable = result.tables.find(t => t.statement === tableName);
+				if (addedTable) {
+					addedTable.isActivated = addedTable.isActivated || key.isActivated;
+				} else {
+					result.tables.push({
+						statement: tableName,
+						isActivated: key.isActivated,
+					});
 				}
 
 				result.columns.push({
 					statement: `${tableName}.${getKeyWithAlias(key)}`,
 					isActivated: key.isActivated,
 				});
+
+				if (key.isActivated && !hasActiveColumns) {
+					hasActiveColumns = true;
+				}
 
 				return result;
 			},
@@ -48,6 +61,15 @@ module.exports = ({ prepareName }) => {
 				columns: [],
 			},
 		);
+
+		const join = items =>
+			items.map(item => commentIfDeactivated(item.statement, { isActivated: item.isActivated })).join(',\n\t\t');
+
+		return {
+			hasActiveColumns,
+			columnsAsString: join(columns),
+			tablesAsString: join(tables),
+		};
 	};
 
 	return {

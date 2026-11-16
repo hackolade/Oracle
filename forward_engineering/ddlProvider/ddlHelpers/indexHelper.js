@@ -3,7 +3,7 @@
  */
 
 const _ = require('lodash');
-const { normalizeLineEndings } = require('../../utils/general');
+const { normalizeLineEndings, commentIfDeactivated } = require('../../utils/general');
 
 module.exports = ({ prepareName, getNamePrefixedWithSchemaName }) => {
 	const getIndexType = indexType => {
@@ -64,22 +64,40 @@ module.exports = ({ prepareName, getNamePrefixedWithSchemaName }) => {
 	 * @param column_expression {string | undefined}
 	 * @return {string}
 	 * */
-	const getIndexKeys = ({ indxKey, column_expression }) => {
-		const columnExpression = _.trim(column_expression);
+	const getIndexKeys = ({ index, isParentActivated }) => {
+		const columnExpression = _.trim(index.column_expression);
 
 		if (columnExpression) {
-			return `\n(\n\t${columnExpression}\n)\n\t`;
+			return {
+				statement: `\n(\n\t${columnExpression}\n)\n\t`,
+				hasActiveColumns: true,
+			};
 		}
 
-		if (_.isArray(indxKey) && !_.isEmpty(indxKey)) {
-			const indexedColumnsClause = _.map(
-				indxKey,
-				({ name, type }) => `${prepareName(name)} ${_.toUpper(type)}`,
-			).join(',\n\t');
-			return `\n(\n\t${indexedColumnsClause}\n)\n\t`;
+		let hasActiveColumns = false;
+		let statement = '';
+
+		if (Array.isArray(index.indxKey) && !_.isEmpty(index.indxKey)) {
+			const indexedColumns = _.map(index.indxKey, ({ name, type, isActivated }) => {
+				if (isActivated && !hasActiveColumns) {
+					hasActiveColumns = true;
+				}
+				return {
+					statement: `${prepareName(name)} ${_.toUpper(type)}`,
+					isActivated,
+				};
+			});
+
+			const indexedColumnsClause = indexedColumns
+				.map(column => commentIfDeactivated(column.statement, { isActivated: column.isActivated }))
+				.join(',\n\t');
+			statement = `\n(\n\t${indexedColumnsClause}\n)\n\t`;
 		}
 
-		return '';
+		return {
+			statement,
+			hasActiveColumns,
+		};
 	};
 
 	/**

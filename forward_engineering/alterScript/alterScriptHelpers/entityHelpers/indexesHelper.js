@@ -2,7 +2,11 @@ const _ = require('lodash');
 const { AlterScriptDto, SCRIPT_TYPE } = require('../../types/AlterScriptDto.js');
 const { AlterCollectionDto } = require('../../types/AlterCollectionDto');
 const { AlterIndexDto } = require('../../types/AlterIndexDto');
-const { prepareNameForScriptFormat } = require('../../../utils/general.js');
+const {
+	prepareNameForScriptFormat,
+	isParentContainerActivated,
+	isObjectInDeltaModelActivated,
+} = require('../../../utils/general.js');
 
 /**
  * @typedef {{
@@ -135,11 +139,17 @@ const getDeletedIndexesScriptDtos =
  */
 const getDeleteIndexScriptDto =
 	({ ddlProvider, scriptFormat }) =>
-	({ index }) => {
+	({ index, collection }) => {
 		const name = prepareNameForScriptFormat(scriptFormat)(index.indxName);
 		const script = ddlProvider.dropIndex({ name });
-
-		return AlterScriptDto.getInstance(script, index.isActivated, true, SCRIPT_TYPE.dropEntityIndex);
+		const isCollectionActivated =
+			isParentContainerActivated(collection) && isObjectInDeltaModelActivated(collection);
+		return AlterScriptDto.getInstance(
+			script,
+			isCollectionActivated && index.isActivated,
+			true,
+			SCRIPT_TYPE.dropEntityIndex,
+		);
 	};
 
 /**
@@ -176,8 +186,14 @@ const getAddIndexScriptDto =
 			...indexWithAddedKeyNames,
 			schemaName: collection?.role?.compMod?.bucketProperties?.name,
 		});
-
-		return AlterScriptDto.getInstance(script, index.isActivated, false, SCRIPT_TYPE.createEntityIndex);
+		const isCollectionActivated =
+			isParentContainerActivated(collection) && isObjectInDeltaModelActivated(collection);
+		return AlterScriptDto.getInstance(
+			script,
+			isCollectionActivated && index.isActivated,
+			false,
+			SCRIPT_TYPE.createEntityIndex,
+		);
 	};
 
 /**
@@ -220,13 +236,15 @@ const getModifyIndexScriptDto =
 	({ modifiedIndex: { oldIndex, newIndex }, collection }) => {
 		const oldName = prepareNameForScriptFormat(scriptFormat)(oldIndex.indxName);
 		const newName = prepareNameForScriptFormat(scriptFormat)(newIndex.indxName);
+		const isActivated =
+			newIndex.isActivated && isParentContainerActivated(collection) && isObjectInDeltaModelActivated(collection);
 
 		let alterScriptDtos = [];
 
 		if (shouldDropAndRecreateIndex({ oldIndex, newIndex })) {
 			const dropIndexDto = AlterScriptDto.getInstance(
 				ddlProvider.dropIndex({ name: oldName }),
-				newIndex.isActivated,
+				isActivated,
 				true,
 				SCRIPT_TYPE.dropEntityIndex,
 			);
@@ -236,7 +254,7 @@ const getModifyIndexScriptDto =
 					...newIndexWithAddedKeyNames,
 					schemaName: collection?.role?.compMod?.bucketProperties?.name,
 				}),
-				newIndex.isActivated,
+				isActivated,
 				false,
 				SCRIPT_TYPE.createEntityIndex,
 			);
@@ -249,7 +267,7 @@ const getModifyIndexScriptDto =
 		if (shouldRenameIndex) {
 			const alterIndexDto = AlterScriptDto.getInstance(
 				ddlProvider.alterIndexRename({ oldName, newName }),
-				newIndex.isActivated,
+				isActivated,
 				false,
 				SCRIPT_TYPE.alterEntityIndex,
 			);
@@ -259,7 +277,7 @@ const getModifyIndexScriptDto =
 		if (shouldAlterIndexRebuild({ oldIndex, newIndex })) {
 			const alterIndexRebuildDto = AlterScriptDto.getInstance(
 				ddlProvider.alterIndexRebuild({ name: newName, indexData: newIndex }),
-				newIndex.isActivated,
+				isActivated,
 				false,
 				SCRIPT_TYPE.alterEntityIndex,
 			);
