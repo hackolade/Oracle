@@ -168,13 +168,19 @@ const getAddCompositePkScriptDtos = ({ scriptFormat, collection }) => {
 
 	const collectionSchema = getSchemaOfAlterCollection(collection);
 	const fullTableName = getFullCollectionName(scriptFormat)(collectionSchema);
+	const isCollectionActivated = isParentContainerActivated(collection) && isObjectInDeltaModelActivated(collection);
 
 	return newPrimaryKeys
 		.map(newPk => {
 			const ddlConfig = getCreateCompositePKDDLProviderConfig(newPk, collection);
-			const statementDto = alterKeyConstraint(fullTableName, collection.isActivated, ddlConfig);
+			const statementDto = alterKeyConstraint(fullTableName, isCollectionActivated, ddlConfig);
 
-			return new KeyScriptModificationDto(statementDto.statement, fullTableName, false, statementDto.isActivated);
+			return new KeyScriptModificationDto(
+				statementDto.statement,
+				fullTableName,
+				false,
+				statementDto.isActivated && isCollectionActivated,
+			);
 		})
 		.filter(scriptDto => Boolean(scriptDto.script));
 };
@@ -407,6 +413,7 @@ const getAddPkScriptDtos = ({ scriptFormat, collection }) => {
 
 	const collectionSchema = getSchemaOfAlterCollection(collection);
 	const fullTableName = getFullCollectionName(scriptFormat)(collectionSchema);
+	const isCollectionActivated = isParentContainerActivated(collection) && isObjectInDeltaModelActivated(collection);
 
 	return _.toPairs(collection.properties)
 		.filter(([name, jsonSchema]) => {
@@ -424,8 +431,13 @@ const getAddPkScriptDtos = ({ scriptFormat, collection }) => {
 		})
 		.map(([name, jsonSchema]) => {
 			const ddlConfig = getCreateRegularPKDDLProviderConfig(name, jsonSchema);
-			const statementDto = alterKeyConstraint(fullTableName, collection.isActivated, ddlConfig);
-			return new KeyScriptModificationDto(statementDto.statement, fullTableName, false, statementDto.isActivated);
+			const statementDto = alterKeyConstraint(fullTableName, isCollectionActivated, ddlConfig);
+			return new KeyScriptModificationDto(
+				statementDto.statement,
+				fullTableName,
+				false,
+				isCollectionActivated && statementDto.isActivated,
+			);
 		})
 		.filter(scriptDto => Boolean(scriptDto.script));
 };
@@ -487,9 +499,15 @@ const getModifyPkConstraintsScriptDtos = ({ scriptFormat, collection }) => {
 
 	const allDtos = [...modifyCompositePkScriptDtos, ...modifyPkScriptDtos].filter(Boolean);
 	const sortedAllDtos = sortModifyKeyConstraints(allDtos);
+	const isCollectionActivated = isParentContainerActivated(collection) && isObjectInDeltaModelActivated(collection);
 
 	return sortedAllDtos.map(dto =>
-		AlterScriptDto.getInstance(dto.script, dto.isActivated, dto.isDropScript, SCRIPT_TYPE.alterEntity),
+		AlterScriptDto.getInstance(
+			dto.script,
+			isCollectionActivated && dto.isActivated,
+			dto.isDropScript,
+			SCRIPT_TYPE.alterEntity,
+		),
 	);
 };
 

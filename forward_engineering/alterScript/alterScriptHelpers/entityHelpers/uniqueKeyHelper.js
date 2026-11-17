@@ -170,13 +170,19 @@ const getAddCompositeUniqueKeyScriptDtos = ({ scriptFormat, collection }) => {
 
 	const collectionSchema = getSchemaOfAlterCollection(collection);
 	const fullTableName = getFullCollectionName(scriptFormat)(collectionSchema);
+	const isCollectionActivated = isParentContainerActivated(collection) && isObjectInDeltaModelActivated(collection);
 
 	return newUniqueKeys
 		.map(newUniqueKey => {
 			const ddlConfig = getCreateCompositeUniqueKeyDDLProviderConfig(newUniqueKey, collection);
 			const statementDto = alterKeyConstraint(fullTableName, collection.isActivated, ddlConfig);
 
-			return new KeyScriptModificationDto(statementDto.statement, fullTableName, false, statementDto.isActivated);
+			return new KeyScriptModificationDto(
+				statementDto.statement,
+				fullTableName,
+				false,
+				isCollectionActivated && statementDto.isActivated,
+			);
 		})
 		.filter(scriptDto => Boolean(scriptDto.script));
 };
@@ -412,6 +418,7 @@ const getAddUniqueKeyScriptDtos = ({ scriptFormat, collection }) => {
 
 	const collectionSchema = getSchemaOfAlterCollection(collection);
 	const fullTableName = getFullCollectionName(scriptFormat)(collectionSchema);
+	const isCollectionActivated = isParentContainerActivated(collection) && isObjectInDeltaModelActivated(collection);
 
 	return _.toPairs(collection.properties)
 		.filter(([name, jsonSchema]) => {
@@ -430,7 +437,12 @@ const getAddUniqueKeyScriptDtos = ({ scriptFormat, collection }) => {
 		.map(([name, jsonSchema]) => {
 			const ddlConfig = getCreateRegularUniqueKeyDDLProviderConfig(name, jsonSchema);
 			const statementDto = alterKeyConstraint(fullTableName, collection.isActivated, ddlConfig);
-			return new KeyScriptModificationDto(statementDto.statement, fullTableName, false, statementDto.isActivated);
+			return new KeyScriptModificationDto(
+				statementDto.statement,
+				fullTableName,
+				false,
+				isCollectionActivated && statementDto.isActivated,
+			);
 		})
 		.filter(scriptDto => Boolean(scriptDto.script));
 };
