@@ -24,6 +24,8 @@ const {
 	getColumnsList,
 	prepareNameForScriptFormat,
 	toArray,
+	isViewColumnSourceActivated,
+	isViewActivated,
 } = require('../utils/general');
 const { getAnnotationsString } = require('../utils/getAnnotationsString');
 const { assignTemplates } = require('../utils/assignTemplates');
@@ -587,7 +589,7 @@ const ddlProvider = (baseProvider, options, app) => {
 				name: data.name,
 				tableName: data.entityName,
 				alias: data.alias,
-				isActivated: data.isActivated,
+				isActivated: data.isActivated !== false && isViewColumnSourceActivated(data),
 				dbName: data.dbName,
 			};
 		},
@@ -655,12 +657,13 @@ const ddlProvider = (baseProvider, options, app) => {
 			return viewData.materialized ? 'MATERIALIZED VIEW' : 'TABLE';
 		},
 
-		createView(viewData, dbData, isViewActivated) {
+		createView(viewData, dbData, viewIsActivated) {
+			const isActivated = isViewActivated(viewData, { isActivated: viewIsActivated });
 			const viewName = getNamePrefixedWithSchemaName(viewData.name, viewData.schemaName);
 
-			const { columnsAsString, tablesAsString, hasActiveColumns } = getViewData({
+			const { columnsAsString, tablesAsString } = getViewData({
 				keys: viewData.keys,
-				isViewActivated,
+				isViewActivated: isActivated,
 			});
 
 			const comment = viewData.description
@@ -705,8 +708,6 @@ const ddlProvider = (baseProvider, options, app) => {
 			} else {
 				createViewDdl += ';';
 			}
-
-			const isActivated = isViewActivated && (hasCustomSelectStatement || hasActiveColumns);
 
 			return commentIfDeactivated(createViewDdl + comment + synonymsStatements, { isActivated });
 		},
