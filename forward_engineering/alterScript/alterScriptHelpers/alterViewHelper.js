@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const { AlterScriptDto, SCRIPT_TYPE } = require('../types/AlterScriptDto');
 const { mapDeltaDualityViewToFeDualityView } = require('./dualityViewHelpers/deltaDualityViewToFeDualityViewMapper');
-const { prepareNameForScriptFormat, getId } = require('../../utils/general');
+const { prepareNameForScriptFormat, getId, isViewActivated } = require('../../utils/general');
 const { getModifyViewCommentsScriptDtos } = require('./viewHelpers/commentsHelper');
 const { getModifyEntityNameScriptDtos } = require('./viewHelpers/nameHelper');
 
@@ -25,8 +25,9 @@ const getAddRegularViewScriptDto = (app, scriptFormat) => view => {
 		schemaData: { schemaName: '' },
 	};
 	const hydratedView = ddlProvider.hydrateView({ viewData, entityData: [view] });
-	const createViewStatement = ddlProvider.createView(hydratedView, {}, view.isActivated);
-	return AlterScriptDto.getInstance(createViewStatement, true, false, SCRIPT_TYPE.createView, getId(view));
+	const viewActivated = isViewActivated(view);
+	const createViewStatement = ddlProvider.createView(hydratedView, {}, viewActivated);
+	return AlterScriptDto.getInstance(createViewStatement, viewActivated, false, SCRIPT_TYPE.createView, getId(view));
 };
 
 /**
@@ -61,7 +62,7 @@ const getDeleteViewScriptDto = (app, scriptFormat) => view => {
 	const ddlViewName = prepareNameForScriptFormat(scriptFormat)(view.code || view.name);
 
 	const dropViewScript = `DROP VIEW ${ddlViewName};`;
-	return AlterScriptDto.getInstance(dropViewScript, true, true, SCRIPT_TYPE.dropView, getId(view));
+	return AlterScriptDto.getInstance(dropViewScript, isViewActivated(view), true, SCRIPT_TYPE.dropView, getId(view));
 };
 
 /**
@@ -105,6 +106,9 @@ const getKeys = ({ view, collectionRefsDefinitionsMap, ddlProvider, app }) => {
 
 		if (name === propertyName) {
 			return ddlProvider.hydrateViewColumn({
+				containerData: definition.bucket,
+				entityData: definition.collection,
+				definition: definition.definition,
 				name,
 				dbName,
 				entityName,
@@ -113,6 +117,9 @@ const getKeys = ({ view, collectionRefsDefinitionsMap, ddlProvider, app }) => {
 		}
 
 		return ddlProvider.hydrateViewColumn({
+			containerData: definition.bucket,
+			entityData: definition.collection,
+			definition: definition.definition,
 			name,
 			dbName,
 			entityName,
