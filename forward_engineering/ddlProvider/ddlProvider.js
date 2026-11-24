@@ -709,7 +709,15 @@ const ddlProvider = (baseProvider, options, app) => {
 				createViewDdl += ';';
 			}
 
-			return commentIfDeactivated(createViewDdl + comment + synonymsStatements, { isActivated });
+			const statement = createViewDdl + comment + synonymsStatements;
+
+			// Only self-comment when the caller thinks the view is active but columns/sources
+			// make it inactive. When viewIsActivated is false, the caller comments the statement.
+			if (viewIsActivated && !isActivated) {
+				return commentIfDeactivated(statement, { isActivated: false });
+			}
+
+			return statement;
 		},
 
 		/**
